@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/studentRowContainer"
+    android:layout_width="match_parent"
+    android:layout_height="66dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="14dp"
+    android:paddingEnd="18dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp"
+    android:background="@drawable/bg_card_black_border">
+
+    <ImageView
+        android:id="@+id/imgStudent"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:src="@drawable/ic_person_placeholder"
+        android:background="@drawable/bg_avatar_circle"
+        android:scaleType="centerCrop"
+        android:contentDescription="Student"/>
+
+    <TextView
+        android:id="@+id/tvStudentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="14dp"
+        android:text="Justin Wilson"
+        android:textColor="#1A1A1A"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"/>
+
+    <TextView
+        android:id="@+id/tvStudentAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        android:textColor="#AAAAAA"
+        android:textSize="13sp"/>
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_student_row">
+
+    <ImageView
+        android:id="@+id/imgPickupStudent"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_person_placeholder"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_avatar_circle"
+        android:contentDescription="Student"/>
+
+    <TextView
+        android:id="@+id/tvPickupName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:text="Justin Wilson"
+        android:textColor="@color/text_dark"
+        android:textSize="13sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvPickupDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="50 meters away"
+        android:textColor="#888888"
+        android:textSize="11sp"
+        android:layout_marginEnd="10dp"/>
+
+    <TextView
+        android:id="@+id/btnPickUp"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:text="PICK UP"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@drawable/bg_pickup_btn"/>
+</LinearLayout>

@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/editTextText20"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/enter_contact_name"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        android:autofillHints="name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="893dp" />
+
+    <TextView
+        android:id="@+id/textView205"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_name"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="864dp" />
+
+    <EditText
+        android:id="@+id/editTextText21"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/e_g_mother_father_guardian"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="1059dp" />
+
+    <EditText
+        android:id="@+id/editTextText22"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/enter_contact_phone"
+        android:inputType="phone"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        android:autofillHints="phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="975dp" />
+
+    <TextView
+        android:id="@+id/textView206"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/relationship"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="1030dp" />
+
+    <TextView
+        android:id="@+id/textView207"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emergency_contact_2_optional"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="827dp" />
+
+    <TextView
+        android:id="@+id/textView204"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_phone"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="946dp" />
+
+    <EditText
+        android:id="@+id/editTextText19"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/e_g_mother_father_guardian"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="762dp" />
+
+    <TextView
+        android:id="@+id/textView203"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/relationship"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="733dp" />
+
+    <EditText
+        android:id="@+id/editTextText18"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/enter_contact_phone"
+        android:inputType="phone"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        android:autofillHints="phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="678dp" />
+
+    <TextView
+        android:id="@+id/textView202"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_phone"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="649dp" />
+
+    <EditText
+        android:id="@+id/editTextText17"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/enter_contact_name"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        android:autofillHints="name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="596dp" />
+
+    <TextView
+        android:id="@+id/textView200"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emergency_contact_1"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="530dp" />
+
+    <TextView
+        android:id="@+id/textView201"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_name"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="567dp" />
+
+    <EditText
+        android:id="@+id/editTextText14"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/e_g_inhaler_epipen_none"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="393dp" />
+
+    <EditText
+        android:id="@+id/editTextText15"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/e_g_asthma_diabetes_none"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="464dp" />
+
+    <TextView
+        android:id="@+id/textView197"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/medical_conditions_optional"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="438dp" />
+
+    <TextView
+        android:id="@+id/textView198"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/current_medications_optional"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="367dp" />
+
+    <ImageView
+        android:id="@+id/imageView33"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/textView172"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buswatch"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="27dp" />
+
+    <TextView
+        android:id="@+id/textView177"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_account"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="138dp" />
+
+    <TextView
+        android:id="@+id/textView173"
+        android:layout_width="79dp"
+        android:layout_height="34dp"
+        android:text="@string/parent_information"
+        android:textColor="#FEBE1E"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="79dp" />
+
+    <TextView
+        android:id="@+id/textView174"
+        android:layout_width="79dp"
+        android:layout_height="34dp"
+        android:text="@string/child_information"
+        android:textColor="#FEBE1E"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="189dp"
+        android:layout_marginTop="79dp" />
+
+    <TextView
+        android:id="@+id/textView175"
+        android:layout_width="79dp"
+        android:layout_height="34dp"
+        android:text="@string/medical_information"
+        android:textColor="#FEBE1E"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="308dp"
+        android:layout_marginTop="79dp" />
+
+    <View
+        android:id="@+id/view39"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/circle_shape"
+        android:backgroundTint="#FEBE1E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="79dp" />
+
+    <View
+        android:id="@+id/view40"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/circle_shape"
+        android:backgroundTint="#FEBE1E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="149dp"
+        android:layout_marginTop="79dp" />
+
+    <View
+        android:id="@+id/view45"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/circle_shape"
+        android:backgroundTint="#FEBE1E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="79dp" />
+
+    <ImageView
+        android:id="@+id/imageView35"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/user"
+        android:contentDescription="@string/user_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/view39"
+        app:layout_constraintEnd_toEndOf="@+id/view39"
+        app:layout_constraintStart_toStartOf="@+id/view39"
+        app:layout_constraintTop_toTopOf="@+id/view39" />
+
+    <ImageView
+        android:id="@+id/imageView36"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/heart"
+        android:contentDescription="@string/medical_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/view45"
+        app:layout_constraintEnd_toEndOf="@+id/view45"
+        app:layout_constraintStart_toStartOf="@+id/view45"
+        app:layout_constraintTop_toTopOf="@+id/view45" />
+
+    <ImageView
+        android:id="@+id/imageView38"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/child"
+        android:contentDescription="@string/child_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/view40"
+        app:layout_constraintEnd_toEndOf="@+id/view40"
+        app:layout_constraintStart_toStartOf="@+id/view40"
+        app:layout_constraintTop_toTopOf="@+id/view40" />
+
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/select_blood_type"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="251dp" />
+
+    <TextView
+        android:id="@+id/textView195"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/allergies_optional"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="296dp" />
+
+    <EditText
+        android:id="@+id/editTextText13"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/textfield_shape"
+        android:backgroundTint="#D1D1D1"
+        android:ems="10"
+        android:hint="@string/e_g_peanuts_shellfish_none"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="322dp" />
+
+    <TextView
+        android:id="@+id/textView194"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blood_type_optional"
+        android:textColor="#241E40"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="225dp" />
+
+    <TextView
+        android:id="@+id/textView196"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/medical_information_for_child_s_name"
+        android:textColor="#000DFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view47"
+        app:layout_constraintStart_toStartOf="@+id/view47"
+        app:layout_constraintTop_toTopOf="@+id/view47" />
+
+    <View
+        android:id="@+id/view47"
+        android:layout_width="349dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rectangle_hollow"
+        android:backgroundTint="#2B000DFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="177dp" />
+
+    <Button
+        android:id="@+id/btnSignup3Register"
+        android:layout_width="170dp"
+        android:layout_height="35dp"
+        android:background="@drawable/rectangle_shape_gray"
+        android:text="@string/register"
+        android:textColor="#FDFDFD"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="207dp"
+        android:layout_marginTop="1136dp" />
+
+    <Button
+        android:id="@+id/btnSignup3Back"
+        android:layout_width="170dp"
+        android:layout_height="35dp"
+        android:background="@drawable/rectangle_hollow"
+        android:text="@string/back"
+        android:textColor="#0F0F0F"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="1136dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

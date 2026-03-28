@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="match_parent"
+    android:background="@color/yellow_primary"
+    android:orientation="vertical"
+    android:paddingTop="48dp">
+
+    <!-- Logo + App Name -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="36dp">
+
+        <ImageView
+            android:id="@+id/sidebarLogo"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Logo" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bus"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed-medium"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed-medium"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- DASHBOARD -->
+    <LinearLayout
+        android:id="@+id/navDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView android:layout_width="22dp" android:layout_height="22dp"
+            android:src="@drawable/ic_dashboard" android:contentDescription="Dashboard"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="DASHBOARD" android:textColor="@color/black"
+            android:textSize="14sp" android:textStyle="bold"
+            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+    <!-- USERS -->
+    <LinearLayout
+        android:id="@+id/navUsers"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView android:layout_width="22dp" android:layout_height="22dp"
+            android:src="@drawable/ic_users" android:contentDescription="Users"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="USERS" android:textColor="@color/black"
+            android:textSize="14sp" android:textStyle="bold"
+            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+    <!-- ARCHIVE -->
+    <LinearLayout
+        android:id="@+id/navArchive"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView android:layout_width="22dp" android:layout_height="22dp"
+            android:src="@drawable/ic_archive" android:contentDescription="Archive"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ARCHIVE" android:textColor="@color/black"
+            android:textSize="14sp" android:textStyle="bold"
+            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
+
+    <!-- LOGOUT -->
+    <LinearLayout
+        android:id="@+id/navLogout"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingBottom="8dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView android:layout_width="22dp" android:layout_height="22dp"
+            android:src="@drawable/ic_logout" android:contentDescription="Logout"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="LOGOUT" android:textColor="@color/black"
+            android:textSize="14sp" android:textStyle="bold"
+            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+</LinearLayout>

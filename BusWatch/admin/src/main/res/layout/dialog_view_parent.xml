@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_form">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true">
+                <ImageView android:layout_width="15dp" android:layout_height="15dp"
+                    android:src="@drawable/ic_person_add" android:contentDescription="Info"/>
+                <TextView
+                    android:id="@+id/tvDialogTitle"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Parent's Information"
+                    android:textColor="@color/text_dark"
+                    android:textSize="13sp" android:textStyle="bold"
+                    android:layout_marginStart="6dp"/>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnEditMode"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Edit"/>
+
+            <ImageButton
+                android:id="@+id/btnCloseDialog"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Close"/>
+        </RelativeLayout>
+
+        <!-- Avatar — tappable in edit mode -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <FrameLayout
+                android:id="@+id/frameParentPhoto"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/imgParentPhoto"
+                    android:layout_width="80dp" android:layout_height="80dp"
+                    android:src="@drawable/ic_person_placeholder"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Photo"/>
+
+                <!-- Camera badge shown only in edit mode -->
+                <TextView
+                    android:id="@+id/badgeEditPhoto"
+                    android:layout_width="24dp" android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/bg_button_yellow"
+                    android:text="+" android:textColor="@color/black"
+                    android:textSize="16sp" android:textStyle="bold"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Picture"
+                android:textColor="@color/gray_text" android:textSize="11sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- VIEW MODE: labels shown as text -->
+        <LinearLayout
+            android:id="@+id/layoutViewMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- First Name / Email -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="First Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvFirstName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Mike" android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Email" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvEmail" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="johnson@gmail.com" android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Middle Name / Contact -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Middle Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvMiddleName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Nyek" android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Contact Number" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvContactNumber" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="099278371823" android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Last Name / Suffix -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Last Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvLastName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Johnson" android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Suffix" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="2dp"/>
+                    <TextView android:id="@+id/tvSuffix" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Jr." android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- EDIT MODE: editable fields -->
+        <LinearLayout
+            android:id="@+id/layoutEditMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- First Name / Email -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="First Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditFirstName"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Email" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditEmail"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="textEmailAddress" android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Middle Name / Contact -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="14dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Middle Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditMiddleName"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Contact Number" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditContactNumber"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="phone" android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Last Name / Suffix -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Last Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditLastName"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Suffix" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <EditText android:id="@+id/etEditSuffix"
+                        android:layout_width="match_parent" android:layout_height="40dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:singleLine="true"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/gray_border" android:layout_marginBottom="16dp"/>
+
+        <!-- Child's Information (hidden for drivers) -->
+        <LinearLayout
+            android:id="@+id/layoutChildSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                <ImageView android:layout_width="15dp" android:layout_height="15dp"
+                    android:src="@drawable/ic_person_add" android:contentDescription="Child"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Child's Information"
+                    android:textColor="@color/text_dark" android:textSize="13sp" android:textStyle="bold"
+                    android:layout_marginStart="6dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+                <ImageView
+                    android:id="@+id/imgChildPhoto"
+                    android:layout_width="54dp" android:layout_height="54dp"
+                    android:src="@drawable/ic_person_placeholder"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Child photo"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:layout_marginStart="12dp">
+                    <TextView android:id="@+id/tvChildName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Justin Wilson" android:textColor="@color/text_dark"
+                        android:textSize="14sp" android:textStyle="bold"/>
+                    <TextView android:id="@+id/tvChildAge" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="6 years old" android:textColor="@color/gray_text" android:textSize="12sp"/>
+                    <TextView android:id="@+id/tvChildGrade" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Grade 1" android:textColor="@color/gray_text" android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Medical Info -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Medical Information:"
+                android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="4dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Blood Type:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvBloodType" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="O+" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="4dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Allergies:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvAllergies" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Peanut" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Medical Condition:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvMedicalCondition" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Down Syndrome" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Emergency Contact -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Emergency Contact:"
+                android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="4dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Contact Name:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvEmergencyName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Lebron James" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="4dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Contact Phone:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvEmergencyPhone" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="09991111234" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="Relationship:" android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvRelationship" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Mother" android:textColor="@color/text_dark" android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Proof of Enrollment (Pending only) -->
+        <LinearLayout android:id="@+id/layoutProofOfEnrollment"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:visibility="gone">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Proof of Enrollment:"
+                android:textColor="@color/text_dark" android:textSize="12sp" android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <ImageView android:id="@+id/imgProofOfEnrollment"
+                android:layout_width="match_parent" android:layout_height="150dp"
+                android:background="@drawable/bg_image_placeholder"
+                android:scaleType="centerCrop"
+                android:contentDescription="Proof of enrollment"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+
+        <!-- Accept / Reject (Pending only) -->
+        <LinearLayout android:id="@+id/layoutPendingActions"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center"
+            android:layout_marginTop="4dp" android:layout_marginBottom="4dp"
+            android:visibility="gone">
+            <TextView android:id="@+id/btnAccept"
+                android:layout_width="120dp" android:layout_height="42dp"
+                android:text="Accept" android:textColor="@color/white"
+                android:textSize="14sp" android:textStyle="bold" android:gravity="center"
+                android:background="@drawable/bg_button_accept"
+                android:layout_marginEnd="16dp"/>
+            <TextView android:id="@+id/btnReject"
+                android:layout_width="120dp" android:layout_height="42dp"
+                android:text="Reject" android:textColor="@color/white"
+                android:textSize="14sp" android:textStyle="bold" android:gravity="center"
+                android:background="@drawable/bg_button_reject"/>
+        </LinearLayout>
+
+        <!-- Save (Edit mode only) -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="end" android:layout_marginTop="8dp">
+            <TextView android:id="@+id/btnSaveEdit"
+                android:layout_width="80dp" android:layout_height="36dp"
+                android:text="Save" android:textColor="@color/white"
+                android:textSize="13sp" android:textStyle="bold" android:gravity="center"
+                android:background="@drawable/bg_button_save"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

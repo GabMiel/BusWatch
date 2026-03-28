@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_form">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true">
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_person_add" android:contentDescription="Add"/>
+                <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="ADDING NEW DRIVER"
+                    android:textColor="@color/text_dark"
+                    android:textSize="13sp" android:textStyle="bold"
+                    android:letterSpacing="0.04"
+                    android:layout_marginStart="6dp"/>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnCloseAddDriver"
+                android:layout_width="32dp" android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Close"/>
+        </RelativeLayout>
+
+        <!-- Avatar — tappable to pick image -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <FrameLayout
+                android:id="@+id/frameDriverPhoto"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/imgDriverPhoto"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_person_placeholder"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Photo"/>
+
+                <!-- Camera overlay badge -->
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/bg_button_yellow"
+                    android:text="+"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Picture"
+                android:textColor="@color/gray_text" android:textSize="11sp"
+                android:layout_marginTop="6dp"/>
+        </LinearLayout>
+
+        <!-- First Name / Email -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="14dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="First Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etFirstName"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Email" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etEmail"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textEmailAddress" android:singleLine="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Middle Name / Contact Number -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="14dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Middle Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etMiddleName"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Contact Number" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etContactNumber"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="phone" android:singleLine="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Last Name / License Number -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="14dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Last Name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etLastName"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="License Number" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etLicenseNumber"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:singleLine="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Suffix / Password -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="14dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Suffix" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etSuffix"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:singleLine="true"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Password" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etPassword"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textPassword" android:singleLine="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Confirm Password full width -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="24dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Confirm Password" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent" android:layout_height="40dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="10dp" android:paddingEnd="10dp"
+                android:textSize="13sp" android:inputType="textPassword" android:singleLine="true"/>
+        </LinearLayout>
+
+        <!-- SAVE — yellow full width rounded -->
+        <TextView
+            android:id="@+id/btnSaveDriver"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="SAVE"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_button_yellow"/>
+
+    </LinearLayout>
+</ScrollView>

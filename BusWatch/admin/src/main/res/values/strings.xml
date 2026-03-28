@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BusWatch Driver</string>
+    <string name="driver_app_name">BusWatch Driver</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="users">Users</string>
+    <string name="archive">Archive</string>
+    <string name="logout">Logout</string>
+    <string name="parents">PARENTS</string>
+    <string name="drivers">DRIVERS</string>
+    <string name="search_hint">Search...</string>
+    <string name="view_pending_parents">View Pending Parents</string>
+    <string name="add_new_driver">Add New Driver</string>
+    <string name="pending_parents">Pending Parents</string>
+    <string name="archived_users">Archived Users</string>
+    <string name="adding_new_driver">ADDING NEW DRIVER</string>
+    <string name="picture">Picture</string>
+    <string name="first_name">First Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="suffix">Suffix</string>
+    <string name="email">Email</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="license_number">License Number</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="save">SAVE</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="pending">Pending</string>
+    <string name="parents_information">Parent\'s Information</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="childs_information">Child\'s Information</string>
+    <string name="medical_information">Medical Information:</string>
+    <string name="emergency_contact">Emergency Contact:</string>
+    <string name="proof_of_enrollment">Proof of Enrollment:</string>
+    <string name="blood_type">Blood Type:</string>
+    <string name="allergies">Allergies:</string>
+    <string name="medical_condition">Medical Condition:</string>
+    <string name="contact_name">Contact Name:</string>
+    <string name="contact_phone">Contact Phone:</string>
+    <string name="relationship">Relationship:</string>
+</resources>

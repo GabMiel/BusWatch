@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Dark Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/dark_header"
+        android:text="DASHBOARD"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:letterSpacing="0.1" />
+
+    <!-- 2x2 Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:padding="16dp"
+        android:layout_marginTop="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp" android:layout_height="130dp"
+            android:layout_columnWeight="1" android:layout_margin="8dp"
+            app:cardCornerRadius="14dp"
+            app:cardBackgroundColor="@color/yellow_primary"
+            app:cardElevation="3dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="128" android:textColor="@color/black"
+                    android:textSize="34sp" android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Total Parents" android:textColor="@color/black"
+                    android:textSize="12sp" android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp" android:layout_height="130dp"
+            android:layout_columnWeight="1" android:layout_margin="8dp"
+            app:cardCornerRadius="14dp"
+            app:cardBackgroundColor="@color/yellow_primary"
+            app:cardElevation="3dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="24" android:textColor="@color/black"
+                    android:textSize="34sp" android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Total Drivers" android:textColor="@color/black"
+                    android:textSize="12sp" android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp" android:layout_height="130dp"
+            android:layout_columnWeight="1" android:layout_margin="8dp"
+            app:cardCornerRadius="14dp"
+            app:cardBackgroundColor="@color/yellow_primary"
+            app:cardElevation="3dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="7" android:textColor="@color/black"
+                    android:textSize="34sp" android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Pending Parents" android:textColor="@color/black"
+                    android:textSize="12sp" android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp" android:layout_height="130dp"
+            android:layout_columnWeight="1" android:layout_margin="8dp"
+            app:cardCornerRadius="14dp"
+            app:cardBackgroundColor="@color/yellow_primary"
+            app:cardElevation="3dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="15" android:textColor="@color/black"
+                    android:textSize="34sp" android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Archived Users" android:textColor="@color/black"
+                    android:textSize="12sp" android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
+
+</LinearLayout>
