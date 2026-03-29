@@ -203,7 +203,7 @@
     <string name="_1a">1A</string>
     <string name="grade">Grade</string>
     <string name="school">School</string>
-    <string name="class">Class</string>
+    <string name="class_name">Class</string>
     <string name="a">A+</string>
     <string name="dingdong_dantes">DingDong Dantes</string>
 </resources>

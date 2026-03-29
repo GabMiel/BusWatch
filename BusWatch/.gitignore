@@ -13,3 +13,22 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Signing files
+*.jks
+*.keystore
+*.p12
+*.pem
+
+# Secret properties
+secrets.properties
+
+# Built binaries
+*.apk
+*.aab
+
+# OS files
+Thumbs.db
+
+# Firebase/Google Services (Optional - uncomment if you want to keep them private)
+# google-services.json

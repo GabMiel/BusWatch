@@ -11,9 +11,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.startup)
 
+        // After 2 seconds, move to Load1Activity
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
+            val intent = Intent(this, Load1::class.java)
+            startActivity(intent)
             finish()
-        }, 1000)
+        }, 2000)
     }
 }
