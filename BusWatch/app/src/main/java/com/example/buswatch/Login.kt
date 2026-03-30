@@ -6,6 +6,7 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class Login : AppCompatActivity() {
@@ -34,9 +35,34 @@ class Login : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            // Navigate to Home
-            val intent = Intent(this, Home::class.java)
-            startActivity(intent)
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
+            
+            when {
+                email == "user" && password == "user" -> {
+                    // Navigate to Home (Parent)
+                    val intent = Intent(this, Home::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                email == "admin" && password == "admin" -> {
+                    // Navigate to Admin Module's AdminHome
+                    val intent = Intent()
+                    intent.setClassName(this, "com.example.buswatch.admin.AdminHome")
+                    startActivity(intent)
+                    finish()
+                }
+                email == "driver" && password == "driver" -> {
+                    // Navigate to Driver Module's DriverHome
+                    val intent = Intent()
+                    intent.setClassName(this, "com.example.buswatch.driver.DriverHome")
+                    startActivity(intent)
+                    finish()
+                }
+                else -> {
+                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         signupButton.setOnClickListener {

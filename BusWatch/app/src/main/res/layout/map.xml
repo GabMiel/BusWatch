@@ -6,19 +6,21 @@
     android:layout_height="match_parent"
     android:background="#FEBE1E">
 
+    <!-- White background panel for the bottom section -->
     <View
-        android:id="@+id/view41"
+        android:id="@+id/viewBottomBg"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="118dp"
+        android:layout_marginTop="120dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Top header section (Gray) -->
     <View
-        android:id="@+id/view42"
+        android:id="@+id/viewHeader"
         android:layout_width="0dp"
         android:layout_height="115dp"
         android:layout_marginStart="16dp"
@@ -29,54 +31,81 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btnMapBack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back_button"
+        android:scaleType="fitCenter"
+        android:src="@drawable/arrow"
+        app:layout_constraintStart_toStartOf="@id/viewHeader"
+        app:layout_constraintTop_toTopOf="@id/viewHeader"
+        app:tint="#FFFFFF" />
+
     <TextView
-        android:id="@+id/textView170"
+        android:id="@+id/tvLiveTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="12dp"
         android:text="@string/live_tracking"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView171"
-        app:layout_constraintStart_toStartOf="@+id/view42"
-        app:layout_constraintTop_toTopOf="@+id/view42"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintBottom_toBottomOf="@id/btnMapBack"
+        app:layout_constraintStart_toEndOf="@id/btnMapBack"
+        app:layout_constraintTop_toTopOf="@id/btnMapBack" />
 
     <TextView
-        android:id="@+id/textView171"
+        android:id="@+id/tvChildName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="@string/justin_wilson"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/view42"
-        app:layout_constraintStart_toStartOf="@+id/textView170"
-        app:layout_constraintTop_toBottomOf="@+id/textView170" />
+        app:layout_constraintStart_toStartOf="@id/tvLiveTracking"
+        app:layout_constraintTop_toBottomOf="@id/tvLiveTracking" />
 
-    <View
-        android:id="@+id/view43"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+    <!-- OpenStreetMap MapView aligned full width -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
+        android:background="#FAF6DB"
+        app:layout_constraintTop_toBottomOf="@id/viewHeader"
+        app:layout_constraintBottom_toTopOf="@id/viewAvatarContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Avatar area -->
+    <View
+        android:id="@+id/viewAvatarContainer"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/circle_shape"
         android:backgroundTint="#FEBE1E"
-        app:layout_constraintBottom_toTopOf="@+id/textView167"
+        app:layout_constraintBottom_toTopOf="@id/tvDriverName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView34"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:id="@+id/imgDriver"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:contentDescription="@string/user_avatar"
         android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="@+id/view43"
-        app:layout_constraintEnd_toEndOf="@+id/view43"
-        app:layout_constraintStart_toStartOf="@+id/view43"
-        app:layout_constraintTop_toTopOf="@+id/view43" />
+        app:layout_constraintBottom_toBottomOf="@id/viewAvatarContainer"
+        app:layout_constraintEnd_toEndOf="@id/viewAvatarContainer"
+        app:layout_constraintStart_toStartOf="@id/viewAvatarContainer"
+        app:layout_constraintTop_toTopOf="@id/viewAvatarContainer" />
 
     <TextView
-        android:id="@+id/textView167"
+        android:id="@+id/tvDriverName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -84,25 +113,25 @@
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView168"
+        app:layout_constraintBottom_toTopOf="@id/tvBusStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView168"
+        android:id="@+id/tvBusStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/bus_driver_bus_001"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/btnMapBusDetails"
+        app:layout_constraintBottom_toTopOf="@id/btnMapBusDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnMapBusDetails"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
+        android:layout_width="160dp"
+        android:layout_height="44dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/rectangle_shape_gray"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -110,12 +139,12 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView169"
+            android:id="@+id/tvBtnLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bus_details"
             android:textColor="#FAFAFA"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

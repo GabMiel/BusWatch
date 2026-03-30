@@ -7,4 +7,23 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yellow_primary">#FEBE1E</color>
+    <color name="yellow_dark">#E5A800</color>
+    <color name="yellow_light">#FFF3D4</color>
+    <color name="cream_bg">#FFF3D4</color>
+    <color name="form_bg">#FFF3D4</color>
+    <color name="dark_header">#2D2D2D</color>
+    <color name="gray_text">#888888</color>
+    <color name="text_dark">#1A1A1A</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_border">#DDDDDD</color>
+    <color name="gray_avatar">#BDBDBD</color>
+    <color name="btn_accept">#4CAF50</color>
+    <color name="btn_reject">#F44336</color>
+    <color name="btn_save">#4CAF50</color>
+    <color name="btn_yellow">#FEBE1E</color>
+    <color name="sidebar_bg">#FEBE1E</color>
+    <color name="tab_active_bg">#FEBE1E</color>
+    <color name="tab_inactive_bg">#FFFFFF</color>
+    <color name="pending_badge">#FEBE1E</color>
 </resources>

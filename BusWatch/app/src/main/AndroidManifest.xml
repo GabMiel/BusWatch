@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -9,11 +11,12 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BusWatch">
+        android:theme="@style/Theme.BusWatch"
+        tools:replace="android:label,android:theme,android:allowBackup">
 
         <activity android:name=".Load1" />
         <activity android:name=".Load2" />
@@ -31,6 +34,10 @@
         <activity android:name=".StudentDetailsEmergency" />
         <activity android:name=".Map" />
         <activity android:name=".BusDetails" />
+
+        <!-- Activities from other modules -->
+        <activity android:name="com.example.buswatch.admin.AdminHome" />
+        <activity android:name="com.example.buswatch.driver.DriverHome" />
 
         <activity
             android:name=".MainActivity"

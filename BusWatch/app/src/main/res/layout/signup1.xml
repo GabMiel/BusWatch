@@ -153,9 +153,10 @@
         android:text="@string/already_have_an_account"
         android:textColor="#000000"
         android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnSignup1Signin"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="116dp"
         android:layout_marginTop="712dp" />
 
     <EditText
@@ -205,16 +206,20 @@
 
     <Button
         android:id="@+id/btnSignup1Signin"
-        android:layout_width="50dp"
-        android:layout_height="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:background="@drawable/rectangle_hollow"
         android:backgroundTint="#00FFFFFF"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="0dp"
         android:text="@string/sign_in"
-        android:textColor="#FEBE1E"
+        android:textColor="#FFFFFF"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/textView188"
-        app:layout_constraintTop_toTopOf="@+id/textView188"
-        android:layout_marginStart="4dp" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView188"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView188" />
 
     <TextView
         android:id="@+id/textView183"
