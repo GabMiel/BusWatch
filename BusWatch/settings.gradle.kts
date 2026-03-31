@@ -29,3 +29,4 @@ rootProject.name = "BusWatch"
 include(":app")
 include(":admin")
 include(":driver")
+include(":common")

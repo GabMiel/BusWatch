@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/BusWatch" />
             <option value="$PROJECT_DIR$/BusWatch/admin" />
             <option value="$PROJECT_DIR$/BusWatch/app" />
+            <option value="$PROJECT_DIR$/BusWatch/common" />
             <option value="$PROJECT_DIR$/BusWatch/driver" />
           </set>
         </option>

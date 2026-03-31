@@ -3,6 +3,7 @@ package com.example.buswatch
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class Notification : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +13,7 @@ class Notification : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.btnNotificationBack)
         backButton.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_bottom)
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_bottom)
         }
     }
 }

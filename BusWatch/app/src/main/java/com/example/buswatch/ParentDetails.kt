@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class ParentDetails : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,19 +17,19 @@ class ParentDetails : AppCompatActivity() {
 
         backButton.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right)
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
         }
 
         view1Button.setOnClickListener {
             val intent = Intent(this, StudentDetailsGeneral::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
         }
 
         view2Button.setOnClickListener {
             val intent = Intent(this, StudentDetailsGeneral::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
         }
     }
 }

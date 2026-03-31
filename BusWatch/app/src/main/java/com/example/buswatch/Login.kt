@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class Login : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -26,10 +27,10 @@ class Login : AppCompatActivity() {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
                 passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                viewPasswordButton.setImageResource(R.drawable.view)
+                viewPasswordButton.setImageResource(CommonR.drawable.view)
             } else {
                 passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                viewPasswordButton.setImageResource(R.drawable.view)
+                viewPasswordButton.setImageResource(CommonR.drawable.view)
             }
             passwordEditText.setSelection(passwordEditText.text.length)
         }

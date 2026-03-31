@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class StudentDetailsGeneral : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +21,19 @@ class StudentDetailsGeneral : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right)
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
         }
 
         medicalButton.setOnClickListener {
             val intent = Intent(this, StudentDetailsMedical::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
         }
 
         emergencyButton.setOnClickListener {
             val intent = Intent(this, StudentDetailsEmergency::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
         }
     }
 }

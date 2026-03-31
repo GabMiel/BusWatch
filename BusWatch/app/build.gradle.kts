@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":common"))
     implementation(project(":driver"))
     implementation(project(":admin"))
 

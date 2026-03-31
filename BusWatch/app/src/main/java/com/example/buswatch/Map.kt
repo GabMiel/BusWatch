@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.example.buswatch.common.R as CommonR
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -56,7 +57,7 @@ class Map : AppCompatActivity() {
         btnMapBusDetails.setOnClickListener {
             val intent = Intent(this, BusDetails::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay)
+            overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
         }
     }
 

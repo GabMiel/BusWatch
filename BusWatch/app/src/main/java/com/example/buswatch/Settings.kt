@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class Settings : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +15,7 @@ class Settings : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.btnSettingsSettings)
         backButton.setOnClickListener {
             finish()
-            overridePendingTransition(android.R.anim.fade_in, R.anim.zoom_out)
+            overridePendingTransition(android.R.anim.fade_in, CommonR.anim.zoom_out)
         }
 
         val logoutButton = findViewById<Button>(R.id.btnSettingsLogout)

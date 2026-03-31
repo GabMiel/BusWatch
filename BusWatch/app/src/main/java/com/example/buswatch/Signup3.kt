@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.buswatch.common.R as CommonR
 
 class Signup3 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +17,7 @@ class Signup3 : AppCompatActivity() {
         backButton.setOnClickListener {
             val intent = Intent(this, Signup2::class.java)
             startActivity(intent)
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
             finish()
         }
 
@@ -23,6 +25,7 @@ class Signup3 : AppCompatActivity() {
             // After registration, go back to Login
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
+            overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
             finishAffinity() // Clear activity stack so user can't go back into signup
         }
     }
