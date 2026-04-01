@@ -61,7 +61,7 @@ class Login : AppCompatActivity() {
                     finish()
                 }
                 else -> {
-                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(CommonR.string.error_invalid_credentials), Toast.LENGTH_SHORT).show()
                 }
             }
         }
