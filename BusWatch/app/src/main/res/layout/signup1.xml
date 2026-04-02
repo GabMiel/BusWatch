@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -158,7 +157,7 @@
             android:layout_height="wrap_content"
             android:text="@string/already_have_an_account"
             android:textColor="#000000"
-            android:textSize="10sp"
+            android:textSize="11sp"
             app:layout_constraintEnd_toStartOf="@+id/btnSignup1Signin"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +201,7 @@
             android:layout_height="34dp"
             android:background="@drawable/rectangle_shape_gray"
             android:backgroundTint="#000000"
-            android:text="NEXT"
+            android:text="@string/next"
             android:textColor="#000000"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -220,9 +219,9 @@
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:padding="0dp"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="#000000"
-            android:textSize="10sp"
+            android:textSize="11sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView188"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView188" />
@@ -402,6 +401,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:textSize="12sp"
+            android:autofillHints="personSuffix"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="212dp"
@@ -423,7 +423,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="English"
+                android:text="@string/english"
                 android:textColor="#888888"
                 android:textSize="12sp" />
 
@@ -433,7 +433,8 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_chevron_down"
-                app:tint="#888888" />
+                app:tint="#888888"
+                android:contentDescription="@string/todo" />
         </FrameLayout>
 
         <EditText

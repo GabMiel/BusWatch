@@ -35,14 +35,17 @@
         <activity android:name=".Map" />
         <activity android:name=".BusDetails" />
 
-        <!-- Activities from other modules -->
-        <activity android:name="com.example.buswatch.admin.AdminHome" />
+        <!-- Activities from Driver module -->
         <activity android:name="com.example.buswatch.driver.DriverHome" />
+        <activity android:name="com.example.buswatch.driver.MainActivity" />
+
+        <!-- Activities from Admin module -->
+        <activity android:name="com.example.buswatch.admin.AdminHome" />
+        <activity android:name="com.example.buswatch.admin.MainActivity" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.BusWatch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

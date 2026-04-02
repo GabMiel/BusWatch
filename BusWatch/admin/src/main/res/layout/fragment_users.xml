@@ -10,14 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/dark_header"
-        android:text="USERS"
+        android:text="@string/users"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:textStyle="bold"
         android:gravity="center_vertical"
         android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:letterSpacing="0.1"
-        android:fontFamily="sans-serif-condensed"/>
+        android:fontFamily="sans-serif-condensed"
+        android:contentDescription="@string/users"/>
 
     <!-- PARENTS / DRIVERS Tab Switcher -->
     <LinearLayout
@@ -37,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="PARENTS"
+            android:text="@string/parents"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -50,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DRIVERS"
+            android:text="@string/drivers"
             android:textColor="@color/gray_text"
             android:textSize="12sp"
             android:gravity="center"
@@ -75,19 +77,21 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:src="@drawable/ic_search"
-            android:contentDescription="Search"/>
+            android:contentDescription="@string/search"/>
 
         <EditText
             android:id="@+id/searchUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
-            android:hint="Search..."
+            android:hint="@string/search_hint"
             android:textSize="14sp"
             android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:inputType="text"
             android:imeOptions="actionSearch"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:importantForAutofill="no"/>
     </LinearLayout>
 
     <!-- Action Button Row -->
@@ -108,7 +112,7 @@
             android:gravity="center"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
-            android:text="View Pending Parents"
+            android:text="@string/view_pending_parents"
             android:textColor="@color/black"
             android:textSize="11sp"
             android:textStyle="bold"/>
@@ -122,7 +126,7 @@
             android:gravity="center"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
-            android:text="Add New Driver"
+            android:text="@string/add_new_driver"
             android:textColor="@color/black"
             android:textSize="11sp"
             android:textStyle="bold"

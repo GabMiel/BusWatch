@@ -2,121 +2,176 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="260dp"
     android:layout_height="match_parent"
-    android:background="@color/yellow_primary"
     android:orientation="vertical"
-    android:paddingTop="48dp">
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
 
-    <!-- Logo + App Name -->
+    <!-- Logo Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="20dp"
         android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="36dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <ImageView
-            android:id="@+id/sidebarLogo"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:scaleType="fitCenter"
-            android:contentDescription="Logo" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/logo" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp">
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bus"
-                android:textColor="#FFFFFF"
+                android:text="@string/bus"
+                android:textColor="@color/yellow_primary"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed-medium"/>
+                android:letterSpacing="0.05" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Watch"
-                android:textColor="#000000"
+                android:text="@string/watch"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed-medium"/>
+                android:letterSpacing="0.05"
+                android:layout_marginTop="-4dp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- DASHBOARD -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Menu Items -->
     <LinearLayout
         android:id="@+id/navDashboard"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center_vertical"
+        android:layout_height="50dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:background="?attr/selectableItemBackground">
-        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-            android:src="@drawable/ic_dashboard" android:contentDescription="Dashboard"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="DASHBOARD" android:textColor="@color/black"
-            android:textSize="14sp" android:textStyle="bold"
-            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_dashboard"
+            android:contentDescription="@string/dashboard"
+            app:tint="@color/black"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
-    <!-- USERS -->
     <LinearLayout
         android:id="@+id/navUsers"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center_vertical"
+        android:layout_height="50dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:background="?attr/selectableItemBackground">
-        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-            android:src="@drawable/ic_users" android:contentDescription="Users"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="USERS" android:textColor="@color/black"
-            android:textSize="14sp" android:textStyle="bold"
-            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_users"
+            android:contentDescription="@string/users"
+            app:tint="@color/black"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/users"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
-    <!-- ARCHIVE -->
     <LinearLayout
         android:id="@+id/navArchive"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center_vertical"
+        android:layout_height="50dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:background="?attr/selectableItemBackground">
-        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-            android:src="@drawable/ic_archive" android:contentDescription="Archive"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="ARCHIVE" android:textColor="@color/black"
-            android:textSize="14sp" android:textStyle="bold"
-            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_archive"
+            android:contentDescription="@string/archive"
+            app:tint="@color/black"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/archive"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
-    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-    <!-- LOGOUT -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp" />
+
     <LinearLayout
         android:id="@+id/navLogout"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center_vertical"
+        android:layout_height="60dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingStart="20dp"
-        android:paddingBottom="8dp"
+        android:paddingEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:background="?attr/selectableItemBackground">
-        <ImageView android:layout_width="22dp" android:layout_height="22dp"
-            android:src="@drawable/ic_logout" android:contentDescription="Logout"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="LOGOUT" android:textColor="@color/black"
-            android:textSize="14sp" android:textStyle="bold"
-            android:letterSpacing="0.06" android:layout_marginStart="16dp"/>
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_logout"
+            android:contentDescription="@string/logout"
+            app:tint="@color/black"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/logout"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
 </LinearLayout>

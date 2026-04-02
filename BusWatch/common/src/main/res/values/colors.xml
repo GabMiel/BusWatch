@@ -26,4 +26,9 @@
     <color name="tab_active_bg">#FEBE1E</color>
     <color name="tab_inactive_bg">#FFFFFF</color>
     <color name="pending_badge">#FEBE1E</color>
+
+    <!-- New colors -->
+    <color name="text_secondary">#AAAAAA</color>
+    <color name="card_highlight">#F8DC98</color>
+    <color name="map_placeholder">#D8E0E8</color>
 </resources>
