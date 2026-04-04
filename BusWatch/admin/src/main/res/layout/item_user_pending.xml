@@ -7,58 +7,83 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
         android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:src="@drawable/ic_person_placeholder"
             android:background="@drawable/bg_avatar_circle"
             android:scaleType="centerCrop"
             android:contentDescription="@string/avatar"/>
 
-        <TextView
-            android:id="@+id/tvUserName"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:text="@string/mike_johnson"
-            android:textColor="@color/text_dark"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif"/>
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mike_johnson"
+                android:textColor="@color/text_dark"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"/>
+            <TextView
+                android:id="@+id/tvUserStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pending"
+                android:textColor="@color/gray_text"
+                android:textSize="12sp"
+                android:layout_marginTop="1dp"/>
+        </LinearLayout>
 
-        <!-- Pending badge -->
-        <TextView
-            android:id="@+id/tvUserStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:text="@string/pending"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:background="@drawable/bg_badge_pending"
-            android:layout_marginEnd="8dp"/>
+        <!-- Accept Button -->
+        <ImageButton
+            android:id="@+id/btnAccept"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_check"
+            android:contentDescription="@string/accept"
+            android:padding="8dp"
+            android:scaleType="fitCenter"/>
 
+        <!-- Reject Button -->
+        <ImageButton
+            android:id="@+id/btnReject"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/reject"
+            android:padding="8dp"
+            android:scaleType="fitCenter"/>
+
+        <!-- View Button -->
         <ImageButton
             android:id="@+id/btnView"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_eye"
-            android:contentDescription="@string/view"/>
+            android:contentDescription="@string/view"
+            android:padding="8dp"
+            android:scaleType="fitCenter"/>
     </LinearLayout>
 
     <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="@color/gray_border"/>
+        android:background="@color/gray_border"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 </LinearLayout>
