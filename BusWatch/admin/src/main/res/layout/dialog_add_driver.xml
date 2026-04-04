@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/photo"
-                android:textColor="@color/gray_text" android:textSize="11sp"
+                android:textColor="@color/black" android:textSize="11sp"
                 android:layout_marginTop="6dp"/>
         </LinearLayout>
 
@@ -94,7 +94,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/first_name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/first_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etFirstName"/>
                 <EditText android:id="@+id/etFirstName"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -106,7 +106,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/email" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/email" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etEmail"/>
                 <EditText android:id="@+id/etEmail"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -124,7 +124,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/middle_name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/middle_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etMiddleName"/>
                 <EditText android:id="@+id/etMiddleName"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -136,7 +136,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/contact_phone" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/contact_phone" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etContactNumber"/>
                 <EditText android:id="@+id/etContactNumber"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -154,7 +154,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/last_name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/last_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etLastName"/>
                 <EditText android:id="@+id/etLastName"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -166,7 +166,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/license_number" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/license_number" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etLicenseNumber"/>
                 <EditText android:id="@+id/etLicenseNumber"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -185,7 +185,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/suffix" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/suffix" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etSuffix"/>
                 <EditText android:id="@+id/etSuffix"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -197,7 +197,7 @@
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/password" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                    android:text="@string/password" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                     android:labelFor="@+id/etPassword"/>
                 <EditText android:id="@+id/etPassword"
                     android:layout_width="match_parent" android:layout_height="40dp"
@@ -212,7 +212,7 @@
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginBottom="24dp">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/confirm_password" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_marginBottom="4dp"
+                android:text="@string/confirm_password" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
                 android:labelFor="@+id/etConfirmPassword"/>
             <EditText android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent" android:layout_height="40dp"

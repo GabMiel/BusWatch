@@ -31,52 +31,42 @@
             android:layout_marginStart="14dp"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/tvUserName"
+                android:id="@+id/tvDriverName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="User Name"
+                android:text="Driver Name"
                 android:textColor="@color/text_dark"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"/>
             <TextView
-                android:id="@+id/tvUserRole"
+                android:id="@+id/tvDriverRole"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Parent"
+                android:text="@string/drivers"
                 android:textColor="@color/gray_text"
                 android:textSize="12sp"
                 android:layout_marginTop="1dp"/>
         </LinearLayout>
 
-        <!-- View -->
+        <!-- Restore -->
         <ImageButton
-            android:id="@+id/btnView"
+            android:id="@+id/btnRestore"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_eye"
-            android:contentDescription="@string/view"
+            android:src="@drawable/ic_restore"
+            android:contentDescription="@string/restore"
             app:tint="@color/gray_text"/>
 
-        <!-- Edit -->
+        <!-- Delete Permanently -->
         <ImageButton
-            android:id="@+id/btnEdit"
+            android:id="@+id/btnDelete"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_edit"
-            android:contentDescription="@string/edit"
-            app:tint="@color/gray_text"/>
-
-        <!-- Archive -->
-        <ImageButton
-            android:id="@+id/btnArchive"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_archive"
-            android:contentDescription="@string/archive"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="@string/delete"
             app:tint="@color/gray_text"/>
     </LinearLayout>
 

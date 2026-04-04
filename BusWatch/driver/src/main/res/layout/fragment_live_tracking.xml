@@ -1,58 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/yellow_primary">
 
-    <!-- Map placeholder (top half) -->
-    <FrameLayout
-        android:layout_width="match_parent"
+    <!-- White background panel for the bottom section -->
+    <View
+        android:id="@+id/viewBottomBg"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_marginTop="120dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Map view placeholder — gray map bg -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#D8E0E8"/>
+    <!-- Top header section (Gray) -->
+    <View
+        android:id="@+id/viewHeader"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rectangle_shape_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Map texture lines (visual only) -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/map_icon_emoji"
-            android:textSize="72sp"
-            android:contentDescription="@string/todo"/>
+    <ImageButton
+        android:id="@+id/btnBackTracking"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back_button"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="@id/viewHeader"
+        app:layout_constraintTop_toTopOf="@id/viewHeader"
+        app:tint="#FFFFFF" />
 
-        <!-- ETA Badge -->
-        <TextView
-            android:id="@+id/tvETA"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="16dp"
-            android:text="@string/eta_10_mins"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:background="@drawable/bg_eta_badge"/>
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvLiveTrackingTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/live_tracking"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btnBackTracking"
+        app:layout_constraintStart_toEndOf="@id/btnBackTracking"
+        app:layout_constraintTop_toTopOf="@id/btnBackTracking" />
 
-    <!-- Bottom sheet — yellow bg -->
+    <!-- ETA Badge -->
+    <TextView
+        android:id="@+id/tvETA"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/eta_10_mins"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/bg_eta_badge"
+        app:layout_constraintStart_toStartOf="@id/tvLiveTrackingTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvLiveTrackingTitle" />
+
+    <!-- MapView aligned -->
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="#FAF6DB"
+        app:layout_constraintTop_toBottomOf="@id/viewHeader"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottomInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Bottom Info Section -->
     <LinearLayout
+        android:id="@+id/layoutBottomInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/yellow_primary"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="4dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,29 +105,21 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-condensed-medium"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPickup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:maxHeight="180dp"
+            tools:listitem="@layout/item_pickup_row"/>
 
-    </LinearLayout>
-
-    <!-- End Trip button -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="12dp"
-        android:background="@color/yellow_primary">
+        <!-- End Trip button -->
         <TextView
             android:id="@+id/btnEndTrip"
             android:layout_width="match_parent"
             android:layout_height="54dp"
+            android:layout_marginTop="12dp"
             android:text="@string/end_trip"
             android:textColor="@color/black"
             android:textSize="17sp"
@@ -92,6 +127,7 @@
             android:gravity="center"
             android:fontFamily="sans-serif-condensed-medium"
             android:background="@drawable/bg_end_trip"/>
+
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

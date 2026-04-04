@@ -73,12 +73,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/morning"
-                    android:textColor="@color/black"
+                    android:textColor="@color/gray_text"
                     android:textSize="12sp"
-                    android:textStyle="bold"
                     android:gravity="center"
                     android:letterSpacing="0.04"
-                    android:background="@drawable/bg_tab_active"
+                    android:background="@drawable/bg_tab_inactive"
                     android:clickable="true"
                     android:focusable="true"/>
 
@@ -88,11 +87,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/afternoon"
-                    android:textColor="@color/gray_text"
+                    android:textColor="@color/black"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     android:gravity="center"
                     android:letterSpacing="0.04"
-                    android:background="@drawable/bg_tab_inactive"
+                    android:background="@drawable/bg_tab_active"
                     android:clickable="true"
                     android:focusable="true"/>
             </LinearLayout>
@@ -103,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_student_row" />
+                tools:listitem="@layout/item_student_row_afternoon" />
 
         </LinearLayout>
     </ScrollView>
@@ -142,7 +142,7 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- Account Container -->
+        <!-- Account -->
         <LinearLayout
             android:id="@+id/containerNavAccount"
             android:layout_width="0dp"
@@ -173,7 +173,7 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Home Container (Active) -->
+        <!-- Home (Active) -->
         <LinearLayout
             android:id="@+id/containerNavHome"
             android:layout_width="0dp"
@@ -210,7 +210,7 @@
                 android:background="#FEBE1E" />
         </LinearLayout>
 
-        <!-- Settings Container -->
+        <!-- Settings -->
         <LinearLayout
             android:id="@+id/containerNavSettings"
             android:layout_width="0dp"

@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white">
 
     <!-- Dark Header -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/dark_header"
-        android:text="PENDING PARENTS"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:letterSpacing="0.1"
-        android:fontFamily="sans-serif-condensed"/>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBackPending"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:contentDescription="@string/back_button"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/btnBackPending"
+            android:text="PENDING PARENTS"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:fontFamily="sans-serif-condensed"/>
+    </RelativeLayout>
 
     <!-- Search -->
     <LinearLayout
@@ -47,7 +66,8 @@
             android:textSize="14sp"
             android:paddingStart="8dp"
             android:inputType="text"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:importantForAutofill="no"/>
     </LinearLayout>
 
     <!-- List -->

@@ -40,12 +40,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/parents"
-            android:textColor="@color/black"
+            android:textColor="@color/gray_text"
             android:textSize="12sp"
-            android:textStyle="bold"
             android:gravity="center"
             android:letterSpacing="0.04"
-            android:background="@drawable/bg_tab_active"/>
+            android:background="@drawable/bg_tab_inactive"/>
 
         <TextView
             android:id="@+id/tabArchivedDrivers"
@@ -53,11 +52,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/drivers"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/black"
             android:textSize="12sp"
+            android:textStyle="bold"
             android:gravity="center"
             android:letterSpacing="0.04"
-            android:background="@drawable/bg_tab_inactive"/>
+            android:background="@drawable/bg_tab_active"/>
     </LinearLayout>
 
     <!-- Search Bar -->
@@ -94,10 +94,15 @@
             android:importantForAutofill="no"/>
     </LinearLayout>
 
-    <!-- Action Button Row (Space preserved for layout consistency) -->
-    <View
+    <!-- Action Button Row -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp" />
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp">
+    </RelativeLayout>
 
     <!-- User List -->
     <androidx.recyclerview.widget.RecyclerView

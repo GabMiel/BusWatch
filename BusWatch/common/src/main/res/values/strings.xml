@@ -263,4 +263,7 @@
     <string name="_50_meters_away">50 meters away</string>
     <string name="archived_users_caps">ARCHIVED USERS</string>
     <string name="pending_parents_caps">PENDING PARENTS</string>
+    <string name="ride_option">Ride Option:</string>
+    <string name="pick_up">PICK UP</string>
+    <string name="stop">Stop:</string>
 </resources>

@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
+    <!-- Header Section -->
     <View
         android:id="@+id/view2"
         android:layout_width="0dp"
@@ -13,58 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Box 1 -->
-    <View
-        android:id="@+id/view3"
-        android:layout_width="318dp"
-        android:layout_height="118dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view4" />
-
-    <!-- Box 2 -->
-    <View
-        android:id="@+id/view5"
-        android:layout_width="318dp"
-        android:layout_height="118dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintBottom_toTopOf="@+id/view6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
-
-    <!-- Box 3 -->
-    <View
-        android:id="@+id/view6"
-        android:layout_width="318dp"
-        android:layout_height="118dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintBottom_toTopOf="@+id/view7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view5" />
-
-    <View
-        android:id="@+id/view4"
-        android:layout_width="337dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="100dp"
-        android:background="@drawable/rectangle_shape_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/view7"
-        android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:background="@drawable/rectangle_shape_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView6"
@@ -84,331 +34,205 @@
         android:layout_marginStart="8dp"
         android:text="@string/buswatch"
         android:textColor="#040303"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView6"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
-    <ImageButton
-        android:id="@+id/btnHomeNotification"
-        android:layout_width="33dp"
-        android:layout_height="31dp"
+    <FrameLayout
+        android:id="@+id/notificationContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:background="#00FFFFFF"
-        android:contentDescription="@string/notifications"
-        android:scaleType="fitCenter"
-        android:src="@drawable/bell"
         app:layout_constraintBottom_toBottomOf="@+id/imageView6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView6" />
+        app:layout_constraintTop_toTopOf="@+id/imageView6">
 
-    <TextView
-        android:id="@+id/textView90"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/good_morning_robert"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/view4"
-        app:layout_constraintTop_toTopOf="@+id/view4" />
+        <ImageButton
+            android:id="@+id/btnHomeNotification"
+            android:layout_width="33dp"
+            android:layout_height="31dp"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/notifications"
+            android:scaleType="fitCenter"
+            android:src="@drawable/bell" />
 
-    <TextView
-        android:id="@+id/textView91"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_9_41_am"
-        android:textColor="#FDFDFD"
-        app:layout_constraintStart_toStartOf="@+id/textView90"
-        app:layout_constraintTop_toBottomOf="@+id/textView90" />
+        <View
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/rectangle_shape"
+            android:backgroundTint="#FF0000" />
+    </FrameLayout>
 
-    <!-- Box 1 Content -->
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="59dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/student_avatar"
-        android:src="@drawable/yans"
-        app:layout_constraintBottom_toBottomOf="@+id/view3"
-        app:layout_constraintStart_toStartOf="@+id/view3"
-        app:layout_constraintTop_toTopOf="@+id/view3" />
+    <!-- Main Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@color/yellow_primary"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6">
 
-    <TextView
-        android:id="@+id/textView92"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/justin_wilson"
-        android:textColor="#050505"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toTopOf="@+id/imageView7" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView95"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grade_1"
-        android:textColor="#050505"
-        app:layout_constraintStart_toStartOf="@+id/textView92"
-        app:layout_constraintTop_toBottomOf="@+id/textView92" />
+            <!-- Greeting Box -->
+            <LinearLayout
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_shape_gray"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textView97"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/the_immaculate_mother_academy_inc"
-        android:textColor="#050505"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView102"
-        app:layout_constraintStart_toStartOf="@+id/textView92"
-        app:layout_constraintTop_toBottomOf="@+id/textView95" />
+                <TextView
+                    android:id="@+id/textView90"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_morning_robert"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView102"
-        android:layout_width="65dp"
-        android:layout_height="21dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#FEBE1E"
-        android:gravity="center"
-        android:text="@string/at_home"
-        android:textColor="#050505"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view3"
-        app:layout_constraintEnd_toEndOf="@+id/view3"
-        app:layout_constraintTop_toTopOf="@+id/view3"
-        app:layout_constraintVertical_bias="0.2" />
+                <TextView
+                    android:id="@+id/textView91"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_9_41_am"
+                    android:textColor="#FDFDFD"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-    <!-- Box 2 Content -->
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="59dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/student_avatar"
-        android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="@+id/view5"
-        app:layout_constraintStart_toStartOf="@+id/view5"
-        app:layout_constraintTop_toTopOf="@+id/view5" />
+            <!-- Student List RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvStudentsHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_student_home"
+                tools:itemCount="3" />
 
-    <TextView
-        android:id="@+id/textView93"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/justin_wilson"
-        android:textColor="#050505"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toTopOf="@+id/imageView8" />
+            <!-- Pick Up Button -->
+            <TextView
+                android:id="@+id/btnPickUp"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/rectangle_shape"
+                android:backgroundTint="#FEBE1E"
+                android:gravity="center"
+                android:text="@string/pick_up"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView98"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grade_1"
-        android:textColor="#050505"
-        app:layout_constraintStart_toStartOf="@+id/textView93"
-        app:layout_constraintTop_toBottomOf="@+id/textView93" />
-
-    <TextView
-        android:id="@+id/textView99"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/the_immaculate_mother_academy_inc"
-        android:textColor="#050505"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView103"
-        app:layout_constraintStart_toStartOf="@+id/textView93"
-        app:layout_constraintTop_toBottomOf="@+id/textView98" />
-
-    <TextView
-        android:id="@+id/textView103"
-        android:layout_width="84dp"
-        android:layout_height="19dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#020202"
-        android:gravity="center"
-        android:text="@string/on_the_bus"
-        android:textColor="#FEBE1E"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view5"
-        app:layout_constraintEnd_toEndOf="@+id/view5"
-        app:layout_constraintTop_toTopOf="@+id/view5"
-        app:layout_constraintVertical_bias="0.2" />
-
-    <!-- Box 3 Content -->
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="59dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/student_avatar"
-        android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="@+id/view6"
-        app:layout_constraintStart_toStartOf="@+id/view6"
-        app:layout_constraintTop_toTopOf="@+id/view6" />
-
-    <TextView
-        android:id="@+id/textView94"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/justin_wilson"
-        android:textColor="#050505"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="@+id/imageView9" />
-
-    <TextView
-        android:id="@+id/textView100"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grade_1"
-        android:textColor="#050505"
-        app:layout_constraintStart_toStartOf="@+id/textView94"
-        app:layout_constraintTop_toBottomOf="@+id/textView94" />
-
-    <TextView
-        android:id="@+id/textView101"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/the_immaculate_mother_academy_inc"
-        android:textColor="#050505"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView104"
-        app:layout_constraintStart_toStartOf="@+id/textView94"
-        app:layout_constraintTop_toBottomOf="@+id/textView100" />
-
-    <TextView
-        android:id="@+id/textView104"
-        android:layout_width="65dp"
-        android:layout_height="21dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#FEBE1E"
-        android:gravity="center"
-        android:text="@string/at_home"
-        android:textColor="#050505"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view6"
-        app:layout_constraintEnd_toEndOf="@+id/view6"
-        app:layout_constraintTop_toTopOf="@+id/view6"
-        app:layout_constraintVertical_bias="0.2" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/bottomNav"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#373636"
+        android:baselineAligned="false"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Account -->
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:paddingBottom="8dp">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnHomeAccount"
-                android:layout_width="31dp"
-                android:layout_height="27dp"
-                android:background="#00FFFFFF"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/account"
-                android:scaleType="fitCenter"
-                android:src="@drawable/user"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_nav_account"
                 app:tint="#A99E9E" />
 
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/account"
-                android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnHomeAccount" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textColor="#A99E9E"
+                android:textSize="11sp" />
+        </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Home (Active) -->
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:paddingBottom="8dp">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnHomeHome"
-                android:layout_width="31dp"
-                android:layout_height="27dp"
-                android:background="#00FFFFFF"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/home"
-                android:scaleType="fitCenter"
-                android:src="@drawable/home"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_nav_home"
                 app:tint="#FEBE1E" />
 
             <TextView
                 android:id="@+id/textView56"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/home"
-                android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnHomeHome" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textColor="#FEBE1E"
+                android:textSize="11sp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+            <View
+                android:layout_width="20dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#FEBE1E" />
+        </LinearLayout>
+
+        <!-- Settings -->
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:paddingBottom="8dp">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnHomeSettings"
-                android:layout_width="31dp"
-                android:layout_height="27dp"
-                android:background="#00FFFFFF"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/settings"
-                android:scaleType="fitCenter"
-                android:src="@drawable/settings"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_nav_settings"
                 app:tint="#A99E9E" />
 
             <TextView
                 android:id="@+id/textView57"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/settings"
-                android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnHomeSettings" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textColor="#A99E9E"
+                android:textSize="11sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

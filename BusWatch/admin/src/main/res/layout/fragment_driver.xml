@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/dark_header"
-        android:text="@string/archived_users_caps"
+        android:text="@string/users"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -19,7 +19,7 @@
         android:paddingEnd="20dp"
         android:letterSpacing="0.1"
         android:fontFamily="sans-serif-condensed"
-        android:contentDescription="@string/archived_users"/>
+        android:contentDescription="@string/users"/>
 
     <!-- PARENTS / DRIVERS Tab Switcher -->
     <LinearLayout
@@ -35,29 +35,29 @@
         android:padding="2dp">
 
         <TextView
-            android:id="@+id/tabArchivedParents"
+            android:id="@+id/tabParents"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/parents"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:letterSpacing="0.04"
+            android:background="@drawable/bg_tab_inactive"/>
+
+        <TextView
+            android:id="@+id/tabDrivers"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/drivers"
             android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
             android:gravity="center"
             android:letterSpacing="0.04"
             android:background="@drawable/bg_tab_active"/>
-
-        <TextView
-            android:id="@+id/tabArchivedDrivers"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/drivers"
-            android:textColor="@color/gray_text"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:letterSpacing="0.04"
-            android:background="@drawable/bg_tab_inactive"/>
     </LinearLayout>
 
     <!-- Search Bar -->
@@ -80,7 +80,7 @@
             android:contentDescription="@string/search"/>
 
         <EditText
-            android:id="@+id/searchArchived"
+            android:id="@+id/searchUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
@@ -94,14 +94,48 @@
             android:importantForAutofill="no"/>
     </LinearLayout>
 
-    <!-- Action Button Row (Space preserved for layout consistency) -->
-    <View
+    <!-- Action Button Row -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp" />
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/btnViewPendingParents"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_button_yellow"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text="@string/view_pending_parents"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/btnAddNewDriver"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_button_yellow"
+            android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text="@string/add_new_driver"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
     <!-- User List -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerArchived"
+        android:id="@+id/recyclerUsers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
