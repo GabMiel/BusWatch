@@ -3,295 +3,329 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
+    <!-- Top Status Bar & Header -->
     <View
-        android:id="@+id/view27"
-        android:layout_width="413dp"
-        android:layout_height="102dp"
-        android:background="@drawable/rectangle_shape_gray_sharp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="-1dp" />
-
-    <View
-        android:id="@+id/view28"
-        android:layout_width="360dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="115dp"
-        android:background="@drawable/rectangle_hollow"
+        android:id="@+id/statusBarBg"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:background="#FEBE1E"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view29"
-        android:layout_width="355dp"
-        android:layout_height="303dp"
-        android:background="@drawable/rectangle_shape"
+        android:id="@+id/headerBg"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="#2D2D2D"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="172dp" />
+        app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
 
     <ImageButton
         android:id="@+id/btnGeneralBack"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginStart="16dp"
         android:background="#00FFFFFF"
+        android:contentDescription="@string/back_button"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow"
-        app:tint="#FDFDFD"
-        android:contentDescription="@string/back_button"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp" />
+        app:layout_constraintTop_toTopOf="@id/headerBg"
+        app:tint="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/textView55"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/student_details"
-        android:textColor="#FAFAFA"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="33dp" />
+        android:layout_marginStart="12dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintStart_toEndOf="@id/btnGeneralBack"
+        app:layout_constraintTop_toTopOf="@id/headerBg">
 
-    <Button
-        android:id="@+id/btnGeneralGeneral"
-        android:layout_width="85dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="120dp"
+        <TextView
+            android:id="@+id/textView55"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student_details"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvStudentHeaderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/justin_wilson"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            tools:text="Justin Wilson" />
+    </LinearLayout>
+
+    <!-- Tabs Section -->
+    <LinearLayout
+        android:id="@+id/tabsLayout"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rectangle_hollow"
-        android:backgroundTint="#FEBE1E"
-        android:gravity="center"
-        android:text="@string/general"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/headerBg">
 
-    <Button
-        android:id="@+id/btnGeneralMedical"
-        android:layout_width="115dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/rectangle_hollow"
-        android:gravity="center"
-        android:text="@string/medical_details"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnGeneralGeneral"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_shape"
+            android:backgroundTint="#FEBE1E"
+            android:text="@string/general"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnGeneralEmergency"
-        android:layout_width="87dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="284dp"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/rectangle_hollow"
-        android:gravity="center"
-        android:text="@string/emergency"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnGeneralMedical"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:background="@android:color/transparent"
+            android:text="@string/medical_details"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/imageView21"
-        android:layout_width="72dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="196dp"
-        android:contentDescription="@string/student_avatar"
-        android:scaleType="fitCenter"
-        android:src="@drawable/dingdong"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnGeneralEmergency"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/emergency"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView79"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="196dp"
-        android:text="@string/dingdong_dantes"
-        android:textColor="#040404"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Main Content Card -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabsLayout">
 
-    <TextView
-        android:id="@+id/textView72"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/student_id_se2024001"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="218dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView74"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date_of_birth"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="276dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_details_card"
+                android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView80"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_3_15_2020"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="299dp" />
+                <!-- Edit Button -->
+                <LinearLayout
+                    android:id="@+id/btnGeneralEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_shape"
+                    android:backgroundTint="#FFFFFF"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView82"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_1st_grade"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="357dp" />
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_edit"
+                        app:tint="#000000" />
 
-    <TextView
-        android:id="@+id/textView84"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/kingstown_2_subdivision_caloocan_city"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="417dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/edit"
+                        android:textColor="#000000"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView83"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_1a"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="245dp"
-        android:layout_marginTop="357dp" />
+                <RelativeLayout
+                    android:id="@+id/rlStudentAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView81"
-        android:layout_width="119dp"
-        android:layout_height="30dp"
-        android:text="@string/the_immaculate_mother_academy_inc"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="245dp"
-        android:layout_marginTop="299dp" />
+                    <View
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/circle_shape"
+                        android:backgroundTint="#F0F0F0" />
 
-    <TextView
-        android:id="@+id/textView76"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grade"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="335dp" />
+                    <ImageView
+                        android:id="@+id/imgStudentAvatar"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/student_avatar"
+                        android:src="@drawable/user" />
+                </RelativeLayout>
 
-    <TextView
-        android:id="@+id/textView78"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/home_address"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="394dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@id/btnGeneralEdit"
+                    app:layout_constraintStart_toEndOf="@id/rlStudentAvatar"
+                    app:layout_constraintTop_toTopOf="@id/rlStudentAvatar">
 
-    <TextView
-        android:id="@+id/textView75"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/school"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="245dp"
-        android:layout_marginTop="276dp" />
+                    <TextView
+                        android:id="@+id/tvStudentName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/justin_wilson"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Justin Wilson" />
 
-    <TextView
-        android:id="@+id/textView77"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/class_grade"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="245dp"
-        android:layout_marginTop="335dp" />
+                    <TextView
+                        android:id="@+id/tvStudentId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/student_id_se2024001"
+                        android:textColor="#666666"
+                        android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/textView73"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grade_1a"
-        android:textColor="#040404"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="234dp" />
+                    <TextView
+                        android:id="@+id/tvStudentClassBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/rectangle_shape"
+                        android:backgroundTint="#F8DC98"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:text="@string/grade_1a"
+                        android:textColor="#856404"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnGeneralEdit"
-        android:layout_width="23dp"
-        android:layout_height="24dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        android:src="@drawable/edit"
-        android:contentDescription="@string/edit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="348dp"
-        android:layout_marginTop="183dp" />
+                <!-- Information Grid -->
+                <GridLayout
+                    android:id="@+id/infoGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:columnCount="2"
+                    app:layout_constraintTop_toBottomOf="@id/rlStudentAvatar">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/date_of_birth" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvDob" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_3_15_2020" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/school" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvSchool" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/the_immaculate_mother_academy_inc" android:textColor="#000000" android:textStyle="bold" android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/grade" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvGrade" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_1st_grade" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_grade" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvClass" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_1a" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#D1CFCF"
+                    app:layout_constraintTop_toBottomOf="@id/infoGrid" />
+
+                <!-- Address Section -->
+                <LinearLayout
+                    android:id="@+id/addressLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/divider1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_address"
+                        android:textColor="#666666"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/kingstown_2_subdivision_caloocan_city"
+                        android:textColor="#000000"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

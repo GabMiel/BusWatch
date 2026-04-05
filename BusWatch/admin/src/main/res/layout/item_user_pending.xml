@@ -70,7 +70,7 @@
             android:padding="8dp"
             android:scaleType="fitCenter"/>
 
-        <!-- View Button -->
+        <!-- View Button (Matches ViewHolder pattern if needed later, though itemView is used now) -->
         <ImageButton
             android:id="@+id/btnView"
             android:layout_width="38dp"

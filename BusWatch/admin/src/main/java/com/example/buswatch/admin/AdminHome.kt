@@ -14,7 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.buswatch.common.R as CommonR
+import com.google.firebase.auth.FirebaseAuth
 
 class AdminHome : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -70,6 +70,7 @@ class AdminHome : AppCompatActivity() {
         }
 
         findViewById<LinearLayout>(R.id.navLogout)?.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
             val intent = Intent(this, Class.forName("com.example.buswatch.Login"))
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

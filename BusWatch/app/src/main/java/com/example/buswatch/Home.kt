@@ -1,52 +1,170 @@
 package com.example.buswatch
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
+import java.util.Locale
 
 class Home : AppCompatActivity() {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvNoStudents: TextView
+    private lateinit var rvStudentsHome: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
 
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
         val btnHomeAccount = findViewById<ImageButton>(R.id.btnHomeAccount)
         val btnHomeSettings = findViewById<ImageButton>(R.id.btnHomeSettings)
         val btnHomeNotification = findViewById<ImageButton>(R.id.btnHomeNotification)
-        val rvStudentsHome = findViewById<RecyclerView>(R.id.rvStudentsHome)
+        rvStudentsHome = findViewById(R.id.rvStudentsHome)
+        progressBar = findViewById(R.id.progressBarHome)
+        tvNoStudents = findViewById(R.id.tvNoStudents)
+        
+        val tvGreeting = findViewById<TextView>(R.id.textView90)
+        val tvTime = findViewById<TextView>(R.id.textView91)
 
-        // Mock data for students
-        val students = listOf(
-            StudentHome("Justin Wilson", "Grade 1", "The Immaculate Mother Academy Inc.", "At Home", CommonR.drawable.yans),
-            StudentHome("Emma Wilson", "Grade 3", "The Immaculate Mother Academy Inc.", "On the Bus", CommonR.drawable.yans)
-        )
+        // Set current time
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+        val formattedHour = if (hour % 12 == 0) 12 else hour % 12
+        tvTime.text = String.format(Locale.getDefault(), "%d:%02d %s", formattedHour, minute, amPm)
 
-        rvStudentsHome.layoutManager = LinearLayoutManager(this)
-        rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
-            val intent = Intent(this, Map::class.java)
-            startActivity(intent)
-            overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
+        // Set greeting based on time of day
+        val greetingPrefix = when (hour) {
+            in 0..11 -> "Good Morning"
+            in 12..16 -> "Good Afternoon"
+            else -> "Good Evening"
         }
+
+        fetchUserData(greetingPrefix, tvGreeting)
 
         btnHomeAccount.setOnClickListener {
             val intent = Intent(this, ParentDetails::class.java)
             startActivity(intent)
-            overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
+            }
         }
 
         btnHomeSettings.setOnClickListener {
             val intent = Intent(this, Settings::class.java)
             startActivity(intent)
-            overridePendingTransition(CommonR.anim.zoom_in, CommonR.anim.fade_out)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.zoom_in, android.R.anim.fade_out)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(CommonR.anim.zoom_in, android.R.anim.fade_out)
+            }
         }
 
         btnHomeNotification.setOnClickListener {
             val intent = Intent(this, Notification::class.java)
             startActivity(intent)
-            overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+            } else {
+                @Suppress("DEPRECATION")
+                overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+            }
+        }
+    }
+
+    private fun fetchUserData(greetingPrefix: String, tvGreeting: TextView) {
+        val currentUser = auth.currentUser ?: return
+
+        progressBar.visibility = View.VISIBLE
+        
+        db.collection("parents").document(currentUser.uid).get()
+            .addOnSuccessListener { document ->
+                progressBar.visibility = View.GONE
+                if (document != null && document.exists()) {
+                    val firstName = document.getString("firstName") ?: "User"
+                    val greeting = "$greetingPrefix, $firstName!"
+                    tvGreeting.text = greeting
+
+                    val studentList = mutableListOf<StudentHome>()
+                    val parentAddress = document.getString("address") ?: "---"
+
+                    // 1. Check Primary Child
+                    @Suppress("UNCHECKED_CAST")
+                    val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
+                    if (childMap != null) {
+                        studentList.add(mapToStudentHome("primary", childMap, parentAddress))
+                    }
+
+                    // 2. Check Children List
+                    @Suppress("UNCHECKED_CAST")
+                    val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                    childrenList?.forEachIndexed { index, map ->
+                        studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
+                    }
+
+                    setupRecyclerView(studentList)
+                }
+            }
+            .addOnFailureListener {
+                progressBar.visibility = View.GONE
+                Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun mapToStudentHome(id: String, map: kotlin.collections.Map<String, Any>, parentAddress: String): StudentHome {
+        val fName = map["firstName"] as? String ?: ""
+        val lName = map["lastName"] as? String ?: ""
+        return StudentHome(
+            id = id,
+            name = "$fName $lName".trim(),
+            grade = map["grade"] as? String ?: "---",
+            school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
+            status = map["status"] as? String ?: "At Home",
+            avatarResId = CommonR.drawable.yans,
+            stop = map["address"] as? String ?: parentAddress,
+            rideOption = map["rideOption"] as? String ?: "Round Trip"
+        )
+    }
+
+    private fun setupRecyclerView(students: List<StudentHome>) {
+        if (students.isEmpty()) {
+            tvNoStudents.visibility = View.VISIBLE
+            rvStudentsHome.visibility = View.GONE
+        } else {
+            tvNoStudents.visibility = View.GONE
+            rvStudentsHome.visibility = View.VISIBLE
+            rvStudentsHome.layoutManager = LinearLayoutManager(this)
+            rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
+                val intent = Intent(this, Map::class.java)
+                intent.putExtra("childName", student.name)
+                startActivity(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.fade_in, CommonR.anim.fade_out)
+                } else {
+                    @Suppress("DEPRECATION")
+                    overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
+                }
+            }
         }
     }
 }

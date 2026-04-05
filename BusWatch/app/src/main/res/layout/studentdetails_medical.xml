@@ -3,317 +3,356 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
+    <!-- Top Status Bar & Header -->
     <View
-        android:id="@+id/view36"
-        android:layout_width="413dp"
-        android:layout_height="102dp"
-        android:background="@drawable/rectangle_shape_gray_sharp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="0dp" />
-
-    <View
-        android:id="@+id/view37"
-        android:layout_width="360dp"
-        android:layout_height="40dp"
-        android:background="@drawable/rectangle_hollow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="115dp" />
-
-    <Button
-        android:id="@+id/btnMedicalMedical"
-        android:layout_width="115dp"
-        android:layout_height="30dp"
-        android:background="@drawable/rectangle_hollow"
-        android:backgroundTint="#FEBE1E"
-        android:text="@string/medical_details"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="120dp" />
-
-    <Button
-        android:id="@+id/btnMedicalGeneral"
-        android:layout_width="85dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/rectangle_hollow"
-        android:text="@string/general"
-        android:textSize="12sp"
-        android:textStyle="bold"
+        android:id="@+id/statusBarBg"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:background="#FEBE1E"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnMedicalEmergency"
-        android:layout_width="85dp"
-        android:layout_height="30dp"
-        android:background="@drawable/rectangle_hollow"
-        android:text="@string/emergency"
-        android:textSize="12sp"
-        android:textStyle="bold"
+    <View
+        android:id="@+id/headerBg"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="#2D2D2D"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="284dp"
-        android:layout_marginTop="120dp" />
+        app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
 
     <ImageButton
         android:id="@+id/btnMedicalBack"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginStart="16dp"
         android:background="#00FFFFFF"
+        android:contentDescription="@string/back_button"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow"
-        app:tint="#FDFDFD"
-        android:contentDescription="@string/back_button"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp" />
+        app:layout_constraintTop_toTopOf="@id/headerBg"
+        app:tint="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/textView125"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/student_details"
-        android:textColor="#FDFDFD"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="33dp" />
+        android:layout_marginStart="12dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintStart_toEndOf="@id/btnMedicalBack"
+        app:layout_constraintTop_toTopOf="@id/headerBg">
 
-    <View
-        android:id="@+id/view38"
-        android:layout_width="352dp"
-        android:layout_height="398dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="177dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/student_details"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView134"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/medical_information"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="190dp" />
+        <TextView
+            android:id="@+id/tvStudentHeaderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/justin_wilson"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            tools:text="Justin Wilson" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView151"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blood_type"
-        android:textColor="@color/black"
-        android:textSize="12sp"
+    <!-- Tabs Section -->
+    <LinearLayout
+        android:id="@+id/tabsLayout"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rectangle_hollow"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="236dp" />
+        app:layout_constraintTop_toBottomOf="@id/headerBg">
 
-    <TextView
-        android:id="@+id/textView158"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/policy_number"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="294dp" />
+        <Button
+            android:id="@+id/btnMedicalGeneral"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/general"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView163"
-        android:layout_width="62dp"
-        android:layout_height="21dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#F8DC98"
-        android:gravity="center"
-        android:text="@string/peanuts"
-        android:textColor="#944600"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="396dp" />
+        <Button
+            android:id="@+id/btnMedicalMedical"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:background="@drawable/rectangle_shape"
+            android:backgroundTint="#FEBE1E"
+            android:text="@string/medical_details"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView165"
-        android:layout_width="62dp"
-        android:layout_height="21dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#F8DC98"
-        android:gravity="center"
-        android:text="@string/inhaler"
-        android:textColor="#944600"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="464dp" />
+        <Button
+            android:id="@+id/btnMedicalEmergency"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/emergency"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView166"
-        android:layout_width="62dp"
-        android:layout_height="21dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#F8DC98"
-        android:gravity="center"
-        android:text="@string/asthma"
-        android:textColor="#944600"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="527dp" />
+    <!-- Main Content Card -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabsLayout">
 
-    <TextView
-        android:id="@+id/textView164"
-        android:layout_width="62dp"
-        android:layout_height="21dp"
-        android:background="@drawable/rectangle_shape"
-        android:backgroundTint="#F8DC98"
-        android:gravity="center"
-        android:text="@string/pineapple"
-        android:textColor="#944600"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="396dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView160"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/allergies"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="371dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_details_card"
+                android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView161"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/current_medication"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="435dp" />
+                <!-- Header with Icon & Edit -->
+                <ImageView
+                    android:id="@+id/icMedical"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@string/medical_icon"
+                    android:src="@drawable/heart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#000000" />
 
-    <TextView
-        android:id="@+id/textView162"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/medical_condition"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="496dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/medical_information"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/icMedical"
+                    app:layout_constraintStart_toEndOf="@id/icMedical"
+                    app:layout_constraintTop_toTopOf="@id/icMedical" />
 
-    <TextView
-        android:id="@+id/textView159"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/policy_number"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="310dp" />
+                <LinearLayout
+                    android:id="@+id/btnMedicalEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_shape"
+                    android:backgroundTint="#FFFFFF"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView156"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/a"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="252dp" />
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_edit"
+                        app:tint="#000000" />
 
-    <TextView
-        android:id="@+id/textView157"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blue_cross_shield"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="213dp"
-        android:layout_marginTop="252dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/edit"
+                        android:textColor="#000000"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView155"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/insurance_provider"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="213dp"
-        android:layout_marginTop="236dp" />
+                <!-- Medical Info Grid -->
+                <GridLayout
+                    android:id="@+id/medicalGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:columnCount="2"
+                    app:layout_constraintTop_toBottomOf="@id/icMedical">
 
-    <ImageView
-        android:id="@+id/imageView32"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/heart"
-        android:contentDescription="@string/medical_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="189dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/blood_type" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvBloodType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnMedicalEdit"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        android:src="@drawable/edit"
-        android:contentDescription="@string/edit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="352dp"
-        android:layout_marginTop="190dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/insurance_provider" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvInsuranceProvider" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/policy_number" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                        <TextView android:id="@+id/tvPolicyNumber" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#D1CFCF"
+                    app:layout_constraintTop_toBottomOf="@id/medicalGrid" />
+
+                <!-- Primary Physician Section -->
+                <LinearLayout
+                    android:id="@+id/physicianLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/divider1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/primary_physician"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/physician_name" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                            <TextView android:id="@+id/tvPhysicianName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="20dp"
+                            android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/physician_phone" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                            <TextView android:id="@+id/tvPhysicianPhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#D1CFCF"
+                    app:layout_constraintTop_toBottomOf="@id/physicianLayout" />
+
+                <!-- Tags Sections -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/divider2">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/allergies" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cgAllergies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+                        <!-- Chips will be added dynamically -->
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/current_medication" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cgMedications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+                        <!-- Chips will be added dynamically -->
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/medical_condition" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cgConditions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+                        <!-- Chips will be added dynamically -->
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/special_needs_instructions" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <TextView
+                        android:id="@+id/tvSpecialNeeds"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/none"
+                        android:textColor="#000000"
+                        android:textSize="13sp" />
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/dietary_restrictions" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cgDietary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+                        <!-- Chips will be added dynamically -->
+                    </com.google.android.material.chip.ChipGroup>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

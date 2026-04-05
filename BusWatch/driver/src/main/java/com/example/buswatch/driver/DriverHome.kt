@@ -6,17 +6,36 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.buswatch.common.R as CommonR
+import com.google.firebase.auth.FirebaseAuth
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import java.io.File
 
 class DriverHome : AppCompatActivity() {
+
+    private var map: MapView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Configure osmdroid safely for SDK 30+
+        val ctx = applicationContext
+        val config = Configuration.getInstance()
+        config.userAgentValue = ctx.packageName
+        config.osmdroidBasePath = File(ctx.filesDir, "osmdroid")
+        config.osmdroidTileCache = File(ctx.filesDir, "osmdroid/tiles")
+        config.load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx))
+
         loadHome()
     }
 
     private fun loadHome() {
+        map = null
         setContentView(R.layout.fragment_driver_home)
         setupStudentList()
         setupBottomNav()
@@ -31,6 +50,7 @@ class DriverHome : AppCompatActivity() {
     }
 
     private fun loadAfternoon() {
+        map = null
         setContentView(R.layout.fragment_driver_afternoon)
         setupStudentList()
         setupBottomNav()
@@ -54,14 +74,31 @@ class DriverHome : AppCompatActivity() {
         findViewById<TextView>(R.id.btnEndTrip)?.setOnClickListener {
             loadHome()
         }
+
+        // Initialize MapView
+        map = findViewById(R.id.mapView)
+        map?.let { mv ->
+            mv.setTileSource(TileSourceFactory.MAPNIK)
+            mv.setMultiTouchControls(true)
+
+            val mapController = mv.controller
+            mapController.setZoom(15.0)
+
+            // Center on Manila (Reference from map.kt)
+            val startPoint = GeoPoint(14.5995, 120.9842)
+            mapController.setCenter(startPoint)
+        }
         
         // Setup pickup list (mock data)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerPickup)
         if (recyclerView != null) {
             recyclerView.layoutManager = LinearLayoutManager(this)
-            // Reusing StudentAdapter for simplicity or use a dedicated one if needed
+            // Show all items on phone, tools:itemCount="3" handles editor preview
             val students = listOf(
-                Student("Justin Wilson", "50 meters away")
+                Student("Justin Wilson", "50 meters away"),
+                Student("Sophia Garcia", "150 meters away"),
+                Student("Liam Johnson", "300 meters away"),
+                Student("Emma Smith", "500 meters away")
             )
             recyclerView.adapter = StudentAdapter(students)
         }
@@ -94,6 +131,7 @@ class DriverHome : AppCompatActivity() {
         }
 
         accountNav?.setOnClickListener {
+            map = null
             setContentView(R.layout.fragment_driver_account)
             setupBottomNav()
             findViewById<ImageButton>(R.id.btnBackAccount)?.setOnClickListener { loadHome() }
@@ -105,16 +143,28 @@ class DriverHome : AppCompatActivity() {
     }
 
     private fun loadSettings() {
+        map = null
         setContentView(R.layout.fragment_driver_settings)
         setupBottomNav()
         
         findViewById<ImageButton>(R.id.btnBackSettings)?.setOnClickListener { loadHome() }
         
         findViewById<TextView>(R.id.btnLogout)?.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
             val intent = Intent(this, Class.forName("com.example.buswatch.Login"))
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        map?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map?.onPause()
     }
 }

@@ -121,7 +121,7 @@
     <string name="child_icon" />
     <string name="profile_avatar" />
     <string name="view_details" />
-    <string name="edit" />
+    <string name="edit">Edit</string>
     <string name="english">ENGLISH</string>
     <string name="logout">LOGOUT</string>
     <string name="change_password">Change Password</string>
@@ -272,4 +272,21 @@
     <string name="parent">Parent</string>
     <string name="driver_name">Driver Name</string>
     <string name="street_address">Street Address</string>
+    <string name="guardian">Guardian</string>
+    <string name="primary">Primary</string>
+    <string name="robertwilson_email_com">robertwilson@email.com</string>
+    <string name="placeholder_hyphen">---</string>
+    <string name="primary_physician">Primary Physician</string>
+    <string name="physician_name">Physician Name</string>
+    <string name="physician_phone">Physician Phone</string>
+    <string name="special_needs_instructions">Special Needs &amp; Instructions</string>
+    <string name="none">None</string>
+    <string name="dietary_restrictions">Dietary Restrictions</string>
+    <string name="robert_email_com">robert@email.com</string>
+    <string name="no_notifications_yet">No notifications yet</string>
+    <string name="no_notifications_icon">No Notifications Icon</string>
+    <string name="no_students_found">No students found</string>
+    <string name="password_requirements">Password must contain at least 8 characters, including 1 capital letter and 1 number.</string>
+    <string name="re_enter_password">Re-enter password</string>
+    <string name="log_in_caps">LOG IN</string>
 </resources>

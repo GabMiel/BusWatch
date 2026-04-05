@@ -3,16 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
+    <!-- Header Section -->
     <View
-        android:id="@+id/view10"
+        android:id="@+id/statusBarBg"
         android:layout_width="0dp"
-        android:layout_height="102dp"
-        android:background="@drawable/rectangle_shape_gray_sharp"
+        android:layout_height="35dp"
+        android:background="#FEBE1E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/headerBg"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="#2D2D2D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
 
     <ImageButton
         android:id="@+id/btnNotificationBack"
@@ -23,238 +34,109 @@
         android:contentDescription="@string/back_button"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow"
-        app:layout_constraintBottom_toBottomOf="@+id/view10"
+        app:layout_constraintBottom_toBottomOf="@+id/headerBg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view10"
+        app:layout_constraintTop_toTopOf="@+id/headerBg"
         app:tint="#FFFFFF" />
 
     <TextView
-        android:id="@+id/textView26"
+        android:id="@+id/tvNotificationTitleHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:text="@string/notifications"
-        android:textColor="#FAF7F7"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/view10"
+        app:layout_constraintBottom_toBottomOf="@+id/headerBg"
         app:layout_constraintStart_toEndOf="@+id/btnNotificationBack"
-        app:layout_constraintTop_toTopOf="@+id/view10" />
+        app:layout_constraintTop_toTopOf="@+id/headerBg" />
 
-    <View
-        android:id="@+id/view21"
+    <!-- Filter Tabs -->
+    <LinearLayout
+        android:id="@+id/filterLayout"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/rectangle_hollow"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view10" />
+        app:layout_constraintTop_toBottomOf="@id/headerBg">
 
-    <Button
-        android:id="@+id/btnNotificationUnread"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/rectangle_hollow"
-        android:text="@string/unread"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/view21"
-        app:layout_constraintEnd_toStartOf="@+id/btnNotificationAll"
-        app:layout_constraintStart_toStartOf="@+id/view21"
-        app:layout_constraintTop_toTopOf="@+id/view21" />
+        <Button
+            android:id="@+id/btnNotificationAll"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_shape"
+            android:backgroundTint="#FEBE1E"
+            android:text="@string/all"
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnNotificationAll"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/rectangle_hollow"
-        android:backgroundTint="#FEBE1E"
-        android:text="@string/all"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/view21"
-        app:layout_constraintEnd_toEndOf="@+id/view21"
-        app:layout_constraintStart_toEndOf="@+id/btnNotificationUnread"
-        app:layout_constraintTop_toTopOf="@+id/view21" />
+        <Button
+            android:id="@+id/btnNotificationUnread"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/unread"
+            android:textAllCaps="false"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <!-- Notification 1 -->
-    <View
-        android:id="@+id/view11"
+    <!-- Notification List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNotifications"
         android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/rectangle_shape"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view21" />
+        app:layout_constraintTop_toBottomOf="@id/filterLayout"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_notification" />
 
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/notification_icon"
-        android:src="@drawable/exclamation_mark"
-        app:layout_constraintBottom_toBottomOf="@+id/view11"
-        app:layout_constraintStart_toStartOf="@+id/view11"
-        app:layout_constraintTop_toTopOf="@+id/view11"
-        app:layout_constraintVertical_bias="0.3" />
-
+    <!-- Empty State -->
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/tvEmptyNotifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/bus_arriving_soon"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/imageView10" />
+        android:alpha="0.2"
+        app:drawableTopCompat="@drawable/bell"
+        android:drawablePadding="16dp"
+        android:gravity="center"
+        android:text="@string/no_notifications_yet"
+        android:textColor="#999999"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterLayout" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/temporary_route_change"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/view11"
-        app:layout_constraintStart_toStartOf="@+id/textView15"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
-    <TextView
-        android:id="@+id/textView16"
+    <ProgressBar
+        android:id="@+id/pbNotifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/_13hrs_ago"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view11"
-        app:layout_constraintStart_toStartOf="@+id/textView15" />
-
-    <!-- Notification 2 -->
-    <View
-        android:id="@+id/view19"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintEnd_toEndOf="@+id/view11"
-        app:layout_constraintStart_toStartOf="@+id/view11"
-        app:layout_constraintTop_toBottomOf="@+id/view11" />
-
-    <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/notification_icon"
-        android:src="@drawable/exclamation_mark"
-        app:layout_constraintBottom_toBottomOf="@+id/view19"
-        app:layout_constraintStart_toStartOf="@+id/view19"
-        app:layout_constraintTop_toTopOf="@+id/view19"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <TextView
-        android:id="@+id/textView27"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/bus_arriving_soon"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView14"
-        app:layout_constraintTop_toTopOf="@+id/imageView14" />
-
-    <TextView
-        android:id="@+id/textView29"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/temporary_route_change"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/view19"
-        app:layout_constraintStart_toStartOf="@+id/textView27"
-        app:layout_constraintTop_toBottomOf="@+id/textView27" />
-
-    <TextView
-        android:id="@+id/textView32"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/_13hrs_ago"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view19"
-        app:layout_constraintStart_toStartOf="@+id/textView27" />
-
-    <!-- Notification 3 -->
-    <View
-        android:id="@+id/view20"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/rectangle_shape"
-        app:layout_constraintEnd_toEndOf="@+id/view11"
-        app:layout_constraintStart_toStartOf="@+id/view11"
-        app:layout_constraintTop_toBottomOf="@+id/view19" />
-
-    <ImageView
-        android:id="@+id/imageView16"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/notification_icon"
-        android:src="@drawable/exclamation_mark"
-        app:layout_constraintBottom_toBottomOf="@+id/view20"
-        app:layout_constraintStart_toStartOf="@+id/view20"
-        app:layout_constraintTop_toTopOf="@+id/view20"
-        app:layout_constraintVertical_bias="0.3" />
-
-    <TextView
-        android:id="@+id/textView28"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:text="@string/bus_arriving_soon"
-        android:textColor="#000000"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView16"
-        app:layout_constraintTop_toTopOf="@+id/imageView16" />
-
-    <TextView
-        android:id="@+id/textView31"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/temporary_route_change"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/view20"
-        app:layout_constraintStart_toStartOf="@+id/textView28"
-        app:layout_constraintTop_toBottomOf="@+id/textView28" />
-
-    <TextView
-        android:id="@+id/textView33"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/_13hrs_ago"
-        android:textColor="#000000"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view20"
-        app:layout_constraintStart_toStartOf="@+id/textView28" />
+        android:indeterminateTint="#FEBE1E"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filterLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FEBE1E">
 
-    <!-- White background panel for the bottom section -->
-    <View
-        android:id="@+id/viewBottomBg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="120dp"
-        android:background="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Top header section (Gray) -->
+    <!-- Top header section (Gray) - REDUCED HEIGHT AND WIDTH -->
     <View
         android:id="@+id/viewHeader"
         android:layout_width="0dp"
-        android:layout_height="115dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="16dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/rectangle_shape_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,81 +49,94 @@
         android:id="@+id/tvChildName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:text="@string/justin_wilson"
         android:textColor="#FFFFFF"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tvLiveTracking"
         app:layout_constraintTop_toBottomOf="@id/tvLiveTracking" />
 
-    <!-- OpenStreetMap MapView aligned full width -->
+    <!-- OpenStreetMap MapView - Full Width -->
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
         android:background="#FAF6DB"
-        app:layout_constraintTop_toBottomOf="@id/viewHeader"
-        app:layout_constraintBottom_toTopOf="@id/viewAvatarContainer"
+        app:layout_constraintBottom_toTopOf="@id/viewBottomBg"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/viewHeader" />
 
-    <!-- Avatar area -->
+    <!-- White background panel for the bottom section - REDUCED HEIGHT FOR MORE MAP SPACE -->
     <View
-        android:id="@+id/viewAvatarContainer"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/circle_shape"
-        android:backgroundTint="#FEBE1E"
-        app:layout_constraintBottom_toTopOf="@id/tvDriverName"
+        android:id="@+id/viewBottomBg"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/imgDriver"
+    <!-- Avatar area -->
+    <RelativeLayout
+        android:id="@+id/rlAvatarContainer"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:contentDescription="@string/user_avatar"
-        android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="@id/viewAvatarContainer"
-        app:layout_constraintEnd_toEndOf="@id/viewAvatarContainer"
-        app:layout_constraintStart_toStartOf="@id/viewAvatarContainer"
-        app:layout_constraintTop_toTopOf="@id/viewAvatarContainer" />
+        android:layout_marginTop="-40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/viewBottomBg">
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E" />
+
+        <ImageView
+            android:id="@+id/imgDriver"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/user_avatar"
+            android:src="@drawable/user" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tvDriverName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="8dp"
         android:text="@string/mike_johnson"
         android:textColor="#000000"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tvBusStatus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rlAvatarContainer" />
 
     <TextView
         android:id="@+id/tvBusStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="2dp"
         android:text="@string/bus_driver_bus_001"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@id/btnMapBusDetails"
+        android:textColor="#666666"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDriverName" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btnMapBusDetails"
         android:layout_width="160dp"
-        android:layout_height="44dp"
-        android:layout_marginBottom="32dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/rectangle_shape_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBusStatus">
 
         <TextView
             android:id="@+id/tvBtnLabel"
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:text="@string/bus_details"
             android:textColor="#FAFAFA"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

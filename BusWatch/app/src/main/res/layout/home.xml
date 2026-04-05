@@ -75,7 +75,6 @@
         android:fillViewport="true"
         android:scrollbars="vertical"
         android:fadeScrollbars="false"
-        android:scrollbarThumbVertical="@color/yellow_primary"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintTop_toBottomOf="@+id/imageView6">
 
@@ -112,15 +111,39 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- Student List RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvStudentsHome"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_student_home"
-                tools:itemCount="3" />
+                android:minHeight="100dp">
+
+                <!-- Student List RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStudentsHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_student_home"
+                    tools:itemCount="1" />
+
+                <!-- Loading Indicator -->
+                <ProgressBar
+                    android:id="@+id/progressBarHome"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <!-- Empty State -->
+                <TextView
+                    android:id="@+id/tvNoStudents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/no_students_found"
+                    android:textColor="#666666"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <!-- Pick Up Button -->
             <TextView
