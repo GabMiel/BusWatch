@@ -8,28 +8,60 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.buswatch.common.R as CommonR
 
 class Signup1 : AppCompatActivity() {
     private var selectedLanguage = "English"
+    
+    private lateinit var etFirstName: EditText
+    private lateinit var etLastName: EditText
+    private lateinit var etMiddleName: EditText
+    private lateinit var etSuffix: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etPhone: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var etConfirmPassword: EditText
+    private lateinit var tvSelectedLanguage: TextView
+
+    private var savedSignupData: Bundle? = null
+
+    private val signup2Launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            data?.let {
+                savedSignupData = it.extras
+                etFirstName.setText(it.getStringExtra("firstName"))
+                etLastName.setText(it.getStringExtra("lastName"))
+                etMiddleName.setText(it.getStringExtra("middleName"))
+                etSuffix.setText(it.getStringExtra("suffix"))
+                etEmail.setText(it.getStringExtra("email"))
+                etPhone.setText(it.getStringExtra("phone"))
+                etPassword.setText(it.getStringExtra("password"))
+                etConfirmPassword.setText(it.getStringExtra("password"))
+                selectedLanguage = it.getStringExtra("preferredLanguage") ?: "English"
+                tvSelectedLanguage.text = selectedLanguage
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup1)
 
-        val etFirstName = findViewById<EditText>(R.id.editTextText3)
-        val etLastName = findViewById<EditText>(R.id.editTextText4)
-        val etMiddleName = findViewById<EditText>(R.id.editTextText5)
-        val etSuffix = findViewById<EditText>(R.id.editTextText6)
-        val etEmail = findViewById<EditText>(R.id.etSignup1Email)
-        val etPhone = findViewById<EditText>(R.id.editTextText7)
-        val etPassword = findViewById<EditText>(R.id.editTextTextPassword6)
-        val etConfirmPassword = findViewById<EditText>(R.id.editTextTextPassword7)
+        etFirstName = findViewById(R.id.editTextText3)
+        etLastName = findViewById(R.id.editTextText4)
+        etMiddleName = findViewById(R.id.editTextText5)
+        etSuffix = findViewById(R.id.editTextText6)
+        etEmail = findViewById(R.id.etSignup1Email)
+        etPhone = findViewById(R.id.editTextText7)
+        etPassword = findViewById(R.id.editTextTextPassword6)
+        etConfirmPassword = findViewById(R.id.editTextTextPassword7)
         
         val languageSelector = findViewById<FrameLayout>(R.id.btnSignup1Language)
-        val tvSelectedLanguage = languageSelector.getChildAt(0) as TextView
+        tvSelectedLanguage = languageSelector.getChildAt(0) as TextView
         
         val nextButton = findViewById<Button>(R.id.btnSignup1Next)
         val signinButton = findViewById<Button>(R.id.btnSignup1Signin)
@@ -64,6 +96,10 @@ class Signup1 : AppCompatActivity() {
             }
 
             val intent = Intent(this, Signup2::class.java).apply {
+                // Pass any existing saved data (from Signup2/3)
+                savedSignupData?.let { putExtras(it) }
+                
+                // Overlay current Signup1 fields (in case they were changed)
                 putExtra("firstName", firstName)
                 putExtra("lastName", lastName)
                 putExtra("middleName", etMiddleName.text.toString().trim())
@@ -73,7 +109,7 @@ class Signup1 : AppCompatActivity() {
                 putExtra("password", password)
                 putExtra("preferredLanguage", selectedLanguage)
             }
-            startActivity(intent)
+            signup2Launcher.launch(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
             } else {

@@ -32,8 +32,6 @@ class ParentDetails : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.btnParentsBack).setOnClickListener {
             finish()
-            @Suppress("DEPRECATION")
-            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
         }
 
         findViewById<View>(R.id.btnParentsEdit).setOnClickListener {
@@ -92,11 +90,9 @@ class ParentDetails : AppCompatActivity() {
                     val rvChildren = findViewById<RecyclerView>(R.id.rvDetailsChildren)
                     rvChildren.layoutManager = LinearLayoutManager(this)
                     rvChildren.adapter = DetailsChildAdapter(childrenList) { child ->
-                        val intent = Intent(this, StudentDetailsGeneral::class.java)
+                        val intent = Intent(this, StudentDetailsActivity::class.java)
                         intent.putExtra("childName", child.name)
                         startActivity(intent)
-                        @Suppress("DEPRECATION")
-                        overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
                     }
 
                     // 3. Contacts RecyclerView

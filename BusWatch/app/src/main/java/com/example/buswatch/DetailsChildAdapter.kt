@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 
 data class ChildDetail(
@@ -45,13 +45,14 @@ class DetailsChildAdapter(
         holder.school.text = child.school
         holder.status.text = child.status
         
-        // Handle Avatar loading: 1. URL, 2. Name, 3. Placeholder
+        // Handle Avatar loading using Glide
         if (!child.avatarUrl.isNullOrEmpty()) {
-            try {
-                holder.avatar.setImageURI(child.avatarUrl.toUri())
-            } catch (_: Exception) {
-                setDefaultAvatar(holder.avatar, child.avatarName)
-            }
+            Glide.with(holder.avatar.context)
+                .load(child.avatarUrl)
+                .placeholder(CommonR.drawable.child)
+                .error(CommonR.drawable.child)
+                .circleCrop()
+                .into(holder.avatar)
         } else {
             setDefaultAvatar(holder.avatar, child.avatarName)
         }
@@ -65,9 +66,9 @@ class DetailsChildAdapter(
         val avatarResId = if (!avatarName.isNullOrEmpty()) {
             @Suppress("DiscouragedApi")
             val resId = context.resources.getIdentifier(avatarName, "drawable", context.packageName)
-            if (resId != 0) resId else CommonR.drawable.ic_person_placeholder
+            if (resId != 0) resId else CommonR.drawable.child
         } else {
-            CommonR.drawable.ic_person_placeholder
+            CommonR.drawable.child
         }
         imageView.setImageResource(avatarResId)
     }

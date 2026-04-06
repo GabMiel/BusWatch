@@ -147,6 +147,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tvChildNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/child_1"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView177" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glStart"
             android:layout_width="wrap_content"
@@ -211,18 +224,31 @@
             app:layout_constraintTop_toTopOf="@+id/btnSignup2AddPhoto" />
 
         <!-- Form fields -->
-        <TextView
+        <LinearLayout
             android:id="@+id/llLabel1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/child_s_first_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/view46" />
+            app:layout_constraintTop_toBottomOf="@+id/view46">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/child_s_first_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextText2"
@@ -241,18 +267,31 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabel1" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/llLabel2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/child_s_last_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextText2">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/child_s_last_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextText8"
@@ -271,28 +310,56 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabel2" />
 
-        <TextView
-            android:id="@+id/textView190"
+        <!-- Middle Name -->
+        <LinearLayout
+            android:id="@+id/llLabelMiddle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/middle_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText8" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextText8">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/middle_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView191"
+        <!-- Suffix -->
+        <LinearLayout
+            android:id="@+id/llLabelSuffix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/suffix"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@+id/editTextText10"
-            app:layout_constraintTop_toTopOf="@+id/textView190" />
+            app:layout_constraintTop_toTopOf="@+id/llLabelMiddle">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suffix"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextText9"
@@ -310,7 +377,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/editTextText10"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/textView190" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelMiddle" />
 
         <EditText
             android:id="@+id/editTextText10"
@@ -327,28 +394,54 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintTop_toTopOf="@+id/editTextText9" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/llLabel3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/age"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText9" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextText9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/age"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:id="@+id/llLabel4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/class_grade"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@+id/editTextText12"
-            app:layout_constraintTop_toTopOf="@+id/llLabel3" />
+            app:layout_constraintTop_toTopOf="@+id/llLabel3">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/class_grade"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextText11"
@@ -383,6 +476,49 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintTop_toTopOf="@+id/editTextText11" />
 
+        <LinearLayout
+            android:id="@+id/llLabelSchool"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/editTextText11">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/school"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etSignup2School"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/textfield_shape"
+            android:backgroundTint="#D1D1D1"
+            android:hint="@string/school"
+            android:inputType="text"
+            android:autofillHints="none"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelSchool" />
+
         <Button
             android:id="@+id/btnSignup2UploadPhoto"
             android:layout_width="0dp"
@@ -396,7 +532,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText12" />
+            app:layout_constraintTop_toBottomOf="@+id/etSignup2School" />
 
         <ImageView
             android:id="@+id/ivEnrollmentPreview"

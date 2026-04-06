@@ -129,7 +129,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/driver_information"
+                android:text="@string/physician_information"
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="bold"

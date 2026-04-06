@@ -91,6 +91,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:text="@string/email"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etEditParentEmail"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/textfield_shape"
+                android:backgroundTint="#F5F5F5"
+                android:hint="@string/enter_email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:text="@string/phone_number"
                 android:textColor="#241E40"
                 android:textSize="12sp"
@@ -163,6 +184,27 @@
                 android:hint="@string/e_g_mother_father_guardian"
                 android:inputType="text"
                 android:autofillHints="none"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+            <EditText
+                android:id="@+id/etEditContact1Email"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/textfield_shape"
+                android:backgroundTint="#F5F5F5"
+                android:hint="@string/enter_email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp" />
 
@@ -242,6 +284,27 @@
                 android:hint="@string/e_g_mother_father_guardian"
                 android:inputType="text"
                 android:autofillHints="none"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+            <EditText
+                android:id="@+id/etEditContact2Email"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/textfield_shape"
+                android:backgroundTint="#F5F5F5"
+                android:hint="@string/enter_email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp" />
 

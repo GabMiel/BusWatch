@@ -17,12 +17,6 @@ class Settings : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.btnSettingsSettings)
         backButton.setOnClickListener {
             finish()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, CommonR.anim.zoom_out)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(android.R.anim.fade_in, CommonR.anim.zoom_out)
-            }
         }
 
         val logoutButton = findViewById<Button>(R.id.btnSettingsLogout)

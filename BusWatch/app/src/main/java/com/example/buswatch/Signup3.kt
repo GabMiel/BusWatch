@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.buswatch.common.R as CommonR
@@ -19,6 +20,16 @@ class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var selectedBloodType = "Select blood type"
+
+    private lateinit var etAllergies: EditText
+    private lateinit var etMedications: EditText
+    private lateinit var etConditions: EditText
+    private lateinit var etContact1Name: EditText
+    private lateinit var etContact1Phone: EditText
+    private lateinit var etContact1Relation: EditText
+    private lateinit var etContact2Name: EditText
+    private lateinit var etContact2Phone: EditText
+    private lateinit var etContact2Relation: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +46,38 @@ class Signup3 : AppCompatActivity() {
         val bloodTypeSelector = findViewById<FrameLayout>(R.id.btnSignup3BloodType)
         val tvSelectedBloodType = bloodTypeSelector.getChildAt(0) as TextView
         
-        val etAllergies = findViewById<EditText>(R.id.editTextText13)
-        val etMedications = findViewById<EditText>(R.id.editTextText14)
-        val etConditions = findViewById<EditText>(R.id.editTextText15)
+        etAllergies = findViewById(R.id.editTextText13)
+        etMedications = findViewById(R.id.editTextText14)
+        etConditions = findViewById(R.id.editTextText15)
         
-        val etContact1Name = findViewById<EditText>(R.id.editTextText17)
-        val etContact1Phone = findViewById<EditText>(R.id.editTextText18)
-        val etContact1Relation = findViewById<EditText>(R.id.editTextText19)
+        etContact1Name = findViewById(R.id.editTextText17)
+        etContact1Phone = findViewById(R.id.editTextText18)
+        etContact1Relation = findViewById(R.id.editTextText19)
         
-        val etContact2Name = findViewById<EditText>(R.id.editTextText20)
-        val etContact2Phone = findViewById<EditText>(R.id.editTextText22)
-        val etContact2Relation = findViewById<EditText>(R.id.editTextText21)
+        etContact2Name = findViewById(R.id.editTextText20)
+        etContact2Phone = findViewById(R.id.editTextText22)
+        etContact2Relation = findViewById(R.id.editTextText21)
 
         val backButton = findViewById<Button>(R.id.btnSignup3Back)
         val registerButton = findViewById<Button>(R.id.btnSignup3Register)
+
+        // Pre-fill if returning
+        intent.getStringExtra("bloodType")?.let {
+            if (it.isNotEmpty()) {
+                selectedBloodType = it
+                tvSelectedBloodType.text = selectedBloodType
+                tvSelectedBloodType.setTextColor(Color.BLACK)
+            }
+        }
+        intent.getStringExtra("allergies")?.let { etAllergies.setText(it) }
+        intent.getStringExtra("medications")?.let { etMedications.setText(it) }
+        intent.getStringExtra("conditions")?.let { etConditions.setText(it) }
+        intent.getStringExtra("c1Name")?.let { etContact1Name.setText(it) }
+        intent.getStringExtra("c1Phone")?.let { etContact1Phone.setText(it) }
+        intent.getStringExtra("c1Relation")?.let { etContact1Relation.setText(it) }
+        intent.getStringExtra("c2Name")?.let { etContact2Name.setText(it) }
+        intent.getStringExtra("c2Phone")?.let { etContact2Phone.setText(it) }
+        intent.getStringExtra("c2Relation")?.let { etContact2Relation.setText(it) }
 
         bloodTypeSelector.setOnClickListener {
             val bloodTypes = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown")
@@ -63,14 +92,14 @@ class Signup3 : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            finish()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
-            }
+            goBack()
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                goBack()
+            }
+        })
 
         registerButton.setOnClickListener {
             val contact1Name = etContact1Name.text.toString().trim()
@@ -93,6 +122,30 @@ class Signup3 : AppCompatActivity() {
                 etContact2Phone.text.toString().trim(),
                 etContact2Relation.text.toString().trim()
             )
+        }
+    }
+
+    private fun goBack() {
+        val resultIntent = Intent().apply {
+            putExtras(intent)
+            putExtra("bloodType", if (selectedBloodType == "Select blood type") "" else selectedBloodType)
+            putExtra("allergies", etAllergies.text.toString().trim())
+            putExtra("medications", etMedications.text.toString().trim())
+            putExtra("conditions", etConditions.text.toString().trim())
+            putExtra("c1Name", etContact1Name.text.toString().trim())
+            putExtra("c1Phone", etContact1Phone.text.toString().trim())
+            putExtra("c1Relation", etContact1Relation.text.toString().trim())
+            putExtra("c2Name", etContact2Name.text.toString().trim())
+            putExtra("c2Phone", etContact2Phone.text.toString().trim())
+            putExtra("c2Relation", etContact2Relation.text.toString().trim())
+        }
+        setResult(RESULT_OK, resultIntent)
+        finish()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
         }
     }
 
@@ -130,25 +183,27 @@ class Signup3 : AppCompatActivity() {
         c1Name: String, c1Phone: String, c1Relation: String,
         c2Name: String, c2Phone: String, c2Relation: String
     ) {
-        val userData = hashMapOf(
+        val userData = hashMapOf<String, Any>(
             "role" to "parent",
-            "firstName" to intent.getStringExtra("firstName"),
-            "lastName" to intent.getStringExtra("lastName"),
-            "middleName" to intent.getStringExtra("middleName"),
-            "suffix" to intent.getStringExtra("suffix"),
-            "email" to intent.getStringExtra("email"),
-            "phone" to intent.getStringExtra("phone"),
-            "preferredLanguage" to intent.getStringExtra("preferredLanguage"),
+            "firstName" to (intent.getStringExtra("firstName") ?: ""),
+            "lastName" to (intent.getStringExtra("lastName") ?: ""),
+            "middleName" to (intent.getStringExtra("middleName") ?: ""),
+            "suffix" to (intent.getStringExtra("suffix") ?: ""),
+            "email" to (intent.getStringExtra("email") ?: ""),
+            "phone" to (intent.getStringExtra("phone") ?: ""),
+            "preferredLanguage" to (intent.getStringExtra("preferredLanguage") ?: "English"),
+            "status" to "pending",
             
             "child" to hashMapOf(
-                "firstName" to intent.getStringExtra("childFirstName"),
-                "lastName" to intent.getStringExtra("childLastName"),
-                "middleName" to intent.getStringExtra("childMiddleName"),
-                "suffix" to intent.getStringExtra("childSuffix"),
-                "age" to intent.getStringExtra("childAge"),
-                "grade" to intent.getStringExtra("childGrade"),
-                "avatarUrl" to intent.getStringExtra("childAvatarUrl"),
-                "enrollmentFormUrl" to intent.getStringExtra("enrollmentFormUrl")
+                "firstName" to (intent.getStringExtra("childFirstName") ?: ""),
+                "lastName" to (intent.getStringExtra("childLastName") ?: ""),
+                "middleName" to (intent.getStringExtra("childMiddleName") ?: ""),
+                "suffix" to (intent.getStringExtra("childSuffix") ?: ""),
+                "age" to (intent.getStringExtra("childAge") ?: ""),
+                "grade" to (intent.getStringExtra("childGrade") ?: ""),
+                "school" to (intent.getStringExtra("childSchool") ?: ""),
+                "avatarUrl" to (intent.getStringExtra("childAvatarUrl") ?: ""),
+                "enrollmentFormUrl" to (intent.getStringExtra("enrollmentFormUrl") ?: "")
             ),
             
             "medical" to hashMapOf(
@@ -163,6 +218,13 @@ class Signup3 : AppCompatActivity() {
                 hashMapOf("name" to c2Name, "phone" to c2Phone, "relationship" to c2Relation)
             )
         )
+
+        // Handle additional children if any
+        @Suppress("UNCHECKED_CAST")
+        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any>>
+        if (additionalChildren != null) {
+            userData["children"] = additionalChildren
+        }
 
         db.collection("parents").document(uid).set(userData)
             .addOnSuccessListener {

@@ -13,6 +13,7 @@
     <string name="bus_details">Bus Details</string>
     <string name="bus_information">Bus Information</string>
     <string name="driver_information">Driver Information</string>
+    <string name="physician_information">Physician Information</string>
     <string name="name">Name</string>
     <string name="mike_johnson">Mike Johnson</string>
     <string name="email">Email</string>
@@ -172,6 +173,8 @@
     <string name="upload_photo">Upload Photo</string>
     <string name="enter_child_s_first_name">Enter child’s first name</string>
     <string name="child_1">Child 1</string>
+    <string name="child_n">Child %1$d</string>
+    <string name="child_number_saved">Child %1$d saved. Preparing for Child %2$d.</string>
     <string name="child_avatar" />
     <string name="enter_child_s_class_grade">Enter child’s grade</string>
     <string name="enter_child_s_age"> Enter child’s age</string>

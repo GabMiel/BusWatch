@@ -75,4 +75,8 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)
+
+    // Glide for image loading
+    implementation(libs.glide)
+    annotationProcessor("com.github.bumptech.glide:compiler:${libs.versions.glide.get()}")
 }

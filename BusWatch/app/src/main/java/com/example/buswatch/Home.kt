@@ -97,12 +97,6 @@ class Home : AppCompatActivity() {
         btnHomeSettings.setOnClickListener {
             val intent = Intent(this, Settings::class.java)
             startActivity(intent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.zoom_in, android.R.anim.fade_out)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.zoom_in, android.R.anim.fade_out)
-            }
         }
 
         btnHomeNotification.setOnClickListener {

@@ -29,9 +29,7 @@
         <activity android:name=".ParentDetails" />
         <activity android:name=".Settings" />
         <activity android:name=".Notification" />
-        <activity android:name=".StudentDetailsGeneral" />
-        <activity android:name=".StudentDetailsMedical" />
-        <activity android:name=".StudentDetailsEmergency" />
+        <activity android:name=".StudentDetailsActivity" />
         <activity android:name=".Map" />
         <activity android:name=".BusDetails" />
 

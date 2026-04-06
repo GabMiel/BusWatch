@@ -10,8 +10,8 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -69,12 +69,14 @@ class StudentHomeAdapter(
         holder.status.text = student.status
         holder.stop.text = student.stop
         
+        // Use Glide for avatar loading
         if (!student.avatarUrl.isNullOrEmpty()) {
-            try {
-                holder.avatar.setImageURI(student.avatarUrl.toUri())
-            } catch (_: Exception) {
-                holder.avatar.setImageResource(student.avatarResId)
-            }
+            Glide.with(holder.avatar.context)
+                .load(student.avatarUrl)
+                .placeholder(student.avatarResId)
+                .error(student.avatarResId)
+                .circleCrop()
+                .into(holder.avatar)
         } else {
             holder.avatar.setImageResource(student.avatarResId)
         }

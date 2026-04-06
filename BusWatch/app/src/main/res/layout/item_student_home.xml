@@ -18,7 +18,7 @@
         android:background="@drawable/bg_avatar_circle"
         android:contentDescription="@string/student_avatar"
         android:scaleType="centerCrop"
-        android:src="@drawable/yans" />
+        android:src="@drawable/user" />
 
     <!-- Status Badge -->
     <TextView
@@ -117,7 +117,7 @@
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:text="Stop:"
+                android:text="@string/stop"
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
@@ -125,7 +125,7 @@
                 android:id="@+id/tvStudentStop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Street Address"
+                android:text="@string/street_address"
                 android:textColor="@color/black"
                 android:textSize="13sp" />
         </LinearLayout>

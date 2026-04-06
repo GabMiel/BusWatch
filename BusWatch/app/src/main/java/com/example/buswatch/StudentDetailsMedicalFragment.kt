@@ -1,70 +1,54 @@
 package com.example.buswatch
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
 import com.example.buswatch.common.R as CommonR
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class StudentDetailsMedical : AppCompatActivity() {
+class StudentDetailsMedicalFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var childName: String? = null
     private var currentChildData: kotlin.collections.Map<String, Any>? = null
     private var isFromChildrenList: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.studentdetails_medical)
+    companion object {
+        fun newInstance(childName: String?): StudentDetailsMedicalFragment {
+            val fragment = StudentDetailsMedicalFragment()
+            val args = Bundle()
+            args.putString("childName", childName)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_student_details_medical, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        childName = intent.getStringExtra("childName")
+        childName = arguments?.getString("childName")
 
-        val backButton = findViewById<ImageButton>(R.id.btnMedicalBack)
-        val generalButton = findViewById<Button>(R.id.btnMedicalGeneral)
-        val emergencyButton = findViewById<Button>(R.id.btnMedicalEmergency)
-        val editButton = findViewById<View>(R.id.btnMedicalEdit)
-        
-        val tvHeaderName = findViewById<TextView>(R.id.tvStudentHeaderName)
-        tvHeaderName.text = childName ?: "Student"
-
-        fetchStudentMedicalData()
-
-        backButton.setOnClickListener {
-            finish()
-        }
-
-        generalButton.setOnClickListener {
-            val intent = Intent(this, StudentDetailsGeneral::class.java)
-            intent.putExtra("childName", childName)
-            startActivity(intent)
-            finish()
-        }
-
-        emergencyButton.setOnClickListener {
-            val intent = Intent(this, StudentDetailsEmergency::class.java)
-            intent.putExtra("childName", childName)
-            startActivity(intent)
-            finish()
-        }
-
-        editButton.setOnClickListener {
+        view.findViewById<View>(R.id.btnMedicalEdit).setOnClickListener {
             showEditDialog()
         }
+
+        fetchStudentMedicalData()
     }
 
     private fun fetchStudentMedicalData() {
@@ -72,7 +56,7 @@ class StudentDetailsMedical : AppCompatActivity() {
 
         db.collection("parents").document(uid).get()
             .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
+                if (isAdded && document != null && document.exists()) {
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
                     @Suppress("UNCHECKED_CAST")
@@ -92,9 +76,7 @@ class StudentDetailsMedical : AppCompatActivity() {
                         foundChild = childrenList.find { 
                             "${it["firstName"]} ${it["lastName"]}" == childName 
                         }
-                        if (foundChild != null) {
-                            isFromChildrenList = true
-                        }
+                        if (foundChild != null) isFromChildrenList = true
                     }
 
                     currentChildData = foundChild
@@ -104,28 +86,29 @@ class StudentDetailsMedical : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Error fetching medical data", Toast.LENGTH_SHORT).show()
+                if (isAdded) Toast.makeText(context, "Error fetching medical data", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun displayMedicalInfo(child: kotlin.collections.Map<String, Any>, parentMedical: kotlin.collections.Map<String, Any>?) {
+        val view = view ?: return
         @Suppress("UNCHECKED_CAST")
         val medical = child["medical"] as? kotlin.collections.Map<String, Any> ?: parentMedical
             
-        findViewById<TextView>(R.id.tvBloodType).text = medical?.get("bloodType") as? String ?: "---"
-        findViewById<TextView>(R.id.tvInsuranceProvider).text = medical?.get("insuranceProvider") as? String ?: "---"
-        findViewById<TextView>(R.id.tvPolicyNumber).text = medical?.get("policyNumber") as? String ?: "---"
+        view.findViewById<TextView>(R.id.tvBloodType).text = medical?.get("bloodType") as? String ?: "---"
+        view.findViewById<TextView>(R.id.tvInsuranceProvider).text = medical?.get("insuranceProvider") as? String ?: "---"
+        view.findViewById<TextView>(R.id.tvPolicyNumber).text = medical?.get("policyNumber") as? String ?: "---"
         
-        findViewById<TextView>(R.id.tvPhysicianName).text = medical?.get("physicianName") as? String ?: "---"
-        findViewById<TextView>(R.id.tvPhysicianPhone).text = medical?.get("physicianPhone") as? String ?: "---"
+        view.findViewById<TextView>(R.id.tvPhysicianName).text = medical?.get("physicianName") as? String ?: "---"
+        view.findViewById<TextView>(R.id.tvPhysicianPhone).text = medical?.get("physicianPhone") as? String ?: "---"
 
-        setupChips(findViewById(R.id.cgAllergies), medical?.get("allergies") as? String)
-        setupChips(findViewById(R.id.cgMedications), medical?.get("medications") as? String)
-        setupChips(findViewById(R.id.cgConditions), medical?.get("conditions") as? String)
-        setupChips(findViewById(R.id.cgDietary), medical?.get("dietary") as? String)
+        setupChips(view.findViewById(R.id.cgAllergies), medical?.get("allergies") as? String)
+        setupChips(view.findViewById(R.id.cgMedications), medical?.get("medications") as? String)
+        setupChips(view.findViewById(R.id.cgConditions), medical?.get("conditions") as? String)
+        setupChips(view.findViewById(R.id.cgDietary), medical?.get("dietary") as? String)
         
         val specialNeeds = medical?.get("specialNeeds") as? String ?: "None"
-        findViewById<TextView>(R.id.tvSpecialNeeds).text = if (specialNeeds.isEmpty()) "None" else specialNeeds
+        view.findViewById<TextView>(R.id.tvSpecialNeeds).text = if (specialNeeds.isEmpty()) "None" else specialNeeds
     }
 
     private fun setupChips(chipGroup: ChipGroup, data: String?) {
@@ -139,7 +122,7 @@ class StudentDetailsMedical : AppCompatActivity() {
         data.split(",").forEach { item ->
             val trimmed = item.trim()
             if (trimmed.isNotEmpty()) {
-                val chip = Chip(this)
+                val chip = Chip(requireContext())
                 chip.text = trimmed
                 chip.setChipBackgroundColorResource(CommonR.color.card_highlight)
                 chip.setTextColor("#944600".toColorInt())
@@ -155,8 +138,8 @@ class StudentDetailsMedical : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         val medical = child["medical"] as? kotlin.collections.Map<String, Any> ?: emptyMap()
 
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_student_medical, null)
-        val dialog = AlertDialog.Builder(this, CommonR.style.CustomDialog)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_student_medical, null)
+        val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)
             .setView(dialogView)
             .create()
 
@@ -247,10 +230,10 @@ class StudentDetailsMedical : AppCompatActivity() {
         currentChildData = updatedChild
         displayMedicalInfo(updatedChild, null)
         dialog.dismiss()
-        Toast.makeText(this, "Medical information updated", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Medical information updated", Toast.LENGTH_SHORT).show()
     }
 
     private fun onUpdateFailure() {
-        Toast.makeText(this, "Failed to update information", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Failed to update information", Toast.LENGTH_SHORT).show()
     }
 }
