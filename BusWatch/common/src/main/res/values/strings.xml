@@ -303,4 +303,6 @@
     <string name="back_caps">BACK</string>
     <string name="asterisk">*</string>
     <string name="class_label">Class</string>
+    <string name="select_language">Select Language</string>
+    <string name="filipino">Filipino</string>
 </resources>

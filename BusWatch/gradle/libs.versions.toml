@@ -19,7 +19,7 @@ appcompat = "1.7.1"
 playServicesMapsVersion = "20.0.0"
 firebaseBom = "34.11.0"
 googleServices = "4.4.4"
-glide = "4.16.0"
+glide = "5.0.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

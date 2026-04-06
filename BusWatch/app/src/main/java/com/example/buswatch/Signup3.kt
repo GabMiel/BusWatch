@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
@@ -192,7 +193,7 @@ class Signup3 : AppCompatActivity() {
         val primaryEnrollmentUri = intent.getStringExtra("enrollmentFormUrl")?.toUri()
         
         @Suppress("UNCHECKED_CAST")
-        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
+        val additionalChildren = IntentCompat.getSerializableExtra(intent, "additionalChildren", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
 
         val uploadTasks = mutableListOf<Pair<String, Uri>>()
         
@@ -216,7 +217,7 @@ class Signup3 : AppCompatActivity() {
 
         if (uploadTasks.isEmpty()) {
             saveUserData(uid, bloodType, allergies, medications, conditions, 
-                c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, kotlin.collections.emptyMap())
+                c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, emptyMap())
             return
         }
 
@@ -287,7 +288,7 @@ class Signup3 : AppCompatActivity() {
         )
 
         @Suppress("UNCHECKED_CAST")
-        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any?>>
+        val additionalChildren = IntentCompat.getSerializableExtra(intent, "additionalChildren", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>>
         if (additionalChildren != null) {
             val updatedChildren = additionalChildren.mapIndexed { index, child ->
                 val newChild = HashMap(child)
@@ -301,9 +302,9 @@ class Signup3 : AppCompatActivity() {
         db.collection("parents").document(uid).set(userData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Registration Successful!", Toast.LENGTH_LONG).show()
-                val intent = Intent(this, Home::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
+                val homeIntent = Intent(this, Home::class.java)
+                homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(homeIntent)
                 finish()
             }
             .addOnFailureListener { e ->

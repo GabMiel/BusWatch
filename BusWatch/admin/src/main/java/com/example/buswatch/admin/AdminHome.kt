@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -15,30 +16,23 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminHome : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var db: FirebaseFirestore
     
-    // Mock data storage
-    private var activeUsers = mutableListOf(
-        UserAdmin(1, "Robert Wilson", "Parent"),
-        UserAdmin(3, "Jane Doe", "Parent")
-    )
-    private var activeDrivers = mutableListOf(
-        UserAdmin(2, "Mike Johnson", "Driver"),
-        UserAdmin(4, "John Smith", "Driver")
-    )
-    private var archivedUsers = mutableListOf(
-        UserAdmin(5, "Old User", "Parent", isArchived = true)
-    )
-    private var pendingUsers = mutableListOf(
-        UserAdmin(10, "New Parent Request", "Parent")
-    )
+    // Data storage
+    private var activeUsers = mutableListOf<UserAdmin>()
+    private var activeDrivers = mutableListOf<UserAdmin>()
+    private var archivedUsers = mutableListOf<UserAdmin>()
+    private var pendingUsers = mutableListOf<UserAdmin>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_main)
 
+        db = FirebaseFirestore.getInstance()
         drawerLayout = findViewById(R.id.drawerLayout)
         val btnMenuToggle = findViewById<ImageButton>(R.id.btnMenuToggle)
 
@@ -84,8 +78,7 @@ class AdminHome : AppCompatActivity() {
 
     private fun loadUsers() {
         loadLayout(R.layout.fragment_users)
-        setupUserList()
-
+        
         findViewById<TextView>(R.id.tabDrivers)?.setOnClickListener {
             loadDrivers()
         }
@@ -93,11 +86,28 @@ class AdminHome : AppCompatActivity() {
         findViewById<TextView>(R.id.btnViewPendingParents)?.setOnClickListener {
             loadPendingParents()
         }
+
+        fetchParents()
+    }
+
+    private fun fetchParents() {
+        db.collection("parents")
+            .whereEqualTo("status", "approved")
+            .get()
+            .addOnSuccessListener { documents ->
+                activeUsers.clear()
+                for (document in documents) {
+                    val firstName = document.getString("firstName") ?: ""
+                    val lastName = document.getString("lastName") ?: ""
+                    activeUsers.add(UserAdmin(document.id, "$firstName $lastName", "Parent", status = "approved"))
+                }
+                setupUserList()
+            }
     }
 
     private fun loadDrivers() {
         loadLayout(R.layout.fragment_driver)
-        setupDriverList()
+        setupDriverList() // Note: Driver logic might also need Firebase connection later
 
         findViewById<TextView>(R.id.tabParents)?.setOnClickListener {
             loadUsers()
@@ -113,17 +123,19 @@ class AdminHome : AppCompatActivity() {
         val adapter = UserAdapter(activeUsers, 
             onViewClick = { user -> showUserDetailDialog(user, isPending = false) },
             onArchiveClick = { user, _ -> 
-                val index = activeUsers.indexOf(user)
-                if (index != -1) {
-                    activeUsers.removeAt(index)
-                    user.isArchived = true
-                    archivedUsers.add(user)
-                    loadUsers()
-                }
+                archiveUser(user)
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+    }
+
+    private fun archiveUser(user: UserAdmin) {
+        db.collection("parents").document(user.id)
+            .update("status", "archived")
+            .addOnSuccessListener {
+                loadUsers()
+            }
     }
 
     private fun setupDriverList() {
@@ -146,12 +158,31 @@ class AdminHome : AppCompatActivity() {
 
     private fun loadPendingParents() {
         loadLayout(R.layout.fragment_pending_parents)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerPending) ?: return
         
         findViewById<ImageButton>(R.id.btnBackPending)?.setOnClickListener {
             loadUsers()
         }
 
+        fetchPendingParents()
+    }
+
+    private fun fetchPendingParents() {
+        db.collection("parents")
+            .whereEqualTo("status", "pending")
+            .get()
+            .addOnSuccessListener { documents ->
+                pendingUsers.clear()
+                for (document in documents) {
+                    val firstName = document.getString("firstName") ?: ""
+                    val lastName = document.getString("lastName") ?: ""
+                    pendingUsers.add(UserAdmin(document.id, "$firstName $lastName", "Parent", status = "pending"))
+                }
+                setupPendingList()
+            }
+    }
+
+    private fun setupPendingList() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerPending) ?: return
         val adapter = PendingUserAdapter(pendingUsers,
             onAcceptClick = { user, pos -> approveUser(user, pos) },
             onRejectClick = { user, pos -> rejectUser(user, pos) },
@@ -162,16 +193,30 @@ class AdminHome : AppCompatActivity() {
     }
 
     private fun approveUser(user: UserAdmin, position: Int) {
-        pendingUsers.removeAt(position)
-        activeUsers.add(user)
-        loadUsers()
+        db.collection("parents").document(user.id)
+            .update("status", "approved")
+            .addOnSuccessListener {
+                Toast.makeText(this, "${user.name} approved", Toast.LENGTH_SHORT).show()
+                pendingUsers.removeAt(position)
+                activeUsers.add(user)
+                loadPendingParents() // Refresh list
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to approve user", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun rejectUser(user: UserAdmin, position: Int) {
-        pendingUsers.removeAt(position)
-        user.isArchived = true
-        archivedUsers.add(user)
-        loadArchive()
+        db.collection("parents").document(user.id)
+            .update("status", "rejected")
+            .addOnSuccessListener {
+                Toast.makeText(this, "${user.name} rejected", Toast.LENGTH_SHORT).show()
+                pendingUsers.removeAt(position)
+                loadPendingParents() // Refresh list
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to reject user", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun loadArchive(showDrivers: Boolean = false) {
@@ -181,8 +226,6 @@ class AdminHome : AppCompatActivity() {
             loadLayout(R.layout.fragment_archive)
         }
         
-        setupArchivedList(showDrivers)
-
         findViewById<TextView>(R.id.tabArchivedParents)?.setOnClickListener {
             loadArchive(false)
         }
@@ -190,6 +233,43 @@ class AdminHome : AppCompatActivity() {
         findViewById<TextView>(R.id.tabArchivedDrivers)?.setOnClickListener {
             loadArchive(true)
         }
+
+        if (!showDrivers) {
+            fetchArchivedParents()
+        } else {
+            setupArchivedList(true)
+        }
+    }
+
+    private fun fetchArchivedParents() {
+        db.collection("parents")
+            .whereIn("status", listOf("archived", "rejected"))
+            .get()
+            .addOnSuccessListener { documents ->
+                val filteredList = mutableListOf<UserAdmin>()
+                for (document in documents) {
+                    val firstName = document.getString("firstName") ?: ""
+                    val lastName = document.getString("lastName") ?: ""
+                    filteredList.add(UserAdmin(document.id, "$firstName $lastName", "Parent", isArchived = true))
+                }
+                val recyclerView = findViewById<RecyclerView>(R.id.recyclerArchived) ?: return@addOnSuccessListener
+                val adapter = UserAdapter(filteredList,
+                    onViewClick = { user -> showUserDetailDialog(user, isPending = false) },
+                    onArchiveClick = { user, _ ->
+                        restoreUser(user)
+                    }
+                )
+                recyclerView.layoutManager = LinearLayoutManager(this)
+                recyclerView.adapter = adapter
+            }
+    }
+
+    private fun restoreUser(user: UserAdmin) {
+        db.collection("parents").document(user.id)
+            .update("status", "approved")
+            .addOnSuccessListener {
+                loadArchive(false)
+            }
     }
 
     private fun setupArchivedList(showDrivers: Boolean) {
@@ -200,7 +280,6 @@ class AdminHome : AppCompatActivity() {
         val adapter = UserAdapter(filteredList,
             onViewClick = { user -> showUserDetailDialog(user, isPending = false) },
             onArchiveClick = { user, _ ->
-                // In archive view, clicking the archive button RESTORES the user
                 archivedUsers.remove(user)
                 user.isArchived = false
                 if (user.role == "Driver") activeDrivers.add(user) else activeUsers.add(user)
@@ -226,12 +305,12 @@ class AdminHome : AppCompatActivity() {
 
         if (isPending) {
             dialogView.findViewById<Button>(R.id.btnAccept)?.setOnClickListener {
-                val pos = pendingUsers.indexOf(user)
+                val pos = pendingUsers.indexOfFirst { it.id == user.id }
                 if (pos != -1) approveUser(user, pos)
                 dialog.dismiss()
             }
             dialogView.findViewById<Button>(R.id.btnReject)?.setOnClickListener {
-                val pos = pendingUsers.indexOf(user)
+                val pos = pendingUsers.indexOfFirst { it.id == user.id }
                 if (pos != -1) rejectUser(user, pos)
                 dialog.dismiss()
             }
@@ -256,7 +335,7 @@ class AdminHome : AppCompatActivity() {
             val fullName = "$firstName $lastName"
             
             if (firstName.isNotEmpty() && lastName.isNotEmpty()) {
-                val newDriver = UserAdmin(activeDrivers.size + 100, fullName, "Driver")
+                val newDriver = UserAdmin(java.util.UUID.randomUUID().toString(), fullName, "Driver")
                 activeDrivers.add(newDriver)
                 loadDrivers()
                 dialog.dismiss()

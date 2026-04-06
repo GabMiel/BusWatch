@@ -378,6 +378,7 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintTop_toTopOf="@+id/editTextText9" />
 
+        <!-- Row: Age and Class -->
         <LinearLayout
             android:id="@+id/llLabel3"
             android:layout_width="wrap_content"
@@ -413,7 +414,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/class_grade"
+                android:text="@string/class_label"
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -451,7 +452,7 @@
             android:layout_height="40dp"
             android:background="@drawable/textfield_shape"
             android:backgroundTint="#D1D1D1"
-            android:hint="@string/enter_child_s_class_grade"
+            android:hint="@string/class_label"
             android:inputType="text"
             android:autofillHints="none"
             android:paddingStart="12dp"
@@ -460,13 +461,14 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintTop_toTopOf="@+id/editTextText11" />
 
+        <!-- Row: School and Grade -->
         <LinearLayout
             android:id="@+id/llLabelSchool"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintEnd_toStartOf="@+id/llLabelGrade"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/editTextText11">
             <TextView
@@ -486,11 +488,36 @@
                 android:layout_marginStart="2dp"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llLabelGrade"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintTop_toTopOf="@+id/llLabelSchool">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/grade"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
         <EditText
             android:id="@+id/etSignup2School"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/textfield_shape"
             android:backgroundTint="#D1D1D1"
             android:hint="@string/school"
@@ -499,9 +526,24 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintEnd_toStartOf="@+id/etSignup2Grade"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelSchool" />
+
+        <EditText
+            android:id="@+id/etSignup2Grade"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textfield_shape"
+            android:backgroundTint="#D1D1D1"
+            android:hint="@string/grade"
+            android:inputType="text"
+            android:autofillHints="none"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintTop_toTopOf="@+id/etSignup2School" />
 
         <Button
             android:id="@+id/btnSignup2UploadPhoto"
@@ -521,7 +563,7 @@
         <ImageView
             android:id="@+id/ivEnrollmentPreview"
             android:layout_width="0dp"
-            android:layout_height="120dp"
+            android:layout_height="200dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_placeholder"
             android:scaleType="centerInside"

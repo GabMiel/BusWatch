@@ -24,13 +24,16 @@ class Login : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
+        // Automatically try to create the admin and driver accounts on startup for convenience
+        createAdminAccount()
+        createDriverAccount()
+
         val emailEditText = findViewById<EditText>(R.id.editTextText)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val viewPasswordButton = findViewById<ImageButton>(R.id.btnLoginViewPassword)
         val loginButton = findViewById<Button>(R.id.btnLoginLogin)
         val signupButton = findViewById<Button>(R.id.btnLoginSignup)
         
-        // Check if user is already logged in
         auth.currentUser?.let {
             checkUserRole(it.uid)
         }
@@ -39,19 +42,33 @@ class Login : AppCompatActivity() {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
                 passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye) // Using ic_eye for hidden state or visible? 
-                // Usually ic_eye means "viewing" and ic_eye_off means "hidden"
-                // Given common resources, let's assume we toggle between 'view' and 'ic_eye'
+                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye) 
             } else {
                 passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                viewPasswordButton.setImageResource(CommonR.drawable.view)
+                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
             }
             passwordEditText.setSelection(passwordEditText.text.length)
         }
 
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
+            var email = emailEditText.text.toString().trim()
+            var password = passwordEditText.text.toString().trim()
+
+            // Handle "admin" shorthand
+            if (email == "admin") {
+                email = "admin@buswatch.com"
+            }
+            if (password == "admin") {
+                password = "admin123"
+            }
+
+            // Handle "driver" shorthand
+            if (email == "driver") {
+                email = "driver@buswatch.com"
+            }
+            if (password == "driver") {
+                password = "driver123"
+            }
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
@@ -79,16 +96,67 @@ class Login : AppCompatActivity() {
         }
     }
 
+    private fun createAdminAccount() {
+        val adminEmail = "admin@buswatch.com"
+        val adminPassword = "admin123"
+
+        db.collection("parents").whereEqualTo("role", "admin").get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    auth.createUserWithEmailAndPassword(adminEmail, adminPassword)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val uid = auth.currentUser?.uid
+                                if (uid != null) {
+                                    val adminData = hashMapOf(
+                                        "role" to "admin",
+                                        "firstName" to "System",
+                                        "lastName" to "Admin",
+                                        "email" to adminEmail,
+                                        "status" to "approved"
+                                    )
+                                    db.collection("parents").document(uid).set(adminData)
+                                }
+                            }
+                        }
+                }
+            }
+    }
+
+    private fun createDriverAccount() {
+        val driverEmail = "driver@buswatch.com"
+        val driverPassword = "driver123"
+
+        db.collection("parents").whereEqualTo("role", "driver").get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    auth.createUserWithEmailAndPassword(driverEmail, driverPassword)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val uid = auth.currentUser?.uid
+                                if (uid != null) {
+                                    val driverData = hashMapOf(
+                                        "role" to "driver",
+                                        "firstName" to "Test",
+                                        "lastName" to "Driver",
+                                        "email" to driverEmail,
+                                        "status" to "approved"
+                                    )
+                                    db.collection("parents").document(uid).set(driverData)
+                                }
+                            }
+                        }
+                }
+            }
+    }
+
     private fun checkUserRole(uid: String) {
-        // Renamed from "users" to "parents" as requested
         db.collection("parents").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val role = document.getString("role")
                     navigateBasedOnRole(role)
                 } else {
-                    // Also check a general users collection if needed for non-parents
-                    // but for now we follow the "parents" instruction
                     navigateBasedOnRole("parent")
                 }
             }
@@ -110,7 +178,7 @@ class Login : AppCompatActivity() {
                     setClassName(this@Login, "com.example.buswatch.driver.DriverHome")
                 }
             }
-            else -> Intent(this, Home::class.java) // Default to Parent Home
+            else -> Intent(this, Home::class.java)
         }
         startActivity(intent)
         finish()

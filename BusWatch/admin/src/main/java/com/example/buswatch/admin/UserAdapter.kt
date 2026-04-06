@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 data class UserAdmin(
-    val id: Int,
+    val id: String,
     val name: String,
     val role: String,
-    var isArchived: Boolean = false
+    var isArchived: Boolean = false,
+    var status: String = "active"
 )
 
 class UserAdapter(

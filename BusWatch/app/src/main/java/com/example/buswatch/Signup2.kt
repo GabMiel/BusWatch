@@ -26,6 +26,7 @@ class Signup2 : AppCompatActivity() {
     private lateinit var etChildMiddleName: EditText
     private lateinit var etChildSuffix: EditText
     private lateinit var etChildAge: EditText
+    private lateinit var etChildClass: EditText
     private lateinit var etChildGrade: EditText
     private lateinit var etChildSchool: EditText
     private lateinit var ivAvatar: ImageView
@@ -65,7 +66,8 @@ class Signup2 : AppCompatActivity() {
         etChildMiddleName = findViewById(R.id.editTextText9)
         etChildSuffix = findViewById(R.id.editTextText10)
         etChildAge = findViewById(R.id.editTextText11)
-        etChildGrade = findViewById(R.id.editTextText12)
+        etChildClass = findViewById(R.id.editTextText12)
+        etChildGrade = findViewById(R.id.etSignup2Grade)
         etChildSchool = findViewById(R.id.etSignup2School)
         ivAvatar = findViewById(R.id.imageView39)
         ivEnrollment = findViewById(R.id.ivEnrollmentPreview)
@@ -102,6 +104,7 @@ class Signup2 : AppCompatActivity() {
                     "middleName" to (intent.getStringExtra("childMiddleName") ?: ""),
                     "suffix" to (intent.getStringExtra("childSuffix") ?: ""),
                     "age" to (intent.getStringExtra("childAge") ?: ""),
+                    "class" to (intent.getStringExtra("childClass") ?: ""),
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
                     "avatarUrl" to intent.getStringExtra("childAvatarUrl"),
@@ -147,6 +150,7 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childMiddleName", primaryChild["middleName"] as String)
                     putExtra("childSuffix", primaryChild["suffix"] as String)
                     putExtra("childAge", primaryChild["age"] as String)
+                    putExtra("childClass", primaryChild["class"] as String)
                     putExtra("childGrade", primaryChild["grade"] as String)
                     putExtra("childSchool", primaryChild["school"] as String)
                     putExtra("childAvatarUrl", primaryChild["avatarUrl"] as String?)
@@ -179,10 +183,11 @@ class Signup2 : AppCompatActivity() {
         val fName = etChildFirstName.text.toString().trim()
         val lName = etChildLastName.text.toString().trim()
         val age = etChildAge.text.toString().trim()
+        val className = etChildClass.text.toString().trim()
         val grade = etChildGrade.text.toString().trim()
         val school = etChildSchool.text.toString().trim()
 
-        if (fName.isEmpty() || lName.isEmpty() || age.isEmpty() || grade.isEmpty() || school.isEmpty()) {
+        if (fName.isEmpty() || lName.isEmpty() || age.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty()) {
             Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -196,6 +201,7 @@ class Signup2 : AppCompatActivity() {
             "middleName" to etChildMiddleName.text.toString().trim(),
             "suffix" to etChildSuffix.text.toString().trim(),
             "age" to etChildAge.text.toString().trim(),
+            "class" to etChildClass.text.toString().trim(),
             "grade" to etChildGrade.text.toString().trim(),
             "school" to etChildSchool.text.toString().trim(),
             "avatarUrl" to avatarUri?.toString(),
@@ -217,6 +223,7 @@ class Signup2 : AppCompatActivity() {
             etChildMiddleName.setText(child["middleName"] as? String ?: "")
             etChildSuffix.setText(child["suffix"] as? String ?: "")
             etChildAge.setText(child["age"] as? String ?: "")
+            etChildClass.setText(child["class"] as? String ?: "")
             etChildGrade.setText(child["grade"] as? String ?: "")
             etChildSchool.setText(child["school"] as? String ?: "")
             
@@ -245,6 +252,7 @@ class Signup2 : AppCompatActivity() {
         etChildMiddleName.text.clear()
         etChildSuffix.text.clear()
         etChildAge.text.clear()
+        etChildClass.text.clear()
         etChildGrade.text.clear()
         etChildSchool.text.clear()
         ivAvatar.setImageResource(CommonR.drawable.user)
@@ -273,6 +281,7 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childMiddleName", etChildMiddleName.text.toString().trim())
                 putExtra("childSuffix", etChildSuffix.text.toString().trim())
                 putExtra("childAge", etChildAge.text.toString().trim())
+                putExtra("childClass", etChildClass.text.toString().trim())
                 putExtra("childGrade", etChildGrade.text.toString().trim())
                 putExtra("childSchool", etChildSchool.text.toString().trim())
                 putExtra("childAvatarUrl", avatarUri?.toString())

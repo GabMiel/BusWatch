@@ -35,11 +35,9 @@
 
         <!-- Activities from Driver module -->
         <activity android:name="com.example.buswatch.driver.DriverHome" />
-        <activity android:name="com.example.buswatch.driver.MainActivity" />
 
         <!-- Activities from Admin module -->
         <activity android:name="com.example.buswatch.admin.AdminHome" />
-        <activity android:name="com.example.buswatch.admin.MainActivity" />
 
         <activity
             android:name=".MainActivity"

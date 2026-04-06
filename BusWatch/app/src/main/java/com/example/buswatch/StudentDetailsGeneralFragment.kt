@@ -111,7 +111,12 @@ class StudentDetailsGeneralFragment : Fragment() {
 
     private fun displayGeneralInfo(child: kotlin.collections.Map<String, Any>) {
         view?.let { v ->
-            v.findViewById<TextView>(R.id.tvStudentName).text = "${child["firstName"]} ${child["middleName"] ?: ""} ${child["lastName"]}".replace("  ", " ")
+            val firstName = child["firstName"] as? String ?: ""
+            val middleName = child["middleName"] as? String ?: ""
+            val lastName = child["lastName"] as? String ?: ""
+            val fullName = "$firstName $middleName $lastName".replace("  ", " ").trim()
+            
+            v.findViewById<TextView>(R.id.tvStudentName).text = fullName
             v.findViewById<TextView>(R.id.tvGrade).text = child["grade"] as? String ?: "---"
             v.findViewById<TextView>(R.id.tvDob).text = child["age"] as? String ?: "---"
             v.findViewById<TextView>(R.id.tvAddress).text = child["address"] as? String ?: "---"
@@ -185,7 +190,7 @@ class StudentDetailsGeneralFragment : Fragment() {
         } else {
             docRef.update("child", updatedChild).addOnSuccessListener {
                 currentChildData = updatedChild
-                Toast.makeText(context, "Photo updated", Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show())
+                Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show()
             }
         }
     }

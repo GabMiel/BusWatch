@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.example.buswatch.common.R as CommonR
 
@@ -67,7 +68,7 @@ class StudentDetailsActivity : AppCompatActivity() {
         buttons.forEach { button ->
             if (button == selectedButton) {
                 button.setBackgroundResource(CommonR.drawable.rectangle_shape)
-                button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FEBE1E"))
+                button.backgroundTintList = ColorStateList.valueOf("#FEBE1E".toColorInt())
             } else {
                 button.setBackgroundResource(android.R.color.transparent)
                 button.backgroundTintList = null
