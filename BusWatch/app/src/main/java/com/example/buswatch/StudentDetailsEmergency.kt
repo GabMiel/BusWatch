@@ -23,6 +23,8 @@ class StudentDetailsEmergency : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private var childName: String? = null
     private var parentData: kotlin.collections.Map<String, Any>? = null
+    private var isFromChildrenList: Boolean = false
+    private var currentChildData: kotlin.collections.Map<String, Any>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +92,33 @@ class StudentDetailsEmergency : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     parentData = document.data
-                    displayEmergencyInfo(document.data ?: emptyMap())
+                    
+                    @Suppress("UNCHECKED_CAST")
+                    val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
+                    @Suppress("UNCHECKED_CAST")
+                    val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                    
+                    var foundChild: kotlin.collections.Map<String, Any>? = null
+                    
+                    if (childMap != null) {
+                        val fullName = "${childMap["firstName"]} ${childMap["lastName"]}"
+                        if (childName == null || fullName == childName) {
+                            foundChild = childMap
+                            isFromChildrenList = false
+                        }
+                    }
+                    
+                    if (foundChild == null && childrenList != null) {
+                        foundChild = childrenList.find { 
+                            "${it["firstName"]} ${it["lastName"]}" == childName 
+                        }
+                        if (foundChild != null) {
+                            isFromChildrenList = true
+                        }
+                    }
+                    currentChildData = foundChild
+
+                    displayEmergencyInfo(document.data ?: emptyMap(), foundChild)
                 }
             }
             .addOnFailureListener {
@@ -98,7 +126,7 @@ class StudentDetailsEmergency : AppCompatActivity() {
             }
     }
 
-    private fun displayEmergencyInfo(data: kotlin.collections.Map<String, Any>) {
+    private fun displayEmergencyInfo(data: kotlin.collections.Map<String, Any>, child: kotlin.collections.Map<String, Any>?) {
         val contactList = mutableListOf<EmergencyContact>()
         
         // 1. Add Parent as Primary
@@ -108,8 +136,11 @@ class StudentDetailsEmergency : AppCompatActivity() {
         val pEmail = data["email"] as? String ?: "---"
         contactList.add(EmergencyContact("$pFName $pLName".trim(), "Parent", pPhone, pEmail, isPrimary = true))
 
-        // 2. Add other Emergency Contacts from the list
-        val contactsData = data["emergencyContacts"]
+        // 2. Add other Emergency Contacts
+        // Try to get from child first, then fallback to parent level
+        @Suppress("UNCHECKED_CAST")
+        val contactsData = (child?.get("emergencyContacts") ?: data["emergencyContacts"]) as? List<*>
+        
         if (contactsData is List<*>) {
             contactsData.forEach { item ->
                 if (item is kotlin.collections.Map<*, *>) {
@@ -130,6 +161,7 @@ class StudentDetailsEmergency : AppCompatActivity() {
 
     private fun showEditDialog() {
         val data = parentData ?: return
+        val child = currentChildData
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_student_emergency, null)
         val dialog = AlertDialog.Builder(this, CommonR.style.CustomDialog)
             .setView(dialogView)
@@ -157,7 +189,7 @@ class StudentDetailsEmergency : AppCompatActivity() {
 
         // Pre-fill Additional Contacts
         @Suppress("UNCHECKED_CAST")
-        val contacts = data["emergencyContacts"] as? List<kotlin.collections.Map<String, Any>> ?: emptyList()
+        val contacts = (child?.get("emergencyContacts") ?: data["emergencyContacts"]) as? List<kotlin.collections.Map<String, Any>> ?: emptyList()
         if (contacts.isNotEmpty()) {
             etC1Name.setText(contacts[0]["name"] as? String ?: "")
             etC1Rel.setText(contacts[0]["relationship"] as? String ?: "")
@@ -172,14 +204,8 @@ class StudentDetailsEmergency : AppCompatActivity() {
         btnCancel.setOnClickListener { dialog.dismiss() }
 
         btnSave.setOnClickListener {
-            val updates = mutableMapOf<String, Any>()
-            updates["firstName"] = etParentFName.text.toString()
-            updates["lastName"] = etParentLName.text.toString()
-            updates["phone"] = etParentPhone.text.toString()
-
             val updatedContacts = mutableListOf<kotlin.collections.Map<String, String>>()
             
-            // Contact 1
             if (etC1Name.text.isNotEmpty()) {
                 updatedContacts.add(mapOf(
                     "name" to etC1Name.text.toString(),
@@ -189,7 +215,6 @@ class StudentDetailsEmergency : AppCompatActivity() {
                 ))
             }
 
-            // Contact 2
             if (etC2Name.text.isNotEmpty()) {
                 updatedContacts.add(mapOf(
                     "name" to etC2Name.text.toString(),
@@ -199,27 +224,62 @@ class StudentDetailsEmergency : AppCompatActivity() {
                 ))
             }
             
-            updates["emergencyContacts"] = updatedContacts
-
-            saveEmergencyUpdates(updates, dialog)
+            saveEmergencyUpdates(etParentFName.text.toString(), etParentLName.text.toString(), etParentPhone.text.toString(), updatedContacts, dialog)
         }
 
         dialog.show()
     }
 
-    private fun saveEmergencyUpdates(updates: kotlin.collections.Map<String, Any>, dialog: AlertDialog) {
+    private fun saveEmergencyUpdates(pFName: String, pLName: String, pPhone: String, updatedContacts: List<kotlin.collections.Map<String, String>>, dialog: AlertDialog) {
         val uid = auth.currentUser?.uid ?: return
-        db.collection("parents").document(uid).update(updates)
-            .addOnSuccessListener {
-                val newData = parentData?.toMutableMap() ?: mutableMapOf()
-                newData.putAll(updates)
-                parentData = newData
-                displayEmergencyInfo(newData)
-                dialog.dismiss()
-                Toast.makeText(this, "Emergency contacts updated", Toast.LENGTH_SHORT).show()
+        val docRef = db.collection("parents").document(uid)
+        
+        val parentUpdates = mapOf(
+            "firstName" to pFName,
+            "lastName" to pLName,
+            "phone" to pPhone
+        )
+
+        docRef.update(parentUpdates).addOnSuccessListener {
+            // After updating parent info, update the specific child's emergency contacts
+            if (isFromChildrenList) {
+                docRef.get().addOnSuccessListener { document ->
+                    @Suppress("UNCHECKED_CAST")
+                    val children = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
+                    val newList = children.toMutableList()
+                    val index = newList.indexOfFirst { "${it["firstName"]} ${it["lastName"]}" == childName }
+                    if (index != -1) {
+                        val updatedChild = newList[index].toMutableMap()
+                        updatedChild["emergencyContacts"] = updatedContacts
+                        newList[index] = updatedChild
+                        docRef.update("children", newList).addOnSuccessListener {
+                            onUpdateSuccess(pFName, pLName, pPhone, updatedContacts, updatedChild, dialog)
+                        }
+                    }
+                }
+            } else {
+                val updatedChild = currentChildData?.toMutableMap() ?: mutableMapOf()
+                updatedChild["emergencyContacts"] = updatedContacts
+                docRef.update("child", updatedChild).addOnSuccessListener {
+                    onUpdateSuccess(pFName, pLName, pPhone, updatedContacts, updatedChild, dialog)
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to update emergency contacts", Toast.LENGTH_SHORT).show()
-            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Failed to update emergency contacts", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onUpdateSuccess(pFName: String, pLName: String, pPhone: String, updatedContacts: List<kotlin.collections.Map<String, String>>, updatedChild: kotlin.collections.Map<String, Any>, dialog: AlertDialog) {
+        val newData = parentData?.toMutableMap() ?: mutableMapOf()
+        newData["firstName"] = pFName
+        newData["lastName"] = pLName
+        newData["phone"] = pPhone
+        newData["emergencyContacts"] = updatedContacts
+        parentData = newData
+        currentChildData = updatedChild
+        
+        displayEmergencyInfo(newData, updatedChild)
+        dialog.dismiss()
+        Toast.makeText(this, "Emergency contacts updated", Toast.LENGTH_SHORT).show()
     }
 }

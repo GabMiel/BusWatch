@@ -5,11 +5,16 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.buswatch.common.R as CommonR
 
 class Signup1 : AppCompatActivity() {
+    private var selectedLanguage = "English"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup1)
@@ -23,8 +28,22 @@ class Signup1 : AppCompatActivity() {
         val etPassword = findViewById<EditText>(R.id.editTextTextPassword6)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextTextPassword7)
         
+        val languageSelector = findViewById<FrameLayout>(R.id.btnSignup1Language)
+        val tvSelectedLanguage = languageSelector.getChildAt(0) as TextView
+        
         val nextButton = findViewById<Button>(R.id.btnSignup1Next)
         val signinButton = findViewById<Button>(R.id.btnSignup1Signin)
+
+        languageSelector.setOnClickListener {
+            val languages = arrayOf("English", "Tagalog", "Cebuano", "Ilocano")
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Select Preferred Language")
+            builder.setItems(languages) { _, which ->
+                selectedLanguage = languages[which]
+                tvSelectedLanguage.text = selectedLanguage
+            }
+            builder.show()
+        }
 
         nextButton.setOnClickListener {
             val firstName = etFirstName.text.toString().trim()
@@ -52,6 +71,7 @@ class Signup1 : AppCompatActivity() {
                 putExtra("email", email)
                 putExtra("phone", phone)
                 putExtra("password", password)
+                putExtra("preferredLanguage", selectedLanguage)
             }
             startActivity(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

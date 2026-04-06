@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -139,12 +140,27 @@ class StudentDetailsGeneral : AppCompatActivity() {
         findViewById<TextView>(R.id.tvAddress).text = child["address"] as? String ?: parentAddress
 
         val imgAvatar = findViewById<ImageView>(R.id.imgStudentAvatar)
-        val avatarName = child["avatar"] as? String ?: "dingdong"
+        val avatarUrl = child["avatarUrl"] as? String
         
+        if (!avatarUrl.isNullOrEmpty()) {
+            try {
+                imgAvatar.setImageURI(avatarUrl.toUri())
+            } catch (_: Exception) {
+                loadDefaultAvatar(imgAvatar, child["avatar"] as? String)
+            }
+        } else {
+            loadDefaultAvatar(imgAvatar, child["avatar"] as? String)
+        }
+    }
+
+    private fun loadDefaultAvatar(imageView: ImageView, avatarName: String?) {
+        val name = avatarName ?: "user"
         @Suppress("DiscouragedApi")
-        val resId = resources.getIdentifier(avatarName, "drawable", packageName)
+        val resId = resources.getIdentifier(name, "drawable", packageName)
         if (resId != 0) {
-            imgAvatar.setImageResource(resId)
+            imageView.setImageResource(resId)
+        } else {
+            imageView.setImageResource(CommonR.drawable.user)
         }
     }
 
@@ -179,12 +195,15 @@ class StudentDetailsGeneral : AppCompatActivity() {
         etSchool.setText(child["school"] as? String ?: "")
         etAddress.setText(child["address"] as? String ?: parentAddress)
 
-        val avatarName = child["avatar"] as? String ?: "dingdong"
-        
-        @Suppress("DiscouragedApi")
-        val resId = resources.getIdentifier(avatarName, "drawable", packageName)
-        if (resId != 0) {
-            imgAvatar.setImageResource(resId)
+        val avatarUrl = child["avatarUrl"] as? String
+        if (!avatarUrl.isNullOrEmpty()) {
+            try {
+                imgAvatar.setImageURI(avatarUrl.toUri())
+            } catch (_: Exception) {
+                loadDefaultAvatar(imgAvatar, child["avatar"] as? String)
+            }
+        } else {
+            loadDefaultAvatar(imgAvatar, child["avatar"] as? String)
         }
 
         btnCancel.setOnClickListener { dialog.dismiss() }

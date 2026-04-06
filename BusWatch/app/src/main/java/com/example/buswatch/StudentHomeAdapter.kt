@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
@@ -21,12 +23,14 @@ data class StudentHome(
     val school: String,
     val status: String,
     val avatarResId: Int,
+    val avatarUrl: String? = null,
     val stop: String = "---",
     val rideOption: String = "Round Trip"
 )
 
 class StudentHomeAdapter(
-    private val students: List<StudentHome>,
+    private var students: List<StudentHome>,
+    var isInteractable: Boolean = false,
     private val onItemClick: (StudentHome) -> Unit
 ) : RecyclerView.Adapter<StudentHomeAdapter.ViewHolder>() {
 
@@ -44,6 +48,14 @@ class StudentHomeAdapter(
         val card: View = view.findViewById(R.id.studentCard)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateStudents(newStudents: List<StudentHome>) {
+        this.students = newStudents
+        notifyDataSetChanged()
+    }
+
+    fun getStudents(): List<StudentHome> = students
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_student_home, parent, false)
         return ViewHolder(view)
@@ -56,7 +68,29 @@ class StudentHomeAdapter(
         holder.school.text = student.school
         holder.status.text = student.status
         holder.stop.text = student.stop
-        holder.avatar.setImageResource(student.avatarResId)
+        
+        if (!student.avatarUrl.isNullOrEmpty()) {
+            try {
+                holder.avatar.setImageURI(student.avatarUrl.toUri())
+            } catch (_: Exception) {
+                holder.avatar.setImageResource(student.avatarResId)
+            }
+        } else {
+            holder.avatar.setImageResource(student.avatarResId)
+        }
+
+        // Background and clickability based on interaction state
+        if (isInteractable) {
+            holder.card.setBackgroundResource(CommonR.drawable.bg_card_light_green)
+            holder.card.setOnClickListener { onItemClick(student) }
+            holder.card.isClickable = true
+            holder.card.isEnabled = true
+        } else {
+            holder.card.setBackgroundResource(CommonR.drawable.bg_card_black_border)
+            holder.card.setOnClickListener(null)
+            holder.card.isClickable = false
+            holder.card.isEnabled = false
+        }
 
         // Setup Spinner
         val options = holder.itemView.context.resources.getStringArray(CommonR.array.ride_options)
@@ -81,8 +115,6 @@ class StudentHomeAdapter(
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
-        holder.card.setOnClickListener { onItemClick(student) }
     }
 
     private fun updateRideOptionInFirebase(student: StudentHome, option: String, view: View) {

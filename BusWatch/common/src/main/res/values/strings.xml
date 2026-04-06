@@ -15,7 +15,7 @@
     <string name="driver_information">Driver Information</string>
     <string name="name">Name</string>
     <string name="mike_johnson">Mike Johnson</string>
-    <string name="email">Email*</string>
+    <string name="email">Email</string>
     <string name="john_smith_school_com">john.smith@school.com</string>
     <string name="phone">Phone</string>
     <string name="_555_0101">555&#8211;0101</string>
@@ -38,6 +38,14 @@
     <string name="grade_1">Grade 1</string>
     <string name="at_home">At Home</string>
     <string name="on_the_bus">On the Bus</string>
+
+    <!-- Student Statuses -->
+    <string name="status_at_home">At Home</string>
+    <string name="status_heading_to_stop">Heading to Stop</string>
+    <string name="status_on_board">On Board</string>
+    <string name="status_at_school">At School</string>
+    <string name="status_heading_home">Heading Home</string>
+
     <string name="medical_details">Medical Details</string>
     <string name="general">General</string>
     <string name="emergency">Emergency</string>
@@ -76,7 +84,7 @@
     <string name="allow_access_to_your_location">Allow access to your location</string>
     <string name="by_allowing_access_bus_tracking_app_finds_your_location_and_provides_you_with_best_rides">By allowing access bus tracking app finds your location and provides you with best rides</string>
     <string name="sign_in">Sign In</string>
-    <string name="password">Password*</string>
+    <string name="password">Password</string>
     <string name="enter_email">Enter Email</string>
     <string name="enter_password">Enter Password</string>
     <string name="show_password">Show password</string>
@@ -112,9 +120,9 @@
     <string name="when_your_child_boards_the_bus">When your child boards the bus</string>
     <string name="child_boarding">Child Boarding</string>
     <string name="bus_arrival">Bus Arrival</string>
-    <string name="current_password">Current Password*</string>
-    <string name="new_password">New Password*</string>
-    <string name="confirm_password">Confirm Password*</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="when_there_are_route_delays">When there are route delays</string>
     <string name="delays">Delays</string>
     <string name="security">Security</string>
@@ -137,30 +145,30 @@
     <string name="suffix">Suffix</string>
     <string name="enter_your_phone_number">Enter your phone number</string>
     <string name="create_a_password">Create a password</string>
-    <string name="first_name">First Name*</string>
-    <string name="phone_number">Phone Number*</string>
-    <string name="last_name">Last Name*</string>
-    <string name="preffered_language">Preferred Language*</string>
+    <string name="first_name">First Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="last_name">Last Name</string>
+    <string name="preffered_language">Preferred Language</string>
     <string name="enter_your_last_name">Enter your last name</string>
     <string name="middle_name">Middle Name</string>
     <string name="enter_your_middle_name">Enter your middle name</string>
-    <string name="enter_your_suffix">Enter your suffix</string>
+    <string name="enter_your_suffix">e.g., Jr., Sr.</string>
     <string name="engish">English</string>
     <string name="medical_icon" />
     <string name="add_photo">Add Photo</string>
-    <string name="child_s_first_name">Child’s First Name*</string>
+    <string name="child_s_first_name">Child’s First Name</string>
     <string name="add_another_child">+ Add Another Child</string>
-    <string name="child_s_last_name">Child’s Last Name*</string>
+    <string name="child_s_last_name">Child’s Last Name</string>
     <string name="back">Back</string>
     <string name="enter_child_s_last_name">Enter child’s last name</string>
     <string name="child_s_middle_name">Child’s Middle Name</string>
     <string name="enter_child_s_name">Enter child’s name</string>
     <string name="class_grade">Class/Grade</string>
     <string name="child_s_suffix">Child’s Suffix</string>
-    <string name="enter_child_s_suffix">Enter child’s suffix</string>
-    <string name="enrollment_form">Enrollment Form*</string>
+    <string name="enter_child_s_suffix">e.g., Jr., III</string>
+    <string name="enrollment_form">Enrollment Form</string>
     <string name="enter_child_s_middle">Enter child’s middle&#8230;</string>
-    <string name="age">Age*</string>
+    <string name="age">Age</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="enter_child_s_first_name">Enter child’s first name</string>
     <string name="child_1">Child 1</string>
@@ -175,7 +183,7 @@
     <string name="relationship">Relationship</string>
     <string name="emergency_contact_2_optional">Emergency Contact 2 (Optional)</string>
     <string name="contact_phone">Contact Phone</string>
-    <string name="emergency_contact_1">Emergency Contact 1*</string>
+    <string name="emergency_contact_1">Emergency Contact 1</string>
     <string name="e_g_inhaler_epipen_none">e.g., Inhaler, EpiPen (None)</string>
     <string name="e_g_asthma_diabetes_none">e.g., Asthma, Diabetes (None)</string>
     <string name="medical_conditions_optional">Medical Conditions (Optional)</string>
@@ -184,7 +192,7 @@
     <string name="allergies_optional">Allergies (Optional)</string>
     <string name="e_g_peanuts_shellfish_none">e.g., Peanuts, Shellfish (None)</string>
     <string name="blood_type_optional">Blood Type (Optional)</string>
-    <string name="medical_information_for_child_s_name">Medical Information for: Child’s Name</string>
+    <string name="medical_information_for_child_s_name">Medical Information for: %1$s %2$s</string>
     <string name="register">Register</string>
     <string name="authorized_pickup">Authorized Pickup</string>
     <string name="father">Father</string>
@@ -289,4 +297,6 @@
     <string name="password_requirements">Password must contain at least 8 characters, including 1 capital letter and 1 number.</string>
     <string name="re_enter_password">Re-enter password</string>
     <string name="log_in_caps">LOG IN</string>
+    <string name="back_caps">BACK</string>
+    <string name="asterisk">*</string>
 </resources>

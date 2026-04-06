@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
 
@@ -14,7 +15,8 @@ data class ChildDetail(
     val grade: String,
     val school: String,
     val status: String,
-    val avatarName: String? = null
+    val avatarName: String? = null,
+    val avatarUrl: String? = null
 )
 
 class DetailsChildAdapter(
@@ -43,19 +45,31 @@ class DetailsChildAdapter(
         holder.school.text = child.school
         holder.status.text = child.status
         
-        // Handle dynamic avatar loading from drawable resources
-        val context = holder.itemView.context
-        val avatarResId = if (!child.avatarName.isNullOrEmpty()) {
+        // Handle Avatar loading: 1. URL, 2. Name, 3. Placeholder
+        if (!child.avatarUrl.isNullOrEmpty()) {
+            try {
+                holder.avatar.setImageURI(child.avatarUrl.toUri())
+            } catch (_: Exception) {
+                setDefaultAvatar(holder.avatar, child.avatarName)
+            }
+        } else {
+            setDefaultAvatar(holder.avatar, child.avatarName)
+        }
+        
+        holder.btnView.setOnClickListener { onViewClick(child) }
+        holder.itemView.setOnClickListener { onViewClick(child) }
+    }
+
+    private fun setDefaultAvatar(imageView: ImageView, avatarName: String?) {
+        val context = imageView.context
+        val avatarResId = if (!avatarName.isNullOrEmpty()) {
             @Suppress("DiscouragedApi")
-            val resId = context.resources.getIdentifier(child.avatarName, "drawable", context.packageName)
+            val resId = context.resources.getIdentifier(avatarName, "drawable", context.packageName)
             if (resId != 0) resId else CommonR.drawable.ic_person_placeholder
         } else {
             CommonR.drawable.ic_person_placeholder
         }
-        holder.avatar.setImageResource(avatarResId)
-        
-        holder.btnView.setOnClickListener { onViewClick(child) }
-        holder.itemView.setOnClickListener { onViewClick(child) }
+        imageView.setImageResource(avatarResId)
     }
 
     override fun getItemCount() = children.size

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.buswatch.admin"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24

@@ -1,15 +1,36 @@
 package com.example.buswatch
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.buswatch.common.R as CommonR
 
 class Signup2 : AppCompatActivity() {
+
+    private var avatarUri: Uri? = null
+    private var enrollmentUri: Uri? = null
+
+    private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            avatarUri = it
+            findViewById<ImageView>(R.id.imageView39).setImageURI(it)
+        }
+    }
+
+    private val pickEnrollmentLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            enrollmentUri = it
+            findViewById<ImageView>(R.id.ivEnrollmentPreview).setImageURI(it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup2)
@@ -21,8 +42,18 @@ class Signup2 : AppCompatActivity() {
         val etChildAge = findViewById<EditText>(R.id.editTextText11)
         val etChildGrade = findViewById<EditText>(R.id.editTextText12)
 
+        val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
+        val btnUploadPhoto = findViewById<Button>(R.id.btnSignup2UploadPhoto)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
         val nextButton = findViewById<Button>(R.id.btnSignup2Next)
+
+        btnAddPhoto.setOnClickListener {
+            pickAvatarLauncher.launch("image/*")
+        }
+
+        btnUploadPhoto.setOnClickListener {
+            pickEnrollmentLauncher.launch("image/*")
+        }
 
         backButton.setOnClickListener {
             finish()
@@ -55,6 +86,9 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childSuffix", etChildSuffix.text.toString().trim())
                 putExtra("childAge", childAge)
                 putExtra("childGrade", childGrade)
+                // Pass selected image URIs as strings
+                putExtra("childAvatarUrl", avatarUri?.toString())
+                putExtra("enrollmentFormUrl", enrollmentUri?.toString())
             }
             startActivity(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

@@ -1,6 +1,7 @@
 package com.example.buswatch
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
@@ -50,7 +52,7 @@ class ParentDetails : AppCompatActivity() {
                     // 1. Header & Profile Info
                     val fName = document.getString("firstName") ?: ""
                     val lName = document.getString("lastName") ?: ""
-                    val fullName = "$fName $lName"
+                    val fullName = "$fName $lName".trim()
                     
                     findViewById<TextView>(R.id.tvHeaderSub).text = fullName
                     findViewById<TextView>(R.id.textView46).text = fullName
@@ -58,45 +60,33 @@ class ParentDetails : AppCompatActivity() {
                     findViewById<TextView>(R.id.textView50).text = document.getString("phone") ?: ""
                     
                     val tvStatus = findViewById<TextView>(R.id.textView52)
-                    val status = document.getString("status") ?: "Approved"
-                    tvStatus.text = status
+                    val status = document.getString("status") ?: "pending"
+                    tvStatus.text = status.uppercase()
+                    
+                    // Handle Status Background Color
+                    if (status.lowercase() == "approved") {
+                        tvStatus.backgroundTintList = ColorStateList.valueOf("#D4EDDA".toColorInt())
+                        tvStatus.setTextColor("#155724".toColorInt())
+                    } else {
+                        tvStatus.backgroundTintList = ColorStateList.valueOf("#FFF3CD".toColorInt())
+                        tvStatus.setTextColor("#856404".toColorInt())
+                    }
 
                     // 2. Children RecyclerView
                     val childrenList = mutableListOf<ChildDetail>()
                     
-                    val childData = document.get("child")
-                    if (childData is kotlin.collections.Map<*, *>) {
-                        val cfName = childData["firstName"] as? String ?: ""
-                        val clName = childData["lastName"] as? String ?: ""
-                        val cGrade = childData["grade"] as? String ?: ""
-                        val cAvatar = childData["avatar"] as? String
-                        
-                        childrenList.add(ChildDetail(
-                            name = "$cfName $clName",
-                            grade = cGrade,
-                            school = childData["school"] as? String ?: "The Immaculate Mother Academy Inc.",
-                            status = childData["status"] as? String ?: "AT HOME",
-                            avatarName = cAvatar
-                        ))
+                    // 2a. Check Single Child (Primary)
+                    @Suppress("UNCHECKED_CAST")
+                    val childData = document.get("child") as? kotlin.collections.Map<String, Any>
+                    if (childData != null) {
+                        childrenList.add(mapToChildDetail(childData))
                     }
                     
-                    val childrenListData = document.get("children")
-                    if (childrenListData is List<*>) {
-                        childrenListData.forEach { item ->
-                            if (item is kotlin.collections.Map<*, *>) {
-                                val cfName = item["firstName"] as? String ?: ""
-                                val clName = item["lastName"] as? String ?: ""
-                                val cGrade = item["grade"] as? String ?: ""
-                                val cAvatar = item["avatar"] as? String
-                                childrenList.add(ChildDetail(
-                                    name = "$cfName $clName",
-                                    grade = cGrade,
-                                    school = item["school"] as? String ?: "The Immaculate Mother Academy Inc.",
-                                    status = item["status"] as? String ?: "AT HOME",
-                                    avatarName = cAvatar
-                                ))
-                            }
-                        }
+                    // 2b. Check Children List (Multiple)
+                    @Suppress("UNCHECKED_CAST")
+                    val childrenListData = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                    childrenListData?.forEach { item ->
+                        childrenList.add(mapToChildDetail(item))
                     }
                     
                     val rvChildren = findViewById<RecyclerView>(R.id.rvDetailsChildren)
@@ -118,23 +108,20 @@ class ParentDetails : AppCompatActivity() {
                     val email = document.getString("email") ?: ""
                     if (email.isNotEmpty()) contactList.add(ContactDetail("Email", email))
                     
-                    // Add secondary emergency contacts
-                    val contactsData = document.get("emergencyContacts")
-                    if (contactsData is List<*>) {
-                        contactsData.forEach { item ->
-                            if (item is kotlin.collections.Map<*, *>) {
-                                val name = item["name"] as? String ?: ""
-                                val cPhone = item["phone"] as? String ?: ""
-                                val relationship = item["relationship"] as? String ?: ""
-                                if (name.isNotEmpty() || cPhone.isNotEmpty()) {
-                                    contactList.add(ContactDetail(
-                                        label = "Emergency Contact",
-                                        value = cPhone,
-                                        name = name,
-                                        relationship = relationship
-                                    ))
-                                }
-                            }
+                    // Add secondary emergency contacts from list
+                    @Suppress("UNCHECKED_CAST")
+                    val contactsData = document.get("emergencyContacts") as? List<kotlin.collections.Map<String, Any>>
+                    contactsData?.forEach { item ->
+                        val name = item["name"] as? String ?: ""
+                        val cPhone = item["phone"] as? String ?: ""
+                        val relationship = item["relationship"] as? String ?: ""
+                        if (name.isNotEmpty() || cPhone.isNotEmpty()) {
+                            contactList.add(ContactDetail(
+                                label = "Emergency Contact",
+                                value = cPhone,
+                                name = name,
+                                relationship = relationship
+                            ))
                         }
                     }
                     
@@ -146,6 +133,18 @@ class ParentDetails : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun mapToChildDetail(map: kotlin.collections.Map<String, Any>): ChildDetail {
+        val cfName = map["firstName"] as? String ?: ""
+        val clName = map["lastName"] as? String ?: ""
+        return ChildDetail(
+            name = "$cfName $clName".trim(),
+            grade = map["grade"] as? String ?: "---",
+            school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
+            status = map["status"] as? String ?: "AT HOME",
+            avatarUrl = map["avatarUrl"] as? String
+        )
     }
 
     private fun showEditProfileDialog() {

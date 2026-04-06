@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.buswatch.common.R as CommonR
 
 class Login : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -38,8 +39,12 @@ class Login : AppCompatActivity() {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
                 passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye) // Using ic_eye for hidden state or visible? 
+                // Usually ic_eye means "viewing" and ic_eye_off means "hidden"
+                // Given common resources, let's assume we toggle between 'view' and 'ic_eye'
             } else {
                 passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                viewPasswordButton.setImageResource(CommonR.drawable.view)
             }
             passwordEditText.setSelection(passwordEditText.text.length)
         }

@@ -1,11 +1,15 @@
 package com.example.buswatch
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
@@ -14,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var selectedBloodType = "Select blood type"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +27,14 @@ class Signup3 : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        val etBloodType = findViewById<EditText>(R.id.editTextText2)
+        // Display child's name from Signup2
+        val childFirstName = intent.getStringExtra("childFirstName") ?: "Child"
+        val childLastName = intent.getStringExtra("childLastName") ?: "Name"
+        findViewById<TextView>(R.id.tvChildNameDisplay).text = getString(CommonR.string.medical_information_for_child_s_name, childFirstName, childLastName)
+
+        val bloodTypeSelector = findViewById<FrameLayout>(R.id.btnSignup3BloodType)
+        val tvSelectedBloodType = bloodTypeSelector.getChildAt(0) as TextView
+        
         val etAllergies = findViewById<EditText>(R.id.editTextText13)
         val etMedications = findViewById<EditText>(R.id.editTextText14)
         val etConditions = findViewById<EditText>(R.id.editTextText15)
@@ -37,6 +49,18 @@ class Signup3 : AppCompatActivity() {
 
         val backButton = findViewById<Button>(R.id.btnSignup3Back)
         val registerButton = findViewById<Button>(R.id.btnSignup3Register)
+
+        bloodTypeSelector.setOnClickListener {
+            val bloodTypes = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown")
+            AlertDialog.Builder(this)
+                .setTitle("Select Blood Type")
+                .setItems(bloodTypes) { _, which ->
+                    selectedBloodType = bloodTypes[which]
+                    tvSelectedBloodType.text = selectedBloodType
+                    tvSelectedBloodType.setTextColor(Color.BLACK)
+                }
+                .show()
+        }
 
         backButton.setOnClickListener {
             finish()
@@ -60,7 +84,7 @@ class Signup3 : AppCompatActivity() {
 
             registerButton.isEnabled = false
             registerUser(
-                etBloodType.text.toString().trim(),
+                if (selectedBloodType == "Select blood type") "" else selectedBloodType,
                 etAllergies.text.toString().trim(),
                 etMedications.text.toString().trim(),
                 etConditions.text.toString().trim(),
@@ -106,7 +130,6 @@ class Signup3 : AppCompatActivity() {
         c1Name: String, c1Phone: String, c1Relation: String,
         c2Name: String, c2Phone: String, c2Relation: String
     ) {
-        // Renamed collection from "users" to "parents" as requested
         val userData = hashMapOf(
             "role" to "parent",
             "firstName" to intent.getStringExtra("firstName"),
@@ -115,6 +138,7 @@ class Signup3 : AppCompatActivity() {
             "suffix" to intent.getStringExtra("suffix"),
             "email" to intent.getStringExtra("email"),
             "phone" to intent.getStringExtra("phone"),
+            "preferredLanguage" to intent.getStringExtra("preferredLanguage"),
             
             "child" to hashMapOf(
                 "firstName" to intent.getStringExtra("childFirstName"),

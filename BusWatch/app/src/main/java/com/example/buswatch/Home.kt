@@ -3,11 +3,14 @@ package com.example.buswatch
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +26,11 @@ class Home : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var tvNoStudents: TextView
     private lateinit var rvStudentsHome: RecyclerView
+    private lateinit var btnPickUp: TextView
+    
+    private var parentStatus: String = "pending"
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var timeRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,19 +45,17 @@ class Home : AppCompatActivity() {
         rvStudentsHome = findViewById(R.id.rvStudentsHome)
         progressBar = findViewById(R.id.progressBarHome)
         tvNoStudents = findViewById(R.id.tvNoStudents)
+        btnPickUp = findViewById(R.id.btnPickUp)
         
         val tvGreeting = findViewById<TextView>(R.id.textView90)
         val tvTime = findViewById<TextView>(R.id.textView91)
 
-        // Set current time
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
-        val formattedHour = if (hour % 12 == 0) 12 else hour % 12
-        tvTime.text = String.format(Locale.getDefault(), "%d:%02d %s", formattedHour, minute, amPm)
+        // Setup real-time clock
+        setupRealTimeClock(tvTime)
 
         // Set greeting based on time of day
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val greetingPrefix = when (hour) {
             in 0..11 -> "Good Morning"
             in 12..16 -> "Good Afternoon"
@@ -57,6 +63,25 @@ class Home : AppCompatActivity() {
         }
 
         fetchUserData(greetingPrefix, tvGreeting)
+
+        btnPickUp.setOnClickListener {
+            if (parentStatus.lowercase() == "approved") {
+                val adapter = rvStudentsHome.adapter as? StudentHomeAdapter
+                if (adapter != null) {
+                    // Update all students' status to "Heading to Stop"
+                    val currentStudents = adapter.getStudents()
+                    val headingToStopText = getString(CommonR.string.status_heading_to_stop)
+                    val updatedStudents = currentStudents.map { it.copy(status = headingToStopText) }
+                    
+                    adapter.isInteractable = true
+                    adapter.updateStudents(updatedStudents)
+
+                    Toast.makeText(this, "Tracking enabled. Select a student card.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                showApprovalPendingDialog()
+            }
+        }
 
         btnHomeAccount.setOnClickListener {
             val intent = Intent(this, ParentDetails::class.java)
@@ -92,6 +117,29 @@ class Home : AppCompatActivity() {
         }
     }
 
+    private fun setupRealTimeClock(tvTime: TextView) {
+        timeRunnable = object : Runnable {
+            override fun run() {
+                val calendar = Calendar.getInstance()
+                val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                val minute = calendar.get(Calendar.MINUTE)
+                val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+                val formattedHour = if (hour % 12 == 0) 12 else hour % 12
+                tvTime.text = String.format(Locale.getDefault(), "%d:%02d %s", formattedHour, minute, amPm)
+                
+                // Update every minute, syncing with the start of the next minute
+                val seconds = calendar.get(Calendar.SECOND)
+                handler.postDelayed(this, (60 - seconds) * 1000L)
+            }
+        }
+        handler.post(timeRunnable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(timeRunnable)
+    }
+
     private fun fetchUserData(greetingPrefix: String, tvGreeting: TextView) {
         val currentUser = auth.currentUser ?: return
 
@@ -104,6 +152,9 @@ class Home : AppCompatActivity() {
                     val firstName = document.getString("firstName") ?: "User"
                     val greeting = "$greetingPrefix, $firstName!"
                     tvGreeting.text = greeting
+                    
+                    // Fetch parent's approval status
+                    parentStatus = document.getString("status") ?: "pending"
 
                     val studentList = mutableListOf<StudentHome>()
                     val parentAddress = document.getString("address") ?: "---"
@@ -141,6 +192,7 @@ class Home : AppCompatActivity() {
             school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
             status = map["status"] as? String ?: "At Home",
             avatarResId = CommonR.drawable.yans,
+            avatarUrl = map["avatarUrl"] as? String,
             stop = map["address"] as? String ?: parentAddress,
             rideOption = map["rideOption"] as? String ?: "Round Trip"
         )
@@ -155,6 +207,7 @@ class Home : AppCompatActivity() {
             rvStudentsHome.visibility = View.VISIBLE
             rvStudentsHome.layoutManager = LinearLayoutManager(this)
             rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
+                // This block executes when a card is clicked (only possible if isInteractable is true)
                 val intent = Intent(this, Map::class.java)
                 intent.putExtra("childName", student.name)
                 startActivity(intent)
@@ -166,5 +219,13 @@ class Home : AppCompatActivity() {
                 }
             }
         }
+    }
+    
+    private fun showApprovalPendingDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Account Pending")
+            .setMessage("Your account is currently waiting for admin approval. You will be able to track your child once your account is approved.")
+            .setPositiveButton("OK", null)
+            .show()
     }
 }
