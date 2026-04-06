@@ -55,6 +55,8 @@
                 android:id="@+id/rlStudentAvatar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -130,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/date_of_birth" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/age" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
                     <TextView android:id="@+id/tvDob" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_3_15_2020" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
 
@@ -161,7 +163,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_grade" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_label" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
                     <TextView android:id="@+id/tvClass" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_1a" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
             </GridLayout>

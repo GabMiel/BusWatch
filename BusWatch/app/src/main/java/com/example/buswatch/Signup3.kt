@@ -2,6 +2,7 @@ package com.example.buswatch
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -12,13 +13,16 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
     private var selectedBloodType = "Select blood type"
 
     private lateinit var etAllergies: EditText
@@ -37,6 +41,7 @@ class Signup3 : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
 
         // Display child's name from Signup2
         val childFirstName = intent.getStringExtra("childFirstName") ?: "Child"
@@ -168,7 +173,7 @@ class Signup3 : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
-                        saveUserData(uid, bloodType, allergies, medications, conditions, 
+                        uploadImagesAndSaveData(uid, bloodType, allergies, medications, conditions, 
                             c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation)
                     }
                 } else {
@@ -178,10 +183,72 @@ class Signup3 : AppCompatActivity() {
             }
     }
 
-    private fun saveUserData(
+    private fun uploadImagesAndSaveData(
         uid: String, bloodType: String, allergies: String, medications: String, conditions: String,
         c1Name: String, c1Phone: String, c1Relation: String,
         c2Name: String, c2Phone: String, c2Relation: String
+    ) {
+        val primaryAvatarUri = intent.getStringExtra("childAvatarUrl")?.toUri()
+        val primaryEnrollmentUri = intent.getStringExtra("enrollmentFormUrl")?.toUri()
+        
+        @Suppress("UNCHECKED_CAST")
+        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
+
+        val uploadTasks = mutableListOf<Pair<String, Uri>>()
+        
+        if (primaryAvatarUri != null && primaryAvatarUri.scheme == "content") {
+            uploadTasks.add("primaryAvatar" to primaryAvatarUri)
+        }
+        if (primaryEnrollmentUri != null && primaryEnrollmentUri.scheme == "content") {
+            uploadTasks.add("primaryEnrollment" to primaryEnrollmentUri)
+        }
+        
+        additionalChildren.forEachIndexed { index, child ->
+            val avatarUri = (child["avatarUrl"] as? String)?.toUri()
+            val enrollmentUri = (child["enrollmentFormUrl"] as? String)?.toUri()
+            if (avatarUri != null && avatarUri.scheme == "content") {
+                uploadTasks.add("child_${index}_avatar" to avatarUri)
+            }
+            if (enrollmentUri != null && enrollmentUri.scheme == "content") {
+                uploadTasks.add("child_${index}_enrollment" to enrollmentUri)
+            }
+        }
+
+        if (uploadTasks.isEmpty()) {
+            saveUserData(uid, bloodType, allergies, medications, conditions, 
+                c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, kotlin.collections.emptyMap())
+            return
+        }
+
+        val uploadedUrls = mutableMapOf<String, String>()
+        var completedCount = 0
+
+        uploadTasks.forEach { (key, uri) ->
+            val ref = storage.reference.child("parents/$uid/$key.jpg")
+            ref.putFile(uri)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) task.exception?.let { throw it }
+                    ref.downloadUrl
+                }
+                .addOnCompleteListener { task ->
+                    completedCount++
+                    if (task.isSuccessful) {
+                        uploadedUrls[key] = task.result.toString()
+                    }
+                    
+                    if (completedCount == uploadTasks.size) {
+                        saveUserData(uid, bloodType, allergies, medications, conditions, 
+                            c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, uploadedUrls)
+                    }
+                }
+        }
+    }
+
+    private fun saveUserData(
+        uid: String, bloodType: String, allergies: String, medications: String, conditions: String,
+        c1Name: String, c1Phone: String, c1Relation: String,
+        c2Name: String, c2Phone: String, c2Relation: String,
+        uploadedUrls: kotlin.collections.Map<String, String>
     ) {
         val userData = hashMapOf<String, Any>(
             "role" to "parent",
@@ -202,8 +269,8 @@ class Signup3 : AppCompatActivity() {
                 "age" to (intent.getStringExtra("childAge") ?: ""),
                 "grade" to (intent.getStringExtra("childGrade") ?: ""),
                 "school" to (intent.getStringExtra("childSchool") ?: ""),
-                "avatarUrl" to (intent.getStringExtra("childAvatarUrl") ?: ""),
-                "enrollmentFormUrl" to (intent.getStringExtra("enrollmentFormUrl") ?: "")
+                "avatarUrl" to (uploadedUrls["primaryAvatar"] ?: intent.getStringExtra("childAvatarUrl") ?: ""),
+                "enrollmentFormUrl" to (uploadedUrls["primaryEnrollment"] ?: intent.getStringExtra("enrollmentFormUrl") ?: "")
             ),
             
             "medical" to hashMapOf(
@@ -219,11 +286,16 @@ class Signup3 : AppCompatActivity() {
             )
         )
 
-        // Handle additional children if any
         @Suppress("UNCHECKED_CAST")
-        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any>>
+        val additionalChildren = intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any?>>
         if (additionalChildren != null) {
-            userData["children"] = additionalChildren
+            val updatedChildren = additionalChildren.mapIndexed { index, child ->
+                val newChild = HashMap(child)
+                newChild["avatarUrl"] = uploadedUrls["child_${index}_avatar"] ?: child["avatarUrl"] ?: ""
+                newChild["enrollmentFormUrl"] = uploadedUrls["child_${index}_enrollment"] ?: child["enrollmentFormUrl"] ?: ""
+                newChild
+            }
+            userData["children"] = updatedChildren
         }
 
         db.collection("parents").document(uid).set(userData)

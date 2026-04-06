@@ -38,9 +38,12 @@
 
             <!-- Student Picture (Style matching signup2) -->
             <RelativeLayout
+                android:id="@+id/rlEditStudentAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <View
                     android:id="@+id/viewAvatarBg"
@@ -71,7 +74,8 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_edit"
                     app:tint="#000000"
-                    android:contentDescription="@string/edit" />
+                    android:contentDescription="@string/edit"
+                    android:clickable="false" />
             </RelativeLayout>
 
             <!-- First Name -->
@@ -142,7 +146,7 @@
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp" />
 
-            <!-- DOB and Grade -->
+            <!-- Age and Grade -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,7 +162,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/date_of_birth"
+                        android:text="@string/age"
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -169,9 +173,9 @@
                         android:layout_marginTop="4dp"
                         android:background="@drawable/textfield_shape"
                         android:backgroundTint="#F5F5F5"
-                        android:hint="@string/_3_15_2020"
-                        android:inputType="date"
-                        android:autofillHints="personBirthDate"
+                        android:hint="@string/age"
+                        android:inputType="number"
+                        android:autofillHints="none"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -220,7 +224,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/class_grade"
+                        android:text="@string/class_label"
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />

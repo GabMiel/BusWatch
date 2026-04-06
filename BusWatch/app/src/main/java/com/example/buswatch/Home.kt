@@ -185,7 +185,7 @@ class Home : AppCompatActivity() {
             grade = map["grade"] as? String ?: "---",
             school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
             status = map["status"] as? String ?: "At Home",
-            avatarResId = CommonR.drawable.yans,
+            avatarResId = CommonR.drawable.user,
             avatarUrl = map["avatarUrl"] as? String,
             stop = map["address"] as? String ?: parentAddress,
             rideOption = map["rideOption"] as? String ?: "Round Trip"

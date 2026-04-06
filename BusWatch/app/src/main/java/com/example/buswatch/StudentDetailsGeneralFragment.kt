@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,19 +10,33 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class StudentDetailsGeneralFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
     private var childName: String? = null
     private var currentChildData: kotlin.collections.Map<String, Any>? = null
     private var isFromChildrenList: Boolean = false
+    
+    private var tempAvatarUri: Uri? = null
+    private lateinit var avatarView: ImageView
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            tempAvatarUri = it
+            avatarView.setImageURI(it)
+            uploadNewAvatar(it)
+        }
+    }
 
     companion object {
         fun newInstance(childName: String?): StudentDetailsGeneralFragment {
@@ -41,7 +56,14 @@ class StudentDetailsGeneralFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
         childName = arguments?.getString("childName")
+
+        avatarView = view.findViewById(R.id.imgStudentAvatar)
+        
+        view.findViewById<View>(R.id.rlStudentAvatar).setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
 
         view.findViewById<View>(R.id.btnGeneralEdit).setOnClickListener {
             showEditDialog()
@@ -94,22 +116,76 @@ class StudentDetailsGeneralFragment : Fragment() {
             v.findViewById<TextView>(R.id.tvDob).text = child["age"] as? String ?: "---"
             v.findViewById<TextView>(R.id.tvAddress).text = child["address"] as? String ?: "---"
             v.findViewById<TextView>(R.id.tvSchool).text = child["school"] as? String ?: "The Immaculate Mother Academy Inc."
-            v.findViewById<TextView>(R.id.tvStudentId).text = child["studentId"] as? String ?: "SE2024001"
-            v.findViewById<TextView>(R.id.tvStudentClassBadge).text = child["class"] as? String ?: "Grade 1A"
-            v.findViewById<TextView>(R.id.tvClass).text = child["class"] as? String ?: "1A"
+            v.findViewById<TextView>(R.id.tvStudentId).text = child["studentId"] as? String ?: "---"
+            
+            val classValue = child["class"] as? String ?: ""
+            v.findViewById<TextView>(R.id.tvStudentClassBadge).text = classValue
+            v.findViewById<TextView>(R.id.tvClass).text = classValue
+            
+            v.findViewById<TextView>(R.id.tvStudentClassBadge).visibility = if (classValue.isEmpty()) View.GONE else View.VISIBLE
 
             // Load Avatar
             val avatarUrl = child["avatarUrl"] as? String
-            val avatarView = v.findViewById<ImageView>(R.id.imgStudentAvatar)
             if (!avatarUrl.isNullOrEmpty()) {
                 Glide.with(this)
                     .load(avatarUrl)
-                    .placeholder(CommonR.drawable.child)
-                    .error(CommonR.drawable.child)
+                    .placeholder(CommonR.drawable.user)
+                    .error(CommonR.drawable.user)
                     .circleCrop()
                     .into(avatarView)
             } else {
-                avatarView.setImageResource(CommonR.drawable.child)
+                avatarView.setImageResource(CommonR.drawable.user)
+            }
+        }
+    }
+
+    private fun uploadNewAvatar(uri: Uri) {
+        val uid = auth.currentUser?.uid ?: return
+        val fileName = if (isFromChildrenList) "child_${childName?.replace(" ", "_")}_avatar.jpg" else "primaryAvatar.jpg"
+        val ref = storage.reference.child("parents/$uid/$fileName")
+        
+        Toast.makeText(context, "Uploading photo...", Toast.LENGTH_SHORT).show()
+        
+        ref.putFile(uri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) task.exception?.let { throw it }
+                ref.downloadUrl
+            }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUrl = task.result.toString()
+                    updateAvatarUrlInFirestore(downloadUrl)
+                } else {
+                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun updateAvatarUrlInFirestore(url: String) {
+        val uid = auth.currentUser?.uid ?: return
+        val docRef = db.collection("parents").document(uid)
+        
+        val updatedChild = currentChildData?.toMutableMap() ?: mutableMapOf()
+        updatedChild["avatarUrl"] = url
+        
+        if (isFromChildrenList) {
+            docRef.get().addOnSuccessListener { document ->
+                @Suppress("UNCHECKED_CAST")
+                val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
+                val newList = childrenList.toMutableList()
+                val index = newList.indexOfFirst { "${it["firstName"]} ${it["lastName"]}" == childName }
+                if (index != -1) {
+                    newList[index] = updatedChild
+                    docRef.update("children", newList).addOnSuccessListener {
+                        currentChildData = updatedChild
+                        Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        } else {
+            docRef.update("child", updatedChild).addOnSuccessListener {
+                currentChildData = updatedChild
+                Toast.makeText(context, "Photo updated", Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show())
             }
         }
     }
@@ -124,21 +200,27 @@ class StudentDetailsGeneralFragment : Fragment() {
         val etFirstName = dialogView.findViewById<EditText>(R.id.etEditFirstName)
         val etLastName = dialogView.findViewById<EditText>(R.id.etEditLastName)
         val etStudentId = dialogView.findViewById<EditText>(R.id.etEditStudentId)
-        val etDob = dialogView.findViewById<EditText>(R.id.etEditDob)
+        val etAge = dialogView.findViewById<EditText>(R.id.etEditDob)
         val etGrade = dialogView.findViewById<EditText>(R.id.etEditGrade)
         val etClass = dialogView.findViewById<EditText>(R.id.etEditClass)
         val etSchool = dialogView.findViewById<EditText>(R.id.etEditSchool)
         val etAddress = dialogView.findViewById<EditText>(R.id.etEditAddress)
+        val imgEditAvatar = dialogView.findViewById<ImageView>(R.id.imgEditStudentAvatar)
 
         // Pre-fill
         etFirstName.setText(child["firstName"] as? String ?: "")
         etLastName.setText(child["lastName"] as? String ?: "")
         etStudentId.setText(child["studentId"] as? String ?: "")
-        etDob.setText(child["age"] as? String ?: "")
+        etAge.setText(child["age"] as? String ?: "")
         etGrade.setText(child["grade"] as? String ?: "")
         etClass.setText(child["class"] as? String ?: "")
         etSchool.setText(child["school"] as? String ?: "")
         etAddress.setText(child["address"] as? String ?: "")
+        
+        val avatarUrl = child["avatarUrl"] as? String
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(this).load(avatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(imgEditAvatar)
+        }
 
         dialogView.findViewById<Button>(R.id.btnCancelEdit).setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<Button>(R.id.btnSaveStudent).setOnClickListener {
@@ -146,7 +228,7 @@ class StudentDetailsGeneralFragment : Fragment() {
             updatedData["firstName"] = etFirstName.text.toString()
             updatedData["lastName"] = etLastName.text.toString()
             updatedData["studentId"] = etStudentId.text.toString()
-            updatedData["age"] = etDob.text.toString()
+            updatedData["age"] = etAge.text.toString()
             updatedData["grade"] = etGrade.text.toString()
             updatedData["class"] = etClass.text.toString()
             updatedData["school"] = etSchool.text.toString()

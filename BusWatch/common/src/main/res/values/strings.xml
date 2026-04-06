@@ -164,7 +164,7 @@
     <string name="enter_child_s_last_name">Enter child’s last name</string>
     <string name="child_s_middle_name">Child’s Middle Name</string>
     <string name="enter_child_s_name">Enter child’s name</string>
-    <string name="class_grade">Class/Grade</string>
+    <string name="class_grade">Class</string>
     <string name="child_s_suffix">Child’s Suffix</string>
     <string name="enter_child_s_suffix">e.g., Jr., III</string>
     <string name="enrollment_form">Enrollment Form</string>
@@ -302,4 +302,5 @@
     <string name="log_in_caps">LOG IN</string>
     <string name="back_caps">BACK</string>
     <string name="asterisk">*</string>
+    <string name="class_label">Class</string>
 </resources>
