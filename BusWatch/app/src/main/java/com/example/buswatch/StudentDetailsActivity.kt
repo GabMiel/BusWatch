@@ -1,7 +1,6 @@
 package com.example.buswatch
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton

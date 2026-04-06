@@ -237,7 +237,7 @@ class AdminHome : AppCompatActivity() {
         if (!showDrivers) {
             fetchArchivedParents()
         } else {
-            setupArchivedList(true)
+            setupArchivedList()
         }
     }
 
@@ -272,10 +272,9 @@ class AdminHome : AppCompatActivity() {
             }
     }
 
-    private fun setupArchivedList(showDrivers: Boolean) {
+    private fun setupArchivedList() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerArchived) ?: return
-        val roleFilter = if (showDrivers) "Driver" else "Parent"
-        val filteredList = archivedUsers.filter { it.role == roleFilter }.toMutableList()
+        val filteredList = archivedUsers.filter { it.role == "Driver" }.toMutableList()
         
         val adapter = UserAdapter(filteredList,
             onViewClick = { user -> showUserDetailDialog(user, isPending = false) },
@@ -283,7 +282,7 @@ class AdminHome : AppCompatActivity() {
                 archivedUsers.remove(user)
                 user.isArchived = false
                 if (user.role == "Driver") activeDrivers.add(user) else activeUsers.add(user)
-                loadArchive(showDrivers)
+                loadArchive(true)
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(this)

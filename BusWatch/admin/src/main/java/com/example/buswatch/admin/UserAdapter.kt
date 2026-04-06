@@ -43,9 +43,4 @@ class UserAdapter(
     }
 
     override fun getItemCount() = users.size
-
-    fun removeAt(position: Int) {
-        users.removeAt(position)
-        notifyItemRemoved(position)
-    }
 }

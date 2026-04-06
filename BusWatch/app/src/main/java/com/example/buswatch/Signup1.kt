@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import com.example.buswatch.common.R as CommonR
 
 class Signup1 : AppCompatActivity() {
@@ -79,7 +80,7 @@ class Signup1 : AppCompatActivity() {
         
         // Initial state for placeholder
         tvSelectedLanguage.text = getString(CommonR.string.select_language)
-        tvSelectedLanguage.setTextColor(Color.parseColor("#888888"))
+        tvSelectedLanguage.setTextColor("#888888".toColorInt())
 
         val nextButton = findViewById<Button>(R.id.btnSignup1Next)
         val signinButton = findViewById<Button>(R.id.btnSignup1Signin)
