@@ -19,37 +19,18 @@
             android:background="@drawable/bg_details_card"
             android:padding="20dp">
 
-            <!-- Edit Button -->
-            <LinearLayout
+            <!-- Edit Button - Icon only -->
+            <ImageButton
                 android:id="@+id/btnGeneralEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_shape"
-                android:backgroundTint="#FFFFFF"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/edit"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_edit"
-                    app:tint="#000000" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="@string/edit"
-                    android:textColor="#000000"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    tools:ignore="SmallSp" />
-            </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#666666" />
 
             <RelativeLayout
                 android:id="@+id/rlStudentAvatar"
@@ -88,17 +69,19 @@
                     android:id="@+id/tvStudentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/justin_wilson"
+                    android:text="@string/placeholder_hyphen"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     tools:text="Justin Wilson" />
 
                 <TextView
                     android:id="@+id/tvStudentId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/student_id_se2024001"
+                    android:text="@string/placeholder_hyphen"
                     android:textColor="#666666"
                     android:textSize="12sp" />
 
@@ -111,10 +94,11 @@
                     android:backgroundTint="#F8DC98"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp"
-                    android:text="@string/grade_1a"
+                    android:text="@string/placeholder_hyphen"
                     android:textColor="#856404"
                     android:textSize="10sp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     tools:ignore="SmallSp" />
             </LinearLayout>
 
@@ -133,7 +117,7 @@
                     android:layout_columnWeight="1"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/age" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
-                    <TextView android:id="@+id/tvDob" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_3_15_2020" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvDob" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -143,7 +127,7 @@
                     android:layout_marginStart="20dp"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/school" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
-                    <TextView android:id="@+id/tvSchool" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/the_immaculate_mother_academy_inc" android:textColor="#000000" android:textStyle="bold" android:textSize="12sp"/>
+                    <TextView android:id="@+id/tvSchool" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="12sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -153,7 +137,7 @@
                     android:layout_marginTop="16dp"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/grade" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
-                    <TextView android:id="@+id/tvGrade" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_1st_grade" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvGrade" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -164,7 +148,7 @@
                     android:layout_marginTop="16dp"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_label" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
-                    <TextView android:id="@+id/tvClass" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/_1a" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvClass" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
             </GridLayout>
 
@@ -197,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="@string/kingstown_2_subdivision_caloocan_city"
+                    android:text="@string/placeholder_hyphen"
                     android:textColor="#000000"
                     android:textSize="13sp"
                     android:textStyle="bold" />

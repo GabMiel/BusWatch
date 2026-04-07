@@ -8,6 +8,7 @@
     <string name="don_t_have_an_account">Don’t have an account?</string>
     <string name="allow">Allow</string>
     <string name="cancel">Cancel</string>
+    <string name="cancel_caps">Cancel</string>
     <string name="_40_students">40 Students</string>
     <string name="_12_seats">12 Seats</string>
     <string name="bus_details">Bus Details</string>
@@ -95,7 +96,7 @@
     <string name="bus_driver_bus_001">Bus Driver &#8211; BUS&#8211;001</string>
     <string name="notification_icon">Notification icon</string>
     <string name="temporary_route_change">Temporary route change due to road construction on Main Street</string>
-    <string name="bus_arriving_soon">Bus Arriving Soon</string>
+    <string name="bus_arriving_soon">Bus Arrival Soon</string>
     <string name="_13hrs_ago">13hrs Ago</string>
     <string name="back_button">Back button</string>
     <string name="all">All</string>
@@ -149,12 +150,10 @@
     <string name="first_name">First Name</string>
     <string name="phone_number">Phone Number</string>
     <string name="last_name">Last Name</string>
-    <string name="preffered_language">Preferred Language</string>
     <string name="enter_your_last_name">Enter your last name</string>
     <string name="middle_name">Middle Name</string>
     <string name="enter_your_middle_name">Enter your middle name</string>
     <string name="enter_your_suffix">e.g., Jr., Sr.</string>
-    <string name="engish">English</string>
     <string name="medical_icon" />
     <string name="add_photo">Add Photo</string>
     <string name="child_s_first_name">Child’s First Name</string>
@@ -241,7 +240,7 @@
     <string name="total_drivers">Total Drivers</string>
     <string name="pending_parents">Pending Parents</string>
     <string name="archived_users">Archived Users</string>
-    <string name="robert_wil_son_name">Robert Wilson</string>
+    <string name="robert_wilson_name">Robert Wilson</string>
     <string name="justin_wilson_name">Justin Wilson</string>
     <string name="color_secondary_text">#FDFDFD</string>
     <string name="count_parents">128</string>
@@ -305,4 +304,28 @@
     <string name="class_label">Class</string>
     <string name="select_language">Select Language</string>
     <string name="filipino">Filipino</string>
+    <string name="add_child">Add Child</string>
+    <string name="delete_child">Delete Child</string>
+    <string name="add_child_button">ADD CHILD</string>
+    <string name="enter_child_s_school">Enter child’s school</string>
+    <string name="enter_child_s_class">Enter child’s class</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_child_allergies">Enter allergies</string>
+    <string name="enter_child_medications">Enter medications</string>
+    <string name="enter_child_medical_conditions">Enter medical conditions</string>
+    <string name="enter_contact_relationship">Enter relationship</string>
+    <string name="enter_current_password">Enter current password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="enter_your_middle_name_label">Enter your middle name</string>
+    <string name="name_warning">Names cannot contain numbers or special characters</string>
+    <string name="save">Save</string>
+    <string name="country_code_ph">+63</string>
+    <string name="phone_hint">912 345 6789</string>
+    <string name="contact_full_name">Contact Full Name</string>
+    <string name="enter_contact_full_name">Enter contact full name</string>
+    <string name="select_grade">Select Grade</string>
+    <string name="age_warning_young">Age under 3 is unusually young for school transport.</string>
+    <string name="age_warning_old">Age 16&#8211;20 is older than typical elementary students.</string>
+    <string name="age_warning_restricted">Age 21 and above are restricted from registration.</string>
+    <string name="contact_phone_number">Contact Phone Number</string>
 </resources>

@@ -79,4 +79,7 @@ dependencies {
     // Glide for image loading
     implementation(libs.glide)
     annotationProcessor("com.github.bumptech.glide:compiler:${libs.versions.glide.get()}")
+
+    // uCrop for image cropping
+    implementation("com.github.yalantis:ucrop:2.2.11")
 }

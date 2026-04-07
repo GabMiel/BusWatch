@@ -71,7 +71,7 @@
                 android:id="@+id/tvContactName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/robert_wilson"
+                tools:text="@string/robert_wilson"
                 android:textColor="#000000"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -96,7 +96,7 @@
                 android:id="@+id/tvContactRelation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/father"
+                tools:text="@string/father"
                 android:textColor="#000000"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -121,7 +121,7 @@
                 android:id="@+id/tvContactPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_555_987_6543"
+                tools:text="@string/_555_987_6543"
                 android:textColor="#000000"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -149,7 +149,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/robertwilson_email_com"
+                tools:text="@string/robertwilson_email_com"
                 android:textColor="#000000"
                 android:textSize="11sp"
                 android:textStyle="bold" />

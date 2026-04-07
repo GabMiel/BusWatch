@@ -18,6 +18,10 @@
     <color name="gray_light">#F5F5F5</color>
     <color name="gray_border">#DDDDDD</color>
     <color name="gray_avatar">#BDBDBD</color>
+    <color name="gray_inactive">#C4C4C4</color>
+    <color name="label_dark">#241E40</color>
+    <color name="error_red">#FF0000</color>
+    <color name="warning_brown">#856404</color>
     <color name="btn_accept">#4CAF50</color>
     <color name="btn_reject">#F44336</color>
     <color name="btn_save">#4CAF50</color>
@@ -31,4 +35,10 @@
     <color name="text_secondary">#AAAAAA</color>
     <color name="card_highlight">#F8DC98</color>
     <color name="map_placeholder">#D8E0E8</color>
+
+    <!-- Accessibility improved colors -->
+    <color name="accessible_error_red">#D32F2F</color>
+    <color name="accessible_gray_text">#757575</color>
+    <color name="accessible_yellow_text">#856404</color>
+    <color name="accessible_hint_gray">#616161</color>
 </resources>

@@ -17,7 +17,7 @@
         android:background="@drawable/bg_avatar_circle"
         android:contentDescription="@string/student_avatar"
         android:scaleType="centerCrop"
-        android:src="@drawable/user" />
+        tools:src="@drawable/user" />
 
     <!-- Status Badge -->
     <TextView
@@ -26,12 +26,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:background="@drawable/bg_button_yellow"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="4dp"
-        android:text="@string/at_home"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="3dp"
+        tools:text="@string/at_home"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <!-- Student Info -->
@@ -48,18 +48,18 @@
             android:id="@+id/tvStudentName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/justin_wilson"
+            tools:text="@string/justin_wilson"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvStudentGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/grade_1"
-            android:textColor="@color/black"
-            android:textSize="13sp"
+            tools:text="@string/grade_1"
+            android:textColor="#444444"
+            android:textSize="11sp"
             android:background="@drawable/bg_tab_underline"
             android:paddingBottom="1dp" />
 
@@ -68,9 +68,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="@string/the_immaculate_mother_academy_inc"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
+            tools:text="@string/the_immaculate_mother_academy_inc"
+            android:textColor="#444444"
+            android:textSize="11sp" />
     </LinearLayout>
 
     <!-- Options Section -->
@@ -80,55 +80,25 @@
         android:layout_below="@id/studentInfoContainer"
         android:layout_marginTop="12dp"
         android:layout_alignStart="@id/studentInfoContainer"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <!-- Ride Option -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:text="@string/ride_option"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
 
-            <TextView
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:text="@string/ride_option"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
-
-            <Spinner
-                android:id="@+id/spinnerRideOption"
-                android:layout_width="match_parent"
-                android:layout_height="28dp"
-                android:background="@drawable/spinner_border"
-                android:spinnerMode="dropdown"
-                android:paddingEnd="24dp"
-                tools:ignore="RtlSymmetry" />
-        </LinearLayout>
-
-        <!-- Stop -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="90dp"
-                android:layout_height="wrap_content"
-                android:text="@string/stop"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tvStudentStop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/street_address"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
-        </LinearLayout>
-
+        <Spinner
+            android:id="@+id/spinnerRideOption"
+            android:layout_width="188dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/spinner_border"
+            android:paddingEnd="24dp"
+            android:spinnerMode="dropdown"
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
 
 </RelativeLayout>

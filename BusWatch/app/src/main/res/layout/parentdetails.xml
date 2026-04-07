@@ -111,37 +111,18 @@
                     app:layout_constraintStart_toEndOf="@id/icProfile"
                     app:layout_constraintTop_toTopOf="@id/icProfile" />
 
-                <!-- Edit Button with controlled icon size -->
-                <LinearLayout
+                <!-- Profile Edit Button - Icon only -->
+                <ImageButton
                     android:id="@+id/btnParentsEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rectangle_shape"
-                    android:backgroundTint="#FFFFFF"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/edit"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_edit"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_edit"
-                        app:tint="#000000" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="@string/edit"
-                        android:textColor="#000000"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        tools:ignore="SmallSp" />
-                </LinearLayout>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#666666" />
 
                 <ImageView
                     android:id="@+id/imgParentAvatar"
@@ -301,8 +282,7 @@
                     android:contentDescription="@string/child_icon"
                     android:src="@drawable/child"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#000000" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -315,6 +295,36 @@
                     app:layout_constraintBottom_toBottomOf="@id/icChildren"
                     app:layout_constraintStart_toEndOf="@id/icChildren"
                     app:layout_constraintTop_toTopOf="@id/icChildren" />
+
+                <!-- Action Buttons: Add and Delete Children -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageButton
+                        android:id="@+id/btnAddChild"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/add_child"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_add"
+                        app:tint="#666666" />
+
+                    <ImageButton
+                        android:id="@+id/btnDeleteChild"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/delete_child"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_delete"
+                        app:tint="#666666" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDetailsChildren"
@@ -370,5 +380,17 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/btnConfirmDeleteChildren"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:backgroundTint="#FF4444"
+        android:text="@string/delete"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -22,18 +26,25 @@ import com.example.buswatch.common.R as CommonR
 
 class Signup1 : AppCompatActivity() {
     private var selectedLanguage: String? = null
-    private var isPasswordVisible = false
+    private var selectedSuffix: String? = null
     private var isConfirmPasswordVisible = false
+    private var selectedCountryCode = "+63"
+    private var maxPhoneDigits = 11 // Default for Philippines
     
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
     private lateinit var etMiddleName: EditText
-    private lateinit var etSuffix: EditText
+    private lateinit var tvSelectedSuffix: TextView
     private lateinit var etEmail: EditText
     private lateinit var etPhone: EditText
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var tvSelectedLanguage: TextView
+    private lateinit var tvCountryCode: TextView
+    
+    private lateinit var tvFirstNameWarning: TextView
+    private lateinit var tvLastNameWarning: TextView
+    private lateinit var tvMiddleNameWarning: TextView
 
     private var savedSignupData: Bundle? = null
 
@@ -45,11 +56,18 @@ class Signup1 : AppCompatActivity() {
                 etFirstName.setText(it.getStringExtra("firstName"))
                 etLastName.setText(it.getStringExtra("lastName"))
                 etMiddleName.setText(it.getStringExtra("middleName"))
-                etSuffix.setText(it.getStringExtra("suffix"))
+                
+                selectedSuffix = it.getStringExtra("suffix")
+                if (!selectedSuffix.isNullOrEmpty()) {
+                    tvSelectedSuffix.text = selectedSuffix
+                    tvSelectedSuffix.setTextColor(Color.BLACK)
+                }
+
                 etEmail.setText(it.getStringExtra("email"))
-                etPhone.setText(it.getStringExtra("phone"))
+                etPhone.setText(it.getStringExtra("phone")?.substringAfter(" ") ?: "")
                 etPassword.setText(it.getStringExtra("password"))
                 etConfirmPassword.setText(it.getStringExtra("password"))
+                
                 selectedLanguage = it.getStringExtra("preferredLanguage")
                 if (selectedLanguage != null) {
                     tvSelectedLanguage.text = selectedLanguage
@@ -66,92 +84,127 @@ class Signup1 : AppCompatActivity() {
         etFirstName = findViewById(R.id.editTextText3)
         etLastName = findViewById(R.id.editTextText4)
         etMiddleName = findViewById(R.id.editTextText5)
-        etSuffix = findViewById(R.id.editTextText6)
+        
+        tvFirstNameWarning = findViewById(R.id.tvFirstNameWarning)
+        tvLastNameWarning = findViewById(R.id.tvLastNameWarning)
+        tvMiddleNameWarning = findViewById(R.id.tvMiddleNameWarning)
+        
+        val suffixSelector = findViewById<FrameLayout>(R.id.btnSignup1Suffix)
+        tvSelectedSuffix = suffixSelector.getChildAt(0) as TextView
+        
         etEmail = findViewById(R.id.etSignup1Email)
         etPhone = findViewById(R.id.editTextText7)
         etPassword = findViewById(R.id.editTextTextPassword6)
         etConfirmPassword = findViewById(R.id.editTextTextPassword7)
         
-        val viewPasswordButton = findViewById<ImageButton>(R.id.btnSignup1ViewPassword)
+        val countryCodeSelector = findViewById<FrameLayout>(R.id.btnSignup1CountryCode)
+        tvCountryCode = findViewById(R.id.tvSignup1CountryCode)
+        
         val viewConfirmPasswordButton = findViewById<ImageButton>(R.id.btnSignup1ViewConfirmPassword)
         
         val languageSelector = findViewById<FrameLayout>(R.id.btnSignup1Language)
         tvSelectedLanguage = languageSelector.getChildAt(0) as TextView
         
-        // Initial state for placeholder
+        // Initial state
         tvSelectedLanguage.text = getString(CommonR.string.select_language)
         tvSelectedLanguage.setTextColor("#888888".toColorInt())
+        tvSelectedSuffix.text = getString(CommonR.string.suffix)
+        tvSelectedSuffix.setTextColor("#888888".toColorInt())
+
+        // Password shouldn't be hidden
+        etPassword.transformationMethod = null
 
         val nextButton = findViewById<Button>(R.id.btnSignup1Next)
-        val signinButton = findViewById<Button>(R.id.btnSignup1Signin)
+        val signInButton = findViewById<Button>(R.id.btnSignup1Signin)
 
-        viewPasswordButton.setOnClickListener {
-            isPasswordVisible = !isPasswordVisible
-            if (isPasswordVisible) {
-                etPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye)
-            } else {
-                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
-            }
-            etPassword.setSelection(etPassword.text.length)
-        }
+        // Setup real-time name validation
+        setupNameWatcher(etFirstName, tvFirstNameWarning)
+        setupNameWatcher(etLastName, tvLastNameWarning)
+        setupNameWatcher(etMiddleName, tvMiddleNameWarning)
+        setupPhoneFormatting()
+
+        // Character limits
+        etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
+        etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
+        etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
 
         viewConfirmPasswordButton.setOnClickListener {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
             if (isConfirmPasswordVisible) {
-                etConfirmPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                etConfirmPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 viewConfirmPasswordButton.setImageResource(CommonR.drawable.ic_eye)
             } else {
-                etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                etConfirmPassword.transformationMethod = PasswordTransformationMethod.getInstance()
                 viewConfirmPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
             }
             etConfirmPassword.setSelection(etConfirmPassword.text.length)
         }
 
+        countryCodeSelector.setOnClickListener {
+            val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
+            val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
+            val lengths = arrayOf(11, 10, 10, 9, 10, 8, 9)
+            
+            AlertDialog.Builder(this)
+                .setTitle("Select Country Code")
+                .setItems(countries) { _, which ->
+                    selectedCountryCode = codes[which]
+                    maxPhoneDigits = lengths[which]
+                    tvCountryCode.text = selectedCountryCode
+                    // Trigger a re-format to apply new limit
+                    etPhone.setText(etPhone.text.toString())
+                }
+                .show()
+        }
+
+        suffixSelector.setOnClickListener {
+            val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
+            AlertDialog.Builder(this)
+                .setTitle("Select Suffix")
+                .setItems(suffixes) { _, which ->
+                    selectedSuffix = if (which == 0) "" else suffixes[which]
+                    tvSelectedSuffix.text = if (which == 0) getString(CommonR.string.suffix) else suffixes[which]
+                    tvSelectedSuffix.setTextColor(if (which == 0) "#888888".toColorInt() else Color.BLACK)
+                }
+                .show()
+        }
+
         languageSelector.setOnClickListener {
             val languages = arrayOf("English", "Filipino")
-            
             val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, languages) {
-                override fun isEnabled(position: Int): Boolean {
-                    // Disable Filipino (position 1)
-                    return position == 0
-                }
-
+                override fun isEnabled(position: Int) = position == 0
                 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     val view = super.getView(position, convertView, parent)
-                    val textView = view.findViewById<TextView>(android.R.id.text1)
-                    if (position == 1) {
-                        textView.setTextColor(Color.LTGRAY)
-                    } else {
-                        textView.setTextColor(Color.BLACK)
-                    }
+                    val tv = view.findViewById<TextView>(android.R.id.text1)
+                    tv.setTextColor(if (position == 1) Color.LTGRAY else Color.BLACK)
                     return view
                 }
             }
 
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle(getString(CommonR.string.select_language))
-            builder.setAdapter(adapter) { _, which ->
+            AlertDialog.Builder(this).setTitle(getString(CommonR.string.select_language)).setAdapter(adapter) { _, which ->
                 if (which == 0) {
                     selectedLanguage = languages[which]
                     tvSelectedLanguage.text = selectedLanguage
                     tvSelectedLanguage.setTextColor(Color.BLACK)
                 }
-            }
-            builder.show()
+            }.show()
         }
 
         nextButton.setOnClickListener {
             val firstName = etFirstName.text.toString().trim()
             val lastName = etLastName.text.toString().trim()
             val email = etEmail.text.toString().trim()
-            val phone = etPhone.text.toString().trim()
+            val phone = etPhone.text.toString().replace(" ", "")
             val password = etPassword.text.toString().trim()
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || selectedLanguage == null) {
                 Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            if (isInvalidName(firstName) || isInvalidName(lastName) || isInvalidName(etMiddleName.text.toString())) {
+                Toast.makeText(this, "Please correct the errors in the name fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -160,17 +213,16 @@ class Signup1 : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val fullPhone = "$selectedCountryCode $phone"
+
             val intent = Intent(this, Signup2::class.java).apply {
-                // Pass any existing saved data (from Signup2/3)
                 savedSignupData?.let { putExtras(it) }
-                
-                // Overlay current Signup1 fields (in case they were changed)
                 putExtra("firstName", firstName)
                 putExtra("lastName", lastName)
                 putExtra("middleName", etMiddleName.text.toString().trim())
-                putExtra("suffix", etSuffix.text.toString().trim())
+                putExtra("suffix", selectedSuffix ?: "")
                 putExtra("email", email)
-                putExtra("phone", phone)
+                putExtra("phone", fullPhone)
                 putExtra("password", password)
                 putExtra("preferredLanguage", selectedLanguage)
             }
@@ -179,11 +231,11 @@ class Signup1 : AppCompatActivity() {
                 overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
             } else {
                 @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
+                overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_left)
             }
         }
 
-        signinButton.setOnClickListener {
+        signInButton.setOnClickListener {
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -194,5 +246,103 @@ class Signup1 : AppCompatActivity() {
             }
             finish()
         }
+    }
+
+    private fun setupPhoneFormatting() {
+        etPhone.addTextChangedListener(object : TextWatcher {
+            private var isUpdating = false
+            private var lastCursorPosition = 0
+            
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                lastCursorPosition = etPhone.selectionStart
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) return
+                isUpdating = true
+                
+                val rawString = s.toString()
+                val digits = rawString.replace(" ", "")
+                
+                // Enforce max digits immediately to prevent "broken" state if adding in middle
+                val truncatedDigits = if (digits.length > maxPhoneDigits) {
+                    digits.substring(0, maxPhoneDigits)
+                } else {
+                    digits
+                }
+                
+                val formatted = formatByCountry(truncatedDigits, selectedCountryCode)
+                
+                s?.replace(0, s.length, formatted)
+                
+                // Try to restore cursor position intelligently
+                try {
+                    val newPos = lastCursorPosition.coerceIn(0, formatted.length)
+                    etPhone.setSelection(newPos)
+                } catch (ex: Exception) {
+                    etPhone.setSelection(formatted.length)
+                }
+                
+                isUpdating = false
+            }
+        })
+    }
+
+    private fun formatByCountry(digits: String, countryCode: String): String {
+        val sb = StringBuilder()
+        when (countryCode) {
+            "+63" -> { // PH: XXXX XXX XXXX
+                for (i in digits.indices) {
+                    if (i == 4 || i == 7) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+1", "+44", "+64" -> { // US/UK/NZ: XXX XXX XXXX
+                for (i in digits.indices) {
+                    if (i == 3 || i == 6) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+61", "+353" -> { // AU/IE: XXX XXX XXX
+                for (i in digits.indices) {
+                    if (i == 3 || i == 6) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+65" -> { // SG: XXXX XXXX
+                for (i in digits.indices) {
+                    if (i == 4) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            else -> {
+                for (i in digits.indices) {
+                    if (i > 0 && i % 3 == 0) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun setupNameWatcher(editText: EditText, warningView: TextView) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val input = s?.toString() ?: ""
+                if (isInvalidName(input)) {
+                    warningView.visibility = View.VISIBLE
+                } else {
+                    warningView.visibility = View.GONE
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun isInvalidName(name: String): Boolean {
+        if (name.isEmpty()) return false
+        val regex = Regex("^[a-zA-Z\\s.-]*$")
+        return !regex.matches(name)
     }
 }

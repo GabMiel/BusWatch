@@ -2,7 +2,8 @@ package com.example.buswatch
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -41,10 +42,11 @@ class Login : AppCompatActivity() {
         viewPasswordButton.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
-                passwordEditText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                // Use transformationMethod instead of inputType to preserve font/typeface
+                passwordEditText.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 viewPasswordButton.setImageResource(CommonR.drawable.ic_eye) 
             } else {
-                passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
                 viewPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
             }
             passwordEditText.setSelection(passwordEditText.text.length)

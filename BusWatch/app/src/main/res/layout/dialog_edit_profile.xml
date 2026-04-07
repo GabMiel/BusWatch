@@ -1,206 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_details_card"
-    android:padding="24dp">
+    android:background="#FFFFFF">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="24dp">
 
         <TextView
+            android:id="@+id/tvEditProfileTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/profile_information"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnDismissEditProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="-12dp"
+            android:layout_marginTop="-12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            android:padding="14dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#666666" />
 
         <!-- First Name -->
-        <TextView
+        <LinearLayout
+            android:id="@+id/llLabelFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/first_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvEditProfileTitle">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/first_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etEditFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#F5F5F5"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_first_name"
             android:inputType="textPersonName"
             android:autofillHints="personGivenName"
             android:paddingHorizontal="12dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelFirstName" />
 
         <!-- Last Name -->
-        <TextView
+        <LinearLayout
+            android:id="@+id/llLabelLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/last_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etEditFirstName">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/last_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etEditLastName"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#F5F5F5"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_last_name"
             android:inputType="textPersonName"
             android:autofillHints="personFamilyName"
             android:paddingHorizontal="12dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelLastName" />
 
         <!-- Middle Name & Suffix -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/middle_name"
-                    android:textColor="#241E40"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-                <EditText
-                    android:id="@+id/etEditMiddleName"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/textfield_shape"
-                    android:backgroundTint="#F5F5F5"
-                    android:hint="@string/enter_your_middle_name"
-                    android:inputType="textPersonName"
-                    android:autofillHints="personMiddleName"
-                    android:paddingHorizontal="12dp"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/suffix"
-                    android:textColor="#241E40"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-                <EditText
-                    android:id="@+id/etEditSuffix"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/textfield_shape"
-                    android:backgroundTint="#F5F5F5"
-                    android:hint="@string/enter_your_suffix"
-                    android:inputType="text"
-                    android:autofillHints="personNameSuffix"
-                    android:paddingHorizontal="12dp"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Email -->
-        <TextView
+            android:id="@+id/llLabelMiddle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/email"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etEditLastName">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/middle_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLabelSuffix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/btnEditProfileSuffix"
+            app:layout_constraintTop_toTopOf="@id/llLabelMiddle">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suffix"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etEditMiddleName"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_your_middle_name"
+            android:inputType="textPersonName"
+            android:autofillHints="personMiddleName"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnEditProfileSuffix"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelMiddle" />
+
+        <FrameLayout
+            android:id="@+id/btnEditProfileSuffix"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etEditMiddleName">
+
+            <TextView
+                android:id="@+id/tvEditProfileSelectedSuffix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:text="@string/suffix"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/suffix"
+                android:src="@drawable/ic_chevron_down"
+                app:tint="#888888" />
+        </FrameLayout>
+
+        <!-- Email -->
+        <LinearLayout
+            android:id="@+id/llLabelEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etEditMiddleName">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etEditEmail"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#F5F5F5"
-            android:hint="@string/enter_email"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_your_email"
             android:inputType="textEmailAddress"
             android:autofillHints="emailAddress"
             android:paddingHorizontal="12dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelEmail" />
 
         <!-- Phone Number -->
-        <TextView
+        <LinearLayout
+            android:id="@+id/llLabelPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/phone_number"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etEditEmail">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_number"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etEditPhone"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#F5F5F5"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_phone_number"
             android:inputType="phone"
             android:autofillHints="phoneNumber"
             android:paddingHorizontal="12dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelPhone" />
 
         <!-- Action Buttons -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etEditPhone">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelEdit"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="@string/cancel"
-                android:textColor="#666666"
-                android:textStyle="bold" />
+                android:layout_marginEnd="6dp"
+                android:text="@string/cancel_caps"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FFFFFF"
+                app:cornerRadius="20dp"
+                app:strokeColor="#000000"
+                app:strokeWidth="1dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveProfile"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/soft_corner"
-                android:backgroundTint="#FEBE1E"
+                android:layout_marginStart="6dp"
                 android:text="@string/save_caps"
                 android:textColor="#000000"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FEBE1E"
+                app:cornerRadius="20dp" />
         </LinearLayout>
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

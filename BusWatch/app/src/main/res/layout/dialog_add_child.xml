@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvAddChildTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_child"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnDismissAddChild"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="-12dp"
+            android:layout_marginTop="-12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close"
+            android:padding="14dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#666666" />
+
+        <!-- Avatar Section -->
+        <View
+            android:id="@+id/viewAddChildAvatarBg"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#F0F0F0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAddChildTitle" />
+
+        <ImageView
+            android:id="@+id/ivAddChildAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/avatar"
+            android:src="@drawable/user"
+            app:layout_constraintBottom_toBottomOf="@+id/viewAddChildAvatarBg"
+            app:layout_constraintEnd_toEndOf="@+id/viewAddChildAvatarBg"
+            app:layout_constraintStart_toStartOf="@+id/viewAddChildAvatarBg"
+            app:layout_constraintTop_toTopOf="@+id/viewAddChildAvatarBg" />
+
+        <ImageButton
+            android:id="@+id/btnAddChildPhoto"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            android:contentDescription="@string/add_photo"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/photo_camera"
+            app:layout_constraintBottom_toBottomOf="@id/viewAddChildAvatarBg"
+            app:layout_constraintEnd_toEndOf="@id/viewAddChildAvatarBg" />
+
+        <!-- Form fields -->
+        <LinearLayout
+            android:id="@+id/llLabelFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewAddChildAvatarBg">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/child_s_first_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etAddChildFirstName"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_first_name"
+            android:inputType="textPersonName"
+            android:autofillHints="personGivenName"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelFirstName" />
+
+        <TextView
+            android:id="@+id/tvAddChildFirstNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAddChildFirstName" />
+
+        <LinearLayout
+            android:id="@+id/llLabelLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAddChildFirstNameWarning">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/child_s_last_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etAddChildLastName"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_last_name"
+            android:inputType="textPersonName"
+            android:autofillHints="personFamilyName"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelLastName" />
+
+        <TextView
+            android:id="@+id/tvAddChildLastNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAddChildLastName" />
+
+        <!-- Middle Name and Suffix Row -->
+        <LinearLayout
+            android:id="@+id/llLabelMiddle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAddChildLastNameWarning">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/middle_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLabelSuffix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/btnAddChildSuffix"
+            app:layout_constraintTop_toTopOf="@id/llLabelMiddle">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/suffix"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etAddChildMiddleName"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_middle"
+            android:inputType="textPersonName"
+            android:autofillHints="personMiddleName"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddChildSuffix"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelMiddle" />
+
+        <FrameLayout
+            android:id="@+id/btnAddChildSuffix"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etAddChildMiddleName">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:text="@string/suffix"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/suffix"
+                android:src="@drawable/ic_chevron_down"
+                app:tint="#888888" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvAddChildMiddleNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/etAddChildMiddleName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAddChildMiddleName" />
+
+        <!-- Age and Class Row -->
+        <LinearLayout
+            android:id="@+id/llLabelAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAddChildMiddleNameWarning">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/age"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLabelClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/etAddChildClass"
+            app:layout_constraintTop_toTopOf="@id/llLabelAge">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/class_label"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etAddChildAge"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_age"
+            android:inputType="number"
+            android:autofillHints="none"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/etAddChildClass"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelAge" />
+
+        <EditText
+            android:id="@+id/etAddChildClass"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_class"
+            android:inputType="text"
+            android:autofillHints="none"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etAddChildAge" />
+
+        <!-- School and Grade Row -->
+        <LinearLayout
+            android:id="@+id/llLabelSchool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etAddChildAge">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/school"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLabelGrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/etAddChildGrade"
+            app:layout_constraintTop_toTopOf="@id/llLabelSchool">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/grade"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etAddChildSchool"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_school"
+            android:inputType="text"
+            android:autofillHints="none"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/etAddChildGrade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLabelSchool" />
+
+        <EditText
+            android:id="@+id/etAddChildGrade"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_s_class_grade"
+            android:inputType="text"
+            android:autofillHints="none"
+            android:paddingHorizontal="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etAddChildSchool" />
+
+        <Button
+            android:id="@+id/btnAddChildConfirm"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/soft_corner"
+            android:backgroundTint="#FEBE1E"
+            android:text="@string/add_child_button"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etAddChildSchool" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

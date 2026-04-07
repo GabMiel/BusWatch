@@ -42,7 +42,7 @@
                 android:id="@+id/tvDriverSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/robert_wil_son_name"
+                android:text="@string/robert_wilson_name"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp"/>
         </LinearLayout>

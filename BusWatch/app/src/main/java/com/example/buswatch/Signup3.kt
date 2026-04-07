@@ -2,9 +2,12 @@ package com.example.buswatch
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -25,6 +28,10 @@ class Signup3 : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
     private var selectedBloodType = "Select blood type"
+    private var selectedCountryCode1 = "+63"
+    private var selectedCountryCode2 = "+63"
+    private var maxPhoneDigits1 = 11
+    private var maxPhoneDigits2 = 11
 
     private lateinit var etAllergies: EditText
     private lateinit var etMedications: EditText
@@ -35,6 +42,12 @@ class Signup3 : AppCompatActivity() {
     private lateinit var etContact2Name: EditText
     private lateinit var etContact2Phone: EditText
     private lateinit var etContact2Relation: EditText
+    
+    private lateinit var tvCountryCode1: TextView
+    private lateinit var tvCountryCode2: TextView
+    
+    private lateinit var tvContact1NameWarning: TextView
+    private lateinit var tvContact2NameWarning: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +57,13 @@ class Signup3 : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        // Display child's name from Signup2
+        // Display child's name
         val childFirstName = intent.getStringExtra("childFirstName") ?: "Child"
         val childLastName = intent.getStringExtra("childLastName") ?: "Name"
         findViewById<TextView>(R.id.tvChildNameDisplay).text = getString(CommonR.string.medical_information_for_child_s_name, childFirstName, childLastName)
 
         val bloodTypeSelector = findViewById<FrameLayout>(R.id.btnSignup3BloodType)
-        val tvSelectedBloodType = bloodTypeSelector.getChildAt(0) as TextView
+        val tvSelectedBloodType = findViewById<TextView>(R.id.tvSignup3SelectedBloodType)
         
         etAllergies = findViewById(R.id.editTextText13)
         etMedications = findViewById(R.id.editTextText14)
@@ -63,9 +76,25 @@ class Signup3 : AppCompatActivity() {
         etContact2Name = findViewById(R.id.editTextText20)
         etContact2Phone = findViewById(R.id.editTextText22)
         etContact2Relation = findViewById(R.id.editTextText21)
+        
+        tvCountryCode1 = findViewById(R.id.tvSignup3CountryCode1)
+        tvCountryCode2 = findViewById(R.id.tvSignup3CountryCode2)
+        
+        tvContact1NameWarning = findViewById(R.id.tvContact1NameWarning)
+        tvContact2NameWarning = findViewById(R.id.tvContact2NameWarning)
 
         val backButton = findViewById<Button>(R.id.btnSignup3Back)
         val registerButton = findViewById<Button>(R.id.btnSignup3Register)
+
+        // Real-time validation
+        setupNameWatcher(etContact1Name, tvContact1NameWarning)
+        setupNameWatcher(etContact2Name, tvContact2NameWarning)
+        setupPhoneFormatting(etContact1Phone, 1)
+        setupPhoneFormatting(etContact2Phone, 2)
+
+        // Character limits for names
+        etContact1Name.filters = arrayOf(InputFilter.LengthFilter(50))
+        etContact2Name.filters = arrayOf(InputFilter.LengthFilter(50))
 
         // Pre-fill if returning
         intent.getStringExtra("bloodType")?.let {
@@ -75,15 +104,35 @@ class Signup3 : AppCompatActivity() {
                 tvSelectedBloodType.setTextColor(Color.BLACK)
             }
         }
-        intent.getStringExtra("allergies")?.let { etAllergies.setText(it) }
-        intent.getStringExtra("medications")?.let { etMedications.setText(it) }
-        intent.getStringExtra("conditions")?.let { etConditions.setText(it) }
-        intent.getStringExtra("c1Name")?.let { etContact1Name.setText(it) }
-        intent.getStringExtra("c1Phone")?.let { etContact1Phone.setText(it) }
-        intent.getStringExtra("c1Relation")?.let { etContact1Relation.setText(it) }
-        intent.getStringExtra("c2Name")?.let { etContact2Name.setText(it) }
-        intent.getStringExtra("c2Phone")?.let { etContact2Phone.setText(it) }
-        intent.getStringExtra("c2Relation")?.let { etContact2Relation.setText(it) }
+        
+        // English-speaking Country codes Logic (Consistend with Signup1)
+        val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
+        val codesOnly = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
+        val lengths = arrayOf(11, 10, 10, 9, 10, 8, 9)
+
+        findViewById<FrameLayout>(R.id.btnSignup3CountryCode1).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Select Country Code")
+                .setItems(countries) { _, which ->
+                    selectedCountryCode1 = codesOnly[which]
+                    maxPhoneDigits1 = lengths[which]
+                    tvCountryCode1.text = selectedCountryCode1
+                    etContact1Phone.setText(etContact1Phone.text.toString())
+                }
+                .show()
+        }
+
+        findViewById<FrameLayout>(R.id.btnSignup3CountryCode2).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Select Country Code")
+                .setItems(countries) { _, which ->
+                    selectedCountryCode2 = codesOnly[which]
+                    maxPhoneDigits2 = lengths[which]
+                    tvCountryCode2.text = selectedCountryCode2
+                    etContact2Phone.setText(etContact2Phone.text.toString())
+                }
+                .show()
+        }
 
         bloodTypeSelector.setOnClickListener {
             val bloodTypes = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown")
@@ -97,61 +146,159 @@ class Signup3 : AppCompatActivity() {
                 .show()
         }
 
-        backButton.setOnClickListener {
-            goBack()
-        }
+        backButton.setOnClickListener { goBack() }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                goBack()
-            }
+            override fun handleOnBackPressed() { goBack() }
         })
 
         registerButton.setOnClickListener {
             val contact1Name = etContact1Name.text.toString().trim()
-            val contact1Phone = etContact1Phone.text.toString().trim()
+            val contact1Phone = etContact1Phone.text.toString().replace(" ", "")
             val contact1Relation = etContact1Relation.text.toString().trim()
 
             if (contact1Name.isEmpty() || contact1Phone.isEmpty() || contact1Relation.isEmpty()) {
-                Toast.makeText(this, "Please fill in Emergency Contact 1", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            if (isInvalidName(contact1Name) || isInvalidName(etContact2Name.text.toString())) {
+                Toast.makeText(this, "Please correct the errors in the name fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             registerButton.isEnabled = false
+            
+            val fullPhone1 = "$selectedCountryCode1 $contact1Phone"
+            val rawPhone2 = etContact2Phone.text.toString().replace(" ", "")
+            val fullPhone2 = if (rawPhone2.isNotEmpty()) "$selectedCountryCode2 $rawPhone2" else ""
+
             registerUser(
                 if (selectedBloodType == "Select blood type") "" else selectedBloodType,
                 etAllergies.text.toString().trim(),
                 etMedications.text.toString().trim(),
                 etConditions.text.toString().trim(),
-                contact1Name, contact1Phone, contact1Relation,
+                contact1Name, fullPhone1, contact1Relation,
                 etContact2Name.text.toString().trim(),
-                etContact2Phone.text.toString().trim(),
+                fullPhone2,
                 etContact2Relation.text.toString().trim()
             )
         }
+    }
+
+    private fun setupPhoneFormatting(editText: EditText, contactNum: Int) {
+        editText.addTextChangedListener(object : TextWatcher {
+            private var isUpdating = false
+            private var lastCursorPosition = 0
+            
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                lastCursorPosition = editText.selectionStart
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) return
+                isUpdating = true
+                
+                val currentMax = if (contactNum == 1) maxPhoneDigits1 else maxPhoneDigits2
+                val currentCC = if (contactNum == 1) selectedCountryCode1 else selectedCountryCode2
+                
+                val rawString = s.toString()
+                val digits = rawString.replace(" ", "")
+                
+                val truncatedDigits = if (digits.length > currentMax) {
+                    digits.substring(0, currentMax)
+                } else {
+                    digits
+                }
+                
+                val formatted = formatByCountry(truncatedDigits, currentCC)
+                
+                s?.replace(0, s.length, formatted)
+                
+                try {
+                    val newPos = lastCursorPosition.coerceIn(0, formatted.length)
+                    editText.setSelection(newPos)
+                } catch (_: Exception) {
+                    editText.setSelection(formatted.length)
+                }
+                
+                isUpdating = false
+            }
+        })
+    }
+
+    private fun formatByCountry(digits: String, countryCode: String): String {
+        val sb = StringBuilder()
+        when (countryCode) {
+            "+63" -> {
+                for (i in digits.indices) {
+                    if (i == 4 || i == 7) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+1", "+44", "+64" -> {
+                for (i in digits.indices) {
+                    if (i == 3 || i == 6) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+61", "+353" -> {
+                for (i in digits.indices) {
+                    if (i == 3 || i == 6) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            "+65" -> {
+                for (i in digits.indices) {
+                    if (i == 4) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+            else -> {
+                for (i in digits.indices) {
+                    if (i > 0 && i % 3 == 0) sb.append(" ")
+                    sb.append(digits[i])
+                }
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun setupNameWatcher(editText: EditText, warningView: TextView) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val input = s?.toString() ?: ""
+                if (isInvalidName(input)) {
+                    warningView.visibility = View.VISIBLE
+                } else {
+                    warningView.visibility = View.GONE
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun isInvalidName(name: String): Boolean {
+        if (name.isEmpty()) return false
+        val regex = Regex("^[a-zA-Z\\s.-]*$")
+        return !regex.matches(name)
     }
 
     private fun goBack() {
         val resultIntent = Intent().apply {
             putExtras(intent)
             putExtra("bloodType", if (selectedBloodType == "Select blood type") "" else selectedBloodType)
-            putExtra("allergies", etAllergies.text.toString().trim())
-            putExtra("medications", etMedications.text.toString().trim())
-            putExtra("conditions", etConditions.text.toString().trim())
             putExtra("c1Name", etContact1Name.text.toString().trim())
-            putExtra("c1Phone", etContact1Phone.text.toString().trim())
-            putExtra("c1Relation", etContact1Relation.text.toString().trim())
-            putExtra("c2Name", etContact2Name.text.toString().trim())
-            putExtra("c2Phone", etContact2Phone.text.toString().trim())
-            putExtra("c2Relation", etContact2Relation.text.toString().trim())
+            putExtra("c1Phone", etContact1Phone.text.toString().replace(" ", ""))
         }
         setResult(RESULT_OK, resultIntent)
         finish()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.stay)
         } else {
             @Suppress("DEPRECATION")
-            overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
+            overridePendingTransition(CommonR.anim.stay, CommonR.anim.stay)
         }
     }
 
@@ -162,12 +309,6 @@ class Signup3 : AppCompatActivity() {
     ) {
         val email = intent.getStringExtra("email") ?: ""
         val password = intent.getStringExtra("password") ?: ""
-
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Error: Missing credentials", Toast.LENGTH_SHORT).show()
-            findViewById<Button>(R.id.btnSignup3Register).isEnabled = true
-            return
-        }
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -195,7 +336,7 @@ class Signup3 : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         val additionalChildren = IntentCompat.getSerializableExtra(intent, "additionalChildren", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
 
-        val uploadTasks = mutableListOf<Pair<String, Uri>>()
+        val uploadTasks = mutableListOf<Pair<String, android.net.Uri>>()
         
         if (primaryAvatarUri != null && primaryAvatarUri.scheme == "content") {
             uploadTasks.add("primaryAvatar" to primaryAvatarUri)
@@ -251,6 +392,13 @@ class Signup3 : AppCompatActivity() {
         c2Name: String, c2Phone: String, c2Relation: String,
         uploadedUrls: kotlin.collections.Map<String, String>
     ) {
+        val medicalData = hashMapOf(
+            "bloodType" to bloodType,
+            "allergies" to allergies,
+            "medications" to medications,
+            "conditions" to conditions
+        )
+
         val userData = hashMapOf<String, Any>(
             "role" to "parent",
             "firstName" to (intent.getStringExtra("firstName") ?: ""),
@@ -261,7 +409,6 @@ class Signup3 : AppCompatActivity() {
             "phone" to (intent.getStringExtra("phone") ?: ""),
             "preferredLanguage" to (intent.getStringExtra("preferredLanguage") ?: "English"),
             "status" to "pending",
-            
             "child" to hashMapOf(
                 "firstName" to (intent.getStringExtra("childFirstName") ?: ""),
                 "lastName" to (intent.getStringExtra("childLastName") ?: ""),
@@ -271,16 +418,9 @@ class Signup3 : AppCompatActivity() {
                 "grade" to (intent.getStringExtra("childGrade") ?: ""),
                 "school" to (intent.getStringExtra("childSchool") ?: ""),
                 "avatarUrl" to (uploadedUrls["primaryAvatar"] ?: intent.getStringExtra("childAvatarUrl") ?: ""),
-                "enrollmentFormUrl" to (uploadedUrls["primaryEnrollment"] ?: intent.getStringExtra("enrollmentFormUrl") ?: "")
+                "enrollmentFormUrl" to (uploadedUrls["primaryEnrollment"] ?: intent.getStringExtra("enrollmentFormUrl") ?: ""),
+                "medical" to medicalData
             ),
-            
-            "medical" to hashMapOf(
-                "bloodType" to bloodType,
-                "allergies" to allergies,
-                "medications" to medications,
-                "conditions" to conditions
-            ),
-            
             "emergencyContacts" to listOf(
                 hashMapOf("name" to c1Name, "phone" to c1Phone, "relationship" to c1Relation),
                 hashMapOf("name" to c2Name, "phone" to c2Phone, "relationship" to c2Relation)
@@ -294,6 +434,8 @@ class Signup3 : AppCompatActivity() {
                 val newChild = HashMap(child)
                 newChild["avatarUrl"] = uploadedUrls["child_${index}_avatar"] ?: child["avatarUrl"] ?: ""
                 newChild["enrollmentFormUrl"] = uploadedUrls["child_${index}_enrollment"] ?: child["enrollmentFormUrl"] ?: ""
+                // For now, additional children share the same medical info entered in Signup3
+                newChild["medical"] = medicalData
                 newChild
             }
             userData["children"] = updatedChildren

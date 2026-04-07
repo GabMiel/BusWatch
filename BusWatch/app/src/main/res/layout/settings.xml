@@ -274,19 +274,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView13" />
 
-            <Button
+            <FrameLayout
                 android:id="@+id/btnSettingsLanguage"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/rectangle_shape"
-                android:backgroundTint="#FEBE1E"
-                android:text="@string/english"
-                android:textAllCaps="false"
-                android:textSize="12sp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView39" />
+                app:layout_constraintTop_toBottomOf="@+id/textView39">
+
+                <TextView
+                    android:id="@+id/tvSettingsSelectedLanguage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/english"
+                    android:textColor="#000000"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/language_icon"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="#888888" />
+            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -345,7 +363,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:ems="10"
-                android:hint="@string/current_password"
+                android:hint="@string/enter_current_password"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
@@ -375,7 +393,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:ems="10"
-                android:hint="@string/new_password"
+                android:hint="@string/enter_new_password"
                 android:inputType="textPassword"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"

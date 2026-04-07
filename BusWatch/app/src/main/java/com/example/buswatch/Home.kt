@@ -167,6 +167,13 @@ class Home : AppCompatActivity() {
                         studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
                     }
 
+                    // Visibility logic for Pick Up button
+                    if (studentList.isEmpty()) {
+                        btnPickUp.visibility = View.GONE
+                    } else {
+                        btnPickUp.visibility = View.VISIBLE
+                    }
+
                     setupRecyclerView(studentList)
                 }
             }

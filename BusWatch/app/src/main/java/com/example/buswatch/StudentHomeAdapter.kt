@@ -42,7 +42,6 @@ class StudentHomeAdapter(
         val grade: TextView = view.findViewById(R.id.tvStudentGrade)
         val school: TextView = view.findViewById(R.id.tvStudentSchool)
         val status: TextView = view.findViewById(R.id.tvStudentStatus)
-        val stop: TextView = view.findViewById(R.id.tvStudentStop)
         val avatar: ImageView = view.findViewById(R.id.imgStudent)
         val spinner: Spinner = view.findViewById(R.id.spinnerRideOption)
         val card: View = view.findViewById(R.id.studentCard)
@@ -67,7 +66,6 @@ class StudentHomeAdapter(
         holder.grade.text = student.grade
         holder.school.text = student.school
         holder.status.text = student.status
-        holder.stop.text = student.stop
         
         // Use Glide for avatar loading
         if (!student.avatarUrl.isNullOrEmpty()) {
@@ -94,11 +92,11 @@ class StudentHomeAdapter(
             holder.card.isEnabled = false
         }
 
-        // Setup Spinner
+        // Setup Spinner with custom small text layout from common module
         val options = holder.itemView.context.resources.getStringArray(CommonR.array.ride_options)
         val adapter = ArrayAdapter(
             holder.itemView.context,
-            android.R.layout.simple_spinner_item,
+            CommonR.layout.spinner_item_small,
             options
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

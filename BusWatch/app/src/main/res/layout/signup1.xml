@@ -169,6 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="185dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toTopOf="parent">
@@ -194,8 +195,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_first_name"
             android:inputType="textPersonName"
             android:autofillHints="personGivenName"
@@ -206,6 +206,18 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabels1" />
 
+        <TextView
+            android:id="@+id/tvFirstNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+
         <!-- Last Name -->
         <LinearLayout
             android:id="@+id/llLabels2"
@@ -213,9 +225,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText3">
+            app:layout_constraintTop_toBottomOf="@+id/tvFirstNameWarning">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -238,8 +251,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_last_name"
             android:inputType="textPersonName"
             android:autofillHints="personFamilyName"
@@ -249,6 +261,18 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabels2" />
+
+        <TextView
+            android:id="@+id/tvLastNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
 
         <!-- Middle Name & Suffix Row -->
         <TextView
@@ -261,7 +285,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLastNameWarning" />
 
         <TextView
             android:id="@+id/tvSuffixLabel"
@@ -271,7 +295,7 @@
             android:textColor="#241E40"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/editTextText6"
+            app:layout_constraintStart_toStartOf="@+id/btnSignup1Suffix"
             app:layout_constraintTop_toTopOf="@+id/tvMiddleLabel" />
 
         <EditText
@@ -280,32 +304,57 @@
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="12dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_your_middle_name"
             android:inputType="textPersonName"
             android:autofillHints="personMiddleName"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/editTextText6"
+            app:layout_constraintEnd_toStartOf="@+id/btnSignup1Suffix"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/tvMiddleLabel" />
 
-        <EditText
-            android:id="@+id/editTextText6"
+        <FrameLayout
+            android:id="@+id/btnSignup1Suffix"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
-            android:hint="@string/enter_your_suffix"
-            android:inputType="text"
-            android:autofillHints="personNameSuffix"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:textSize="14sp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
-            app:layout_constraintTop_toTopOf="@+id/editTextText5" />
+            app:layout_constraintTop_toTopOf="@+id/editTextText5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:text="@string/suffix"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/suffix"
+                android:src="@drawable/ic_chevron_down"
+                app:tint="#888888" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvMiddleNameWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_warning"
+            android:textColor="#FF0000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/editTextText5"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/editTextText5" />
 
         <!-- Email -->
         <LinearLayout
@@ -314,9 +363,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText5">
+            app:layout_constraintTop_toBottomOf="@+id/tvMiddleNameWarning">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -339,9 +389,8 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
-            android:hint="@string/enter_email"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_your_email"
             android:inputType="textEmailAddress"
             android:autofillHints="emailAddress"
             android:paddingStart="12dp"
@@ -358,6 +407,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etSignup1Email">
@@ -378,22 +428,47 @@
                 android:layout_marginStart="2dp"/>
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/editTextText7"
+        <LinearLayout
+            android:id="@+id/llPhoneContainer"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
-            android:hint="@string/enter_your_phone_number"
-            android:inputType="phone"
-            android:autofillHints="phoneNumber"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:textSize="14sp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabels4" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabels4">
+
+            <FrameLayout
+                android:id="@+id/btnSignup1CountryCode"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:id="@+id/tvSignup1CountryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/country_code_ph"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/editTextText7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/phone_hint"
+                android:inputType="phone"
+                android:autofillHints="phoneNumber"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <!-- Password -->
         <LinearLayout
@@ -402,9 +477,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText7">
+            app:layout_constraintTop_toBottomOf="@+id/llPhoneContainer">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -427,30 +503,16 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/create_a_password"
             android:inputType="textPassword"
             android:autofillHints="password"
             android:paddingStart="12dp"
-            android:paddingEnd="40dp"
+            android:paddingEnd="12dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabels5" />
-
-        <ImageButton
-            android:id="@+id/btnSignup1ViewPassword"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="8dp"
-            android:background="#00FFFFFF"
-            android:contentDescription="@string/show_password"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_eye_off"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextTextPassword6"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTextPassword6"
-            app:layout_constraintTop_toTopOf="@+id/editTextTextPassword6" />
 
         <TextView
             android:id="@+id/tvPasswordRequirements"
@@ -471,6 +533,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/tvPasswordRequirements">
@@ -496,8 +559,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/re_enter_password"
             android:inputType="textPassword"
             android:autofillHints="password"
@@ -527,6 +589,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword7">
@@ -552,8 +615,7 @@
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#D1D1D1"
+            android:background="@drawable/rectangle_hollow_with_shadow"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
@@ -589,7 +651,7 @@
             android:backgroundTint="#000000"
             android:text="@string/next"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
@@ -621,7 +683,8 @@
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:padding="0dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="0dp"
                 android:text="@string/log_in_caps"
                 android:textColor="#FEBE1E"
                 android:textSize="13sp"

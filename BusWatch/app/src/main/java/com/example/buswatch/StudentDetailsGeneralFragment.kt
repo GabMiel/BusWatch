@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
@@ -101,7 +104,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                     }
 
                     currentChildData = foundChild
-                    foundChild?.let { displayGeneralInfo(it) }
+                    foundChild?.let { fetchClassFromFirebase(it) }
                 }
             }
             .addOnFailureListener {
@@ -109,12 +112,41 @@ class StudentDetailsGeneralFragment : Fragment() {
             }
     }
 
-    private fun displayGeneralInfo(child: kotlin.collections.Map<String, Any>) {
+    private fun fetchClassFromFirebase(child: kotlin.collections.Map<String, Any>) {
+        val studentId = child["studentId"] as? String
+        if (studentId.isNullOrEmpty()) {
+            displayGeneralInfo(child, null)
+            return
+        }
+
+        db.collection("classes").whereArrayContains("studentIds", studentId).get()
+            .addOnSuccessListener { querySnapshot ->
+                var className: String? = null
+                if (!querySnapshot.isEmpty) {
+                    val classDoc = querySnapshot.documents[0]
+                    className = classDoc.getString("name") ?: classDoc.id
+                }
+                if (isAdded) {
+                    displayGeneralInfo(child, className)
+                }
+            }
+            .addOnFailureListener {
+                if (isAdded) {
+                    displayGeneralInfo(child, null)
+                }
+            }
+    }
+
+    private fun displayGeneralInfo(child: kotlin.collections.Map<String, Any>, fetchedClass: String?) {
         view?.let { v ->
             val firstName = child["firstName"] as? String ?: ""
             val middleName = child["middleName"] as? String ?: ""
             val lastName = child["lastName"] as? String ?: ""
-            val fullName = "$firstName $middleName $lastName".replace("  ", " ").trim()
+            val suffix = child["suffix"] as? String ?: ""
+            
+            val fullName = listOf(firstName, middleName, lastName, suffix)
+                .filter { it.isNotBlank() }
+                .joinToString(" ")
             
             v.findViewById<TextView>(R.id.tvStudentName).text = fullName
             v.findViewById<TextView>(R.id.tvGrade).text = child["grade"] as? String ?: "---"
@@ -123,7 +155,7 @@ class StudentDetailsGeneralFragment : Fragment() {
             v.findViewById<TextView>(R.id.tvSchool).text = child["school"] as? String ?: "The Immaculate Mother Academy Inc."
             v.findViewById<TextView>(R.id.tvStudentId).text = child["studentId"] as? String ?: "---"
             
-            val classValue = child["class"] as? String ?: ""
+            val classValue = fetchedClass ?: child["class"] as? String ?: ""
             v.findViewById<TextView>(R.id.tvStudentClassBadge).text = classValue
             v.findViewById<TextView>(R.id.tvClass).text = classValue
             
@@ -178,7 +210,11 @@ class StudentDetailsGeneralFragment : Fragment() {
                 @Suppress("UNCHECKED_CAST")
                 val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
                 val newList = childrenList.toMutableList()
-                val index = newList.indexOfFirst { "${it["firstName"]} ${it["lastName"]}" == childName }
+                val index = newList.indexOfFirst { 
+                    val fName = it["firstName"] as? String ?: ""
+                    val lName = it["lastName"] as? String ?: ""
+                    "$fName $lName" == childName 
+                }
                 if (index != -1) {
                     newList[index] = updatedChild
                     docRef.update("children", newList).addOnSuccessListener {
@@ -204,6 +240,11 @@ class StudentDetailsGeneralFragment : Fragment() {
 
         val etFirstName = dialogView.findViewById<EditText>(R.id.etEditFirstName)
         val etLastName = dialogView.findViewById<EditText>(R.id.etEditLastName)
+        val etMiddleName = dialogView.findViewById<EditText>(R.id.etEditMiddleName)
+        val suffixSelector = dialogView.findViewById<FrameLayout>(R.id.btnEditStudentSuffix)
+        val tvSelectedSuffix = dialogView.findViewById<TextView>(R.id.tvEditStudentSelectedSuffix)
+        var selectedSuffix = child["suffix"] as? String ?: ""
+
         val etStudentId = dialogView.findViewById<EditText>(R.id.etEditStudentId)
         val etAge = dialogView.findViewById<EditText>(R.id.etEditDob)
         val etGrade = dialogView.findViewById<EditText>(R.id.etEditGrade)
@@ -215,6 +256,28 @@ class StudentDetailsGeneralFragment : Fragment() {
         // Pre-fill
         etFirstName.setText(child["firstName"] as? String ?: "")
         etLastName.setText(child["lastName"] as? String ?: "")
+        etMiddleName.setText(child["middleName"] as? String ?: "")
+        
+        if (selectedSuffix.isNotEmpty()) {
+            tvSelectedSuffix.text = selectedSuffix
+            tvSelectedSuffix.setTextColor(Color.BLACK)
+        } else {
+            tvSelectedSuffix.text = getString(CommonR.string.suffix)
+            tvSelectedSuffix.setTextColor("#888888".toColorInt())
+        }
+
+        suffixSelector.setOnClickListener {
+            val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Select Suffix")
+                .setItems(suffixes) { _, which ->
+                    selectedSuffix = if (which == 0) "" else suffixes[which]
+                    tvSelectedSuffix.text = if (which == 0) getString(CommonR.string.suffix) else suffixes[which]
+                    tvSelectedSuffix.setTextColor(if (which == 0) "#888888".toColorInt() else Color.BLACK)
+                }
+                .show()
+        }
+
         etStudentId.setText(child["studentId"] as? String ?: "")
         etAge.setText(child["age"] as? String ?: "")
         etGrade.setText(child["grade"] as? String ?: "")
@@ -230,14 +293,16 @@ class StudentDetailsGeneralFragment : Fragment() {
         dialogView.findViewById<Button>(R.id.btnCancelEdit).setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<Button>(R.id.btnSaveStudent).setOnClickListener {
             val updatedData = child.toMutableMap()
-            updatedData["firstName"] = etFirstName.text.toString()
-            updatedData["lastName"] = etLastName.text.toString()
-            updatedData["studentId"] = etStudentId.text.toString()
-            updatedData["age"] = etAge.text.toString()
-            updatedData["grade"] = etGrade.text.toString()
-            updatedData["class"] = etClass.text.toString()
-            updatedData["school"] = etSchool.text.toString()
-            updatedData["address"] = etAddress.text.toString()
+            updatedData["firstName"] = etFirstName.text.toString().trim()
+            updatedData["lastName"] = etLastName.text.toString().trim()
+            updatedData["middleName"] = etMiddleName.text.toString().trim()
+            updatedData["suffix"] = selectedSuffix
+            updatedData["studentId"] = etStudentId.text.toString().trim()
+            updatedData["age"] = etAge.text.toString().trim()
+            updatedData["grade"] = etGrade.text.toString().trim()
+            updatedData["class"] = etClass.text.toString().trim()
+            updatedData["school"] = etSchool.text.toString().trim()
+            updatedData["address"] = etAddress.text.toString().trim()
 
             saveUpdatedGeneralData(updatedData, dialog)
         }
@@ -253,7 +318,11 @@ class StudentDetailsGeneralFragment : Fragment() {
                 @Suppress("UNCHECKED_CAST")
                 val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
                 val newList = childrenList.toMutableList()
-                val index = newList.indexOfFirst { "${it["firstName"]} ${it["lastName"]}" == childName }
+                val index = newList.indexOfFirst { 
+                    val fName = it["firstName"] as? String ?: ""
+                    val lName = it["lastName"] as? String ?: ""
+                    "$fName $lName" == childName 
+                }
                 if (index != -1) {
                     newList[index] = updatedChild
                     docRef.update("children", newList).addOnSuccessListener {
@@ -271,7 +340,7 @@ class StudentDetailsGeneralFragment : Fragment() {
     private fun onUpdateSuccess(updatedChild: kotlin.collections.Map<String, Any>, dialog: AlertDialog) {
         currentChildData = updatedChild
         childName = "${updatedChild["firstName"]} ${updatedChild["lastName"]}"
-        displayGeneralInfo(updatedChild)
+        fetchClassFromFirebase(updatedChild)
         dialog.dismiss()
         if (isAdded) Toast.makeText(context, "Student information updated", Toast.LENGTH_SHORT).show()
     }

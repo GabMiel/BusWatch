@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp">
+
+    <CheckBox
+        android:id="@+id/cbChildDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bgChild"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bgChild" />
 
     <View
         android:id="@+id/bgChild"
@@ -12,7 +22,7 @@
         android:background="@drawable/rectangle_shape"
         android:backgroundTint="#F8DC98"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cbChildDelete"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -20,10 +30,10 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
-        android:contentDescription="@string/student_avatar"
-        android:src="@drawable/child"
         android:background="@drawable/bg_avatar_circle"
+        android:contentDescription="@string/student_avatar"
         android:padding="2dp"
+        tools:src="@drawable/child"
         app:layout_constraintBottom_toBottomOf="@id/bgChild"
         app:layout_constraintStart_toStartOf="@id/bgChild"
         app:layout_constraintTop_toTopOf="@id/bgChild" />
@@ -34,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        android:text="@string/justin_wilson"
+        tools:text="@string/justin_wilson"
         android:textColor="#050505"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -45,7 +55,7 @@
         android:id="@+id/tvChildGrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/grade_1"
+        tools:text="@string/grade_1"
         android:textColor="#444444"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@id/tvChildName"
@@ -55,7 +65,7 @@
         android:id="@+id/tvChildSchool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/the_immaculate_mother_academy"
+        tools:text="@string/the_immaculate_mother_academy"
         android:textColor="#444444"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@id/tvChildName"
@@ -65,23 +75,24 @@
         android:id="@+id/tvChildStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/rectangle_shape"
         android:backgroundTint="#FEBE1E"
         android:paddingHorizontal="8dp"
         android:paddingVertical="2dp"
-        android:text="@string/at_home"
+        tools:text="@string/at_home"
         android:textColor="#050505"
         android:textSize="11sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/tvChildName"
-        app:layout_constraintTop_toBottomOf="@id/tvChildSchool" />
+        app:layout_constraintEnd_toEndOf="@id/bgChild"
+        app:layout_constraintTop_toTopOf="@id/bgChild" />
 
     <ImageButton
         android:id="@+id/btnChildView"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="12dp"
         android:background="#00FFFFFF"
         android:contentDescription="@string/view_details"
         android:scaleType="fitCenter"
