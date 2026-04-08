@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,6 +28,7 @@ class Home : AppCompatActivity() {
     private lateinit var tvNoStudents: TextView
     private lateinit var rvStudentsHome: RecyclerView
     private lateinit var btnPickUp: TextView
+    private lateinit var btnHomeAccount: ImageButton
     
     private var parentStatus: String = "pending"
     private val handler = Handler(Looper.getMainLooper())
@@ -39,7 +41,7 @@ class Home : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        val btnHomeAccount = findViewById<ImageButton>(R.id.btnHomeAccount)
+        btnHomeAccount = findViewById(R.id.btnHomeAccount)
         val btnHomeSettings = findViewById<ImageButton>(R.id.btnHomeSettings)
         val btnHomeNotification = findViewById<ImageButton>(R.id.btnHomeNotification)
         rvStudentsHome = findViewById(R.id.rvStudentsHome)
@@ -57,7 +59,7 @@ class Home : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val greetingPrefix = when (hour) {
-            in 0..11 -> "Good Morning"
+            in 0..11 -> getString(CommonR.string.good_morning_driver).substringBefore(",") // Reusing "Good morning"
             in 12..16 -> "Good Afternoon"
             else -> "Good Evening"
         }
@@ -147,11 +149,17 @@ class Home : AppCompatActivity() {
                     val greeting = "$greetingPrefix, $firstName!"
                     tvGreeting.text = greeting
                     
+                    // Parent Avatar
+                    val parentAvatarUrl = document.getString("avatarUrl")
+                    if (!parentAvatarUrl.isNullOrEmpty()) {
+                        Glide.with(this).load(parentAvatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(btnHomeAccount)
+                    }
+
                     // Fetch parent's approval status
                     parentStatus = document.getString("status") ?: "pending"
 
                     val studentList = mutableListOf<StudentHome>()
-                    val parentAddress = document.getString("address") ?: "---"
+                    val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
 
                     // 1. Check Primary Child
                     @Suppress("UNCHECKED_CAST")
@@ -189,9 +197,9 @@ class Home : AppCompatActivity() {
         return StudentHome(
             id = id,
             name = "$fName $lName".trim(),
-            grade = map["grade"] as? String ?: "---",
-            school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
-            status = map["status"] as? String ?: "At Home",
+            grade = map["grade"] as? String ?: getString(CommonR.string.placeholder_hyphen),
+            school = map["school"] as? String ?: getString(CommonR.string.the_immaculate_mother_academy_inc),
+            status = map["status"] as? String ?: getString(CommonR.string.status_at_home),
             avatarResId = CommonR.drawable.user,
             avatarUrl = map["avatarUrl"] as? String,
             stop = map["address"] as? String ?: parentAddress,

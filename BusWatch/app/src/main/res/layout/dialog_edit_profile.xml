@@ -36,6 +36,46 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#666666" />
 
+        <!-- Profile Picture Section -->
+        <FrameLayout
+            android:id="@+id/rlEditProfileAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/bg_avatar_circle"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvEditProfileTitle">
+
+            <ImageView
+                android:id="@+id/imgEditProfileAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/avatar"
+                android:scaleType="centerCrop"
+                android:padding="2dp"
+                android:src="@drawable/user" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/btnChangeProfilePhoto"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            android:contentDescription="@string/add_photo"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/photo_camera"
+            app:tint="#000000"
+            app:layout_constraintBottom_toBottomOf="@id/rlEditProfileAvatar"
+            app:layout_constraintEnd_toEndOf="@id/rlEditProfileAvatar"
+            android:clickable="true"
+            android:focusable="true" />
+
         <!-- First Name -->
         <LinearLayout
             android:id="@+id/llLabelFirstName"
@@ -44,7 +84,7 @@
             android:layout_marginTop="24dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEditProfileTitle">
+            app:layout_constraintTop_toBottomOf="@id/rlEditProfileAvatar">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

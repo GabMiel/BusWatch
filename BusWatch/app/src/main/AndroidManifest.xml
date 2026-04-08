@@ -39,6 +39,12 @@
         <!-- Activities from Admin module -->
         <activity android:name="com.example.buswatch.admin.AdminHome" />
 
+        <!-- UCrop Activity -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

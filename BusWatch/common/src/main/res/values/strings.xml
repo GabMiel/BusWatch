@@ -328,4 +328,11 @@
     <string name="age_warning_old">Age 16&#8211;20 is older than typical elementary students.</string>
     <string name="age_warning_restricted">Age 21 and above are restricted from registration.</string>
     <string name="contact_phone_number">Contact Phone Number</string>
+    <string name="child_s_photo">Child’s Photo</string>
+    <string name="good_morning">Good morning</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_evening">Good evening</string>
+    <string name="greeting_format">%1$s, %2$s!</string>
+    <string name="preview_photo">Preview Photo</string>
+    <string name="delete_photo">Delete Photo</string>
 </resources>

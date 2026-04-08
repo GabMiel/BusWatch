@@ -5,4 +5,44 @@
         <item>Afternoon Trip</item>
         <item>Riding Both Ways</item>
     </string-array>
+    <string-array name="grades_array">
+        <item>Nursery</item>
+        <item>Kinder</item>
+        <item>Prep</item>
+        <item>Grade 1</item>
+        <item>Grade 2</item>
+        <item>Grade 3</item>
+        <item>Grade 4</item>
+        <item>Grade 5</item>
+        <item>Grade 6</item>
+    </string-array>
+    <string-array name="suffixes_array">
+        <item>None</item>
+        <item>Jr.</item>
+        <item>Sr.</item>
+        <item>II</item>
+        <item>III</item>
+        <item>IV</item>
+        <item>V</item>
+    </string-array>
+    <string-array name="blood_types_array">
+        <item>A+</item>
+        <item>A-</item>
+        <item>B+</item>
+        <item>B-</item>
+        <item>AB+</item>
+        <item>AB-</item>
+        <item>O+</item>
+        <item>O-</item>
+        <item>Unknown</item>
+    </string-array>
+    <string-array name="countries_with_codes">
+        <item>Philippines (+63)</item>
+        <item>USA/Canada (+1)</item>
+        <item>UK (+44)</item>
+        <item>Australia (+61)</item>
+        <item>New Zealand (+64)</item>
+        <item>Singapore (+65)</item>
+        <item>Ireland (+353)</item>
+    </string-array>
 </resources>

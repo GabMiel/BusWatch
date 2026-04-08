@@ -16,6 +16,7 @@
         android:layout_height="70dp"
         android:background="@drawable/bg_avatar_circle"
         android:contentDescription="@string/student_avatar"
+        android:padding="2dp"
         android:scaleType="centerCrop"
         tools:src="@drawable/user" />
 
@@ -92,7 +93,7 @@
 
         <Spinner
             android:id="@+id/spinnerRideOption"
-            android:layout_width="188dp"
+            android:layout_width="158dp"
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/spinner_border"

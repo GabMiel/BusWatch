@@ -32,29 +32,25 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="#666666" />
 
-            <RelativeLayout
+            <FrameLayout
                 android:id="@+id/rlStudentAvatar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:background="@drawable/bg_avatar_circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <View
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/circle_shape"
-                    android:backgroundTint="#F0F0F0" />
-
                 <ImageView
                     android:id="@+id/imgStudentAvatar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:contentDescription="@string/student_avatar"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/user" />
-            </RelativeLayout>
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="0dp"

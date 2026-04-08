@@ -181,27 +181,52 @@
             app:layout_constraintGuide_end="32dp" />
 
         <!-- Avatar Section -->
-        <View
+        <LinearLayout
+            android:id="@+id/llLabelPhoto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvChildNumber">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/child_s_photo"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <FrameLayout
             android:id="@+id/view46"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#C4C4C4"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_avatar_circle"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/tvChildNumber" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelPhoto">
 
-        <ImageView
-            android:id="@+id/imageView39"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/user"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/avatar"
-            app:layout_constraintBottom_toBottomOf="@+id/view46"
-            app:layout_constraintEnd_toEndOf="@+id/view46"
-            app:layout_constraintStart_toStartOf="@+id/view46"
-            app:layout_constraintTop_toTopOf="@+id/view46" />
+            <ImageView
+                android:id="@+id/imageView39"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_person_placeholder"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/avatar"
+                android:padding="2dp" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/btnSignup2AddPhoto"
@@ -657,39 +682,10 @@
             app:layout_constraintTop_toBottomOf="@+id/llLabelSchool" />
 
         <Button
-            android:id="@+id/btnSignup2UploadPhoto"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/textfield_shape"
-            android:backgroundTint="#FFFFFF"
-            android:text="@string/upload_photo"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/glEnd"
-            app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/etSignup2School" />
-
-        <!-- Enrollment Preview - RECTANGULAR -->
-        <ImageView
-            android:id="@+id/ivEnrollmentPreview"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            android:background="#C4C4C4"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_image_placeholder"
-            android:contentDescription="@string/proof_of_enrollment"
-            app:layout_constraintEnd_toEndOf="@+id/glEnd"
-            app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/btnSignup2UploadPhoto" />
-
-        <Button
             android:id="@+id/btnSignup2AddChild"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/textfield_shape"
             android:backgroundTint="#FFFFFF"
             android:text="@string/add_another_child"
@@ -698,7 +694,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/ivEnrollmentPreview" />
+            app:layout_constraintTop_toBottomOf="@+id/etSignup2School" />
 
         <!-- Navigation Buttons -->
         <LinearLayout

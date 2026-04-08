@@ -37,27 +37,25 @@
             app:tint="#666666" />
 
         <!-- Avatar Section -->
-        <View
+        <FrameLayout
             android:id="@+id/viewAddChildAvatarBg"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#F0F0F0"
+            android:background="@drawable/bg_avatar_circle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAddChildTitle" />
+            app:layout_constraintTop_toBottomOf="@id/tvAddChildTitle">
 
-        <ImageView
-            android:id="@+id/ivAddChildAvatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:contentDescription="@string/avatar"
-            android:src="@drawable/user"
-            app:layout_constraintBottom_toBottomOf="@+id/viewAddChildAvatarBg"
-            app:layout_constraintEnd_toEndOf="@+id/viewAddChildAvatarBg"
-            app:layout_constraintStart_toStartOf="@+id/viewAddChildAvatarBg"
-            app:layout_constraintTop_toTopOf="@+id/viewAddChildAvatarBg" />
+            <ImageView
+                android:id="@+id/ivAddChildAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/avatar"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user" />
+        </FrameLayout>
 
         <ImageButton
             android:id="@+id/btnAddChildPhoto"
@@ -95,7 +93,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -147,7 +146,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -238,6 +238,7 @@
             app:layout_constraintTop_toTopOf="@id/etAddChildMiddleName">
 
             <TextView
+                android:id="@+id/tvAddChildSelectedSuffix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -291,7 +292,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <LinearLayout
@@ -315,7 +317,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -325,7 +328,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/enter_child_s_age"
+            android:hint="@string/age"
             android:inputType="number"
             android:autofillHints="none"
             android:paddingHorizontal="12dp"
@@ -336,16 +339,18 @@
 
         <EditText
             android:id="@+id/etAddChildClass"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/enter_child_s_class"
+            android:hint="@string/class_label"
             android:inputType="text"
             android:autofillHints="none"
             android:paddingHorizontal="12dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/etAddChildAge" />
+            app:layout_constraintStart_toEndOf="@id/etAddChildAge"
+            app:layout_constraintTop_toTopOf="@id/etAddChildAge"
+            app:layout_constraintWidth_percent="0.45" />
 
         <!-- School and Grade Row -->
         <LinearLayout
@@ -370,7 +375,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <LinearLayout
@@ -378,7 +384,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="@id/etAddChildGrade"
+            app:layout_constraintStart_toStartOf="@id/btnAddChildGrade"
             app:layout_constraintTop_toTopOf="@id/llLabelSchool">
             <TextView
                 android:layout_width="wrap_content"
@@ -394,7 +400,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -409,36 +416,57 @@
             android:autofillHints="none"
             android:paddingHorizontal="12dp"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/etAddChildGrade"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddChildGrade"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llLabelSchool" />
 
-        <EditText
-            android:id="@+id/etAddChildGrade"
-            android:layout_width="160dp"
+        <FrameLayout
+            android:id="@+id/btnAddChildGrade"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/enter_child_s_class_grade"
-            android:inputType="text"
-            android:autofillHints="none"
-            android:paddingHorizontal="12dp"
-            android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/etAddChildSchool" />
+            app:layout_constraintStart_toEndOf="@id/etAddChildSchool"
+            app:layout_constraintTop_toTopOf="@id/etAddChildSchool"
+            app:layout_constraintWidth_percent="0.45">
+
+            <TextView
+                android:id="@+id/tvAddChildSelectedGrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:text="@string/grade"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="@string/grade"
+                android:src="@drawable/ic_chevron_down"
+                app:tint="#888888" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/btnAddChildConfirm"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/soft_corner"
+            android:background="@drawable/rectangle_shape"
             android:backgroundTint="#FEBE1E"
             android:text="@string/add_child_button"
             android:textColor="#000000"
+            android:textSize="14sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etAddChildSchool" />
+            app:layout_constraintTop_toBottomOf="@+id/etAddChildSchool" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

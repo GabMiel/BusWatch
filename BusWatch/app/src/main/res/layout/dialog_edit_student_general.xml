@@ -60,21 +60,22 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <View
+                <FrameLayout
                     android:id="@+id/viewAvatarBg"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/circle_shape"
-                    android:backgroundTint="#F0F0F0" />
+                    android:background="@drawable/bg_avatar_circle">
 
-                <ImageView
-                    android:id="@+id/imgEditStudentAvatar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true"
-                    android:contentDescription="@string/avatar"
-                    android:src="@drawable/user" />
+                    <ImageView
+                        android:id="@+id/imgEditStudentAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/avatar"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/user" />
+                </FrameLayout>
 
                 <ImageButton
                     android:id="@+id/btnChangeAvatar"
@@ -112,7 +113,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personGivenName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Last Name -->
             <TextView
@@ -134,7 +136,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personFamilyName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Middle Name and Suffix Row -->
             <LinearLayout
@@ -166,7 +169,8 @@
                         android:inputType="textPersonName"
                         android:autofillHints="personMiddleName"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -232,7 +236,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Age and Grade -->
             <LinearLayout
@@ -264,7 +269,8 @@
                         android:inputType="number"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -290,7 +296,8 @@
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -324,7 +331,8 @@
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -350,7 +358,8 @@
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -375,7 +384,8 @@
                 android:inputType="textMultiLine"
                 android:autofillHints="postalAddress"
                 android:padding="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -1,8 +1,10 @@
 package com.example.buswatch
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,25 +12,46 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.yalantis.ucrop.UCrop
+import java.io.File
 import kotlin.collections.Map as KMap
 
 class ParentDetails : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
     private var childrenList = mutableListOf<ChildDetail>()
     private lateinit var adapter: DetailsChildAdapter
     private var isDeleteMode = false
+
+    private var tempAvatarUri: Uri? = null
+    private var lastSourceUriAvatar: Uri? = null
+
+    // For Dialogs UI updates
+    private var dialogAvatarView: ImageView? = null
+
+    private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { 
+            lastSourceUriAvatar = it
+            startCrop(it) 
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +59,7 @@ class ParentDetails : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
 
         findViewById<ImageButton>(R.id.btnParentsBack).setOnClickListener {
             finish()
@@ -67,7 +91,6 @@ class ParentDetails : AppCompatActivity() {
         btnConfirmDelete.setOnClickListener {
             val selectedChildren = adapter.getSelectedChildren()
             if (selectedChildren.isEmpty()) {
-                // Revert back if nothing was selected
                 isDeleteMode = false
                 adapter.setDeleteMode(false)
                 btnConfirmDelete.visibility = View.GONE
@@ -101,7 +124,6 @@ class ParentDetails : AppCompatActivity() {
         db.collection("parents").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
-                    // Header & Profile Info
                     val fName = document.getString("firstName") ?: ""
                     val lName = document.getString("lastName") ?: ""
                     val fullName = "$fName $lName".trim()
@@ -111,6 +133,14 @@ class ParentDetails : AppCompatActivity() {
                     findViewById<TextView>(R.id.textView48).text = document.getString("email") ?: ""
                     findViewById<TextView>(R.id.textView50).text = document.getString("phone") ?: ""
                     
+                    val parentAvatarUrl = document.getString("avatarUrl")
+                    val ivParentAvatar = findViewById<ImageView>(R.id.imgParentAvatar)
+                    if (!parentAvatarUrl.isNullOrEmpty()) {
+                        Glide.with(this).load(parentAvatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(ivParentAvatar)
+                    } else {
+                        ivParentAvatar.setImageResource(CommonR.drawable.user)
+                    }
+
                     val tvStatus = findViewById<TextView>(R.id.textView52)
                     val status = document.getString("status") ?: "pending"
                     tvStatus.text = status.uppercase()
@@ -123,17 +153,13 @@ class ParentDetails : AppCompatActivity() {
                         tvStatus.setTextColor("#856404".toColorInt())
                     }
 
-                    // Children Data
                     val newChildrenList = mutableListOf<ChildDetail>()
-                    
-                    // Legacy 'child' field
                     val childData = document.get("child")
                     if (childData is KMap<*, *>) {
                         @Suppress("UNCHECKED_CAST")
                         newChildrenList.add(mapToChildDetail(childData as KMap<String, Any>, "primary_child"))
                     }
                     
-                    // 'children' list field
                     val childrenListData = document.get("children")
                     if (childrenListData is List<*>) {
                         childrenListData.forEachIndexed { index, item ->
@@ -147,9 +173,7 @@ class ParentDetails : AppCompatActivity() {
                     childrenList = newChildrenList
                     adapter.updateList(childrenList)
 
-                    // Contacts RecyclerView
                     val contactList = mutableListOf<ContactDetail>()
-                    
                     val contactsData = document.get("emergencyContacts")
                     if (contactsData is List<*>) {
                         contactsData.forEach { item ->
@@ -194,67 +218,164 @@ class ParentDetails : AppCompatActivity() {
 
     private fun showAddChildDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_child, null)
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this, CommonR.style.CustomDialog)
             .setView(dialogView)
             .create()
 
+        tempAvatarUri = null
+        dialogAvatarView = dialogView.findViewById(R.id.ivAddChildAvatar)
+
         val suffixSelector = dialogView.findViewById<FrameLayout>(R.id.btnAddChildSuffix)
-        val tvSelectedSuffix = suffixSelector.getChildAt(0) as TextView
+        val tvSelectedSuffix = dialogView.findViewById<TextView>(R.id.tvAddChildSelectedSuffix)
         var selectedSuffix = ""
 
         suffixSelector.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
             AlertDialog.Builder(this)
                 .setTitle("Select Suffix")
-                .setItems(suffixes) { _, which ->
-                    selectedSuffix = if (which == 0) "" else suffixes[which]
-                    tvSelectedSuffix.text = if (which == 0) getString(CommonR.string.suffix) else suffixes[which]
-                    tvSelectedSuffix.setTextColor(if (which == 0) "#888888".toColorInt() else Color.BLACK)
+                .setItems(suffixes) { _, pos ->
+                    selectedSuffix = if (pos == 0) "" else suffixes[pos]
+                    tvSelectedSuffix.text = if (pos == 0) getString(CommonR.string.suffix) else suffixes[pos]
+                    tvSelectedSuffix.setTextColor(if (pos == 0) "#888888".toColorInt() else Color.BLACK)
                 }
                 .show()
         }
 
-        dialogView.findViewById<ImageButton>(R.id.btnDismissAddChild).setOnClickListener {
-            dialog.dismiss()
+        val btnGrade = dialogView.findViewById<FrameLayout>(R.id.btnAddChildGrade)
+        val tvGrade = dialogView.findViewById<TextView>(R.id.tvAddChildSelectedGrade)
+        var selectedGrade = ""
+        btnGrade.setOnClickListener {
+            val grades = arrayOf("Nursery", "Kinder", "Prep", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6")
+            AlertDialog.Builder(this)
+                .setTitle("Select Grade")
+                .setItems(grades) { _, pos ->
+                    selectedGrade = grades[pos]
+                    tvGrade.text = selectedGrade
+                    tvGrade.setTextColor(Color.BLACK)
+                }
+                .show()
         }
+
+        val avatarClickAction = View.OnClickListener {
+            if (tempAvatarUri != null) {
+                showPreviewDialog(tempAvatarUri!!)
+            } else {
+                pickAvatarLauncher.launch("image/*")
+            }
+        }
+
+        dialogView.findViewById<View>(R.id.viewAddChildAvatarBg).setOnClickListener(avatarClickAction)
+        dialogAvatarView?.setOnClickListener(avatarClickAction)
+        dialogView.findViewById<ImageButton>(R.id.btnAddChildPhoto).setOnClickListener { pickAvatarLauncher.launch("image/*") }
+        
+        dialogView.findViewById<ImageButton>(R.id.btnDismissAddChild).setOnClickListener { dialog.dismiss() }
 
         dialogView.findViewById<Button>(R.id.btnAddChildConfirm).setOnClickListener {
             val firstName = dialogView.findViewById<EditText>(R.id.etAddChildFirstName).text.toString().trim()
             val lastName = dialogView.findViewById<EditText>(R.id.etAddChildLastName).text.toString().trim()
             val middleName = dialogView.findViewById<EditText>(R.id.etAddChildMiddleName).text.toString().trim()
-            val suffix = selectedSuffix
             val age = dialogView.findViewById<EditText>(R.id.etAddChildAge).text.toString().trim()
             val className = dialogView.findViewById<EditText>(R.id.etAddChildClass).text.toString().trim()
             val school = dialogView.findViewById<EditText>(R.id.etAddChildSchool).text.toString().trim()
-            val grade = dialogView.findViewById<EditText>(R.id.etAddChildGrade).text.toString().trim()
 
-            if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || className.isEmpty() || school.isEmpty() || grade.isEmpty()) {
-                Toast.makeText(this, "Please fill in all required fields marked with an asterisk (*)", Toast.LENGTH_SHORT).show()
+            if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || className.isEmpty() || school.isEmpty() || selectedGrade.isEmpty() || tempAvatarUri == null) {
+                Toast.makeText(this, "Please fill in all required fields and upload photo (*)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val newChild = mapOf(
-                "firstName" to firstName,
-                "lastName" to lastName,
-                "middleName" to middleName,
-                "suffix" to suffix,
-                "age" to age,
-                "class" to className,
-                "school" to school,
-                "grade" to grade,
-                "status" to "AT HOME"
-            )
-
-            val uid = auth.currentUser?.uid ?: return@setOnClickListener
-            db.collection("parents").document(uid)
-                .update("children", FieldValue.arrayUnion(newChild))
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Child added successfully!", Toast.LENGTH_SHORT).show()
-                    fetchParentData()
-                    dialog.dismiss()
-                }
+            it.isEnabled = false
+            uploadNewChildImages(firstName, lastName, middleName, selectedSuffix, age, className, school, selectedGrade, dialog)
         }
         dialog.show()
+    }
+
+    private fun uploadNewChildImages(fName: String, lName: String, mName: String, suffix: String, age: String, className: String, school: String, grade: String, dialog: AlertDialog) {
+        val uid = auth.currentUser?.uid ?: return
+        val timestamp = System.currentTimeMillis()
+        val avatarRef = storage.reference.child("parents/$uid/child_${fName}_${timestamp}_avatar.jpg")
+
+        Toast.makeText(this, "Adding child...", Toast.LENGTH_SHORT).show()
+
+        avatarRef.putFile(tempAvatarUri!!)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) task.exception?.let { throw it }
+                avatarRef.downloadUrl 
+            }
+            .addOnSuccessListener { avatarUrl ->
+                val newChild = mapOf(
+                    "firstName" to fName,
+                    "lastName" to lName,
+                    "middleName" to mName,
+                    "suffix" to suffix,
+                    "age" to age,
+                    "class" to className,
+                    "school" to school,
+                    "grade" to grade,
+                    "avatarUrl" to avatarUrl.toString(),
+                    "status" to "AT HOME"
+                )
+                db.collection("parents").document(uid).update("children", FieldValue.arrayUnion(newChild))
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Child added successfully!", Toast.LENGTH_SHORT).show()
+                        fetchParentData()
+                        dialog.dismiss()
+                    }
+            }
+    }
+
+    private fun startCrop(uri: Uri) {
+        val dest = "avatar_crop_${System.currentTimeMillis()}.jpg"
+        val uCrop = UCrop.of(uri, Uri.fromFile(File(cacheDir, dest)))
+        val options = UCrop.Options().apply {
+            setToolbarColor(Color.WHITE)
+            setToolbarWidgetColor(Color.BLACK)
+            setActiveControlsWidgetColor(ContextCompat.getColor(this@ParentDetails, CommonR.color.yellow_primary))
+            setHideBottomControls(false)
+            setFreeStyleCropEnabled(false)
+        }
+        uCrop.withAspectRatio(1f, 1f)
+        uCrop.withOptions(options)
+        uCrop.start(this, UCrop.REQUEST_CROP)
+    }
+
+    private fun showPreviewDialog(uri: Uri) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_photo, null)
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val ivAvatarPreview = dialogView.findViewById<ImageView>(R.id.ivPreviewAvatar)
+        val cvAvatar = dialogView.findViewById<View>(R.id.cvAvatarPreview)
+        val btnDelete = dialogView.findViewById<ImageButton>(R.id.btnDeletePhoto)
+
+        cvAvatar.visibility = View.VISIBLE
+        Glide.with(this).load(uri).circleCrop().into(ivAvatarPreview)
+        cvAvatar.setOnClickListener { dialog.dismiss(); lastSourceUriAvatar?.let { startCrop(it) } }
+
+        btnDelete.setOnClickListener {
+            dialog.dismiss()
+            tempAvatarUri = null
+            dialogAvatarView?.setImageResource(CommonR.drawable.user)
+            lastSourceUriAvatar = null 
+        }
+        dialogView.findViewById<Button>(R.id.btnPreviewCancel).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnPreviewSave).setOnClickListener {
+            dialog.dismiss()
+            tempAvatarUri = uri
+            Glide.with(this).load(uri).circleCrop().into(dialogAvatarView!!)
+        }
+        dialog.show()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val resultUri = UCrop.getOutput(data)
+            if (resultUri != null) {
+                showPreviewDialog(resultUri)
+            }
+        }
     }
 
     private fun showBulkDeleteWarning(selectedChildren: List<ChildDetail>) {
@@ -324,6 +445,9 @@ class ParentDetails : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
+        tempAvatarUri = null
+        dialogAvatarView = dialogView.findViewById(R.id.imgEditProfileAvatar)
+
         val etFirstName = dialogView.findViewById<EditText>(R.id.etEditFirstName)
         val etLastName = dialogView.findViewById<EditText>(R.id.etEditLastName)
         val etMiddleName = dialogView.findViewById<EditText>(R.id.etEditMiddleName)
@@ -350,19 +474,38 @@ class ParentDetails : AppCompatActivity() {
 
             etEmail.setText(doc.getString("email"))
             etPhone.setText(doc.getString("phone"))
+            
+            val avatarUrl = doc.getString("avatarUrl")
+            if (!avatarUrl.isNullOrEmpty()) {
+                Glide.with(this).load(avatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(dialogAvatarView!!)
+            } else {
+                Glide.with(this).load(CommonR.drawable.user).circleCrop().into(dialogAvatarView!!)
+            }
         }
 
         suffixSelector.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
             AlertDialog.Builder(this)
                 .setTitle("Select Suffix")
-                .setItems(suffixes) { _, which ->
-                    selectedSuffix = if (which == 0) "" else suffixes[which]
-                    tvSelectedSuffix.text = if (which == 0) getString(CommonR.string.suffix) else suffixes[which]
-                    tvSelectedSuffix.setTextColor(if (which == 0) "#888888".toColorInt() else Color.BLACK)
+                .setItems(suffixes) { _, pos ->
+                    selectedSuffix = if (pos == 0) "" else suffixes[pos]
+                    tvSelectedSuffix.text = if (pos == 0) getString(CommonR.string.suffix) else suffixes[pos]
+                    tvSelectedSuffix.setTextColor(if (pos == 0) "#888888".toColorInt() else Color.BLACK)
                 }
                 .show()
         }
+
+        val avatarClickAction = View.OnClickListener {
+            if (tempAvatarUri != null) {
+                showPreviewDialog(tempAvatarUri!!)
+            } else {
+                pickAvatarLauncher.launch("image/*")
+            }
+        }
+
+        dialogView.findViewById<View>(R.id.rlEditProfileAvatar).setOnClickListener(avatarClickAction)
+        dialogAvatarView?.setOnClickListener(avatarClickAction)
+        dialogView.findViewById<View>(R.id.btnChangeProfilePhoto).setOnClickListener { pickAvatarLauncher.launch("image/*") }
 
         dialogView.findViewById<ImageButton>(R.id.btnDismissEditProfile).setOnClickListener {
             dialog.dismiss()
@@ -373,7 +516,7 @@ class ParentDetails : AppCompatActivity() {
         }
 
         dialogView.findViewById<Button>(R.id.btnSaveProfile).setOnClickListener {
-            val updateData = mapOf(
+            val updateData = mutableMapOf<String, Any>(
                 "firstName" to etFirstName.text.toString().trim(),
                 "lastName" to etLastName.text.toString().trim(),
                 "middleName" to etMiddleName.text.toString().trim(),
@@ -382,13 +525,40 @@ class ParentDetails : AppCompatActivity() {
                 "phone" to etPhone.text.toString().trim()
             )
 
-            db.collection("parents").document(uid).update(updateData)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                    fetchParentData()
-                    dialog.dismiss()
-                }
+            it.isEnabled = false
+            if (tempAvatarUri != null) {
+                uploadParentAvatar(tempAvatarUri!!, updateData, dialog)
+            } else {
+                db.collection("parents").document(uid).update(updateData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                        fetchParentData()
+                        dialog.dismiss()
+                    }
+            }
         }
         dialog.show()
+    }
+
+    private fun uploadParentAvatar(uri: Uri, updateData: MutableMap<String, Any>, dialog: AlertDialog) {
+        val uid = auth.currentUser?.uid ?: return
+        val ref = storage.reference.child("parents/$uid/profile_avatar.jpg")
+        
+        Toast.makeText(this, "Updating profile...", Toast.LENGTH_SHORT).show()
+        
+        ref.putFile(uri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) task.exception?.let { throw it }
+                ref.downloadUrl 
+            }
+            .addOnSuccessListener { downloadUrl ->
+                updateData["avatarUrl"] = downloadUrl.toString()
+                db.collection("parents").document(uid).update(updateData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                        fetchParentData()
+                        dialog.dismiss()
+                    }
+            }
     }
 }

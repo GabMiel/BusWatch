@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.yalantis.ucrop.UCrop
 import java.io.File
@@ -29,7 +32,6 @@ import java.io.Serializable
 class Signup2 : AppCompatActivity() {
 
     private var avatarUri: Uri? = null
-    private var enrollmentUri: Uri? = null
     private var selectedSuffix: String? = null
     private var selectedGrade: String? = null
 
@@ -42,7 +44,6 @@ class Signup2 : AppCompatActivity() {
     private lateinit var tvSelectedGrade: TextView
     private lateinit var etChildSchool: EditText
     private lateinit var ivAvatar: ImageView
-    private lateinit var ivEnrollment: ImageView
     private lateinit var tvChildNumber: TextView
     
     private lateinit var tvFirstNameWarning: TextView
@@ -53,12 +54,13 @@ class Signup2 : AppCompatActivity() {
     private var childrenList = ArrayList<HashMap<String, Any?>>()
     private var currentChildIndex = 0
 
-    private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { startCrop(it, true) }
-    }
+    private var lastSourceUriAvatar: Uri? = null
 
-    private val pickEnrollmentLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { startCrop(it, false) }
+    private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { 
+            lastSourceUriAvatar = it
+            startCrop(it) 
+        }
     }
 
     private val signup3Launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -91,11 +93,9 @@ class Signup2 : AppCompatActivity() {
         etChildClass = findViewById(R.id.etChildClass)
         etChildSchool = findViewById(R.id.etSignup2School)
         ivAvatar = findViewById(R.id.imageView39)
-        ivEnrollment = findViewById(R.id.ivEnrollmentPreview)
         tvChildNumber = findViewById(R.id.tvChildNumber)
 
         val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
-        val btnUploadPhoto = findViewById<Button>(R.id.btnSignup2UploadPhoto)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
         val nextButton = findViewById<Button>(R.id.btnSignup2Next)
         val btnAddChild = findViewById<Button>(R.id.btnSignup2AddChild)
@@ -144,6 +144,13 @@ class Signup2 : AppCompatActivity() {
             } else {
                 savedInstanceState.getSerializable("childrenList") as? ArrayList<HashMap<String, Any?>>
             } ?: ArrayList()
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                lastSourceUriAvatar = savedInstanceState.getParcelable("lastSourceUriAvatar", Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                lastSourceUriAvatar = savedInstanceState.getParcelable("lastSourceUriAvatar")
+            }
         } else {
             @Suppress("UNCHECKED_CAST", "DEPRECATION")
             val additionalFromIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -162,8 +169,7 @@ class Signup2 : AppCompatActivity() {
                     "class" to (intent.getStringExtra("childClass") ?: ""),
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
-                    "avatarUrl" to intent.getStringExtra("childAvatarUrl"),
-                    "enrollmentFormUrl" to intent.getStringExtra("enrollmentFormUrl")
+                    "avatarUrl" to intent.getStringExtra("childAvatarUrl")
                 )
                 childrenList.add(firstChild)
                 additionalFromIntent?.let { childrenList.addAll(it) }
@@ -173,7 +179,6 @@ class Signup2 : AppCompatActivity() {
         loadCurrentChildData()
 
         btnAddPhoto.setOnClickListener { pickAvatarLauncher.launch("image/*") }
-        btnUploadPhoto.setOnClickListener { pickEnrollmentLauncher.launch("image/*") }
 
         backButton.setOnClickListener { goBack() }
 
@@ -207,7 +212,6 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childGrade", primaryChild["grade"] as String)
                     putExtra("childSchool", primaryChild["school"] as String)
                     putExtra("childAvatarUrl", primaryChild["avatarUrl"] as String?)
-                    putExtra("enrollmentFormUrl", primaryChild["enrollmentFormUrl"] as String?)
 
                     if (childrenList.size > 1) {
                         val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))
@@ -225,8 +229,8 @@ class Signup2 : AppCompatActivity() {
         }
     }
 
-    private fun startCrop(uri: Uri, isAvatar: Boolean) {
-        val destinationFileName = if (isAvatar) "avatar_crop_${System.currentTimeMillis()}.jpg" else "enrollment_crop_${System.currentTimeMillis()}.jpg"
+    private fun startCrop(uri: Uri) {
+        val destinationFileName = "avatar_crop_${System.currentTimeMillis()}.jpg"
         val uCrop = UCrop.of(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
         
         val options = UCrop.Options().apply {
@@ -236,15 +240,52 @@ class Signup2 : AppCompatActivity() {
             setCompressionFormat(android.graphics.Bitmap.CompressFormat.JPEG)
             setCompressionQuality(90)
             setHideBottomControls(false)
-            setFreeStyleCropEnabled(!isAvatar)
+            setFreeStyleCropEnabled(false)
         }
 
-        if (isAvatar) {
-            uCrop.withAspectRatio(1f, 1f)
-        }
+        uCrop.withAspectRatio(1f, 1f)
 
         uCrop.withOptions(options)
-        uCrop.start(this, if (isAvatar) UCrop.REQUEST_CROP else UCrop.REQUEST_CROP + 1)
+        uCrop.start(this, UCrop.REQUEST_CROP)
+    }
+
+    private fun showPreviewDialog(uri: Uri) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_photo, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val ivAvatarPreview = dialogView.findViewById<ImageView>(R.id.ivPreviewAvatar)
+        val cvAvatar = dialogView.findViewById<View>(R.id.cvAvatarPreview)
+        val btnSave = dialogView.findViewById<Button>(R.id.btnPreviewSave)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnPreviewCancel)
+        val btnDelete = dialogView.findViewById<ImageButton>(R.id.btnDeletePhoto)
+
+        cvAvatar.visibility = View.VISIBLE
+        Glide.with(this).load(uri).circleCrop().into(ivAvatarPreview)
+        cvAvatar.setOnClickListener {
+            dialog.dismiss()
+            lastSourceUriAvatar?.let { startCrop(it) }
+        }
+
+        btnDelete.setOnClickListener {
+            dialog.dismiss()
+            avatarUri = null
+            ivAvatar.setImageResource(CommonR.drawable.user)
+            lastSourceUriAvatar = null
+            Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show()
+        }
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnSave.setOnClickListener {
+            dialog.dismiss()
+            avatarUri = uri
+            Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
+        }
+
+        dialog.show()
     }
 
     @Deprecated("Deprecated in Java")
@@ -253,12 +294,8 @@ class Signup2 : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             val resultUri = UCrop.getOutput(data)
-            if (requestCode == UCrop.REQUEST_CROP) {
-                avatarUri = resultUri
-                ivAvatar.setImageURI(avatarUri)
-            } else if (requestCode == UCrop.REQUEST_CROP + 1) {
-                enrollmentUri = resultUri
-                ivEnrollment.setImageURI(enrollmentUri)
+            if (resultUri != null) {
+                showPreviewDialog(resultUri)
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             val cropError = UCrop.getError(data!!)
@@ -326,6 +363,7 @@ class Signup2 : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putInt("currentIndex", currentChildIndex)
         outState.putSerializable("childrenList", childrenList)
+        outState.putParcelable("lastSourceUriAvatar", lastSourceUriAvatar)
     }
 
     private fun validateFields(): Boolean {
@@ -337,7 +375,7 @@ class Signup2 : AppCompatActivity() {
         val grade = selectedGrade ?: ""
         val school = etChildSchool.text.toString().trim()
 
-        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty()) {
+        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty() || avatarUri == null) {
             Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -365,8 +403,7 @@ class Signup2 : AppCompatActivity() {
             "class" to etChildClass.text.toString().trim(),
             "grade" to (selectedGrade ?: ""),
             "school" to etChildSchool.text.toString().trim(),
-            "avatarUrl" to avatarUri?.toString(),
-            "enrollmentFormUrl" to enrollmentUri?.toString()
+            "avatarUrl" to avatarUri?.toString()
         )
         
         if (currentChildIndex < childrenList.size) {
@@ -408,16 +445,9 @@ class Signup2 : AppCompatActivity() {
             
             avatarUri = (child["avatarUrl"] as? String)?.toUri()
             if (avatarUri != null) {
-                ivAvatar.setImageURI(avatarUri)
+                Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
             } else {
                 ivAvatar.setImageResource(CommonR.drawable.user)
-            }
-            
-            enrollmentUri = (child["enrollmentFormUrl"] as? String)?.toUri()
-            if (enrollmentUri != null) {
-                ivEnrollment.setImageURI(enrollmentUri)
-            } else {
-                ivEnrollment.setImageResource(CommonR.drawable.ic_image_placeholder)
             }
         } else {
             clearFields()
@@ -439,9 +469,7 @@ class Signup2 : AppCompatActivity() {
         tvSelectedGrade.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
         etChildSchool.text.clear()
         ivAvatar.setImageResource(CommonR.drawable.user)
-        ivEnrollment.setImageResource(CommonR.drawable.ic_image_placeholder)
         avatarUri = null
-        enrollmentUri = null
     }
 
     private fun updateChildHeader() {
@@ -467,7 +495,6 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childGrade", selectedGrade ?: "")
                 putExtra("childSchool", etChildSchool.text.toString().trim())
                 putExtra("childAvatarUrl", avatarUri?.toString())
-                putExtra("enrollmentFormUrl", enrollmentUri?.toString())
 
                 if (childrenList.size > 1) {
                     val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))
@@ -477,6 +504,7 @@ class Signup2 : AppCompatActivity() {
             setResult(RESULT_OK, resultIntent)
             finish()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                @Suppress("DEPRECATION")
                 overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
             } else {
                 @Suppress("DEPRECATION")

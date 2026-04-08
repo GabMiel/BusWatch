@@ -78,7 +78,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personGivenName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -98,7 +99,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personFamilyName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -118,7 +120,8 @@
                 android:inputType="textEmailAddress"
                 android:autofillHints="emailAddress"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,7 +141,8 @@
                 android:inputType="phone"
                 android:autofillHints="phoneNumber"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -174,7 +178,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -194,7 +199,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -214,7 +220,8 @@
                 android:inputType="textEmailAddress"
                 android:autofillHints="emailAddress"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -234,7 +241,8 @@
                 android:inputType="phone"
                 android:autofillHints="phoneNumber"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -270,7 +278,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -290,7 +299,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -310,7 +320,8 @@
                 android:inputType="textEmailAddress"
                 android:autofillHints="emailAddress"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -330,7 +341,8 @@
                 android:inputType="phone"
                 android:autofillHints="phoneNumber"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

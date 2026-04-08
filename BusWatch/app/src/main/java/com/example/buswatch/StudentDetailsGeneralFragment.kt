@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -9,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -21,6 +24,8 @@ import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.yalantis.ucrop.UCrop
+import java.io.File
 
 class StudentDetailsGeneralFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -32,12 +37,15 @@ class StudentDetailsGeneralFragment : Fragment() {
     
     private var tempAvatarUri: Uri? = null
     private lateinit var avatarView: ImageView
+    private var lastSourceUriAvatar: Uri? = null
+    
+    // For Dialog Edit
+    private var editAvatarView: ImageView? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            tempAvatarUri = it
-            avatarView.setImageURI(it)
-            uploadNewAvatar(it)
+            lastSourceUriAvatar = it
+            startCrop(it)
         }
     }
 
@@ -176,6 +184,70 @@ class StudentDetailsGeneralFragment : Fragment() {
         }
     }
 
+    private fun startCrop(uri: Uri) {
+        val dest = "avatar_crop_${System.currentTimeMillis()}.jpg"
+        val uCrop = UCrop.of(uri, Uri.fromFile(File(requireContext().cacheDir, dest)))
+        val options = UCrop.Options().apply {
+            setToolbarColor(Color.WHITE)
+            setToolbarWidgetColor(Color.BLACK)
+            setActiveControlsWidgetColor(ContextCompat.getColor(requireContext(), CommonR.color.yellow_primary))
+            setHideBottomControls(false)
+        }
+        uCrop.withAspectRatio(1f, 1f)
+        uCrop.withOptions(options)
+        uCrop.start(requireContext(), this, UCrop.REQUEST_CROP)
+    }
+
+    private fun showPreviewDialog(uri: Uri) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_photo, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val ivAvatarPreview = dialogView.findViewById<ImageView>(R.id.ivPreviewAvatar)
+        val cvAvatar = dialogView.findViewById<View>(R.id.cvAvatarPreview)
+        val btnDelete = dialogView.findViewById<ImageButton>(R.id.btnDeletePhoto)
+
+        cvAvatar.visibility = View.VISIBLE
+        ivAvatarPreview.setImageURI(uri)
+        
+        cvAvatar.setOnClickListener {
+            dialog.dismiss()
+            lastSourceUriAvatar?.let { startCrop(it) }
+        }
+
+        btnDelete.setOnClickListener {
+            dialog.dismiss()
+            tempAvatarUri = null
+            editAvatarView?.setImageResource(CommonR.drawable.user)
+            lastSourceUriAvatar = null
+        }
+
+        dialogView.findViewById<Button>(R.id.btnPreviewCancel).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnPreviewSave).setOnClickListener {
+            dialog.dismiss()
+            tempAvatarUri = uri
+            if (editAvatarView != null) {
+                editAvatarView?.setImageURI(uri)
+            } else {
+                // If not in edit dialog, upload immediately
+                uploadNewAvatar(uri)
+            }
+        }
+        dialog.show()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == android.app.Activity.RESULT_OK && data != null && requestCode == UCrop.REQUEST_CROP) {
+            val resultUri = UCrop.getOutput(data)
+            if (resultUri != null) {
+                showPreviewDialog(resultUri)
+            }
+        }
+    }
+
     private fun uploadNewAvatar(uri: Uri) {
         val uid = auth.currentUser?.uid ?: return
         val fileName = if (isFromChildrenList) "child_${childName?.replace(" ", "_")}_avatar.jpg" else "primaryAvatar.jpg"
@@ -219,6 +291,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                     newList[index] = updatedChild
                     docRef.update("children", newList).addOnSuccessListener {
                         currentChildData = updatedChild
+                        fetchClassFromFirebase(updatedChild)
                         Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -226,6 +299,7 @@ class StudentDetailsGeneralFragment : Fragment() {
         } else {
             docRef.update("child", updatedChild).addOnSuccessListener {
                 currentChildData = updatedChild
+                fetchClassFromFirebase(updatedChild)
                 Toast.makeText(context, "Photo updated", Toast.LENGTH_SHORT).show()
             }
         }
@@ -237,6 +311,9 @@ class StudentDetailsGeneralFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)
             .setView(dialogView)
             .create()
+
+        tempAvatarUri = null
+        editAvatarView = dialogView.findViewById(R.id.imgEditStudentAvatar)
 
         val etFirstName = dialogView.findViewById<EditText>(R.id.etEditFirstName)
         val etLastName = dialogView.findViewById<EditText>(R.id.etEditLastName)
@@ -251,7 +328,6 @@ class StudentDetailsGeneralFragment : Fragment() {
         val etClass = dialogView.findViewById<EditText>(R.id.etEditClass)
         val etSchool = dialogView.findViewById<EditText>(R.id.etEditSchool)
         val etAddress = dialogView.findViewById<EditText>(R.id.etEditAddress)
-        val imgEditAvatar = dialogView.findViewById<ImageView>(R.id.imgEditStudentAvatar)
 
         // Pre-fill
         etFirstName.setText(child["firstName"] as? String ?: "")
@@ -287,9 +363,13 @@ class StudentDetailsGeneralFragment : Fragment() {
         
         val avatarUrl = child["avatarUrl"] as? String
         if (!avatarUrl.isNullOrEmpty()) {
-            Glide.with(this).load(avatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(imgEditAvatar)
+            Glide.with(this).load(avatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(editAvatarView!!)
         }
 
+        dialogView.findViewById<View>(R.id.rlEditStudentAvatar).setOnClickListener { pickImageLauncher.launch("image/*") }
+        editAvatarView?.setOnClickListener { tempAvatarUri?.let { showPreviewDialog(it) } }
+
+        dialogView.findViewById<ImageButton>(R.id.btnDismissEditGeneral).setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<Button>(R.id.btnCancelEdit).setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<Button>(R.id.btnSaveStudent).setOnClickListener {
             val updatedData = child.toMutableMap()
@@ -304,9 +384,36 @@ class StudentDetailsGeneralFragment : Fragment() {
             updatedData["school"] = etSchool.text.toString().trim()
             updatedData["address"] = etAddress.text.toString().trim()
 
-            saveUpdatedGeneralData(updatedData, dialog)
+            if (tempAvatarUri != null) {
+                uploadEditedAvatar(tempAvatarUri!!, updatedData, dialog)
+            } else {
+                saveUpdatedGeneralData(updatedData, dialog)
+            }
         }
+        dialog.setOnDismissListener { editAvatarView = null }
         dialog.show()
+    }
+
+    private fun uploadEditedAvatar(uri: Uri, updatedChild: MutableMap<String, Any>, dialog: AlertDialog) {
+        val uid = auth.currentUser?.uid ?: return
+        val fileName = if (isFromChildrenList) "child_${childName?.replace(" ", "_")}_avatar.jpg" else "primaryAvatar.jpg"
+        val ref = storage.reference.child("parents/$uid/$fileName")
+        
+        Toast.makeText(context, "Saving changes...", Toast.LENGTH_SHORT).show()
+        
+        ref.putFile(uri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) task.exception?.let { throw it }
+                ref.downloadUrl
+            }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    updatedChild["avatarUrl"] = task.result.toString()
+                    saveUpdatedGeneralData(updatedChild, dialog)
+                } else {
+                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun saveUpdatedGeneralData(updatedChild: kotlin.collections.Map<String, Any>, dialog: AlertDialog) {

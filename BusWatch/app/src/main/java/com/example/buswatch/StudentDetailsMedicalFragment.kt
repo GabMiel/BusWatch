@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -169,6 +170,7 @@ class StudentDetailsMedicalFragment : Fragment() {
         etSpecial.setText(medical["specialNeeds"] as? String ?: "")
         etDietary.setText(medical["dietary"] as? String ?: "")
 
+        dialogView.findViewById<ImageButton>(R.id.btnDismissEditMedical).setOnClickListener { dialog.dismiss() }
         btnCancel.setOnClickListener { dialog.dismiss() }
 
         btnSave.setOnClickListener {

@@ -80,7 +80,8 @@
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -106,7 +107,8 @@
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -130,7 +132,8 @@
                 android:inputType="number"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -167,7 +170,8 @@
                 android:inputType="textPersonName"
                 android:autofillHints="personName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Physician Phone -->
             <TextView
@@ -189,7 +193,8 @@
                 android:inputType="phone"
                 android:autofillHints="phoneNumber"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -217,7 +222,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Medications -->
             <TextView
@@ -239,7 +245,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Conditions -->
             <TextView
@@ -261,7 +268,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Dietary Restrictions -->
             <TextView
@@ -283,7 +291,8 @@
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Special Needs -->
             <TextView
@@ -306,7 +315,8 @@
                 android:inputType="textMultiLine"
                 android:autofillHints="none"
                 android:padding="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

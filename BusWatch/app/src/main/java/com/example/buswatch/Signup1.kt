@@ -30,6 +30,7 @@ class Signup1 : AppCompatActivity() {
     private var isConfirmPasswordVisible = false
     private var selectedCountryCode = "+63"
     private var maxPhoneDigits = 11 // Default for Philippines
+    private var isPhoneFormatting = false
     
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
@@ -121,12 +122,14 @@ class Signup1 : AppCompatActivity() {
         setupNameWatcher(etFirstName, tvFirstNameWarning)
         setupNameWatcher(etLastName, tvLastNameWarning)
         setupNameWatcher(etMiddleName, tvMiddleNameWarning)
-        setupPhoneFormatting()
 
         // Character limits
         etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
         etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
         etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
+        updatePhoneFilter()
+
+        setupPhoneFormatting()
 
         viewConfirmPasswordButton.setOnClickListener {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
@@ -151,8 +154,11 @@ class Signup1 : AppCompatActivity() {
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
                     tvCountryCode.text = selectedCountryCode
-                    // Trigger a re-format to apply new limit
-                    etPhone.setText(etPhone.text.toString())
+                    // Update length filter
+                    updatePhoneFilter()
+                    // Re-apply formatting to existing text
+                    val currentText = etPhone.text.toString().replace(" ", "")
+                    etPhone.setText(currentText)
                 }
                 .show()
         }
@@ -248,83 +254,6 @@ class Signup1 : AppCompatActivity() {
         }
     }
 
-    private fun setupPhoneFormatting() {
-        etPhone.addTextChangedListener(object : TextWatcher {
-            private var isUpdating = false
-            private var lastCursorPosition = 0
-            
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                lastCursorPosition = etPhone.selectionStart
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (isUpdating) return
-                isUpdating = true
-                
-                val rawString = s.toString()
-                val digits = rawString.replace(" ", "")
-                
-                // Enforce max digits immediately to prevent "broken" state if adding in middle
-                val truncatedDigits = if (digits.length > maxPhoneDigits) {
-                    digits.substring(0, maxPhoneDigits)
-                } else {
-                    digits
-                }
-                
-                val formatted = formatByCountry(truncatedDigits, selectedCountryCode)
-                
-                s?.replace(0, s.length, formatted)
-                
-                // Try to restore cursor position intelligently
-                try {
-                    val newPos = lastCursorPosition.coerceIn(0, formatted.length)
-                    etPhone.setSelection(newPos)
-                } catch (ex: Exception) {
-                    etPhone.setSelection(formatted.length)
-                }
-                
-                isUpdating = false
-            }
-        })
-    }
-
-    private fun formatByCountry(digits: String, countryCode: String): String {
-        val sb = StringBuilder()
-        when (countryCode) {
-            "+63" -> { // PH: XXXX XXX XXXX
-                for (i in digits.indices) {
-                    if (i == 4 || i == 7) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+1", "+44", "+64" -> { // US/UK/NZ: XXX XXX XXXX
-                for (i in digits.indices) {
-                    if (i == 3 || i == 6) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+61", "+353" -> { // AU/IE: XXX XXX XXX
-                for (i in digits.indices) {
-                    if (i == 3 || i == 6) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+65" -> { // SG: XXXX XXXX
-                for (i in digits.indices) {
-                    if (i == 4) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            else -> {
-                for (i in digits.indices) {
-                    if (i > 0 && i % 3 == 0) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-        }
-        return sb.toString()
-    }
-
     private fun setupNameWatcher(editText: EditText, warningView: TextView) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -344,5 +273,88 @@ class Signup1 : AppCompatActivity() {
         if (name.isEmpty()) return false
         val regex = Regex("^[a-zA-Z\\s.-]*$")
         return !regex.matches(name)
+    }
+
+    private fun setupPhoneFormatting() {
+        etPhone.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isPhoneFormatting || s == null) return
+                isPhoneFormatting = true
+                applyPhoneFormatting(s, selectedCountryCode)
+                isPhoneFormatting = false
+            }
+        })
+    }
+
+    private fun applyPhoneFormatting(s: Editable, countryCode: String) {
+        val digits = s.toString().replace(" ", "")
+        val formatted = StringBuilder()
+        
+        when (countryCode) {
+            "+63" -> { // Philippines: 09XX XXX XXXX (11 digits)
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 3 || i == 6) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+1", "+64" -> { // USA, Canada, NZ: XXX XXX XXXX (10 digits)
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 2 || i == 5) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+44" -> { // UK: XXXXX XXXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if (i == 4 && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+61" -> { // Australia: XXX XXX XXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 2 || i == 5) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+65" -> { // Singapore: XXXX XXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if (i == 3 && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+353" -> { // Ireland: XX XXX XXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 1 || i == 4) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            else -> formatted.append(digits)
+        }
+
+        if (formatted.toString() != s.toString()) {
+            s.replace(0, s.length, formatted.toString())
+        }
+    }
+
+    private fun updatePhoneFilter() {
+        val spaces = when (selectedCountryCode) {
+            "+63", "+1", "+61", "+64", "+353" -> 2
+            "+44", "+65" -> 1
+            else -> 0
+        }
+        etPhone.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
     }
 }

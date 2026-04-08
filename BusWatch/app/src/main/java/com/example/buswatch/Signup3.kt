@@ -32,6 +32,8 @@ class Signup3 : AppCompatActivity() {
     private var selectedCountryCode2 = "+63"
     private var maxPhoneDigits1 = 11
     private var maxPhoneDigits2 = 11
+    private var isPhoneFormatting1 = false
+    private var isPhoneFormatting2 = false
 
     private lateinit var etAllergies: EditText
     private lateinit var etMedications: EditText
@@ -89,12 +91,16 @@ class Signup3 : AppCompatActivity() {
         // Real-time validation
         setupNameWatcher(etContact1Name, tvContact1NameWarning)
         setupNameWatcher(etContact2Name, tvContact2NameWarning)
-        setupPhoneFormatting(etContact1Phone, 1)
-        setupPhoneFormatting(etContact2Phone, 2)
 
         // Character limits for names
         etContact1Name.filters = arrayOf(InputFilter.LengthFilter(50))
         etContact2Name.filters = arrayOf(InputFilter.LengthFilter(50))
+        
+        // Initial limits for phone numbers
+        updatePhoneFilter1()
+        updatePhoneFilter2()
+
+        setupPhoneFormatting()
 
         // Pre-fill if returning
         intent.getStringExtra("bloodType")?.let {
@@ -117,7 +123,10 @@ class Signup3 : AppCompatActivity() {
                     selectedCountryCode1 = codesOnly[which]
                     maxPhoneDigits1 = lengths[which]
                     tvCountryCode1.text = selectedCountryCode1
-                    etContact1Phone.setText(etContact1Phone.text.toString())
+                    updatePhoneFilter1()
+                    
+                    val currentText = etContact1Phone.text.toString().replace(" ", "")
+                    etContact1Phone.setText(currentText)
                 }
                 .show()
         }
@@ -129,7 +138,10 @@ class Signup3 : AppCompatActivity() {
                     selectedCountryCode2 = codesOnly[which]
                     maxPhoneDigits2 = lengths[which]
                     tvCountryCode2.text = selectedCountryCode2
-                    etContact2Phone.setText(etContact2Phone.text.toString())
+                    updatePhoneFilter2()
+                    
+                    val currentText = etContact2Phone.text.toString().replace(" ", "")
+                    etContact2Phone.setText(currentText)
                 }
                 .show()
         }
@@ -186,84 +198,6 @@ class Signup3 : AppCompatActivity() {
         }
     }
 
-    private fun setupPhoneFormatting(editText: EditText, contactNum: Int) {
-        editText.addTextChangedListener(object : TextWatcher {
-            private var isUpdating = false
-            private var lastCursorPosition = 0
-            
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                lastCursorPosition = editText.selectionStart
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (isUpdating) return
-                isUpdating = true
-                
-                val currentMax = if (contactNum == 1) maxPhoneDigits1 else maxPhoneDigits2
-                val currentCC = if (contactNum == 1) selectedCountryCode1 else selectedCountryCode2
-                
-                val rawString = s.toString()
-                val digits = rawString.replace(" ", "")
-                
-                val truncatedDigits = if (digits.length > currentMax) {
-                    digits.substring(0, currentMax)
-                } else {
-                    digits
-                }
-                
-                val formatted = formatByCountry(truncatedDigits, currentCC)
-                
-                s?.replace(0, s.length, formatted)
-                
-                try {
-                    val newPos = lastCursorPosition.coerceIn(0, formatted.length)
-                    editText.setSelection(newPos)
-                } catch (_: Exception) {
-                    editText.setSelection(formatted.length)
-                }
-                
-                isUpdating = false
-            }
-        })
-    }
-
-    private fun formatByCountry(digits: String, countryCode: String): String {
-        val sb = StringBuilder()
-        when (countryCode) {
-            "+63" -> {
-                for (i in digits.indices) {
-                    if (i == 4 || i == 7) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+1", "+44", "+64" -> {
-                for (i in digits.indices) {
-                    if (i == 3 || i == 6) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+61", "+353" -> {
-                for (i in digits.indices) {
-                    if (i == 3 || i == 6) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            "+65" -> {
-                for (i in digits.indices) {
-                    if (i == 4) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-            else -> {
-                for (i in digits.indices) {
-                    if (i > 0 && i % 3 == 0) sb.append(" ")
-                    sb.append(digits[i])
-                }
-            }
-        }
-        return sb.toString()
-    }
-
     private fun setupNameWatcher(editText: EditText, warningView: TextView) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -283,6 +217,109 @@ class Signup3 : AppCompatActivity() {
         if (name.isEmpty()) return false
         val regex = Regex("^[a-zA-Z\\s.-]*$")
         return !regex.matches(name)
+    }
+
+    private fun setupPhoneFormatting() {
+        etContact1Phone.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isPhoneFormatting1 || s == null) return
+                isPhoneFormatting1 = true
+                applyPhoneFormatting(s, selectedCountryCode1)
+                isPhoneFormatting1 = false
+            }
+        })
+
+        etContact2Phone.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isPhoneFormatting2 || s == null) return
+                isPhoneFormatting2 = true
+                applyPhoneFormatting(s, selectedCountryCode2)
+                isPhoneFormatting2 = false
+            }
+        })
+    }
+
+    private fun applyPhoneFormatting(s: Editable, countryCode: String) {
+        val digits = s.toString().replace(" ", "")
+        val formatted = StringBuilder()
+        
+        when (countryCode) {
+            "+63" -> { // Philippines: 09XX XXX XXXX (11 digits)
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 3 || i == 6) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+1", "+64" -> { // USA, Canada, NZ: XXX XXX XXXX (10 digits)
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 2 || i == 5) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+44" -> { // UK: XXXXX XXXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if (i == 4 && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+61" -> { // Australia: XXX XXX XXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 2 || i == 5) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+65" -> { // Singapore: XXXX XXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if (i == 3 && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            "+353" -> { // Ireland: XX XXX XXXX
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 1 || i == 4) && i != digits.length - 1) {
+                        formatted.append(" ")
+                    }
+                }
+            }
+            else -> formatted.append(digits)
+        }
+
+        if (formatted.toString() != s.toString()) {
+            s.replace(0, s.length, formatted.toString())
+        }
+    }
+
+    private fun updatePhoneFilter1() {
+        val spaces = when (selectedCountryCode1) {
+            "+63", "+1", "+61", "+64", "+353" -> 2
+            "+44", "+65" -> 1
+            else -> 0
+        }
+        etContact1Phone.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits1 + spaces))
+    }
+
+    private fun updatePhoneFilter2() {
+        val spaces = when (selectedCountryCode2) {
+            "+63", "+1", "+61", "+64", "+353" -> 2
+            "+44", "+65" -> 1
+            else -> 0
+        }
+        etContact2Phone.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits2 + spaces))
     }
 
     private fun goBack() {
@@ -331,7 +368,6 @@ class Signup3 : AppCompatActivity() {
         c2Name: String, c2Phone: String, c2Relation: String
     ) {
         val primaryAvatarUri = intent.getStringExtra("childAvatarUrl")?.toUri()
-        val primaryEnrollmentUri = intent.getStringExtra("enrollmentFormUrl")?.toUri()
         
         @Suppress("UNCHECKED_CAST")
         val additionalChildren = IntentCompat.getSerializableExtra(intent, "additionalChildren", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
@@ -341,18 +377,11 @@ class Signup3 : AppCompatActivity() {
         if (primaryAvatarUri != null && primaryAvatarUri.scheme == "content") {
             uploadTasks.add("primaryAvatar" to primaryAvatarUri)
         }
-        if (primaryEnrollmentUri != null && primaryEnrollmentUri.scheme == "content") {
-            uploadTasks.add("primaryEnrollment" to primaryEnrollmentUri)
-        }
         
         additionalChildren.forEachIndexed { index, child ->
             val avatarUri = (child["avatarUrl"] as? String)?.toUri()
-            val enrollmentUri = (child["enrollmentFormUrl"] as? String)?.toUri()
             if (avatarUri != null && avatarUri.scheme == "content") {
                 uploadTasks.add("child_${index}_avatar" to avatarUri)
-            }
-            if (enrollmentUri != null && enrollmentUri.scheme == "content") {
-                uploadTasks.add("child_${index}_enrollment" to enrollmentUri)
             }
         }
 
@@ -415,10 +444,10 @@ class Signup3 : AppCompatActivity() {
                 "middleName" to (intent.getStringExtra("childMiddleName") ?: ""),
                 "suffix" to (intent.getStringExtra("childSuffix") ?: ""),
                 "age" to (intent.getStringExtra("childAge") ?: ""),
+                "class" to (intent.getStringExtra("childClass") ?: ""),
                 "grade" to (intent.getStringExtra("childGrade") ?: ""),
                 "school" to (intent.getStringExtra("childSchool") ?: ""),
                 "avatarUrl" to (uploadedUrls["primaryAvatar"] ?: intent.getStringExtra("childAvatarUrl") ?: ""),
-                "enrollmentFormUrl" to (uploadedUrls["primaryEnrollment"] ?: intent.getStringExtra("enrollmentFormUrl") ?: ""),
                 "medical" to medicalData
             ),
             "emergencyContacts" to listOf(
@@ -433,7 +462,6 @@ class Signup3 : AppCompatActivity() {
             val updatedChildren = additionalChildren.mapIndexed { index, child ->
                 val newChild = HashMap(child)
                 newChild["avatarUrl"] = uploadedUrls["child_${index}_avatar"] ?: child["avatarUrl"] ?: ""
-                newChild["enrollmentFormUrl"] = uploadedUrls["child_${index}_enrollment"] ?: child["enrollmentFormUrl"] ?: ""
                 // For now, additional children share the same medical info entered in Signup3
                 newChild["medical"] = medicalData
                 newChild

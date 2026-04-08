@@ -200,7 +200,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="24dp">
 
             <ImageView
                 android:id="@+id/imgChild"
@@ -243,23 +243,6 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/proof_of_enrollment"
-            android:textColor="@color/gray_text"
-            android:textSize="11sp" />
-
-        <ImageView
-            android:id="@+id/imgProof"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/bg_image_placeholder"
-            android:contentDescription="@string/proof_of_enrollment" />
 
         <View
             android:layout_width="match_parent"
