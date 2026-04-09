@@ -34,6 +34,7 @@ class Login : AppCompatActivity() {
         val viewPasswordButton = findViewById<ImageButton>(R.id.btnLoginViewPassword)
         val loginButton = findViewById<Button>(R.id.btnLoginLogin)
         val signupButton = findViewById<Button>(R.id.btnLoginSignup)
+        val forgotPasswordButton = findViewById<Button>(R.id.btnLoginForgotPassword)
         
         auth.currentUser?.let {
             checkUserRole(it.uid)
@@ -95,6 +96,10 @@ class Login : AppCompatActivity() {
 
         signupButton.setOnClickListener {
             startActivity(Intent(this, Signup1::class.java))
+        }
+
+        forgotPasswordButton.setOnClickListener {
+            startActivity(Intent(this, ForgotPassword::class.java))
         }
     }
 

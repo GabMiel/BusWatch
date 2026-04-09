@@ -26,6 +26,11 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.yalantis.ucrop.UCrop
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import java.io.File
 import java.io.Serializable
 
@@ -45,6 +50,8 @@ class Signup2 : AppCompatActivity() {
     private lateinit var etChildSchool: EditText
     private lateinit var ivAvatar: ImageView
     private lateinit var tvChildNumber: TextView
+    private lateinit var etPickupAddress: EditText
+    private lateinit var mapView: MapView
     
     private lateinit var tvFirstNameWarning: TextView
     private lateinit var tvLastNameWarning: TextView
@@ -72,6 +79,10 @@ class Signup2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Initialize osmdroid configuration
+        Configuration.getInstance().load(this, getSharedPreferences("osmdroid", MODE_PRIVATE))
+        
         setContentView(R.layout.signup2)
 
         etChildFirstName = findViewById(R.id.etChildFirstName)
@@ -94,11 +105,15 @@ class Signup2 : AppCompatActivity() {
         etChildSchool = findViewById(R.id.etSignup2School)
         ivAvatar = findViewById(R.id.imageView39)
         tvChildNumber = findViewById(R.id.tvChildNumber)
+        etPickupAddress = findViewById(R.id.etSignup2PickupAddress)
+        mapView = findViewById(R.id.mapSignup2)
 
         val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
         val nextButton = findViewById<Button>(R.id.btnSignup2Next)
         val btnAddChild = findViewById<Button>(R.id.btnSignup2AddChild)
+
+        setupMapView()
 
         // Setup real-time validation
         setupNameWatcher(etChildFirstName, tvFirstNameWarning)
@@ -169,6 +184,7 @@ class Signup2 : AppCompatActivity() {
                     "class" to (intent.getStringExtra("childClass") ?: ""),
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
+                    "address" to (intent.getStringExtra("childAddress") ?: ""),
                     "avatarUrl" to intent.getStringExtra("childAvatarUrl")
                 )
                 childrenList.add(firstChild)
@@ -211,6 +227,7 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childClass", primaryChild["class"] as String)
                     putExtra("childGrade", primaryChild["grade"] as String)
                     putExtra("childSchool", primaryChild["school"] as String)
+                    putExtra("childAddress", primaryChild["address"] as String)
                     putExtra("childAvatarUrl", primaryChild["avatarUrl"] as String?)
 
                     if (childrenList.size > 1) {
@@ -227,6 +244,22 @@ class Signup2 : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setupMapView() {
+        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(true)
+        val mapController = mapView.controller
+        mapController.setZoom(15.0)
+        // Default location (e.g., Caloocan City)
+        val startPoint = GeoPoint(14.7566, 121.0450)
+        mapController.setCenter(startPoint)
+
+        val marker = Marker(mapView)
+        marker.position = startPoint
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marker.title = "Pickup Location"
+        mapView.overlays.add(marker)
     }
 
     private fun startCrop(uri: Uri) {
@@ -374,8 +407,9 @@ class Signup2 : AppCompatActivity() {
         val className = etChildClass.text.toString().trim()
         val grade = selectedGrade ?: ""
         val school = etChildSchool.text.toString().trim()
+        val address = etPickupAddress.text.toString().trim()
 
-        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty() || avatarUri == null) {
+        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty() || address.isEmpty() || avatarUri == null) {
             Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -403,6 +437,7 @@ class Signup2 : AppCompatActivity() {
             "class" to etChildClass.text.toString().trim(),
             "grade" to (selectedGrade ?: ""),
             "school" to etChildSchool.text.toString().trim(),
+            "address" to etPickupAddress.text.toString().trim(),
             "avatarUrl" to avatarUri?.toString()
         )
         
@@ -442,6 +477,7 @@ class Signup2 : AppCompatActivity() {
             }
 
             etChildSchool.setText(child["school"] as? String ?: "")
+            etPickupAddress.setText(child["address"] as? String ?: "")
             
             avatarUri = (child["avatarUrl"] as? String)?.toUri()
             if (avatarUri != null) {
@@ -468,12 +504,23 @@ class Signup2 : AppCompatActivity() {
         tvSelectedGrade.text = getString(CommonR.string.select_grade)
         tvSelectedGrade.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
         etChildSchool.text.clear()
+        etPickupAddress.text.clear()
         ivAvatar.setImageResource(CommonR.drawable.user)
         avatarUri = null
     }
 
     private fun updateChildHeader() {
         tvChildNumber.text = getString(CommonR.string.child_n, currentChildIndex + 1)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
     }
 
     private fun goBack() {
@@ -494,6 +541,7 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childClass", etChildClass.text.toString().trim())
                 putExtra("childGrade", selectedGrade ?: "")
                 putExtra("childSchool", etChildSchool.text.toString().trim())
+                putExtra("childAddress", etPickupAddress.text.toString().trim())
                 putExtra("childAvatarUrl", avatarUri?.toString())
 
                 if (childrenList.size > 1) {

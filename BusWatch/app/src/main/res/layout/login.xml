@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -121,17 +122,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btnLoginForgotPassword"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="4dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/forgot_password"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/btnLoginLogin"
+        app:layout_constraintStart_toStartOf="@+id/btnLoginLogin"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginLogin" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="48dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginLogin"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginForgotPassword"
+        app:layout_constraintVertical_bias="0.8">
 
         <TextView
             android:id="@+id/textView8"
@@ -152,7 +171,8 @@
             android:text="@string/sign_up"
             android:textColor="#FEBE1E"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textAllCaps="false" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -78,7 +78,7 @@
                 android:layout_marginStart="12dp"
                 android:text="@string/notification_preference"
                 android:textColor="#000000"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView12"
                 app:layout_constraintStart_toEndOf="@+id/imageView12"
@@ -92,7 +92,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/bus_departure"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView12" />
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/when_the_bus_leaves_the_depot"
                 android:textColor="#666666"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/textView24"
                 app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
@@ -111,6 +111,7 @@
                 android:id="@+id/switchBusDeparture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:thumbTint="@color/switch_thumb_color"
                 android:trackTint="@color/switch_track_color"
                 app:layout_constraintBottom_toBottomOf="@+id/textView35"
@@ -126,7 +127,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/bus_arrival"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView24"
                 app:layout_constraintTop_toBottomOf="@+id/textView35" />
@@ -137,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/when_the_bus_arrives_at_pickup_drop"
                 android:textColor="#666666"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/textView25"
                 app:layout_constraintTop_toBottomOf="@+id/textView25" />
 
@@ -161,7 +162,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/child_boarding"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView25"
                 app:layout_constraintTop_toBottomOf="@+id/textView36" />
@@ -172,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/when_your_child_boards_the_bus"
                 android:textColor="#666666"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/textView30"
                 app:layout_constraintTop_toBottomOf="@+id/textView30" />
 
@@ -220,7 +221,7 @@
                 android:layout_marginStart="12dp"
                 android:text="@string/general"
                 android:textColor="#000000"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView13"
                 app:layout_constraintStart_toEndOf="@+id/imageView13"
@@ -233,7 +234,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/preferred_language"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView13" />
@@ -241,7 +242,7 @@
             <FrameLayout
                 android:id="@+id/btnSettingsLanguage"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:clickable="true"
@@ -258,7 +259,7 @@
                     android:layout_marginStart="12dp"
                     android:text="@string/english"
                     android:textColor="#000000"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -302,7 +303,7 @@
                 android:layout_marginStart="12dp"
                 android:text="@string/security"
                 android:textColor="#000000"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView15"
                 app:layout_constraintStart_toEndOf="@+id/imageView15"
@@ -315,7 +316,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/current_password"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView15" />
@@ -323,15 +324,15 @@
             <EditText
                 android:id="@+id/editTextTextPassword2"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:ems="10"
                 android:hint="@string/enter_current_password"
                 android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text"
                 android:autofillHints="password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -345,7 +346,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/new_password"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword2" />
@@ -353,15 +354,15 @@
             <EditText
                 android:id="@+id/editTextTextPassword3"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:ems="10"
                 android:hint="@string/enter_new_password"
                 android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text"
                 android:autofillHints="newPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -375,7 +376,7 @@
                 android:layout_marginTop="12dp"
                 android:text="@string/confirm_password"
                 android:textColor="#000000"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword3" />
@@ -383,15 +384,15 @@
             <EditText
                 android:id="@+id/editTextTextPassword4"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:ems="10"
                 android:hint="@string/confirm_password"
                 android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text"
                 android:autofillHints="password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

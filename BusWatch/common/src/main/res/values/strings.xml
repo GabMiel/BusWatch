@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BusWatch</string>
     <string name="secure_and_private">Secure and Private</string>
@@ -335,4 +336,9 @@
     <string name="greeting_format">%1$s, %2$s!</string>
     <string name="preview_photo">Preview Photo</string>
     <string name="delete_photo">Delete Photo</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password_desc">Enter your email address and we will send you a link to reset your password.</string>
+    <string name="send_reset_link">SEND RESET LINK</string>
+    <string name="pickup_address">Pickup Address</string>
+    <string name="enter_pickup_address">Enter pickup address</string>
 </resources>

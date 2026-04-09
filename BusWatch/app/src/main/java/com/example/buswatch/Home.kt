@@ -52,14 +52,12 @@ class Home : AppCompatActivity() {
         val tvGreeting = findViewById<TextView>(R.id.textView90)
         val tvTime = findViewById<TextView>(R.id.textView91)
 
-        // Setup real-time clock
         setupRealTimeClock(tvTime)
 
-        // Set greeting based on time of day
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val greetingPrefix = when (hour) {
-            in 0..11 -> getString(CommonR.string.good_morning_driver).substringBefore(",") // Reusing "Good morning"
+            in 0..11 -> getString(CommonR.string.good_morning_driver).substringBefore(",")
             in 12..16 -> "Good Afternoon"
             else -> "Good Evening"
         }
@@ -70,7 +68,6 @@ class Home : AppCompatActivity() {
             if (parentStatus.lowercase() == "approved") {
                 val adapter = rvStudentsHome.adapter as? StudentHomeAdapter
                 if (adapter != null) {
-                    // Update all students' status to "Heading to Stop"
                     val currentStudents = adapter.getStudents()
                     val headingToStopText = getString(CommonR.string.status_heading_to_stop)
                     val updatedStudents = currentStudents.map { it.copy(status = headingToStopText) }
@@ -123,7 +120,6 @@ class Home : AppCompatActivity() {
                 val formattedHour = if (hour % 12 == 0) 12 else hour % 12
                 tvTime.text = String.format(Locale.getDefault(), "%d:%02d %s", formattedHour, minute, amPm)
                 
-                // Update every minute, syncing with the start of the next minute
                 val seconds = calendar.get(Calendar.SECOND)
                 handler.postDelayed(this, (60 - seconds) * 1000L)
             }
@@ -149,37 +145,26 @@ class Home : AppCompatActivity() {
                     val greeting = "$greetingPrefix, $firstName!"
                     tvGreeting.text = greeting
                     
-                    // Parent Avatar
                     val parentAvatarUrl = document.getString("avatarUrl")
                     if (!parentAvatarUrl.isNullOrEmpty()) {
                         Glide.with(this).load(parentAvatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(btnHomeAccount)
                     }
 
-                    // Fetch parent's approval status
                     parentStatus = document.getString("status") ?: "pending"
 
                     val studentList = mutableListOf<StudentHome>()
                     val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
 
-                    // 1. Check Primary Child
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
                     if (childMap != null) {
                         studentList.add(mapToStudentHome("primary", childMap, parentAddress))
                     }
 
-                    // 2. Check Children List
                     @Suppress("UNCHECKED_CAST")
                     val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
                     childrenList?.forEachIndexed { index, map ->
                         studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
-                    }
-
-                    // Visibility logic for Pick Up button
-                    if (studentList.isEmpty()) {
-                        btnPickUp.visibility = View.GONE
-                    } else {
-                        btnPickUp.visibility = View.VISIBLE
                     }
 
                     setupRecyclerView(studentList)
@@ -211,12 +196,13 @@ class Home : AppCompatActivity() {
         if (students.isEmpty()) {
             tvNoStudents.visibility = View.VISIBLE
             rvStudentsHome.visibility = View.GONE
+            btnPickUp.visibility = View.GONE
         } else {
             tvNoStudents.visibility = View.GONE
             rvStudentsHome.visibility = View.VISIBLE
+            btnPickUp.visibility = View.VISIBLE
             rvStudentsHome.layoutManager = LinearLayoutManager(this)
             rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
-                // This block executes when a card is clicked (only possible if isInteractable is true)
                 val intent = Intent(this, Map::class.java)
                 intent.putExtra("childName", student.name)
                 startActivity(intent)

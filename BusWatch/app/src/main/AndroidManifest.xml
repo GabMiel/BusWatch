@@ -32,6 +32,7 @@
         <activity android:name=".StudentDetailsActivity" />
         <activity android:name=".Map" />
         <activity android:name=".BusDetails" />
+        <activity android:name=".ForgotPassword" />
 
         <!-- Activities from Driver module -->
         <activity android:name="com.example.buswatch.driver.DriverHome" />

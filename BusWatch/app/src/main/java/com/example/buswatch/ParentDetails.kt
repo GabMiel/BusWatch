@@ -95,6 +95,12 @@ class ParentDetails : AppCompatActivity() {
                 adapter.setDeleteMode(false)
                 btnConfirmDelete.visibility = View.GONE
                 Toast.makeText(this, "Removal cancelled: No children were selected", Toast.LENGTH_SHORT).show()
+            } else if (selectedChildren.size >= childrenList.size) {
+                AlertDialog.Builder(this)
+                    .setTitle("Action Restricted")
+                    .setMessage("At least one child must remain linked to your account. If you wish to replace this child, please add the new one first before removing the current one.")
+                    .setPositiveButton("OK", null)
+                    .show()
             } else {
                 showBulkDeleteWarning(selectedChildren)
             }
@@ -329,7 +335,7 @@ class ParentDetails : AppCompatActivity() {
         val options = UCrop.Options().apply {
             setToolbarColor(Color.WHITE)
             setToolbarWidgetColor(Color.BLACK)
-            setActiveControlsWidgetColor(ContextCompat.getColor(this@ParentDetails, CommonR.color.yellow_primary))
+            setActiveControlsWidgetColor(ContextCompat.getColor(this, CommonR.color.yellow_primary))
             setHideBottomControls(false)
             setFreeStyleCropEnabled(false)
         }
