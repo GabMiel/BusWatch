@@ -22,17 +22,15 @@
         <activity android:name=".Load2" />
         <activity android:name=".Load3" />
         <activity android:name=".Login" />
-        <activity android:name=".Home" />
         <activity android:name=".Signup1" />
         <activity android:name=".Signup2" />
         <activity android:name=".Signup3" />
-        <activity android:name=".ParentDetails" />
-        <activity android:name=".Settings" />
         <activity android:name=".Notification" />
         <activity android:name=".StudentDetailsActivity" />
         <activity android:name=".Map" />
         <activity android:name=".BusDetails" />
         <activity android:name=".ForgotPassword" />
+        <activity android:name=".ParentMainActivity" />
 
         <!-- Activities from Driver module -->
         <activity android:name="com.example.buswatch.driver.DriverHome" />

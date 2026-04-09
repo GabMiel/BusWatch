@@ -51,7 +51,7 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- Student Picture (Style matching signup2) -->
+            <!-- Student Picture -->
             <RelativeLayout
                 android:id="@+id/rlEditStudentAvatar"
                 android:layout_width="match_parent"
@@ -94,6 +94,28 @@
                     android:clickable="false" />
             </RelativeLayout>
 
+            <!-- Student ID -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/student_id"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etEditStudentId"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/student_id"
+                android:inputType="text"
+                android:autofillHints="none"
+                android:paddingHorizontal="12dp"
+                android:textSize="14sp"
+                android:textColorHint="@color/accessible_hint_gray" />
+
             <!-- First Name -->
             <TextView
                 android:layout_width="wrap_content"
@@ -101,7 +123,8 @@
                 android:text="@string/first_name"
                 android:textColor="#241E40"
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etEditFirstName"
@@ -109,12 +132,12 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/enter_child_s_first_name"
+                android:hint="@string/first_name"
                 android:inputType="textPersonName"
                 android:autofillHints="personGivenName"
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                android:textColorHint="@color/accessible_hint_gray" />
 
             <!-- Last Name -->
             <TextView
@@ -132,12 +155,12 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/enter_child_s_last_name"
+                android:hint="@string/last_name"
                 android:inputType="textPersonName"
                 android:autofillHints="personFamilyName"
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                android:textColorHint="@color/accessible_hint_gray" />
 
             <!-- Middle Name and Suffix Row -->
             <LinearLayout
@@ -165,12 +188,12 @@
                         android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/enter_child_s_middle"
+                        android:hint="@string/middle_name"
                         android:inputType="textPersonName"
                         android:autofillHints="personMiddleName"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/accessible_hint_gray" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -247,7 +270,7 @@
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/accessible_hint_gray" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -269,12 +292,12 @@
                         android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/enter_child_s_class_grade"
+                        android:hint="@string/grade"
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/accessible_hint_gray" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -304,12 +327,12 @@
                         android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/grade"
+                        android:hint="@string/class_label"
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/accessible_hint_gray" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -331,38 +354,88 @@
                         android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/the_immaculate_mother_academy"
+                        android:hint="@string/school"
                         android:inputType="text"
                         android:autofillHints="none"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/accessible_hint_gray" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Address -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Pickup Address and Map Section Header with Request Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/home_address"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pickup_address"
+                    android:textColor="#241E40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRequestAddressEdit"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit"
+                    android:textSize="11sp"
+                    android:textColor="#FEBE1E"
+                    app:rippleColor="#33FEBE1E" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/etEditAddress"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:gravity="top"
-                android:hint="@string/kingstown_2_subdivision_caloocan_city"
+                android:hint="@string/pickup_address"
                 android:inputType="textMultiLine"
                 android:autofillHints="postalAddress"
                 android:padding="12dp"
                 android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                android:enabled="false"
+                android:textColorHint="@color/accessible_hint_gray" />
+
+            <RelativeLayout
+                android:id="@+id/rlMapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp">
+                <org.osmdroid.views.MapView
+                    android:id="@+id/mapEditPickup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <View
+                    android:id="@+id/mapOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#1A000000"
+                    android:visibility="visible"
+                    android:clickable="true"
+                    android:focusable="true" />
+                <ImageButton
+                    android:id="@+id/btnEditMyLocation"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/photo_camera"
+                    android:background="@drawable/circle_shape"
+                    android:backgroundTint="#FFFFFF"
+                    android:contentDescription="@string/allow_access_to_your_location"
+                    android:visibility="gone"
+                    app:tint="#666666" />
+            </RelativeLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

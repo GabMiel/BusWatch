@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Header Section -->
+    <!-- Header Section (Smaller) -->
     <View
         android:id="@+id/view2"
         android:layout_width="0dp"
-        android:layout_height="151dp"
+        android:layout_height="65dp"
         android:background="@drawable/square_shape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,12 +18,12 @@
 
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="73dp"
-        android:layout_height="69dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,16 +51,16 @@
 
         <ImageButton
             android:id="@+id/btnHomeNotification"
-            android:layout_width="33dp"
-            android:layout_height="31dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="#00FFFFFF"
             android:contentDescription="@string/notifications"
             android:scaleType="fitCenter"
             android:src="@drawable/bell" />
 
         <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:layout_gravity="top|end"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="2dp"
@@ -75,8 +75,8 @@
         android:fillViewport="true"
         android:scrollbars="vertical"
         android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -162,101 +162,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Bottom Navigation -->
-    <LinearLayout
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#373636"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <!-- Account -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnHomeAccount"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/account"
-                android:src="@drawable/ic_nav_account"
-                app:tint="#A99E9E" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account"
-                android:textColor="#A99E9E"
-                android:textSize="11sp" />
-        </LinearLayout>
-
-        <!-- Home (Active) -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnHomeHome"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/home"
-                android:src="@drawable/ic_nav_home"
-                app:tint="#FEBE1E" />
-
-            <TextView
-                android:id="@+id/textView56"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home"
-                android:textColor="#FEBE1E"
-                android:textSize="11sp" />
-
-            <View
-                android:layout_width="20dp"
-                android:layout_height="2dp"
-                android:layout_marginTop="2dp"
-                android:background="#FEBE1E" />
-        </LinearLayout>
-
-        <!-- Settings -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnHomeSettings"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/settings"
-                android:src="@drawable/ic_nav_settings"
-                app:tint="#A99E9E" />
-
-            <TextView
-                android:id="@+id/textView57"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings"
-                android:textColor="#A99E9E"
-                android:textSize="11sp" />
-        </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

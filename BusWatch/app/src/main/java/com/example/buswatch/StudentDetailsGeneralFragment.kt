@@ -1,7 +1,10 @@
 package com.example.buswatch
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,10 +24,19 @@ import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.yalantis.ucrop.UCrop
+import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Marker
 import java.io.File
 
 class StudentDetailsGeneralFragment : Fragment() {
@@ -39,13 +51,24 @@ class StudentDetailsGeneralFragment : Fragment() {
     private lateinit var avatarView: ImageView
     private var lastSourceUriAvatar: Uri? = null
     
+    private lateinit var mapView: MapView
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    
     // For Dialog Edit
     private var editAvatarView: ImageView? = null
+    private var selectedLatitude: Double? = null
+    private var selectedLongitude: Double? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             lastSourceUriAvatar = it
             startCrop(it)
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(requireContext(), "Location permission granted", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -60,6 +83,7 @@ class StudentDetailsGeneralFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Configuration.getInstance().userAgentValue = requireContext().packageName
         return inflater.inflate(R.layout.fragment_student_details_general, container, false)
     }
 
@@ -68,9 +92,13 @@ class StudentDetailsGeneralFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         childName = arguments?.getString("childName")
 
         avatarView = view.findViewById(R.id.imgStudentAvatar)
+        mapView = view.findViewById(R.id.mapPickupLocation)
+        
+        setupMap(mapView)
         
         view.findViewById<View>(R.id.rlStudentAvatar).setOnClickListener {
             pickImageLauncher.launch("image/*")
@@ -81,6 +109,12 @@ class StudentDetailsGeneralFragment : Fragment() {
         }
 
         fetchStudentGeneralData()
+    }
+
+    private fun setupMap(map: MapView) {
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        map.controller.setZoom(17.0)
     }
 
     private fun fetchStudentGeneralData() {
@@ -164,10 +198,25 @@ class StudentDetailsGeneralFragment : Fragment() {
             v.findViewById<TextView>(R.id.tvStudentId).text = child["studentId"] as? String ?: "---"
             
             val classValue = fetchedClass ?: child["class"] as? String ?: ""
-            v.findViewById<TextView>(R.id.tvStudentClassBadge).text = classValue
             v.findViewById<TextView>(R.id.tvClass).text = classValue
             
-            v.findViewById<TextView>(R.id.tvStudentClassBadge).visibility = if (classValue.isEmpty()) View.GONE else View.VISIBLE
+            // Map Location
+            val lat = child["latitude"] as? Double
+            val lon = child["longitude"] as? Double
+            if (lat != null && lon != null && lat != 0.0 && lon != 0.0) {
+                val point = GeoPoint(lat, lon)
+                mapView.controller.setCenter(point)
+                val marker = Marker(mapView)
+                marker.position = point
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker.title = "Pickup Location"
+                mapView.overlays.clear()
+                mapView.overlays.add(marker)
+                mapView.invalidate()
+                mapView.visibility = View.VISIBLE
+            } else {
+                mapView.visibility = View.GONE
+            }
 
             // Load Avatar
             val avatarUrl = child["avatarUrl"] as? String
@@ -229,7 +278,6 @@ class StudentDetailsGeneralFragment : Fragment() {
             if (editAvatarView != null) {
                 editAvatarView?.setImageURI(uri)
             } else {
-                // If not in edit dialog, upload immediately
                 uploadNewAvatar(uri)
             }
         }
@@ -314,6 +362,77 @@ class StudentDetailsGeneralFragment : Fragment() {
 
         tempAvatarUri = null
         editAvatarView = dialogView.findViewById(R.id.imgEditStudentAvatar)
+        val mapEdit = dialogView.findViewById<MapView>(R.id.mapEditPickup)
+        val btnMyLocation = dialogView.findViewById<ImageButton>(R.id.btnEditMyLocation)
+        val btnRequestEdit = dialogView.findViewById<Button>(R.id.btnRequestAddressEdit)
+        val etAddress = dialogView.findViewById<EditText>(R.id.etEditAddress)
+        val mapOverlay = dialogView.findViewById<View>(R.id.mapOverlay)
+        
+        setupMap(mapEdit)
+        
+        selectedLatitude = child["latitude"] as? Double
+        selectedLongitude = child["longitude"] as? Double
+        
+        var editMarker: Marker? = null
+        
+        fun updateEditMarker(point: GeoPoint) {
+            val marker = editMarker ?: Marker(mapEdit).apply {
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                title = "Pickup Location"
+                mapEdit.overlays.add(this)
+            }.also { editMarker = it }
+            
+            marker.position = point
+            selectedLatitude = point.latitude
+            selectedLongitude = point.longitude
+            mapEdit.invalidate()
+        }
+
+        if (selectedLatitude != null && selectedLongitude != null && selectedLatitude != 0.0) {
+            val startPoint = GeoPoint(selectedLatitude!!, selectedLongitude!!)
+            mapEdit.controller.setCenter(startPoint)
+            updateEditMarker(startPoint)
+        } else {
+            mapEdit.controller.setCenter(GeoPoint(14.7566, 121.0450))
+        }
+
+        mapEdit.overlays.add(MapEventsOverlay(object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                if (etAddress.isEnabled) {
+                    p?.let { updateEditMarker(it) }
+                }
+                return true
+            }
+            override fun longPressHelper(p: GeoPoint?): Boolean = false
+        }))
+
+        btnRequestEdit.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(CommonR.string.address_change_request_title))
+                .setMessage(getString(CommonR.string.address_change_request_message))
+                .setPositiveButton(getString(CommonR.string.okay)) { _, _ ->
+                    etAddress.isEnabled = true
+                    mapOverlay.visibility = View.GONE
+                    btnMyLocation.visibility = View.VISIBLE
+                    btnRequestEdit.visibility = View.GONE
+                }
+                .setNegativeButton(getString(CommonR.string.cancel)) { d, _ -> d.dismiss() }
+                .show()
+        }
+
+        btnMyLocation.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        val userPoint = GeoPoint(it.latitude, it.longitude)
+                        mapEdit.controller.animateTo(userPoint)
+                        updateEditMarker(userPoint)
+                    }
+                }
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
 
         val etFirstName = dialogView.findViewById<EditText>(R.id.etEditFirstName)
         val etLastName = dialogView.findViewById<EditText>(R.id.etEditLastName)
@@ -327,12 +446,12 @@ class StudentDetailsGeneralFragment : Fragment() {
         val etGrade = dialogView.findViewById<EditText>(R.id.etEditGrade)
         val etClass = dialogView.findViewById<EditText>(R.id.etEditClass)
         val etSchool = dialogView.findViewById<EditText>(R.id.etEditSchool)
-        val etAddress = dialogView.findViewById<EditText>(R.id.etEditAddress)
 
         // Pre-fill
         etFirstName.setText(child["firstName"] as? String ?: "")
         etLastName.setText(child["lastName"] as? String ?: "")
         etMiddleName.setText(child["middleName"] as? String ?: "")
+        etAddress.setText(child["address"] as? String ?: "")
         
         if (selectedSuffix.isNotEmpty()) {
             tvSelectedSuffix.text = selectedSuffix
@@ -359,7 +478,6 @@ class StudentDetailsGeneralFragment : Fragment() {
         etGrade.setText(child["grade"] as? String ?: "")
         etClass.setText(child["class"] as? String ?: "")
         etSchool.setText(child["school"] as? String ?: "")
-        etAddress.setText(child["address"] as? String ?: "")
         
         val avatarUrl = child["avatarUrl"] as? String
         if (!avatarUrl.isNullOrEmpty()) {
@@ -383,6 +501,8 @@ class StudentDetailsGeneralFragment : Fragment() {
             updatedData["class"] = etClass.text.toString().trim()
             updatedData["school"] = etSchool.text.toString().trim()
             updatedData["address"] = etAddress.text.toString().trim()
+            updatedData["latitude"] = selectedLatitude ?: 0.0
+            updatedData["longitude"] = selectedLongitude ?: 0.0
 
             if (tempAvatarUri != null) {
                 uploadEditedAvatar(tempAvatarUri!!, updatedData, dialog)
@@ -390,8 +510,12 @@ class StudentDetailsGeneralFragment : Fragment() {
                 saveUpdatedGeneralData(updatedData, dialog)
             }
         }
-        dialog.setOnDismissListener { editAvatarView = null }
+        dialog.setOnDismissListener { 
+            editAvatarView = null
+            mapEdit.onPause()
+        }
         dialog.show()
+        mapEdit.onResume()
     }
 
     private fun uploadEditedAvatar(uri: Uri, updatedChild: MutableMap<String, Any>, dialog: AlertDialog) {
@@ -450,5 +574,15 @@ class StudentDetailsGeneralFragment : Fragment() {
         fetchClassFromFirebase(updatedChild)
         dialog.dismiss()
         if (isAdded) Toast.makeText(context, "Student information updated", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::mapView.isInitialized) mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::mapView.isInitialized) mapView.onPause()
     }
 }

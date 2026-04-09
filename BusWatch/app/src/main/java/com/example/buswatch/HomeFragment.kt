@@ -5,52 +5,54 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import java.util.Locale
+import kotlin.collections.Map as KMap
 
-class Home : AppCompatActivity() {
+class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var progressBar: ProgressBar
     private lateinit var tvNoStudents: TextView
     private lateinit var rvStudentsHome: RecyclerView
     private lateinit var btnPickUp: TextView
-    private lateinit var btnHomeAccount: ImageButton
     
     private var parentStatus: String = "pending"
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var timeRunnable: Runnable
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.home)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        btnHomeAccount = findViewById(R.id.btnHomeAccount)
-        val btnHomeSettings = findViewById<ImageButton>(R.id.btnHomeSettings)
-        val btnHomeNotification = findViewById<ImageButton>(R.id.btnHomeNotification)
-        rvStudentsHome = findViewById(R.id.rvStudentsHome)
-        progressBar = findViewById(R.id.progressBarHome)
-        tvNoStudents = findViewById(R.id.tvNoStudents)
-        btnPickUp = findViewById(R.id.btnPickUp)
+        val btnHomeNotification = view.findViewById<ImageButton>(R.id.btnHomeNotification)
+        rvStudentsHome = view.findViewById(R.id.rvStudentsHome)
+        progressBar = view.findViewById(R.id.progressBarHome)
+        tvNoStudents = view.findViewById(R.id.tvNoStudents)
+        btnPickUp = view.findViewById(R.id.btnPickUp)
         
-        val tvGreeting = findViewById<TextView>(R.id.textView90)
-        val tvTime = findViewById<TextView>(R.id.textView91)
+        val tvGreeting = view.findViewById<TextView>(R.id.textView90)
+        val tvTime = view.findViewById<TextView>(R.id.textView91)
 
         setupRealTimeClock(tvTime)
 
@@ -75,39 +77,25 @@ class Home : AppCompatActivity() {
                     adapter.isInteractable = true
                     adapter.updateStudents(updatedStudents)
 
-                    Toast.makeText(this, "Tracking enabled. Select a student card.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Tracking enabled. Select a student card.", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 showApprovalPendingDialog()
             }
         }
 
-        btnHomeAccount.setOnClickListener {
-            val intent = Intent(this, ParentDetails::class.java)
-            startActivity(intent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
-            }
-        }
-
-        btnHomeSettings.setOnClickListener {
-            val intent = Intent(this, Settings::class.java)
-            startActivity(intent)
-        }
-
         btnHomeNotification.setOnClickListener {
-            val intent = Intent(this, Notification::class.java)
+            val intent = Intent(requireContext(), Notification::class.java)
             startActivity(intent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+                requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_bottom, CommonR.anim.stay)
             } else {
                 @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+                requireActivity().overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
             }
         }
+
+        return view
     }
 
     private fun setupRealTimeClock(tvTime: TextView) {
@@ -127,8 +115,8 @@ class Home : AppCompatActivity() {
         handler.post(timeRunnable)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         handler.removeCallbacks(timeRunnable)
     }
 
@@ -139,30 +127,26 @@ class Home : AppCompatActivity() {
         
         db.collection("parents").document(currentUser.uid).get()
             .addOnSuccessListener { document ->
+                if (!isAdded) return@addOnSuccessListener
                 progressBar.visibility = View.GONE
                 if (document != null && document.exists()) {
                     val firstName = document.getString("firstName") ?: "User"
                     val greeting = "$greetingPrefix, $firstName!"
                     tvGreeting.text = greeting
                     
-                    val parentAvatarUrl = document.getString("avatarUrl")
-                    if (!parentAvatarUrl.isNullOrEmpty()) {
-                        Glide.with(this).load(parentAvatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(btnHomeAccount)
-                    }
-
                     parentStatus = document.getString("status") ?: "pending"
 
                     val studentList = mutableListOf<StudentHome>()
                     val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
 
                     @Suppress("UNCHECKED_CAST")
-                    val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
+                    val childMap = document.get("child") as? KMap<String, Any>
                     if (childMap != null) {
                         studentList.add(mapToStudentHome("primary", childMap, parentAddress))
                     }
 
                     @Suppress("UNCHECKED_CAST")
-                    val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                    val childrenList = document.get("children") as? List<KMap<String, Any>>
                     childrenList?.forEachIndexed { index, map ->
                         studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
                     }
@@ -171,12 +155,13 @@ class Home : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
                 progressBar.visibility = View.GONE
-                Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun mapToStudentHome(id: String, map: kotlin.collections.Map<String, Any>, parentAddress: String): StudentHome {
+    private fun mapToStudentHome(id: String, map: KMap<String, Any>, parentAddress: String): StudentHome {
         val fName = map["firstName"] as? String ?: ""
         val lName = map["lastName"] as? String ?: ""
         return StudentHome(
@@ -201,23 +186,23 @@ class Home : AppCompatActivity() {
             tvNoStudents.visibility = View.GONE
             rvStudentsHome.visibility = View.VISIBLE
             btnPickUp.visibility = View.VISIBLE
-            rvStudentsHome.layoutManager = LinearLayoutManager(this)
+            rvStudentsHome.layoutManager = LinearLayoutManager(requireContext())
             rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
-                val intent = Intent(this, Map::class.java)
+                val intent = Intent(requireContext(), com.example.buswatch.Map::class.java)
                 intent.putExtra("childName", student.name)
                 startActivity(intent)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.fade_in, CommonR.anim.fade_out)
+                    requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_OPEN, CommonR.anim.fade_in, CommonR.anim.fade_out)
                 } else {
                     @Suppress("DEPRECATION")
-                    overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
+                    requireActivity().overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
                 }
             }
         }
     }
     
     private fun showApprovalPendingDialog() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Account Pending")
             .setMessage("Your account is currently waiting for admin approval. You will be able to track your child once your account is approved.")
             .setPositiveButton("OK", null)

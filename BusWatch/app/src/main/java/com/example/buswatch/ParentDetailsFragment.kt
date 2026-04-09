@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,7 +33,7 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 import kotlin.collections.Map as KMap
 
-class ParentDetails : AppCompatActivity() {
+class ParentDetailsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
@@ -52,30 +54,37 @@ class ParentDetails : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.parentdetails)
+    private val cropLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val resultUri = result.data?.let { UCrop.getOutput(it) }
+            if (resultUri != null) {
+                showPreviewDialog(resultUri)
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_parent_details, container, false)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        findViewById<ImageButton>(R.id.btnParentsBack).setOnClickListener {
-            finish()
-        }
-
-        findViewById<View>(R.id.btnParentsEdit).setOnClickListener {
+        view.findViewById<View>(R.id.btnParentsEdit).setOnClickListener {
             showEditProfileDialog()
         }
 
-        findViewById<ImageButton>(R.id.btnAddChild).setOnClickListener {
+        view.findViewById<ImageButton>(R.id.btnAddChild).setOnClickListener {
             showAddChildDialog()
         }
 
-        val btnConfirmDelete = findViewById<Button>(R.id.btnConfirmDeleteChildren)
-        findViewById<ImageButton>(R.id.btnDeleteChild).setOnClickListener {
+        val btnConfirmDelete = view.findViewById<Button>(R.id.btnConfirmDeleteChildren)
+        view.findViewById<ImageButton>(R.id.btnDeleteChild).setOnClickListener {
             if (childrenList.isEmpty()) {
-                Toast.makeText(this, "You need to add a child first before you can use the removal feature", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "You need to add a child first before you can use the removal feature", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -83,7 +92,7 @@ class ParentDetails : AppCompatActivity() {
             adapter.setDeleteMode(isDeleteMode)
             btnConfirmDelete.visibility = if (isDeleteMode) View.VISIBLE else View.GONE
             if (isDeleteMode) {
-                Toast.makeText(this, "Select the children you wish to remove from your list", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Select the children you wish to remove from your list", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -93,9 +102,9 @@ class ParentDetails : AppCompatActivity() {
                 isDeleteMode = false
                 adapter.setDeleteMode(false)
                 btnConfirmDelete.visibility = View.GONE
-                Toast.makeText(this, "Removal cancelled: No children were selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Removal cancelled: No children were selected", Toast.LENGTH_SHORT).show()
             } else if (selectedChildren.size >= childrenList.size) {
-                AlertDialog.Builder(this)
+                AlertDialog.Builder(requireContext())
                     .setTitle("Action Restricted")
                     .setMessage("At least one child must remain linked to your account. If you wish to replace this child, please add the new one first before removing the current one.")
                     .setPositiveButton("OK", null)
@@ -105,17 +114,19 @@ class ParentDetails : AppCompatActivity() {
             }
         }
 
-        setupRecyclerView()
-        fetchParentData()
+        setupRecyclerView(view)
+        fetchParentData(view)
+        
+        return view
     }
 
-    private fun setupRecyclerView() {
-        val rvChildren = findViewById<RecyclerView>(R.id.rvDetailsChildren)
-        rvChildren.layoutManager = LinearLayoutManager(this)
+    private fun setupRecyclerView(view: View) {
+        val rvChildren = view.findViewById<RecyclerView>(R.id.rvDetailsChildren)
+        rvChildren.layoutManager = LinearLayoutManager(requireContext())
         adapter = DetailsChildAdapter(
             childrenList,
             onViewClick = { child ->
-                val intent = Intent(this, StudentDetailsActivity::class.java)
+                val intent = Intent(requireContext(), StudentDetailsActivity::class.java)
                 intent.putExtra("childName", child.name)
                 startActivity(intent)
             }
@@ -123,30 +134,31 @@ class ParentDetails : AppCompatActivity() {
         rvChildren.adapter = adapter
     }
 
-    private fun fetchParentData() {
+    private fun fetchParentData(view: View) {
         val uid = auth.currentUser?.uid ?: return
 
         db.collection("parents").document(uid).get()
             .addOnSuccessListener { document ->
+                if (!isAdded) return@addOnSuccessListener
                 if (document != null && document.exists()) {
                     val fName = document.getString("firstName") ?: ""
                     val lName = document.getString("lastName") ?: ""
                     val fullName = "$fName $lName".trim()
                     
-                    findViewById<TextView>(R.id.tvHeaderSub).text = fullName
-                    findViewById<TextView>(R.id.textView46).text = fullName
-                    findViewById<TextView>(R.id.textView48).text = document.getString("email") ?: ""
-                    findViewById<TextView>(R.id.textView50).text = document.getString("phone") ?: ""
+                    view.findViewById<TextView>(R.id.tvHeaderSub).text = fullName
+                    view.findViewById<TextView>(R.id.textView46).text = fullName
+                    view.findViewById<TextView>(R.id.textView48).text = document.getString("email") ?: ""
+                    view.findViewById<TextView>(R.id.textView50).text = document.getString("phone") ?: ""
                     
                     val parentAvatarUrl = document.getString("avatarUrl")
-                    val ivParentAvatar = findViewById<ImageView>(R.id.imgParentAvatar)
+                    val ivParentAvatar = view.findViewById<ImageView>(R.id.imgParentAvatar)
                     if (!parentAvatarUrl.isNullOrEmpty()) {
                         Glide.with(this).load(parentAvatarUrl).placeholder(CommonR.drawable.user).circleCrop().into(ivParentAvatar)
                     } else {
                         ivParentAvatar.setImageResource(CommonR.drawable.user)
                     }
 
-                    val tvStatus = findViewById<TextView>(R.id.textView52)
+                    val tvStatus = view.findViewById<TextView>(R.id.textView52)
                     val status = document.getString("status") ?: "pending"
                     tvStatus.text = status.uppercase()
                     
@@ -193,8 +205,8 @@ class ParentDetails : AppCompatActivity() {
                         }
                     }
                     
-                    val rvContacts = findViewById<RecyclerView>(R.id.rvDetailsContacts)
-                    rvContacts.layoutManager = LinearLayoutManager(this)
+                    val rvContacts = view.findViewById<RecyclerView>(R.id.rvDetailsContacts)
+                    rvContacts.layoutManager = LinearLayoutManager(requireContext())
                     rvContacts.adapter = DetailsContactAdapter(contactList)
                 }
             }
@@ -222,8 +234,8 @@ class ParentDetails : AppCompatActivity() {
     }
 
     private fun showAddChildDialog() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_child, null)
-        val dialog = AlertDialog.Builder(this, CommonR.style.CustomDialog)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_child, null)
+        val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)
             .setView(dialogView)
             .create()
 
@@ -236,7 +248,7 @@ class ParentDetails : AppCompatActivity() {
 
         suffixSelector.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Select Suffix")
                 .setItems(suffixes) { _, pos ->
                     selectedSuffix = if (pos == 0) "" else suffixes[pos]
@@ -251,7 +263,7 @@ class ParentDetails : AppCompatActivity() {
         var selectedGrade = ""
         btnGrade.setOnClickListener {
             val grades = arrayOf("Nursery", "Kinder", "Prep", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6")
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Select Grade")
                 .setItems(grades) { _, pos ->
                     selectedGrade = grades[pos]
@@ -284,7 +296,7 @@ class ParentDetails : AppCompatActivity() {
             val school = dialogView.findViewById<EditText>(R.id.etAddChildSchool).text.toString().trim()
 
             if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || className.isEmpty() || school.isEmpty() || selectedGrade.isEmpty() || tempAvatarUri == null) {
-                Toast.makeText(this, "Please fill in all required fields and upload photo (*)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please fill in all required fields and upload photo (*)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -299,7 +311,7 @@ class ParentDetails : AppCompatActivity() {
         val timestamp = System.currentTimeMillis()
         val avatarRef = storage.reference.child("parents/$uid/child_${fName}_${timestamp}_avatar.jpg")
 
-        Toast.makeText(this, "Adding child...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Adding child...", Toast.LENGTH_SHORT).show()
 
         avatarRef.putFile(tempAvatarUri!!)
             .continueWithTask { task ->
@@ -321,40 +333,41 @@ class ParentDetails : AppCompatActivity() {
                 )
                 db.collection("parents").document(uid).update("children", FieldValue.arrayUnion(newChild))
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Child added successfully!", Toast.LENGTH_SHORT).show()
-                        fetchParentData()
+                        Toast.makeText(requireContext(), "Child added successfully!", Toast.LENGTH_SHORT).show()
+                        view?.let { fetchParentData(it) }
                         dialog.dismiss()
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(this, "Failed to update database: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to update database: ${e.message}", Toast.LENGTH_SHORT).show()
                         dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
                     }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
                 dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
             }
     }
 
     private fun startCrop(uri: Uri) {
         val dest = "avatar_crop_${System.currentTimeMillis()}.jpg"
-        val uCrop = UCrop.of(uri, Uri.fromFile(File(cacheDir, dest)))
+        val uCrop = UCrop.of(uri, Uri.fromFile(File(requireContext().cacheDir, dest)))
         val options = UCrop.Options()
         options.setToolbarColor(Color.WHITE)
         options.setToolbarWidgetColor(Color.BLACK)
-        options.setActiveControlsWidgetColor(ContextCompat.getColor(this, CommonR.color.yellow_primary))
+        options.setActiveControlsWidgetColor(ContextCompat.getColor(requireContext(), CommonR.color.yellow_primary))
         options.setHideBottomControls(false)
         options.setFreeStyleCropEnabled(false)
 
         uCrop.withAspectRatio(1f, 1f)
         uCrop.withMaxResultSize(1000, 1000)
         uCrop.withOptions(options)
-        uCrop.start(this, UCrop.REQUEST_CROP)
+        
+        cropLauncher.launch(uCrop.getIntent(requireContext()))
     }
 
     private fun showPreviewDialog(uri: Uri) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_photo, null)
-        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_photo, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         val ivAvatarPreview = dialogView.findViewById<ImageView>(R.id.ivPreviewAvatar)
@@ -380,21 +393,9 @@ class ParentDetails : AppCompatActivity() {
         dialog.show()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK && data != null) {
-            val resultUri = UCrop.getOutput(data)
-            if (resultUri != null) {
-                showPreviewDialog(resultUri)
-            }
-        }
-    }
-
     private fun showBulkDeleteWarning(selectedChildren: List<ChildDetail>) {
         val names = selectedChildren.joinToString(", ") { it.name }
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Confirm Removal")
             .setMessage("Are you sure you want to remove the following children from your profile: $names?")
             .setPositiveButton("Remove") { _, _ ->
@@ -445,17 +446,17 @@ class ParentDetails : AppCompatActivity() {
     }
 
     private fun onDeletionComplete() {
-        Toast.makeText(this, "The selected child profiles have been removed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "The selected child profiles have been removed", Toast.LENGTH_SHORT).show()
         isDeleteMode = false
         adapter.setDeleteMode(false)
-        findViewById<Button>(R.id.btnConfirmDeleteChildren).visibility = View.GONE
-        fetchParentData()
+        view?.findViewById<Button>(R.id.btnConfirmDeleteChildren)?.visibility = View.GONE
+        view?.let { fetchParentData(it) }
     }
 
     private fun showEditProfileDialog() {
         val uid = auth.currentUser?.uid ?: return
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_profile, null)
-        val dialog = AlertDialog.Builder(this, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_profile, null)
+        val dialog = AlertDialog.Builder(requireContext(), android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
             .setView(dialogView)
             .create()
 
@@ -499,7 +500,7 @@ class ParentDetails : AppCompatActivity() {
 
         suffixSelector.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Select Suffix")
                 .setItems(suffixes) { _, pos ->
                     selectedSuffix = if (pos == 0) "" else suffixes[pos]
@@ -541,19 +542,19 @@ class ParentDetails : AppCompatActivity() {
             )
 
             btnSave.isEnabled = false
-            Toast.makeText(this, "Updating profile...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Updating profile...", Toast.LENGTH_SHORT).show()
             
             if (tempAvatarUri != null) {
                 uploadParentAvatar(tempAvatarUri!!, updateData, dialog)
             } else {
                 db.collection("parents").document(uid).update(updateData)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                        fetchParentData()
+                        Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                        view?.let { fetchParentData(it) }
                         dialog.dismiss()
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(this, "Update failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Update failed: ${e.message}", Toast.LENGTH_SHORT).show()
                         btnSave.isEnabled = true
                     }
             }
@@ -574,17 +575,17 @@ class ParentDetails : AppCompatActivity() {
                 updateData["avatarUrl"] = downloadUrl.toString()
                 db.collection("parents").document(uid).update(updateData)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                        fetchParentData()
+                        Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                        view?.let { fetchParentData(it) }
                         dialog.dismiss()
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(this, "Firestore update failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Firestore update failed: ${e.message}", Toast.LENGTH_SHORT).show()
                         dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
                     }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
             }
     }
