@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -104,20 +105,6 @@
         android:layout_marginBottom="4dp">
 
         <TextView
-            android:id="@+id/btnViewPendingParents"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_button_yellow"
-            android:gravity="center"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:text="@string/view_pending_parents"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            android:textStyle="bold"/>
-
-        <TextView
             android:id="@+id/btnAddNewDriver"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
@@ -142,6 +129,8 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="4dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_user"/>
 
 </LinearLayout>

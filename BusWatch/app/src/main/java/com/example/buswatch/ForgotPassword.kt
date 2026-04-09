@@ -35,6 +35,7 @@ class ForgotPassword : AppCompatActivity() {
             }
 
             btnSubmit.isEnabled = false
+            // Simplified: Removing ActionCodeSettings to send a standard direct link
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     btnSubmit.isEnabled = true

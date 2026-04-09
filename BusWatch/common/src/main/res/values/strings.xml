@@ -8,8 +8,9 @@
     <string name="login">Login</string>
     <string name="don_t_have_an_account">Don’t have an account?</string>
     <string name="allow">Allow</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">@android:string/cancel</string>
     <string name="cancel_caps">Cancel</string>
+    <string name="confirm_caps">Confirm</string>
     <string name="_40_students">40 Students</string>
     <string name="_12_seats">12 Seats</string>
     <string name="bus_details">Bus Details</string>
@@ -22,7 +23,7 @@
     <string name="john_smith_school_com">john.smith@school.com</string>
     <string name="phone">Phone</string>
     <string name="_555_0101">555&#8211;0101</string>
-    <string name="license_number">License Number</string>
+    <string name="license_number">License No.</string>
     <string name="dl123456">DL123456</string>
     <string name="bus_number">Bus Number</string>
     <string name="bus_001">BUS&#8211;001</string>
@@ -36,6 +37,7 @@
     <string name="account">Account</string>
     <string name="settings">Settings</string>
     <string name="good_morning_robert"><![CDATA[Good morning, Robert!]]></string>
+    <string name="good_morning_driver">Good morning, Driver!</string>
     <string name="_9_41_am">9:41 AM</string>
     <string name="justin_wilson">Justin Wilson</string>
     <string name="grade_1">Grade 1</string>
@@ -66,6 +68,7 @@
     <string name="blue_cross_shield">Blue Cross Shield</string>
     <string name="insurance_provider">Insurance Provider</string>
     <string name="date_of_birth">Date of Birth</string>
+    <string name="student_id">Student ID</string>
     <string name="student_id_se2024001"><![CDATA[Student ID: SE2024001]]></string>
     <string name="_3_15_2020">3/15/2020</string>
     <string name="_1st_grade">1st Grade</string>
@@ -131,9 +134,9 @@
     <string name="security">Security</string>
     <string name="child_icon" />
     <string name="profile_avatar" />
-    <string name="view_details" />
+    <string name="view_details">Show details</string>
     <string name="edit">Edit</string>
-    <string name="english">ENGLISH</string>
+    <string name="english">English</string>
     <string name="logout">LOGOUT</string>
     <string name="change_password">Change Password</string>
     <string name="notifications_icon" />
@@ -182,7 +185,6 @@
     <string name="enter_contact_name">Enter contact name</string>
     <string name="contact_name">Contact Name</string>
     <string name="e_g_mother_father_guardian">e.g., Mother, Father, Guardian</string>
-    <string name="enter_contact_phone">Enter contact phone</string>
     <string name="relationship">Relationship</string>
     <string name="emergency_contact_2_optional">Emergency Contact 2 (Optional)</string>
     <string name="contact_phone">Contact Phone</string>
@@ -216,11 +218,10 @@
     <string name="full_name_label">Full Name</string>
     <string name="email_label">Email</string>
     <string name="phone_label">Phone</string>
-    <string name="license_number_label">License Number</string>
+    <string name="license_number_label">License No.</string>
     <string name="school_information">School Information</string>
     <string name="address">Address</string>
     <string name="school_name_placeholder">&#8212;</string>
-    <string name="good_morning_driver">Good morning, Driver!</string>
     <string name="students_for">Students For:</string>
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
@@ -300,7 +301,7 @@
     <string name="password_requirements">Password must contain at least 8 characters, including 1 capital letter and 1 number.</string>
     <string name="re_enter_password">Re-enter password</string>
     <string name="log_in_caps">LOG IN</string>
-    <string name="back_caps">BACK</string>
+    <string name="back_caps">Back</string>
     <string name="asterisk">*</string>
     <string name="class_label">Class</string>
     <string name="select_language">Select Language</string>
@@ -315,6 +316,7 @@
     <string name="enter_child_medications">Enter medications</string>
     <string name="enter_child_medical_conditions">Enter medical conditions</string>
     <string name="enter_contact_relationship">Enter relationship</string>
+    <string name="enter_contact_phone_hint">Enter contact phone</string>
     <string name="enter_current_password">Enter current password</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="enter_your_middle_name_label">Enter your middle name</string>
@@ -341,4 +343,50 @@
     <string name="send_reset_link">SEND RESET LINK</string>
     <string name="pickup_address">Pickup Address</string>
     <string name="enter_pickup_address">Enter pickup address</string>
+    <string name="request_edit">Request Edit</string>
+    <string name="address_change_request_title">Address Change Request</string>
+    <string name="address_change_request_message">Changing your pickup location will require admin approval before it takes effect. Requests are typically processed during the weekly schedule update.</string>
+    <string name="okay">Okay</string>
+    <string name="request_edit_permission">Request edit permission</string>
+    <string name="change_pickup_location">Change Pickup Location</string>
+    <string name="confirm_change_address_title">Are you sure you want to change pickup address?</string>
+    <string name="continue_caps">CONTINUE</string>
+    <string name="pin_location_instruction">Make sure the pin is placed at the exact pickup location</string>
+    <string name="pending_approval_message">Your pickup location change is pending admin approval</string>
+    <string name="pending_change_request">Pending Pickup Address Change Request</string>
+    <string name="proposed_pickup_address">Proposed Pickup Address</string>
+    <string name="approvals">APPROVALS</string>
+    <string name="registration">Registration</string>
+    <string name="map_locations">Map Locations</string>
+
+    <!-- New strings for warnings fix -->
+    <string name="name_format">%1$s %2$s</string>
+    <string name="hide_details">Hide details</string>
+    <string name="show_details">Show details</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="invalid_phone">Invalid phone number</string>
+    <string name="license_number_required">License No. is required</string>
+    <string name="weak_password">Weak password</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="message_goes_here">Message goes here</string>
+    <string name="first_name_required">First name is required</string>
+    <string name="last_name_required">Last name is required</string>
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="password_validation_hint">Need 8 chars, 1 uppercase, 1 number</string>
+    <string name="phone_required">Phone number is required</string>
+    <string name="my_location">My Location</string>
+    <string name="no_address_set">No address set</string>
+    <string name="select_valid_location">Please select a valid location</string>
+    <string name="failed_to_submit_request">Failed to submit request</string>
+    <string name="location_request_success_title">Success</string>
+    <string name="location_request_success_message">Your request has been successfully submitted! Please wait for admin approval. Pickup location changes are typically processed during the weekly schedule update.</string>
+    <string name="please_fix_errors">Please fix errors before saving</string>
+    <string name="fill_all_required">Please fill in all required fields</string>
+    <string name="driver_added_success">Driver added successfully</string>
+    <string name="details_updated">Details updated</string>
+    <string name="image_upload_failed">Image upload failed</string>
+    <string name="select_suffix">Select Suffix</string>
 </resources>

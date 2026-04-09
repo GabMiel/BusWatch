@@ -30,7 +30,7 @@ class Signup3 : AppCompatActivity() {
     private var selectedBloodType = "Select blood type"
     private var selectedCountryCode1 = "+63"
     private var selectedCountryCode2 = "+63"
-    private var maxPhoneDigits1 = 10 // Philippines mobile without leading 0
+    private var maxPhoneDigits1 = 10 
     private var maxPhoneDigits2 = 10
     private var isPhoneFormatting1 = false
     private var isPhoneFormatting2 = false
@@ -50,6 +50,8 @@ class Signup3 : AppCompatActivity() {
     
     private lateinit var tvContact1NameWarning: TextView
     private lateinit var tvContact2NameWarning: TextView
+    
+    private lateinit var flLoading: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +61,8 @@ class Signup3 : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        // Display child's name
+        flLoading = findViewById(R.id.flSignup3Loading)
+
         val childFirstName = intent.getStringExtra("childFirstName") ?: "Child"
         val childLastName = intent.getStringExtra("childLastName") ?: "Name"
         findViewById<TextView>(R.id.tvChildNameDisplay).text = getString(CommonR.string.medical_information_for_child_s_name, childFirstName, childLastName)
@@ -88,21 +91,17 @@ class Signup3 : AppCompatActivity() {
         val backButton = findViewById<Button>(R.id.btnSignup3Back)
         val registerButton = findViewById<Button>(R.id.btnSignup3Register)
 
-        // Real-time validation
         setupNameWatcher(etContact1Name, tvContact1NameWarning)
         setupNameWatcher(etContact2Name, tvContact2NameWarning)
 
-        // Character limits for names
         etContact1Name.filters = arrayOf(InputFilter.LengthFilter(50))
         etContact2Name.filters = arrayOf(InputFilter.LengthFilter(50))
         
-        // Initial limits for phone numbers
         updatePhoneFilter1()
         updatePhoneFilter2()
 
         setupPhoneFormatting()
 
-        // Pre-fill if returning
         intent.getStringExtra("bloodType")?.let {
             if (it.isNotEmpty()) {
                 selectedBloodType = it
@@ -111,7 +110,6 @@ class Signup3 : AppCompatActivity() {
             }
         }
         
-        // English-speaking Country codes Logic
         val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
         val codesOnly = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
         val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
@@ -188,6 +186,7 @@ class Signup3 : AppCompatActivity() {
             }
 
             registerButton.isEnabled = false
+            flLoading.visibility = View.VISIBLE
             
             val fullPhone1 = "$selectedCountryCode1 $contact1PhoneRaw"
             val fullPhone2 = if (contact2PhoneRaw.isNotEmpty()) "$selectedCountryCode2 $contact2PhoneRaw" else ""
@@ -255,7 +254,7 @@ class Signup3 : AppCompatActivity() {
         val formatted = StringBuilder()
         
         when (countryCode) {
-            "+63", "+1", "+64" -> { // PH (10 rem), USA, Canada, NZ: XXX XXX XXXX
+            "+63", "+1", "+64" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 2 || i == 5) && i != digits.length - 1) {
@@ -263,7 +262,7 @@ class Signup3 : AppCompatActivity() {
                     }
                 }
             }
-            "+44" -> { // UK: XXXXX XXXXX
+            "+44" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if (i == 4 && i != digits.length - 1) {
@@ -271,7 +270,7 @@ class Signup3 : AppCompatActivity() {
                     }
                 }
             }
-            "+61" -> { // Australia: XXX XXX XXX
+            "+61" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 2 || i == 5) && i != digits.length - 1) {
@@ -279,7 +278,7 @@ class Signup3 : AppCompatActivity() {
                     }
                 }
             }
-            "+65" -> { // Singapore: XXXX XXXX
+            "+65" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if (i == 3 && i != digits.length - 1) {
@@ -287,7 +286,7 @@ class Signup3 : AppCompatActivity() {
                     }
                 }
             }
-            "+353" -> { // Ireland: XX XXX XXXX
+            "+353" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 1 || i == 4) && i != digits.length - 1) {
@@ -362,6 +361,7 @@ class Signup3 : AppCompatActivity() {
                     }
                 } else {
                     findViewById<Button>(R.id.btnSignup3Register).isEnabled = true
+                    flLoading.visibility = View.GONE
                     Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -433,8 +433,7 @@ class Signup3 : AppCompatActivity() {
             "conditions" to conditions
         )
 
-        val userData = hashMapOf<String, Any>(
-            "role" to "parent",
+        val profileData = hashMapOf<String, Any?>(
             "firstName" to (intent.getStringExtra("firstName") ?: ""),
             "lastName" to (intent.getStringExtra("lastName") ?: ""),
             "middleName" to (intent.getStringExtra("middleName") ?: ""),
@@ -442,7 +441,13 @@ class Signup3 : AppCompatActivity() {
             "email" to (intent.getStringExtra("email") ?: ""),
             "phone" to (intent.getStringExtra("phone") ?: ""),
             "preferredLanguage" to (intent.getStringExtra("preferredLanguage") ?: "English"),
+            "avatarUrl" to "" // No parent photo at signup yet
+        )
+
+        val userData = hashMapOf<String, Any>(
+            "role" to "parent",
             "status" to "pending",
+            "profile" to profileData,
             "child" to hashMapOf(
                 "firstName" to (intent.getStringExtra("childFirstName") ?: ""),
                 "lastName" to (intent.getStringExtra("childLastName") ?: ""),
@@ -452,6 +457,9 @@ class Signup3 : AppCompatActivity() {
                 "class" to (intent.getStringExtra("childClass") ?: ""),
                 "grade" to (intent.getStringExtra("childGrade") ?: ""),
                 "school" to (intent.getStringExtra("childSchool") ?: ""),
+                "address" to (intent.getStringExtra("childAddress") ?: ""),
+                "latitude" to intent.getDoubleExtra("childLatitude", 0.0),
+                "longitude" to intent.getDoubleExtra("childLongitude", 0.0),
                 "avatarUrl" to (uploadedUrls["primaryAvatar"] ?: intent.getStringExtra("childAvatarUrl") ?: ""),
                 "medical" to medicalData
             ),
@@ -467,7 +475,6 @@ class Signup3 : AppCompatActivity() {
             val updatedChildren = additionalChildren.mapIndexed { index, child ->
                 val newChild = HashMap(child)
                 newChild["avatarUrl"] = uploadedUrls["child_${index}_avatar"] ?: child["avatarUrl"] ?: ""
-                // For now, additional children share the same medical info entered in Signup3
                 newChild["medical"] = medicalData
                 newChild
             }
@@ -477,13 +484,14 @@ class Signup3 : AppCompatActivity() {
         db.collection("parents").document(uid).set(userData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Registration Successful!", Toast.LENGTH_LONG).show()
-                val homeIntent = Intent(this, Home::class.java)
-                homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(homeIntent)
+                val mainIntent = Intent(this, ParentMainActivity::class.java)
+                mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(mainIntent)
                 finish()
             }
             .addOnFailureListener { e ->
                 findViewById<Button>(R.id.btnSignup3Register).isEnabled = true
+                flLoading.visibility = View.GONE
                 Toast.makeText(this, "Error saving data: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }

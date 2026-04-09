@@ -432,12 +432,12 @@ class Signup2 : AppCompatActivity() {
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.warning_brown))
                         }
-                        age in 16..20 -> {
+                        age in 16..25 -> {
                             tvAgeWarning.text = getString(CommonR.string.age_warning_old)
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.warning_brown))
                         }
-                        age >= 21 -> {
+                        age >= 26 -> {
                             tvAgeWarning.text = getString(CommonR.string.age_warning_restricted)
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.accessible_error_red))
@@ -494,8 +494,8 @@ class Signup2 : AppCompatActivity() {
             return false
         }
 
-        if (age >= 21) {
-            Toast.makeText(this, "Registration restricted for ages 21 and above.", Toast.LENGTH_SHORT).show()
+        if (age >= 26) {
+            Toast.makeText(this, "Registration restricted for ages 26 and above.", Toast.LENGTH_SHORT).show()
             return false
         }
 

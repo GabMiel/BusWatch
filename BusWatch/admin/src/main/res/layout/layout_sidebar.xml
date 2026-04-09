@@ -109,6 +109,31 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/navApprovals"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="?attr/selectableItemBackground">
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_check"
+            android:contentDescription="@string/approvals"
+            app:tint="@color/black" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/approvals"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/navArchive"
         android:layout_width="match_parent"
         android:layout_height="50dp"

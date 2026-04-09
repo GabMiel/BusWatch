@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     android:scrollbars="vertical"
     android:fadeScrollbars="false"
-    android:scrollbarThumbVertical="@color/yellow_primary"
-    android:background="@drawable/bg_card_form">
+    android:scrollbarThumbVertical="@color/yellow_primary">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_details_card"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@id/btnClose"
                 android:text="@string/parent_information"
-                android:textColor="@color/black"
+                android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/first_name"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="11sp" />
 
                 <TextView
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mike_johnson"
-                    android:textColor="@color/text_dark"
+                    android:textColor="#000000"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/last_name"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="11sp"
                     android:layout_marginTop="8dp" />
 
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mike_johnson"
-                    android:textColor="@color/text_dark"
+                    android:textColor="#000000"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/middle_name"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="11sp" />
 
                 <TextView
@@ -118,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mike_johnson"
-                    android:textColor="@color/text_dark"
+                    android:textColor="#000000"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -133,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/suffix"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="11sp" />
 
                 <TextView
@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mike_johnson"
-                    android:textColor="@color/text_dark"
+                    android:textColor="#000000"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -151,7 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/john_smith_school_com"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -168,7 +168,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/contact_phone"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -176,7 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_555_0101"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp" />
@@ -184,14 +184,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_border"
+            android:background="#D1CFCF"
             android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/child_information"
-            android:textColor="@color/black"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -222,7 +222,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/justin_wilson"
-                    android:textColor="@color/text_dark"
+                    android:textColor="#000000"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -231,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/grade_1"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="12sp" />
 
                 <TextView
@@ -239,7 +239,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/age"
-                    android:textColor="@color/gray_text"
+                    android:textColor="#666666"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
@@ -247,14 +247,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_border"
+            android:background="#D1CFCF"
             android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/medical_information"
-            android:textColor="@color/black"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -263,7 +263,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/blood_type"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -271,7 +271,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/a"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
@@ -280,7 +280,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/allergies"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -288,7 +288,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/peanuts"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
@@ -297,7 +297,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/medical_condition"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -305,7 +305,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/asthma"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp" />
@@ -313,14 +313,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_border"
+            android:background="#D1CFCF"
             android:layout_marginBottom="24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/emergency_contact"
-            android:textColor="@color/black"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
@@ -329,7 +329,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/contact_name"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -337,7 +337,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mike_johnson"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
@@ -346,7 +346,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/relationship"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -354,16 +354,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/father"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:textStyle="bold" android:layout_marginBottom="12dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/contact_phone"
-            android:textColor="@color/gray_text"
+            android:textColor="#666666"
             android:textSize="11sp" />
 
         <TextView
@@ -371,7 +370,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_555_0101"
-            android:textColor="@color/text_dark"
+            android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="32dp" />
@@ -392,7 +391,7 @@
                 android:layout_weight="1"
                 android:text="@string/allow"
                 android:background="@drawable/bg_button_accept"
-                android:textColor="@color/white"
+                android:textColor="#FFFFFF"
                 android:layout_marginEnd="10dp" />
 
             <Button
@@ -403,7 +402,7 @@
                 android:layout_weight="1"
                 android:text="@string/cancel"
                 android:background="@drawable/bg_button_reject"
-                android:textColor="@color/white" />
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
         <Button
@@ -412,7 +411,7 @@
             android:layout_height="50dp"
             android:text="@string/save_caps"
             android:background="@drawable/bg_button_save"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:visibility="gone" />
 
     </LinearLayout>

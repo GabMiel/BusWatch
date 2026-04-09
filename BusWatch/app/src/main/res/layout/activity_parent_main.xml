@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/parentFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/parentBottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/parentBottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#373636"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Account -->
+        <LinearLayout
+            android:id="@+id/navAccount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivNavAccount"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/account"
+                android:src="@drawable/ic_nav_account"
+                app:tint="#A99E9E" />
+
+            <TextView
+                android:id="@+id/tvNavAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account"
+                android:textColor="#A99E9E"
+                android:textSize="11sp" />
+
+            <View
+                android:id="@+id/indicatorAccount"
+                android:layout_width="20dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#FEBE1E"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Home -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivNavHome"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/home"
+                android:src="@drawable/ic_nav_home"
+                app:tint="#FEBE1E" />
+
+            <TextView
+                android:id="@+id/tvNavHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home"
+                android:textColor="#FEBE1E"
+                android:textSize="11sp" />
+
+            <View
+                android:id="@+id/indicatorHome"
+                android:layout_width="20dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#FEBE1E"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!-- Settings -->
+        <LinearLayout
+            android:id="@+id/navSettings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivNavSettings"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/settings"
+                android:src="@drawable/ic_nav_settings"
+                app:tint="#A99E9E" />
+
+            <TextView
+                android:id="@+id/tvNavSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textColor="#A99E9E"
+                android:textSize="11sp" />
+
+            <View
+                android:id="@+id/indicatorSettings"
+                android:layout_width="20dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#FEBE1E"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

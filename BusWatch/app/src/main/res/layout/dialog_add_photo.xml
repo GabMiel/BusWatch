@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@drawable/soft_corner"
-    android:backgroundTint="#FFFFFF"
+    android:background="@drawable/bg_details_card"
     android:gravity="center_horizontal">
 
     <TextView
@@ -14,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/preview_photo"
-        android:textColor="#241E40"
+        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"

@@ -185,7 +185,7 @@ class Login : AppCompatActivity() {
                     setClassName(this@Login, "com.example.buswatch.driver.DriverHome")
                 }
             }
-            else -> Intent(this, Home::class.java)
+            else -> Intent(this, ParentMainActivity::class.java)
         }
         startActivity(intent)
         finish()

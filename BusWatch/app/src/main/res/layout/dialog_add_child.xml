@@ -2,12 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_details_card"
         android:padding="24dp">
 
         <TextView
@@ -218,7 +218,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/enter_child_s_middle"
+            android:hint="@string/middle_name"
             android:inputType="textPersonName"
             android:autofillHints="personMiddleName"
             android:paddingHorizontal="12dp"

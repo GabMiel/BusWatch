@@ -25,27 +25,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
 
-    <ImageButton
-        android:id="@+id/btnParentsBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:background="#00FFFFFF"
-        android:contentDescription="@string/back_button"
-        android:scaleType="fitCenter"
-        android:src="@drawable/arrow"
-        app:layout_constraintBottom_toBottomOf="@id/headerBg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/headerBg"
-        app:tint="#FFFFFF" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="24dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/headerBg"
-        app:layout_constraintStart_toEndOf="@id/btnParentsBack"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/headerBg">
 
         <TextView
@@ -339,6 +325,7 @@
 
             <!-- Emergency Contact Card -->
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardEmergency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"

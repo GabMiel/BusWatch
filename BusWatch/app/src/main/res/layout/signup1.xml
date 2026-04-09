@@ -554,34 +554,37 @@
                 android:layout_marginStart="2dp"/>
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/editTextTextPassword7"
+        <FrameLayout
+            android:id="@+id/flConfirmPasswordContainer"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/re_enter_password"
-            android:inputType="textPassword"
-            android:autofillHints="password"
-            android:paddingStart="12dp"
-            android:paddingEnd="40dp"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabels6" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabels6">
 
-        <ImageButton
-            android:id="@+id/btnSignup1ViewConfirmPassword"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="8dp"
-            android:background="#00FFFFFF"
-            android:contentDescription="@string/show_password"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_eye_off"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextTextPassword7"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTextPassword7"
-            app:layout_constraintTop_toTopOf="@+id/editTextTextPassword7" />
+            <EditText
+                android:id="@+id/editTextTextPassword7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/re_enter_password"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:paddingStart="12dp"
+                android:paddingEnd="44dp"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/btnSignup1ViewConfirmPassword"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/show_password"
+                android:src="@drawable/ic_eye_off"
+                app:tint="#888888" />
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/llLabelLanguage"
@@ -592,7 +595,7 @@
             android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword7">
+            app:layout_constraintTop_toBottomOf="@+id/flConfirmPasswordContainer">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

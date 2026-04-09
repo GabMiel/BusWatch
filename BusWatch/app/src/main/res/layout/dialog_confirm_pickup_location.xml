@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_details_card"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvConfirmPickupTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pickup_address"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etConfirmPickupAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rectangle_hollow_with_shadow"
+        android:hint="@string/pickup_address"
+        android:inputType="textPostalAddress"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="10dp"
+        android:textColor="#241E40"
+        android:textSize="14sp"
+        android:autofillHints="postalAddress"
+        android:enabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvConfirmPickupTitle" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvConfirmMap"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmPickupAddress">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapConfirmPickup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/btnConfirmMyLocation"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="12dp"
+        android:background="@drawable/circle_shape"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_my_location"
+        android:contentDescription="@string/my_location"
+        app:layout_constraintBottom_toBottomOf="@id/cvConfirmMap"
+        app:layout_constraintEnd_toEndOf="@id/cvConfirmMap"
+        app:tint="#666666" />
+
+    <TextView
+        android:id="@+id/tvPinInstruction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/pin_location_instruction"
+        android:textColor="#888888"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvConfirmMap" />
+
+    <LinearLayout
+        android:id="@+id/llConfirmActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvPinInstruction">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmBack"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/back_caps"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="#FFFFFF"
+            app:cornerRadius="20dp"
+            app:strokeColor="#000000"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmFinal"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/confirm_caps"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="#FEBE1E"
+            app:cornerRadius="20dp" />
+    </LinearLayout>
+
+    <!-- Loading Overlay -->
+    <FrameLayout
+        android:id="@+id/flConfirmLoading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80FFFFFF"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="#FEBE1E" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

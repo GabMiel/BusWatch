@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_card_form">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_details_card"
         android:orientation="vertical"
         android:padding="20dp">
 
@@ -25,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/btnCloseAddDriver"
                 android:text="@string/adding_new_driver"
-                android:textColor="@color/text_dark"
+                android:textColor="#000000"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.04"
@@ -43,7 +42,7 @@
                 android:contentDescription="@string/close"/>
         </RelativeLayout>
 
-        <!-- Avatar — tappable to pick image -->
+        <!-- Avatar — optional -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,14 +66,13 @@
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/photo"/>
 
-                <!-- Camera overlay badge -->
                 <TextView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="bottom|end"
                     android:background="@drawable/bg_button_yellow"
                     android:text="@string/plus"
-                    android:textColor="@color/black"
+                    android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:gravity="center"/>
@@ -83,144 +81,262 @@
             <TextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/photo"
-                android:textColor="@color/black" android:textSize="11sp"
+                android:textColor="#000000" android:textSize="11sp"
                 android:layout_marginTop="6dp"/>
         </LinearLayout>
 
-        <!-- First Name / Email -->
+        <!-- Row 1: First Name and Middle Name -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="14dp"
+            android:orientation="horizontal" android:layout_marginBottom="4dp"
             android:baselineAligned="false">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/first_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etFirstName"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/first_name" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
                 <EditText android:id="@+id/etFirstName"
                     android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
                     android:paddingStart="10dp" android:paddingEnd="10dp"
                     android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"
-                    android:importantForAutofill="no"/>
+                    android:importantForAutofill="no"
+                    android:hint="@string/enter_your_first_name"/>
             </LinearLayout>
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/email" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etEmail"/>
-                <EditText android:id="@+id/etEmail"
-                    android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
-                    android:paddingStart="10dp" android:paddingEnd="10dp"
-                    android:textSize="13sp" android:inputType="textEmailAddress" android:singleLine="true"
-                    android:importantForAutofill="no"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Middle Name / Contact Number -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="14dp"
-            android:baselineAligned="false">
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/middle_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etMiddleName"/>
+                    android:text="@string/middle_name" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
                 <EditText android:id="@+id/etMiddleName"
                     android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
                     android:paddingStart="10dp" android:paddingEnd="10dp"
                     android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"
-                    android:importantForAutofill="no"/>
-            </LinearLayout>
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/contact_phone" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etContactNumber"/>
-                <EditText android:id="@+id/etContactNumber"
-                    android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
-                    android:paddingStart="10dp" android:paddingEnd="10dp"
-                    android:textSize="13sp" android:inputType="phone" android:singleLine="true"
-                    android:importantForAutofill="no"/>
+                    android:importantForAutofill="no"
+                    android:hint="@string/enter_your_middle_name"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Last Name / License Number -->
+        <!-- Row 1 Warnings -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="14dp"
+            android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:id="@+id/tvFirstNameWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/name_warning" android:layout_marginEnd="10dp"/>
+            <TextView android:id="@+id/tvMiddleNameWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/name_warning"/>
+        </LinearLayout>
+
+        <!-- Row 2: Last Name and Suffix -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="4dp"
             android:baselineAligned="false">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/last_name" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etLastName"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/last_name" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
                 <EditText android:id="@+id/etLastName"
                     android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
                     android:paddingStart="10dp" android:paddingEnd="10dp"
                     android:textSize="13sp" android:inputType="textPersonName" android:singleLine="true"
-                    android:importantForAutofill="no"/>
+                    android:importantForAutofill="no"
+                    android:hint="@string/enter_your_last_name"/>
             </LinearLayout>
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/license_number" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etLicenseNumber"/>
-                <EditText android:id="@+id/etLicenseNumber"
-                    android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
-                    android:paddingStart="10dp" android:paddingEnd="10dp"
-                    android:textSize="13sp" android:inputType="text" android:singleLine="true"
-                    android:importantForAutofill="no"
-                    tools:ignore="TextFields" />
+                    android:text="@string/suffix" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <FrameLayout
+                    android:id="@+id/btnSuffixDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvSuffix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/suffix"
+                        android:textColor="#888888"
+                        android:textSize="13sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#888888"
+                        android:contentDescription="@string/todo"/>
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Suffix / Password -->
+        <!-- Row 2 Warnings -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginBottom="14dp"
+            android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:id="@+id/tvLastNameWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/name_warning" android:layout_marginEnd="10dp"/>
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+        </LinearLayout>
+
+        <!-- Row 3: Email and Contact Phone Number -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="4dp"
             android:baselineAligned="false">
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/suffix" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etSuffix"/>
-                <EditText android:id="@+id/etSuffix"
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/email" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etEmail"
                     android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
                     android:paddingStart="10dp" android:paddingEnd="10dp"
-                    android:textSize="13sp" android:inputType="text" android:singleLine="true"
-                    android:importantForAutofill="no"/>
+                    android:textSize="13sp" android:inputType="textEmailAddress" android:singleLine="true"
+                    android:importantForAutofill="no"
+                    android:hint="@string/enter_your_email"/>
             </LinearLayout>
             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1" android:orientation="vertical">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/password" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                    android:labelFor="@+id/etPassword"/>
-                <EditText android:id="@+id/etPassword"
-                    android:layout_width="match_parent" android:layout_height="40dp"
-                    android:background="@drawable/bg_input_field"
-                    android:paddingStart="10dp" android:paddingEnd="10dp"
-                    android:textSize="13sp" android:inputType="textPassword" android:singleLine="true"
-                    android:importantForAutofill="no"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/contact_phone_number" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:id="@+id/btnCountryCode"
+                        android:layout_width="60dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <TextView
+                            android:id="@+id/tvCountryCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/country_code_ph"
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+                    </FrameLayout>
+                    <EditText android:id="@+id/etContactNumber"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="10dp" android:paddingEnd="10dp"
+                        android:textSize="13sp" android:inputType="phone" android:singleLine="true"
+                        android:importantForAutofill="no"
+                        android:hint="@string/phone_hint"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Confirm Password full width -->
+        <!-- Row 3 Warnings -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginBottom="24dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/confirm_password" android:textColor="@color/black" android:textSize="11sp" android:layout_marginBottom="4dp"
-                android:labelFor="@+id/etConfirmPassword"/>
+            android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:id="@+id/tvEmailWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/invalid_email" android:layout_marginEnd="10dp"/>
+            <TextView android:id="@+id/tvPhoneWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/invalid_phone"/>
+        </LinearLayout>
+
+        <!-- Row 4: License Number and Password -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="4dp"
+            android:baselineAligned="false">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/license_number" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etLicense"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textCapCharacters" android:singleLine="true"
+                    android:importantForAutofill="no"
+                    android:hint="@string/license_number"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/password" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etPassword"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textVisiblePassword" android:singleLine="true"
+                    android:importantForAutofill="no"
+                    android:hint="Enter your password"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 4 Warnings -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:id="@+id/tvLicenseWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/license_number_required" android:layout_marginEnd="10dp"/>
+            <TextView android:id="@+id/tvPasswordWarning" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+                android:text="@string/weak_password"/>
+        </LinearLayout>
+
+        <!-- Row 5: Confirm Password -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="4dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/confirm_password" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+            </LinearLayout>
             <EditText android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent" android:layout_height="40dp"
-                android:background="@drawable/bg_input_field"
+                android:background="@drawable/rectangle_hollow_with_shadow"
                 android:paddingStart="10dp" android:paddingEnd="10dp"
-                android:textSize="13sp" android:inputType="textPassword" android:singleLine="true"
-                android:importantForAutofill="no"/>
+                android:textSize="13sp" android:inputType="textVisiblePassword" android:singleLine="true"
+                android:importantForAutofill="no"
+                android:hint="@string/re_enter_password"/>
         </LinearLayout>
+
+        <!-- Confirm Password Warning -->
+        <TextView android:id="@+id/tvConfirmPasswordWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone"
+            android:text="@string/passwords_do_not_match"/>
+
+        <!-- Spacer for constant gap regardless of warning visibility -->
+        <View android:layout_width="match_parent" android:layout_height="32dp"/>
 
         <!-- SAVE — yellow full width rounded -->
         <TextView
@@ -228,7 +344,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="@string/save_caps"
-            android:textColor="@color/black"
+            android:textColor="#000000"
             android:textSize="15sp"
             android:textStyle="bold"
             android:gravity="center"
