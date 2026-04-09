@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -696,7 +695,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pickup Address"
+                android:text="@string/pickup_address"
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -717,7 +716,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="Enter pickup address"
+            android:hint="@string/enter_pickup_address"
             android:inputType="textPostalAddress"
             android:autofillHints="postalAddress"
             android:paddingStart="12dp"
@@ -728,15 +727,38 @@
             app:layout_constraintTop_toBottomOf="@+id/llLabelPickup" />
 
         <!-- Map Section -->
-        <org.osmdroid.views.MapView
-            android:id="@+id/mapSignup2"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clMapContainer"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="12dp"
-            android:background="#FAF6DB"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/etSignup2PickupAddress" />
+            app:layout_constraintTop_toBottomOf="@+id/etSignup2PickupAddress">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapSignup2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FAF6DB" />
+
+            <ImageButton
+                android:id="@+id/btnSignup2MyLocation"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="4dp"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_my_location"
+                android:contentDescription="@string/my_location"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="#666666" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/btnSignup2AddChild"
@@ -751,7 +773,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/mapSignup2" />
+            app:layout_constraintTop_toBottomOf="@+id/clMapContainer" />
 
         <!-- Navigation Buttons -->
         <LinearLayout

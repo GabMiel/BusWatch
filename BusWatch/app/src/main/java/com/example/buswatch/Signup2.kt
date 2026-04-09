@@ -1,7 +1,10 @@
 package com.example.buswatch
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,15 +24,20 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.yalantis.ucrop.UCrop
 import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import java.io.File
 import java.io.Serializable
@@ -52,6 +60,7 @@ class Signup2 : AppCompatActivity() {
     private lateinit var tvChildNumber: TextView
     private lateinit var etPickupAddress: EditText
     private lateinit var mapView: MapView
+    private lateinit var btnMyLocation: ImageButton
     
     private lateinit var tvFirstNameWarning: TextView
     private lateinit var tvLastNameWarning: TextView
@@ -62,11 +71,23 @@ class Signup2 : AppCompatActivity() {
     private var currentChildIndex = 0
 
     private var lastSourceUriAvatar: Uri? = null
+    private var currentMarker: Marker? = null
+    private var selectedLatitude: Double? = null
+    private var selectedLongitude: Double? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { 
             lastSourceUriAvatar = it
             startCrop(it) 
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            getCurrentLocation()
+        } else {
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,6 +105,8 @@ class Signup2 : AppCompatActivity() {
         Configuration.getInstance().load(this, getSharedPreferences("osmdroid", MODE_PRIVATE))
         
         setContentView(R.layout.signup2)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         etChildFirstName = findViewById(R.id.etChildFirstName)
         etChildLastName = findViewById(R.id.etChildLastName)
@@ -107,6 +130,7 @@ class Signup2 : AppCompatActivity() {
         tvChildNumber = findViewById(R.id.tvChildNumber)
         etPickupAddress = findViewById(R.id.etSignup2PickupAddress)
         mapView = findViewById(R.id.mapSignup2)
+        btnMyLocation = findViewById(R.id.btnSignup2MyLocation)
 
         val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
@@ -114,6 +138,14 @@ class Signup2 : AppCompatActivity() {
         val btnAddChild = findViewById<Button>(R.id.btnSignup2AddChild)
 
         setupMapView()
+
+        btnMyLocation.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
 
         // Setup real-time validation
         setupNameWatcher(etChildFirstName, tvFirstNameWarning)
@@ -185,7 +217,9 @@ class Signup2 : AppCompatActivity() {
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
                     "address" to (intent.getStringExtra("childAddress") ?: ""),
-                    "avatarUrl" to intent.getStringExtra("childAvatarUrl")
+                    "avatarUrl" to intent.getStringExtra("childAvatarUrl"),
+                    "latitude" to intent.getDoubleExtra("childLatitude", 0.0).takeIf { it != 0.0 },
+                    "longitude" to intent.getDoubleExtra("childLongitude", 0.0).takeIf { it != 0.0 }
                 )
                 childrenList.add(firstChild)
                 additionalFromIntent?.let { childrenList.addAll(it) }
@@ -229,6 +263,8 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childSchool", primaryChild["school"] as String)
                     putExtra("childAddress", primaryChild["address"] as String)
                     putExtra("childAvatarUrl", primaryChild["avatarUrl"] as String?)
+                    putExtra("childLatitude", primaryChild["latitude"] as? Double ?: 0.0)
+                    putExtra("childLongitude", primaryChild["longitude"] as? Double ?: 0.0)
 
                     if (childrenList.size > 1) {
                         val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))
@@ -250,16 +286,48 @@ class Signup2 : AppCompatActivity() {
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
         val mapController = mapView.controller
-        mapController.setZoom(15.0)
-        // Default location (e.g., Caloocan City)
+        mapController.setZoom(17.0)
+        
         val startPoint = GeoPoint(14.7566, 121.0450)
         mapController.setCenter(startPoint)
 
-        val marker = Marker(mapView)
-        marker.position = startPoint
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.title = "Pickup Location"
-        mapView.overlays.add(marker)
+        val receive = object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                p?.let { updateMarker(it) }
+                return true
+            }
+            override fun longPressHelper(p: GeoPoint?): Boolean = false
+        }
+        mapView.overlays.add(MapEventsOverlay(receive))
+    }
+
+    private fun getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                val userPoint = GeoPoint(it.latitude, it.longitude)
+                mapView.controller.animateTo(userPoint)
+                updateMarker(userPoint)
+            } ?: run {
+                Toast.makeText(this, "Unable to get current location. Make sure GPS is on.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateMarker(point: GeoPoint) {
+        if (currentMarker == null) {
+            currentMarker = Marker(mapView).apply {
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                title = "Pickup Location"
+            }
+            mapView.overlays.add(currentMarker)
+        }
+        currentMarker?.position = point
+        selectedLatitude = point.latitude
+        selectedLongitude = point.longitude
+        mapView.invalidate()
     }
 
     private fun startCrop(uri: Uri) {
@@ -397,6 +465,8 @@ class Signup2 : AppCompatActivity() {
         outState.putInt("currentIndex", currentChildIndex)
         outState.putSerializable("childrenList", childrenList)
         outState.putParcelable("lastSourceUriAvatar", lastSourceUriAvatar)
+        selectedLatitude?.let { outState.putDouble("selectedLat", it) }
+        selectedLongitude?.let { outState.putDouble("selectedLon", it) }
     }
 
     private fun validateFields(): Boolean {
@@ -411,6 +481,11 @@ class Signup2 : AppCompatActivity() {
 
         if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty() || address.isEmpty() || avatarUri == null) {
             Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (selectedLatitude == null || selectedLongitude == null) {
+            Toast.makeText(this, "Please select the pickup location on the map", Toast.LENGTH_SHORT).show()
             return false
         }
         
@@ -438,7 +513,9 @@ class Signup2 : AppCompatActivity() {
             "grade" to (selectedGrade ?: ""),
             "school" to etChildSchool.text.toString().trim(),
             "address" to etPickupAddress.text.toString().trim(),
-            "avatarUrl" to avatarUri?.toString()
+            "avatarUrl" to avatarUri?.toString(),
+            "latitude" to selectedLatitude,
+            "longitude" to selectedLongitude
         )
         
         if (currentChildIndex < childrenList.size) {
@@ -485,10 +562,30 @@ class Signup2 : AppCompatActivity() {
             } else {
                 ivAvatar.setImageResource(CommonR.drawable.user)
             }
+
+            selectedLatitude = child["latitude"] as? Double
+            selectedLongitude = child["longitude"] as? Double
+            if (selectedLatitude != null && selectedLongitude != null) {
+                val point = GeoPoint(selectedLatitude!!, selectedLongitude!!)
+                updateMarker(point)
+                mapView.controller.setCenter(point)
+            } else {
+                removeMarker()
+            }
         } else {
             clearFields()
         }
         updateChildHeader()
+    }
+
+    private fun removeMarker() {
+        currentMarker?.let {
+            mapView.overlays.remove(it)
+            currentMarker = null
+            mapView.invalidate()
+        }
+        selectedLatitude = null
+        selectedLongitude = null
     }
 
     private fun clearFields() {
@@ -507,6 +604,7 @@ class Signup2 : AppCompatActivity() {
         etPickupAddress.text.clear()
         ivAvatar.setImageResource(CommonR.drawable.user)
         avatarUri = null
+        removeMarker()
     }
 
     private fun updateChildHeader() {
@@ -543,6 +641,8 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childSchool", etChildSchool.text.toString().trim())
                 putExtra("childAddress", etPickupAddress.text.toString().trim())
                 putExtra("childAvatarUrl", avatarUri?.toString())
+                putExtra("childLatitude", selectedLatitude ?: 0.0)
+                putExtra("childLongitude", selectedLongitude ?: 0.0)
 
                 if (childrenList.size > 1) {
                     val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))

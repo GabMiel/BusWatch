@@ -216,29 +216,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Student ID -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/student_id_se2024001"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etEditStudentId"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/student_id_se2024001"
-                android:inputType="text"
-                android:autofillHints="none"
-                android:paddingHorizontal="12dp"
-                android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
-
             <!-- Age and Grade -->
             <LinearLayout
                 android:layout_width="match_parent"

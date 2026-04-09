@@ -43,7 +43,6 @@
         <!-- UCrop Activity -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity

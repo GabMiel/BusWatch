@@ -1,6 +1,5 @@
 package com.example.buswatch
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -326,20 +325,29 @@ class ParentDetails : AppCompatActivity() {
                         fetchParentData()
                         dialog.dismiss()
                     }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Failed to update database: ${e.message}", Toast.LENGTH_SHORT).show()
+                        dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
+                dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
             }
     }
 
     private fun startCrop(uri: Uri) {
         val dest = "avatar_crop_${System.currentTimeMillis()}.jpg"
         val uCrop = UCrop.of(uri, Uri.fromFile(File(cacheDir, dest)))
-        val options = UCrop.Options().apply {
-            setToolbarColor(Color.WHITE)
-            setToolbarWidgetColor(Color.BLACK)
-            setActiveControlsWidgetColor(ContextCompat.getColor(this, CommonR.color.yellow_primary))
-            setHideBottomControls(false)
-            setFreeStyleCropEnabled(false)
-        }
+        val options = UCrop.Options()
+        options.setToolbarColor(Color.WHITE)
+        options.setToolbarWidgetColor(Color.BLACK)
+        options.setActiveControlsWidgetColor(ContextCompat.getColor(this, CommonR.color.yellow_primary))
+        options.setHideBottomControls(false)
+        options.setFreeStyleCropEnabled(false)
+
         uCrop.withAspectRatio(1f, 1f)
+        uCrop.withMaxResultSize(1000, 1000)
         uCrop.withOptions(options)
         uCrop.start(this, UCrop.REQUEST_CROP)
     }
@@ -376,7 +384,7 @@ class ParentDetails : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK && data != null) {
             val resultUri = UCrop.getOutput(data)
             if (resultUri != null) {
                 showPreviewDialog(resultUri)
@@ -521,7 +529,8 @@ class ParentDetails : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        dialogView.findViewById<Button>(R.id.btnSaveProfile).setOnClickListener {
+        val btnSave = dialogView.findViewById<Button>(R.id.btnSaveProfile)
+        btnSave.setOnClickListener {
             val updateData = mutableMapOf<String, Any>(
                 "firstName" to etFirstName.text.toString().trim(),
                 "lastName" to etLastName.text.toString().trim(),
@@ -531,7 +540,9 @@ class ParentDetails : AppCompatActivity() {
                 "phone" to etPhone.text.toString().trim()
             )
 
-            it.isEnabled = false
+            btnSave.isEnabled = false
+            Toast.makeText(this, "Updating profile...", Toast.LENGTH_SHORT).show()
+            
             if (tempAvatarUri != null) {
                 uploadParentAvatar(tempAvatarUri!!, updateData, dialog)
             } else {
@@ -541,6 +552,10 @@ class ParentDetails : AppCompatActivity() {
                         fetchParentData()
                         dialog.dismiss()
                     }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Update failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        btnSave.isEnabled = true
+                    }
             }
         }
         dialog.show()
@@ -549,8 +564,6 @@ class ParentDetails : AppCompatActivity() {
     private fun uploadParentAvatar(uri: Uri, updateData: MutableMap<String, Any>, dialog: AlertDialog) {
         val uid = auth.currentUser?.uid ?: return
         val ref = storage.reference.child("parents/$uid/profile_avatar.jpg")
-        
-        Toast.makeText(this, "Updating profile...", Toast.LENGTH_SHORT).show()
         
         ref.putFile(uri)
             .continueWithTask { task ->
@@ -565,6 +578,14 @@ class ParentDetails : AppCompatActivity() {
                         fetchParentData()
                         dialog.dismiss()
                     }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Firestore update failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
             }
     }
 }

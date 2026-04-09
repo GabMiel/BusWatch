@@ -29,7 +29,7 @@ class Signup1 : AppCompatActivity() {
     private var selectedSuffix: String? = null
     private var isConfirmPasswordVisible = false
     private var selectedCountryCode = "+63"
-    private var maxPhoneDigits = 11 // Default for Philippines
+    private var maxPhoneDigits = 10 // Philippines mobile without leading 0 (10 digits)
     private var isPhoneFormatting = false
     
     private lateinit var etFirstName: EditText
@@ -146,7 +146,7 @@ class Signup1 : AppCompatActivity() {
         countryCodeSelector.setOnClickListener {
             val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
             val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
-            val lengths = arrayOf(11, 10, 10, 9, 10, 8, 9)
+            val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
             
             AlertDialog.Builder(this)
                 .setTitle("Select Country Code")
@@ -154,11 +154,8 @@ class Signup1 : AppCompatActivity() {
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
                     tvCountryCode.text = selectedCountryCode
-                    // Update length filter
+                    etPhone.text.clear() // Clear input when selecting other country
                     updatePhoneFilter()
-                    // Re-apply formatting to existing text
-                    val currentText = etPhone.text.toString().replace(" ", "")
-                    etPhone.setText(currentText)
                 }
                 .show()
         }
@@ -206,6 +203,12 @@ class Signup1 : AppCompatActivity() {
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || selectedLanguage == null) {
                 Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // Validate maximized digits
+            if (phone.length != maxPhoneDigits) {
+                Toast.makeText(this, "Please enter a valid $maxPhoneDigits-digit phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
@@ -293,15 +296,7 @@ class Signup1 : AppCompatActivity() {
         val formatted = StringBuilder()
         
         when (countryCode) {
-            "+63" -> { // Philippines: 09XX XXX XXXX (11 digits)
-                for (i in digits.indices) {
-                    formatted.append(digits[i])
-                    if ((i == 3 || i == 6) && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
-                }
-            }
-            "+1", "+64" -> { // USA, Canada, NZ: XXX XXX XXXX (10 digits)
+            "+63", "+1", "+64" -> { // PH (10 digits after prefix), USA, Canada, NZ: XXX XXX XXXX
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 2 || i == 5) && i != digits.length - 1) {
@@ -309,7 +304,7 @@ class Signup1 : AppCompatActivity() {
                     }
                 }
             }
-            "+44" -> { // UK: XXXXX XXXXX
+            "+44" -> { // UK: XXXXX XXXXX (10 digits)
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if (i == 4 && i != digits.length - 1) {
@@ -317,7 +312,7 @@ class Signup1 : AppCompatActivity() {
                     }
                 }
             }
-            "+61" -> { // Australia: XXX XXX XXX
+            "+61" -> { // Australia: XXX XXX XXX (9 digits)
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 2 || i == 5) && i != digits.length - 1) {
@@ -325,7 +320,7 @@ class Signup1 : AppCompatActivity() {
                     }
                 }
             }
-            "+65" -> { // Singapore: XXXX XXXX
+            "+65" -> { // Singapore: XXXX XXXX (8 digits)
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if (i == 3 && i != digits.length - 1) {
@@ -333,7 +328,7 @@ class Signup1 : AppCompatActivity() {
                     }
                 }
             }
-            "+353" -> { // Ireland: XX XXX XXXX
+            "+353" -> { // Ireland: XX XXX XXXX (9 digits)
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 1 || i == 4) && i != digits.length - 1) {
@@ -345,7 +340,13 @@ class Signup1 : AppCompatActivity() {
         }
 
         if (formatted.toString() != s.toString()) {
+            val selection = etPhone.selectionStart
+            val oldLength = s.length
             s.replace(0, s.length, formatted.toString())
+            
+            val newLength = formatted.length
+            val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
+            etPhone.setSelection(newSelection)
         }
     }
 

@@ -30,8 +30,8 @@ class Signup3 : AppCompatActivity() {
     private var selectedBloodType = "Select blood type"
     private var selectedCountryCode1 = "+63"
     private var selectedCountryCode2 = "+63"
-    private var maxPhoneDigits1 = 11
-    private var maxPhoneDigits2 = 11
+    private var maxPhoneDigits1 = 10 // Philippines mobile without leading 0
+    private var maxPhoneDigits2 = 10
     private var isPhoneFormatting1 = false
     private var isPhoneFormatting2 = false
 
@@ -111,10 +111,10 @@ class Signup3 : AppCompatActivity() {
             }
         }
         
-        // English-speaking Country codes Logic (Consistend with Signup1)
+        // English-speaking Country codes Logic
         val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
         val codesOnly = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
-        val lengths = arrayOf(11, 10, 10, 9, 10, 8, 9)
+        val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
 
         findViewById<FrameLayout>(R.id.btnSignup3CountryCode1).setOnClickListener {
             AlertDialog.Builder(this)
@@ -123,10 +123,8 @@ class Signup3 : AppCompatActivity() {
                     selectedCountryCode1 = codesOnly[which]
                     maxPhoneDigits1 = lengths[which]
                     tvCountryCode1.text = selectedCountryCode1
+                    etContact1Phone.text.clear()
                     updatePhoneFilter1()
-                    
-                    val currentText = etContact1Phone.text.toString().replace(" ", "")
-                    etContact1Phone.setText(currentText)
                 }
                 .show()
         }
@@ -138,10 +136,8 @@ class Signup3 : AppCompatActivity() {
                     selectedCountryCode2 = codesOnly[which]
                     maxPhoneDigits2 = lengths[which]
                     tvCountryCode2.text = selectedCountryCode2
+                    etContact2Phone.text.clear()
                     updatePhoneFilter2()
-                    
-                    val currentText = etContact2Phone.text.toString().replace(" ", "")
-                    etContact2Phone.setText(currentText)
                 }
                 .show()
         }
@@ -166,24 +162,35 @@ class Signup3 : AppCompatActivity() {
 
         registerButton.setOnClickListener {
             val contact1Name = etContact1Name.text.toString().trim()
-            val contact1Phone = etContact1Phone.text.toString().replace(" ", "")
+            val contact1PhoneRaw = etContact1Phone.text.toString().replace(" ", "")
             val contact1Relation = etContact1Relation.text.toString().trim()
 
-            if (contact1Name.isEmpty() || contact1Phone.isEmpty() || contact1Relation.isEmpty()) {
+            if (contact1Name.isEmpty() || contact1PhoneRaw.isEmpty() || contact1Relation.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
-            if (isInvalidName(contact1Name) || isInvalidName(etContact2Name.text.toString())) {
+            if (contact1PhoneRaw.length != maxPhoneDigits1) {
+                Toast.makeText(this, "Please enter a valid $maxPhoneDigits1-digit phone number for Contact 1", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            val contact2Name = etContact2Name.text.toString().trim()
+            val contact2PhoneRaw = etContact2Phone.text.toString().replace(" ", "")
+            if (contact2PhoneRaw.isNotEmpty() && contact2PhoneRaw.length != maxPhoneDigits2) {
+                Toast.makeText(this, "Please enter a valid $maxPhoneDigits2-digit phone number for Contact 2", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (isInvalidName(contact1Name) || (contact2Name.isNotEmpty() && isInvalidName(contact2Name))) {
                 Toast.makeText(this, "Please correct the errors in the name fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             registerButton.isEnabled = false
             
-            val fullPhone1 = "$selectedCountryCode1 $contact1Phone"
-            val rawPhone2 = etContact2Phone.text.toString().replace(" ", "")
-            val fullPhone2 = if (rawPhone2.isNotEmpty()) "$selectedCountryCode2 $rawPhone2" else ""
+            val fullPhone1 = "$selectedCountryCode1 $contact1PhoneRaw"
+            val fullPhone2 = if (contact2PhoneRaw.isNotEmpty()) "$selectedCountryCode2 $contact2PhoneRaw" else ""
 
             registerUser(
                 if (selectedBloodType == "Select blood type") "" else selectedBloodType,
@@ -191,7 +198,7 @@ class Signup3 : AppCompatActivity() {
                 etMedications.text.toString().trim(),
                 etConditions.text.toString().trim(),
                 contact1Name, fullPhone1, contact1Relation,
-                etContact2Name.text.toString().trim(),
+                contact2Name,
                 fullPhone2,
                 etContact2Relation.text.toString().trim()
             )
@@ -226,7 +233,7 @@ class Signup3 : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (isPhoneFormatting1 || s == null) return
                 isPhoneFormatting1 = true
-                applyPhoneFormatting(s, selectedCountryCode1)
+                applyPhoneFormatting(etContact1Phone, s, selectedCountryCode1)
                 isPhoneFormatting1 = false
             }
         })
@@ -237,26 +244,18 @@ class Signup3 : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (isPhoneFormatting2 || s == null) return
                 isPhoneFormatting2 = true
-                applyPhoneFormatting(s, selectedCountryCode2)
+                applyPhoneFormatting(etContact2Phone, s, selectedCountryCode2)
                 isPhoneFormatting2 = false
             }
         })
     }
 
-    private fun applyPhoneFormatting(s: Editable, countryCode: String) {
+    private fun applyPhoneFormatting(editText: EditText, s: Editable, countryCode: String) {
         val digits = s.toString().replace(" ", "")
         val formatted = StringBuilder()
         
         when (countryCode) {
-            "+63" -> { // Philippines: 09XX XXX XXXX (11 digits)
-                for (i in digits.indices) {
-                    formatted.append(digits[i])
-                    if ((i == 3 || i == 6) && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
-                }
-            }
-            "+1", "+64" -> { // USA, Canada, NZ: XXX XXX XXXX (10 digits)
+            "+63", "+1", "+64" -> { // PH (10 rem), USA, Canada, NZ: XXX XXX XXXX
                 for (i in digits.indices) {
                     formatted.append(digits[i])
                     if ((i == 2 || i == 5) && i != digits.length - 1) {
@@ -300,7 +299,13 @@ class Signup3 : AppCompatActivity() {
         }
 
         if (formatted.toString() != s.toString()) {
+            val selection = editText.selectionStart
+            val oldLength = s.length
             s.replace(0, s.length, formatted.toString())
+            
+            val newLength = formatted.length
+            val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
+            editText.setSelection(newSelection)
         }
     }
 
