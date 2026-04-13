@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white">
 
     <!-- Dark Header -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/dark_header"
-        android:text="@string/users"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:letterSpacing="0.1"
-        android:fontFamily="sans-serif-condensed"
-        android:contentDescription="@string/users"/>
+        android:background="@color/dark_header">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:text="@string/users"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:letterSpacing="0.1"
+            android:fontFamily="sans-serif-condensed"
+            android:contentDescription="@string/users"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+    </RelativeLayout>
 
     <!-- PARENTS / DRIVERS Tab Switcher -->
     <LinearLayout
@@ -44,7 +53,9 @@
             android:textSize="12sp"
             android:gravity="center"
             android:letterSpacing="0.04"
-            android:background="@drawable/bg_tab_inactive"/>
+            android:background="@drawable/bg_tab_inactive"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
             android:id="@+id/tabDrivers"
@@ -57,7 +68,9 @@
             android:textStyle="bold"
             android:gravity="center"
             android:letterSpacing="0.04"
-            android:background="@drawable/bg_tab_active"/>
+            android:background="@drawable/bg_tab_active"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
 
     <!-- Search Bar -->
@@ -104,21 +117,6 @@
         android:layout_marginBottom="4dp">
 
         <TextView
-            android:id="@+id/btnViewPendingParents"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_button_yellow"
-            android:gravity="center"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:text="@string/view_pending_parents"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-
-        <TextView
             android:id="@+id/btnAddNewDriver"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
@@ -130,7 +128,9 @@
             android:text="@string/add_new_driver"
             android:textColor="@color/black"
             android:textSize="11sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"/>
     </RelativeLayout>
 
     <!-- User List -->
@@ -142,6 +142,8 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="4dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_driver"/>
 
 </LinearLayout>

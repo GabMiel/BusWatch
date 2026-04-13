@@ -12,12 +12,14 @@ data class UserAdmin(
     val name: String,
     val role: String,
     var isArchived: Boolean = false,
-    var status: String = "active"
+    var status: String = "active",
+    val avatarUrl: String = ""
 )
 
 class UserAdapter(
     private var users: MutableList<UserAdmin>,
     private val onViewClick: (UserAdmin) -> Unit,
+    private val onEditClick: (UserAdmin) -> Unit,
     private val onArchiveClick: (UserAdmin, Int) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
@@ -25,6 +27,7 @@ class UserAdapter(
         val name: TextView = view.findViewById(R.id.tvUserName)
         val role: TextView = view.findViewById(R.id.tvUserRole)
         val btnView: ImageButton = view.findViewById(R.id.btnView)
+        val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
         val btnArchive: ImageButton = view.findViewById(R.id.btnArchive)
     }
 
@@ -39,6 +42,7 @@ class UserAdapter(
         holder.role.text = user.role
 
         holder.btnView.setOnClickListener { onViewClick(user) }
+        holder.btnEdit.setOnClickListener { onEditClick(user) }
         holder.btnArchive.setOnClickListener { onArchiveClick(user, position) }
     }
 

@@ -7,10 +7,10 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/tvConfirmPickupTitle"
+        android:id="@+id/tvConfirmHomeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pickup_address"
+        android:text="@string/home_address"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -18,12 +18,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/etConfirmPickupAddress"
+        android:id="@+id/etConfirmHomeAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/rectangle_hollow_with_shadow"
-        android:hint="@string/pickup_address"
+        android:hint="@string/home_address"
         android:inputType="textPostalAddress"
         android:paddingHorizontal="12dp"
         android:paddingVertical="10dp"
@@ -33,7 +33,7 @@
         android:enabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvConfirmPickupTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvConfirmHomeTitle" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvConfirmMap"
@@ -42,10 +42,10 @@
         android:layout_marginTop="16dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintTop_toBottomOf="@id/etConfirmPickupAddress">
+        app:layout_constraintTop_toBottomOf="@id/etConfirmHomeAddress">
 
         <org.osmdroid.views.MapView
-            android:id="@+id/mapConfirmPickup"
+            android:id="@+id/mapConfirmHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
@@ -115,26 +115,5 @@
             app:backgroundTint="#FEBE1E"
             app:cornerRadius="20dp" />
     </LinearLayout>
-
-    <!-- Loading Overlay -->
-    <FrameLayout
-        android:id="@+id/flConfirmLoading"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#80FFFFFF"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="#FEBE1E" />
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

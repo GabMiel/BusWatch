@@ -6,19 +6,17 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.buswatch.common.R as CommonR
 
 class PendingUserAdapter(
     private var users: MutableList<UserAdmin>,
-    private val onAcceptClick: (UserAdmin, Int) -> Unit,
-    private val onRejectClick: (UserAdmin, Int) -> Unit,
     private val onViewClick: (UserAdmin) -> Unit
 ) : RecyclerView.Adapter<PendingUserAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.tvUserName)
         val status: TextView = view.findViewById(R.id.tvUserStatus)
-        val btnAccept: ImageButton = view.findViewById(R.id.btnAccept)
-        val btnReject: ImageButton = view.findViewById(R.id.btnReject)
+        val btnView: ImageButton = view.findViewById(R.id.btnView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,17 +27,11 @@ class PendingUserAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
         holder.name.text = user.name
-        holder.status.text = "Pending"
+        holder.status.setText(CommonR.string.pending_registration)
 
-        holder.btnAccept.setOnClickListener { onAcceptClick(user, position) }
-        holder.btnReject.setOnClickListener { onRejectClick(user, position) }
+        holder.btnView.setOnClickListener { onViewClick(user) }
         holder.itemView.setOnClickListener { onViewClick(user) }
     }
 
     override fun getItemCount() = users.size
-
-    fun removeAt(position: Int) {
-        users.removeAt(position)
-        notifyItemRemoved(position)
-    }
 }

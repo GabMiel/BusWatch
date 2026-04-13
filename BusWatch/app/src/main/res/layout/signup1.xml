@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:scrollbars="vertical">
+    android:scrollbars="vertical"
+    android:background="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:paddingBottom="32dp">
 
         <ImageView
-            android:id="@+id/imageView33"
+            android:id="@+id/ivLogo"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="16dp"
@@ -23,130 +24,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView172"
+            android:id="@+id/tvBusWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/buswatch"
             android:textColor="#000000"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView33"
-            app:layout_constraintStart_toEndOf="@+id/imageView33"
-            app:layout_constraintTop_toTopOf="@+id/imageView33" />
-
-        <TextView
-            android:id="@+id/textView177"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_account"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="138dp" />
-
-        <View
-            android:id="@+id/view39"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#FEBE1E"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView173"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/parent_information"
-            android:textColor="#FEBE1E"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view39"
-            app:layout_constraintTop_toTopOf="@+id/view39"
-            android:layout_marginStart="8dp" />
-
-        <View
-            android:id="@+id/view40"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#C4C4C4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="149dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView174"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/child_information"
-            android:textColor="#C4C4C4"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view40"
-            app:layout_constraintTop_toTopOf="@+id/view40"
-            android:layout_marginStart="8dp" />
-
-        <View
-            android:id="@+id/view45"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#C4C4C4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="268dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView175"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/medical_information"
-            android:textColor="#C4C4C4"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view45"
-            app:layout_constraintTop_toTopOf="@+id/view45"
-            android:layout_marginStart="8dp" />
-
-        <ImageView
-            android:id="@+id/imageView35"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@string/user_icon"
-            android:src="@drawable/user"
-            app:layout_constraintBottom_toBottomOf="@+id/view39"
-            app:layout_constraintEnd_toEndOf="@+id/view39"
-            app:layout_constraintStart_toStartOf="@+id/view39"
-            app:layout_constraintTop_toTopOf="@+id/view39" />
-
-        <ImageView
-            android:id="@+id/imageView37"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@string/child_icon"
-            android:src="@drawable/child"
-            app:layout_constraintBottom_toBottomOf="@+id/view40"
-            app:layout_constraintEnd_toEndOf="@+id/view40"
-            app:layout_constraintStart_toStartOf="@+id/view40"
-            app:layout_constraintTop_toTopOf="@+id/view40" />
-
-        <ImageView
-            android:id="@+id/imageView36"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@string/medical_icon"
-            android:src="@drawable/heart"
-            app:layout_constraintBottom_toBottomOf="@+id/view45"
-            app:layout_constraintEnd_toEndOf="@+id/view45"
-            app:layout_constraintStart_toStartOf="@+id/view45"
-            app:layout_constraintTop_toTopOf="@+id/view45" />
+            app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+            app:layout_constraintStart_toEndOf="@+id/ivLogo"
+            app:layout_constraintTop_toTopOf="@+id/ivLogo" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glStart"
@@ -162,17 +49,224 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="32dp" />
 
+        <!-- Progress Indicators -->
+        <View
+            android:id="@+id/viewParent"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="79dp"
+            android:layout_marginStart="24dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            app:layout_constraintEnd_toStartOf="@+id/viewChild"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/user"
+            app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+            app:layout_constraintEnd_toEndOf="@+id/viewParent"
+            app:layout_constraintStart_toStartOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView173"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/parent_information_newline"
+            android:textColor="#FEBE1E"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewParent"
+            app:layout_constraintStart_toStartOf="@+id/viewParent"
+            app:layout_constraintTop_toBottomOf="@+id/viewParent" />
+
+        <View
+            android:id="@+id/viewEmergency"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#C4C4C4"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toEndOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/heart"
+            app:layout_constraintBottom_toBottomOf="@+id/viewEmergency"
+            app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+            app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+            app:layout_constraintTop_toTopOf="@+id/viewEmergency"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView175"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/emergency"
+            android:textColor="#C4C4C4"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+            app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+            app:layout_constraintTop_toBottomOf="@+id/viewEmergency" />
+
+        <View
+            android:id="@+id/viewChild"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#C4C4C4"
+            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+            app:layout_constraintStart_toEndOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/child"
+            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewChild"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView174"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/child_information_newline"
+            android:textColor="#C4C4C4"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toBottomOf="@+id/viewChild" />
+
+        <!-- Connecting Lines -->
+        <View
+            android:id="@+id/viewProgressLine1"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="#C4C4C4"
+            app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+            app:layout_constraintEnd_toStartOf="@+id/viewChild"
+            app:layout_constraintStart_toEndOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <View
+            android:id="@+id/viewProgressLine2"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="#C4C4C4"
+            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+            app:layout_constraintStart_toEndOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewChild" />
+
+        <!-- Form Title -->
+        <TextView
+            android:id="@+id/tvCreateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/create_account"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView174" />
+
+        <!-- Avatar Section (Added) -->
+        <LinearLayout
+            android:id="@+id/llLabelPhoto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_photo"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/viewParentAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_avatar_circle"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelPhoto">
+
+            <ImageView
+                android:id="@+id/ivParentAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_person_placeholder"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/avatar"
+                android:padding="2dp" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btnSignup1AddPhoto"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/textfield_shape"
+            android:backgroundTint="#FFFFFF"
+            android:text="@string/add_photo"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/viewParentAvatar"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toEndOf="@+id/viewParentAvatar"
+            app:layout_constraintTop_toTopOf="@+id/viewParentAvatar" />
+
         <!-- First Name -->
         <LinearLayout
             android:id="@+id/llLabels1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="185dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
             android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/viewParentAvatar">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -187,7 +281,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -243,7 +338,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -275,28 +371,33 @@
             app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
 
         <!-- Middle Name & Suffix Row -->
-        <TextView
-            android:id="@+id/tvMiddleLabel"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/llLabelMiddle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/middle_name"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/tvLastNameWarning" />
-
-        <TextView
-            android:id="@+id/tvSuffixLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/suffix"
-            android:textColor="#241E40"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/btnSignup1Suffix"
-            app:layout_constraintTop_toTopOf="@+id/tvMiddleLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLastNameWarning">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/middle_name"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/suffix"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextText5"
@@ -313,7 +414,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/btnSignup1Suffix"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/tvMiddleLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelMiddle" />
 
         <FrameLayout
             android:id="@+id/btnSignup1Suffix"
@@ -326,6 +427,7 @@
             app:layout_constraintTop_toTopOf="@+id/editTextText5">
 
             <TextView
+                android:id="@+id/tvSignup1SelectedSuffix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -381,7 +483,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -400,6 +503,17 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabels3" />
 
+        <TextView
+            android:id="@+id/tvEmailWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/etSignup1Email" />
+
         <!-- Phone Number -->
         <LinearLayout
             android:id="@+id/llLabels4"
@@ -410,7 +524,7 @@
             android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/etSignup1Email">
+            app:layout_constraintTop_toBottomOf="@+id/tvEmailWarning">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -425,21 +539,23 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llPhoneContainer"
+            android:id="@+id/llParentPhoneContainer"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabels4">
 
             <FrameLayout
-                android:id="@+id/btnSignup1CountryCode"
+                android:id="@+id/btnSignup1ParentCountryCode"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
@@ -447,7 +563,7 @@
                 android:clickable="true"
                 android:focusable="true">
                 <TextView
-                    android:id="@+id/tvSignup1CountryCode"
+                    android:id="@+id/tvSignup1ParentCountryCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -457,7 +573,7 @@
             </FrameLayout>
 
             <EditText
-                android:id="@+id/editTextText7"
+                android:id="@+id/etParentPhone"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -480,7 +596,7 @@
             android:baselineAligned="false"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llPhoneContainer">
+            app:layout_constraintTop_toBottomOf="@+id/llParentPhoneContainer">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -495,24 +611,41 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/editTextTextPassword6"
+        <FrameLayout
+            android:id="@+id/flPasswordContainer"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/create_a_password"
-            android:inputType="textPassword"
-            android:autofillHints="password"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabels5" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabels5">
+
+            <EditText
+                android:id="@+id/editTextTextPassword6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/create_a_password"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:paddingStart="12dp"
+                android:paddingEnd="44dp"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/btnSignup1ViewPassword"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/show_password"
+                android:src="@drawable/ic_eye_off"
+                app:tint="#888888" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvPasswordRequirements"
@@ -524,7 +657,7 @@
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword6" />
+            app:layout_constraintTop_toBottomOf="@+id/flPasswordContainer" />
 
         <!-- Confirm Password -->
         <LinearLayout
@@ -551,7 +684,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <FrameLayout
@@ -610,7 +744,8 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"/>
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <FrameLayout

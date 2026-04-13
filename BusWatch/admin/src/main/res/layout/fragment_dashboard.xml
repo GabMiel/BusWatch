@@ -31,6 +31,7 @@
         android:padding="16dp"
         android:layout_marginTop="8dp">
 
+        <!-- Total Parents -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp" android:layout_height="130dp"
             android:layout_columnWeight="1" android:layout_margin="8dp"
@@ -39,17 +40,22 @@
             app:cardElevation="3dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                 android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/count_parents" android:textColor="@color/black"
+                <TextView
+                    android:id="@+id/tvCountParents"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/count_zero" android:textColor="@color/black"
                     android:textSize="34sp" android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/total_parents" android:textColor="@color/black"
+                    android:text="@string/total_parents_caps" android:textColor="@color/black"
                     android:textSize="12sp" android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif"/>
+                    android:fontFamily="sans-serif"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Total Drivers -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp" android:layout_height="130dp"
             android:layout_columnWeight="1" android:layout_margin="8dp"
@@ -58,17 +64,22 @@
             app:cardElevation="3dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                 android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/count_drivers" android:textColor="@color/black"
+                <TextView
+                    android:id="@+id/tvCountDrivers"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/count_zero" android:textColor="@color/black"
                     android:textSize="34sp" android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/total_drivers" android:textColor="@color/black"
+                    android:text="@string/total_drivers_caps" android:textColor="@color/black"
                     android:textSize="12sp" android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif"/>
+                    android:fontFamily="sans-serif"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Total Bus -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp" android:layout_height="130dp"
             android:layout_columnWeight="1" android:layout_margin="8dp"
@@ -77,17 +88,22 @@
             app:cardElevation="3dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                 android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/count_pending" android:textColor="@color/black"
+                <TextView
+                    android:id="@+id/tvCountBuses"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/count_zero" android:textColor="@color/black"
                     android:textSize="34sp" android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/pending_parents" android:textColor="@color/black"
+                    android:text="@string/total_bus_caps" android:textColor="@color/black"
                     android:textSize="12sp" android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif"/>
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Pending Parents -->
         <androidx.cardview.widget.CardView
             android:layout_width="0dp" android:layout_height="130dp"
             android:layout_columnWeight="1" android:layout_margin="8dp"
@@ -96,14 +112,18 @@
             app:cardElevation="3dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                 android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/count_archived" android:textColor="@color/black"
+                <TextView
+                    android:id="@+id/tvCountPending"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/count_zero" android:textColor="@color/black"
                     android:textSize="34sp" android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/archived_users" android:textColor="@color/black"
+                    android:text="@string/pending_parents_caps_2" android:textColor="@color/black"
                     android:textSize="12sp" android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif"/>
+                    android:fontFamily="sans-serif"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

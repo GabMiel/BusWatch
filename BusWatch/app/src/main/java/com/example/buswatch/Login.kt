@@ -18,6 +18,13 @@ class Login : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
+    companion object {
+        private const val ADMIN_EMAIL = "admin@buswatch.com"
+        private const val ADMIN_PASSWORD = "admin123"
+        private const val DRIVER_EMAIL = "driver@buswatch.com"
+        private const val DRIVER_PASSWORD = "driver123"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
@@ -25,17 +32,16 @@ class Login : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Automatically try to create the admin and driver accounts on startup for convenience
         createAdminAccount()
         createDriverAccount()
 
-        val emailEditText = findViewById<EditText>(R.id.editTextText)
-        val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
+        val emailEditText = findViewById<EditText>(R.id.etLoginEmail)
+        val passwordEditText = findViewById<EditText>(R.id.etLoginPassword)
         val viewPasswordButton = findViewById<ImageButton>(R.id.btnLoginViewPassword)
         val loginButton = findViewById<Button>(R.id.btnLoginLogin)
         val signupButton = findViewById<Button>(R.id.btnLoginSignup)
         val forgotPasswordButton = findViewById<Button>(R.id.btnLoginForgotPassword)
-        
+
         auth.currentUser?.let {
             checkUserRole(it.uid)
         }
@@ -43,9 +49,8 @@ class Login : AppCompatActivity() {
         viewPasswordButton.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
-                // Use transformationMethod instead of inputType to preserve font/typeface
                 passwordEditText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye) 
+                viewPasswordButton.setImageResource(CommonR.drawable.ic_eye)
             } else {
                 passwordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
                 viewPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
@@ -54,33 +59,28 @@ class Login : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            var email = emailEditText.text.toString().trim()
-            var password = passwordEditText.text.toString().trim()
+            var emailInput = emailEditText.text.toString().trim()
+            var passwordInput = passwordEditText.text.toString().trim()
 
-            // Handle "admin" shorthand
-            if (email == "admin") {
-                email = "admin@buswatch.com"
-            }
-            if (password == "admin") {
-                password = "admin123"
-            }
-
-            // Handle "driver" shorthand
-            if (email == "driver") {
-                email = "driver@buswatch.com"
-            }
-            if (password == "driver") {
-                password = "driver123"
+            when (emailInput) {
+                "admin" -> {
+                    emailInput = ADMIN_EMAIL
+                    if (passwordInput == "admin") passwordInput = ADMIN_PASSWORD
+                }
+                "driver" -> {
+                    emailInput = DRIVER_EMAIL
+                    if (passwordInput == "driver") passwordInput = DRIVER_PASSWORD
+                }
             }
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (emailInput.isEmpty() || passwordInput.isEmpty()) {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             loginButton.isEnabled = false
-            
-            auth.signInWithEmailAndPassword(email, password)
+
+            auth.signInWithEmailAndPassword(emailInput, passwordInput)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val uid = auth.currentUser?.uid
@@ -104,13 +104,10 @@ class Login : AppCompatActivity() {
     }
 
     private fun createAdminAccount() {
-        val adminEmail = "admin@buswatch.com"
-        val adminPassword = "admin123"
-
-        db.collection("parents").whereEqualTo("role", "admin").get()
+        db.collection("admin").whereEqualTo("role", "admin").get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    auth.createUserWithEmailAndPassword(adminEmail, adminPassword)
+                    auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val uid = auth.currentUser?.uid
@@ -119,10 +116,10 @@ class Login : AppCompatActivity() {
                                         "role" to "admin",
                                         "firstName" to "System",
                                         "lastName" to "Admin",
-                                        "email" to adminEmail,
+                                        "email" to ADMIN_EMAIL,
                                         "status" to "approved"
                                     )
-                                    db.collection("parents").document(uid).set(adminData)
+                                    db.collection("admin").document(uid).set(adminData)
                                 }
                             }
                         }
@@ -131,60 +128,82 @@ class Login : AppCompatActivity() {
     }
 
     private fun createDriverAccount() {
-        val driverEmail = "driver@buswatch.com"
-        val driverPassword = "driver123"
-
-        db.collection("parents").whereEqualTo("role", "driver").get()
+        db.collection("drivers").whereEqualTo("role", "driver").get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    auth.createUserWithEmailAndPassword(driverEmail, driverPassword)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val uid = auth.currentUser?.uid
-                                if (uid != null) {
-                                    val driverData = hashMapOf(
-                                        "role" to "driver",
-                                        "firstName" to "Test",
-                                        "lastName" to "Driver",
-                                        "email" to driverEmail,
-                                        "status" to "approved"
-                                    )
-                                    db.collection("parents").document(uid).set(driverData)
-                                }
+                    auth.signInWithEmailAndPassword(DRIVER_EMAIL, DRIVER_PASSWORD)
+                        .addOnCompleteListener { signInTask ->
+                            if (signInTask.isSuccessful) {
+                                saveDriverData(auth.currentUser?.uid)
+                            } else {
+                                auth.createUserWithEmailAndPassword(DRIVER_EMAIL, DRIVER_PASSWORD)
+                                    .addOnCompleteListener { createItemTask ->
+                                        if (createItemTask.isSuccessful) {
+                                            saveDriverData(auth.currentUser?.uid)
+                                        }
+                                    }
                             }
                         }
                 }
             }
     }
 
+    private fun saveDriverData(uid: String?) {
+        if (uid == null) return
+        val driverData = hashMapOf(
+            "role" to "driver",
+            "firstName" to "Test",
+            "lastName" to "Driver",
+            "email" to DRIVER_EMAIL,
+            "status" to "active",
+            "licenseNumber" to "DL123456"
+        )
+        db.collection("drivers").document(uid).set(driverData)
+    }
+
     private fun checkUserRole(uid: String) {
-        db.collection("parents").document(uid).get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val role = document.getString("role")
-                    navigateBasedOnRole(role)
+        db.collection("admin").document(uid).get()
+            .addOnSuccessListener { adminDoc ->
+                if (adminDoc != null && adminDoc.exists()) {
+                    navigateBasedOnRole("admin")
                 } else {
-                    navigateBasedOnRole("parent")
+                    db.collection("parents").document(uid).get()
+                        .addOnSuccessListener { parentDoc ->
+                            if (parentDoc != null && parentDoc.exists()) {
+                                val role = parentDoc.getString("role") ?: "parent"
+                                navigateBasedOnRole(role)
+                            } else {
+                                db.collection("drivers").document(uid).get()
+                                    .addOnSuccessListener { driverDoc ->
+                                        if (driverDoc != null && driverDoc.exists()) {
+                                            navigateBasedOnRole("driver")
+                                        } else {
+                                            navigateBasedOnRole("parent")
+                                        }
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(this, "Error fetching driver role", Toast.LENGTH_SHORT).show()
+                                        findViewById<Button>(R.id.btnLoginLogin).isEnabled = true
+                                    }
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error fetching parent role", Toast.LENGTH_SHORT).show()
+                            findViewById<Button>(R.id.btnLoginLogin).isEnabled = true
+                        }
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Error fetching user role", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error fetching admin role", Toast.LENGTH_SHORT).show()
                 findViewById<Button>(R.id.btnLoginLogin).isEnabled = true
             }
     }
 
     private fun navigateBasedOnRole(role: String?) {
-        val intent = when (role) {
-            "admin" -> {
-                Intent().apply {
-                    setClassName(this@Login, "com.example.buswatch.admin.AdminHome")
-                }
-            }
-            "driver" -> {
-                Intent().apply {
-                    setClassName(this@Login, "com.example.buswatch.driver.DriverHome")
-                }
-            }
+        val intent = when (role?.lowercase()) {
+            "admin" -> Intent(this, com.example.buswatch.admin.AdminHome::class.java)
+            "driver" -> Intent(this, com.example.buswatch.driver.DriverHome::class.java)
+            "parent" -> Intent(this, ParentMainActivity::class.java)
             else -> Intent(this, ParentMainActivity::class.java)
         }
         startActivity(intent)

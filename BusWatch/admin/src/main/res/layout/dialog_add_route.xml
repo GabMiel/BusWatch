@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_details_card"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/btnCloseAddRoute"
+                android:text="@string/adding_new_route"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.04"
+                app:drawableStartCompat="@drawable/ic_route"
+                android:drawablePadding="6dp" />
+
+            <ImageButton
+                android:id="@+id/btnCloseAddRoute"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="@string/close"
+                app:tint="@color/black"/>
+        </RelativeLayout>
+
+        <!-- Row 1: Route Name and Choose Driver -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
+
+            <!-- Route Name -->
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/route_name" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etRouteName"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:textSize="13sp" android:inputType="textCapWords" android:singleLine="true"
+                    android:importantForAutofill="no"
+                    android:hint="@string/route_name_placeholder"/>
+            </LinearLayout>
+
+            <!-- Choose Driver -->
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/choose_driver" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/btnDriverDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvSelectedDriver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/select_driver"
+                        android:textColor="#888888"
+                        android:textSize="13sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#888888"
+                        android:contentDescription="@string/todo"/>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 2: Choose Bus and Bus Capacity -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="24dp">
+
+            <!-- Choose Bus -->
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/choose_bus" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/asterisk" android:textColor="#FF0000" android:textSize="11sp" android:layout_marginStart="2dp"/>
+                </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/btnBusDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvSelectedBus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/select_bus"
+                        android:textColor="#888888"
+                        android:textSize="13sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#888888"
+                        android:contentDescription="@string/todo"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Bus Capacity (Read Only View) -->
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/bus_details" android:textColor="#000000" android:textSize="11sp" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tvBusCapacity"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp" android:paddingEnd="10dp"
+                    android:text="@string/hyphen"
+                    android:textColor="#000000"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- SAVE — yellow full width rounded -->
+        <TextView
+            android:id="@+id/btnSaveRoute"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/save_caps"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_button_yellow"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+</ScrollView>

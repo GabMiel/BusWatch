@@ -37,44 +37,50 @@
             app:tint="#666666" />
 
         <!-- Profile Picture Section -->
-        <FrameLayout
-            android:id="@+id/rlEditProfileAvatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <RelativeLayout
+            android:id="@+id/rlEditProfileAvatarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/bg_avatar_circle"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvEditProfileTitle">
 
-            <ImageView
-                android:id="@+id/imgEditProfileAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/avatar"
-                android:scaleType="centerCrop"
-                android:padding="2dp"
-                android:src="@drawable/user" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/rlEditProfileAvatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/bg_avatar_circle"
+                android:foreground="?android:attr/selectableItemBackground">
 
-        <ImageButton
-            android:id="@+id/btnChangeProfilePhoto"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#FEBE1E"
-            android:contentDescription="@string/add_photo"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/photo_camera"
-            app:tint="#000000"
-            app:layout_constraintBottom_toBottomOf="@id/rlEditProfileAvatar"
-            app:layout_constraintEnd_toEndOf="@id/rlEditProfileAvatar"
-            android:clickable="true"
-            android:focusable="true" />
+                <ImageView
+                    android:id="@+id/imgEditProfileAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/avatar"
+                    android:scaleType="centerCrop"
+                    android:padding="2dp"
+                    android:src="@drawable/user" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/btnChangeProfilePhoto"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignEnd="@id/rlEditProfileAvatar"
+                android:layout_alignBottom="@id/rlEditProfileAvatar"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="#FEBE1E"
+                android:contentDescription="@string/add_photo"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/photo_camera"
+                app:tint="#000000"
+                android:elevation="4dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </RelativeLayout>
 
         <!-- First Name -->
         <LinearLayout
@@ -84,7 +90,7 @@
             android:layout_marginTop="24dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rlEditProfileAvatar">
+            app:layout_constraintTop_toBottomOf="@id/rlEditProfileAvatarContainer">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

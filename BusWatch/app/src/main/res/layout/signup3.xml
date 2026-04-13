@@ -15,8 +15,9 @@
             android:layout_height="wrap_content"
             android:paddingBottom="32dp">
 
+            <!-- Top Header -->
             <ImageView
-                android:id="@+id/imageView33"
+                android:id="@+id/ivLogo"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:contentDescription="@string/logo"
@@ -27,143 +28,16 @@
                 android:layout_marginTop="16dp" />
 
             <TextView
-                android:id="@+id/textView172"
+                android:id="@+id/tvBusWatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/buswatch"
                 android:textColor="#000000"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView33"
-                app:layout_constraintStart_toEndOf="@+id/imageView33"
-                app:layout_constraintTop_toTopOf="@+id/imageView33"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+                app:layout_constraintStart_toEndOf="@+id/ivLogo"
+                app:layout_constraintTop_toTopOf="@+id/ivLogo"
                 android:layout_marginStart="8dp" />
-
-            <!-- Progress Indicators -->
-            <View
-                android:id="@+id/view39"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="#FEBE1E"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="28dp"
-                android:layout_marginTop="79dp" />
-
-            <TextView
-                android:id="@+id/textView173"
-                android:layout_width="79dp"
-                android:layout_height="34dp"
-                android:text="@string/parent_information"
-                android:textColor="#FEBE1E"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/view39"
-                app:layout_constraintTop_toTopOf="@+id/view39"
-                android:layout_marginStart="8dp" />
-
-            <View
-                android:id="@+id/view40"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="#FEBE1E"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="149dp"
-                android:layout_marginTop="79dp" />
-
-            <TextView
-                android:id="@+id/textView174"
-                android:layout_width="79dp"
-                android:layout_height="34dp"
-                android:text="@string/child_information"
-                android:textColor="#FEBE1E"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/view40"
-                app:layout_constraintTop_toTopOf="@+id/view40"
-                android:layout_marginStart="8dp" />
-
-            <View
-                android:id="@+id/view45"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="#FEBE1E"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="268dp"
-                android:layout_marginTop="79dp" />
-
-            <TextView
-                android:id="@+id/textView175"
-                android:layout_width="79dp"
-                android:layout_height="34dp"
-                android:text="@string/medical_information"
-                android:textColor="#FEBE1E"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/view45"
-                app:layout_constraintTop_toTopOf="@+id/view45"
-                android:layout_marginStart="8dp" />
-
-            <ImageView
-                android:id="@+id/imageView35"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:contentDescription="@string/user_icon"
-                android:src="@drawable/user"
-                app:layout_constraintBottom_toBottomOf="@+id/view39"
-                app:layout_constraintEnd_toEndOf="@+id/view39"
-                app:layout_constraintStart_toStartOf="@+id/view39"
-                app:layout_constraintTop_toTopOf="@+id/view39" />
-
-            <ImageView
-                android:id="@+id/imageView38"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:contentDescription="@string/child_icon"
-                android:src="@drawable/child"
-                app:layout_constraintBottom_toBottomOf="@+id/view40"
-                app:layout_constraintEnd_toEndOf="@+id/view40"
-                app:layout_constraintStart_toStartOf="@+id/view40"
-                app:layout_constraintTop_toTopOf="@+id/view40" />
-
-            <ImageView
-                android:id="@+id/imageView36"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:contentDescription="@string/medical_icon"
-                android:src="@drawable/heart"
-                app:layout_constraintBottom_toBottomOf="@+id/view45"
-                app:layout_constraintEnd_toEndOf="@+id/view45"
-                app:layout_constraintStart_toStartOf="@+id/view45"
-                app:layout_constraintTop_toTopOf="@+id/view45" />
-
-            <TextView
-                android:id="@+id/textView177"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/create_account"
-                android:textColor="#000000"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="138dp" />
-
-            <TextView
-                android:id="@+id/tvChildNameDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/medical_information_for_child_s_name"
-                android:textColor="#888888"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView177" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/glStart"
@@ -179,160 +53,175 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_end="32dp" />
 
-            <TextView
-                android:id="@+id/textView196"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/medical_information"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            <!-- Progress Indicators -->
+            <View
+                android:id="@+id/viewParent"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="79dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="#FEBE1E"
+                app:layout_constraintEnd_toStartOf="@+id/viewChild"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/tvChildNameDisplay"
-                android:layout_marginTop="24dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Blood Type -->
+            <ImageView
+                android:id="@+id/ivParent"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/user_icon"
+                android:src="@drawable/user"
+                app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+                app:layout_constraintEnd_toEndOf="@+id/viewParent"
+                app:layout_constraintStart_toStartOf="@+id/viewParent"
+                app:layout_constraintTop_toTopOf="@+id/viewParent"
+                app:tint="#000000" />
+
             <TextView
-                android:id="@+id/llBloodType"
+                android:id="@+id/textView173"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/parent_information_newline"
+                android:textColor="#FEBE1E"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/viewParent"
+                app:layout_constraintStart_toStartOf="@+id/viewParent"
+                app:layout_constraintTop_toBottomOf="@+id/viewParent" />
+
+            <View
+                android:id="@+id/viewEmergency"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="#FEBE1E"
+                app:layout_constraintEnd_toEndOf="@+id/glEnd"
+                app:layout_constraintStart_toEndOf="@+id/viewChild"
+                app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+            <ImageView
+                android:id="@+id/ivEmergency"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/medical_icon"
+                android:src="@drawable/heart"
+                app:layout_constraintBottom_toBottomOf="@+id/viewEmergency"
+                app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+                app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+                app:layout_constraintTop_toTopOf="@+id/viewEmergency"
+                app:tint="#000000" />
+
+            <TextView
+                android:id="@+id/textView175"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/emergency"
+                android:textColor="#FEBE1E"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+                app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+                app:layout_constraintTop_toBottomOf="@+id/viewEmergency" />
+
+            <View
+                android:id="@+id/viewChild"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="#FEBE1E"
+                app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+                app:layout_constraintStart_toEndOf="@+id/viewParent"
+                app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+            <ImageView
+                android:id="@+id/imageView38"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/child_icon"
+                android:src="@drawable/child"
+                app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+                app:layout_constraintEnd_toEndOf="@+id/viewChild"
+                app:layout_constraintStart_toStartOf="@+id/viewChild"
+                app:layout_constraintTop_toTopOf="@+id/viewChild"
+                app:tint="#000000" />
+
+            <TextView
+                android:id="@+id/textView174"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/child_information_newline"
+                android:textColor="#FEBE1E"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/viewChild"
+                app:layout_constraintStart_toStartOf="@+id/viewChild"
+                app:layout_constraintTop_toBottomOf="@+id/viewChild" />
+
+            <!-- Connecting Lines -->
+            <View
+                android:id="@+id/viewProgressLine1"
                 android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:background="#FEBE1E"
+                app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+                app:layout_constraintEnd_toStartOf="@+id/viewChild"
+                app:layout_constraintStart_toEndOf="@+id/viewParent"
+                app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+            <View
+                android:id="@+id/viewProgressLine2"
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:background="#FEBE1E"
+                app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+                app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+                app:layout_constraintStart_toEndOf="@+id/viewChild"
+                app:layout_constraintTop_toTopOf="@+id/viewChild" />
+
+            <!-- Form Title -->
+            <TextView
+                android:id="@+id/tvCreateAccount"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/blood_type_optional"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/textView196" />
+                android:text="@string/create_account"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView174" />
 
-            <FrameLayout
-                android:id="@+id/btnSignup3BloodType"
+            <TextView
+                android:id="@+id/tvChildNameDisplay"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llBloodType">
-
-                <TextView
-                    android:id="@+id/tvSignup3SelectedBloodType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="12dp"
-                    android:text="@string/select_blood_type"
-                    android:textColor="#888888"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="12dp"
-                    android:src="@drawable/ic_chevron_down"
-                    android:contentDescription="@string/view_details"
-                    app:tint="#888888" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/llAllergies"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/allergies_optional"
-                android:textColor="#241E40"
+                android:gravity="center"
+                android:textColor="#666666"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/glEnd"
                 app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignup3BloodType" />
-
-            <EditText
-                android:id="@+id/editTextText13"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/enter_child_allergies"
-                android:inputType="text"
-                android:autofillHints="none"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llAllergies"
-                android:layout_marginTop="4dp" />
-
-            <TextView
-                android:id="@+id/llMedications"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/current_medications_optional"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText13" />
-
-            <EditText
-                android:id="@+id/editTextText14"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/enter_child_medications"
-                android:inputType="text"
-                android:autofillHints="none"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llMedications"
-                android:layout_marginTop="4dp" />
-
-            <TextView
-                android:id="@+id/llConditions"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/medical_conditions_optional"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText14" />
-
-            <EditText
-                android:id="@+id/editTextText15"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/enter_child_medical_conditions"
-                android:inputType="text"
-                android:autofillHints="none"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/glEnd"
-                app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llConditions"
-                android:layout_marginTop="4dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount" />
 
             <!-- Emergency Contact 1 -->
             <LinearLayout
                 android:id="@+id/llEmergency1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/glEnd"
                 app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText15">
+                app:layout_constraintTop_toBottomOf="@+id/tvChildNameDisplay">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -428,7 +317,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llPhoneContainer1"
+                android:id="@+id/llEmergencyPhoneContainer1"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="4dp"
@@ -438,7 +327,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvLabelPhone1">
 
                 <FrameLayout
-                    android:id="@+id/btnSignup3CountryCode1"
+                    android:id="@+id/btnSignup3EmergencyCountryCode1"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
@@ -446,7 +335,7 @@
                     android:clickable="true"
                     android:focusable="true">
                     <TextView
-                        android:id="@+id/tvSignup3CountryCode1"
+                        android:id="@+id/tvSignup3EmergencyCountryCode1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -456,7 +345,7 @@
                 </FrameLayout>
 
                 <EditText
-                    android:id="@+id/editTextText18"
+                    android:id="@+id/etEmergencyPhone1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -477,7 +366,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/glEnd"
                 app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llPhoneContainer1">
+                app:layout_constraintTop_toBottomOf="@+id/llEmergencyPhoneContainer1">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -577,7 +466,7 @@
                 android:layout_marginTop="12dp" />
 
             <LinearLayout
-                android:id="@+id/llPhoneContainer2"
+                android:id="@+id/llEmergencyPhoneContainer2"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="4dp"
@@ -587,7 +476,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvLabelPhone2">
 
                 <FrameLayout
-                    android:id="@+id/btnSignup3CountryCode2"
+                    android:id="@+id/btnSignup3EmergencyCountryCode2"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
@@ -595,7 +484,7 @@
                     android:clickable="true"
                     android:focusable="true">
                     <TextView
-                        android:id="@+id/tvSignup3CountryCode2"
+                        android:id="@+id/tvSignup3EmergencyCountryCode2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -605,7 +494,7 @@
                 </FrameLayout>
 
                 <EditText
-                    android:id="@+id/editTextText22"
+                    android:id="@+id/etEmergencyPhone2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -626,7 +515,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/glEnd"
                 app:layout_constraintStart_toStartOf="@+id/glStart"
-                app:layout_constraintTop_toBottomOf="@+id/llPhoneContainer2">
+                app:layout_constraintTop_toBottomOf="@+id/llEmergencyPhoneContainer2">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -696,22 +585,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <!-- Loading Overlay -->
-    <FrameLayout
-        android:id="@+id/flSignup3Loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80FFFFFF"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="#FEBE1E" />
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

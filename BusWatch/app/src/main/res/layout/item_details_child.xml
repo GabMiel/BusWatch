@@ -18,7 +18,7 @@
     <View
         android:id="@+id/bgChild"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:background="@drawable/rectangle_shape"
         android:backgroundTint="#F8DC98"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,17 +27,14 @@
 
     <ImageView
         android:id="@+id/imgChildAvatar"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/bg_avatar_circle"
         android:contentDescription="@string/student_avatar"
-        android:padding="2dp"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/child"
         app:layout_constraintBottom_toBottomOf="@id/bgChild"
         app:layout_constraintStart_toStartOf="@id/bgChild"
-        app:layout_constraintTop_toTopOf="@id/bgChild" />
+        app:layout_constraintTop_toTopOf="@id/bgChild"
+        tools:src="@drawable/child" />
 
     <TextView
         android:id="@+id/tvChildName"
@@ -61,6 +58,17 @@
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@id/tvChildName"
         app:layout_constraintTop_toBottomOf="@id/tvChildName" />
+
+    <TextView
+        android:id="@+id/tvChildSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        tools:text="Section A"
+        android:textColor="#444444"
+        android:textSize="11sp"
+        app:layout_constraintStart_toEndOf="@id/tvChildGrade"
+        app:layout_constraintTop_toTopOf="@id/tvChildGrade" />
 
     <TextView
         android:id="@+id/tvChildSchool"

@@ -29,8 +29,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="#666666" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsvStudentFields"
@@ -235,7 +234,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Age, Class, Grade Row Labels -->
+            <!-- Age, Section, Grade Row Labels -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
                     android:layout_marginStart="8dp"
-                    android:text="@string/class_label"
+                    android:text="@string/section_label"
                     android:textColor="#241E40"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -272,7 +271,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Age, Class, Grade Inputs -->
+            <!-- Age, Section, Grade Inputs -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -292,13 +291,13 @@
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/etEditClass"
+                    android:id="@+id/etEditSection"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.2"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/rectangle_hollow_with_shadow"
-                    android:hint="@string/class_label"
+                    android:hint="@string/section_label"
                     android:inputType="text"
                     android:autofillHints="none"
                     android:paddingHorizontal="8dp"
@@ -360,7 +359,7 @@
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp" />
 
-            <!-- Pickup Address Section Header with Change Button -->
+            <!-- Home Address Section Header with Change Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -371,7 +370,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pickup_address"
+                    android:text="@string/home_address"
                     android:textColor="#241E40"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -397,7 +396,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:gravity="center_vertical"
-                android:hint="@string/pickup_address"
+                android:hint="@string/home_address"
                 android:inputType="textPostalAddress"
                 android:autofillHints="postalAddress"
                 android:paddingHorizontal="12dp"
@@ -413,19 +412,10 @@
                 android:layout_marginTop="12dp">
 
                 <org.osmdroid.views.MapView
-                    android:id="@+id/mapEditPickup"
+                    android:id="@+id/mapEditHome"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#FAF6DB" />
-
-                <View
-                    android:id="@+id/mapOverlay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#1A000000"
-                    android:visibility="visible"
-                    android:clickable="true"
-                    android:focusable="true" />
 
                 <ImageButton
                     android:id="@+id/btnEditMyLocation"
@@ -436,95 +426,13 @@
                     android:backgroundTint="#FFFFFF"
                     android:elevation="4dp"
                     android:padding="8dp"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_my_location"
-                    android:contentDescription="@string/my_location"
-                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:tint="#666666" />
+                    app:tint="#000000"
+                    android:contentDescription="@string/my_location" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Pending Change Request Section -->
-            <LinearLayout
-                android:id="@+id/llPendingRequest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/pending_change_request"
-                    android:textColor="#E53935"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnShowPendingDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/view_details"
-                    android:textSize="11sp"
-                    android:textColor="#000000"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:paddingHorizontal="12dp"
-                    app:backgroundTint="#FEBE1E"
-                    app:cornerRadius="16dp"
-                    app:icon="@drawable/ic_chevron_down"
-                    app:iconGravity="end"
-                    app:iconSize="14dp"
-                    app:iconTint="#000000" />
-
-                <!-- Hidden details container -->
-                <LinearLayout
-                    android:id="@+id/llPendingDetails"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/proposed_pickup_address"
-                        android:textColor="#241E40"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/etPendingAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="40dp"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center_vertical"
-                        android:inputType="textPostalAddress"
-                        android:autofillHints="postalAddress"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="8dp"
-                        android:textSize="14sp"
-                        android:enabled="false"
-                        android:textColor="#666666" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:layout_marginTop="8dp">
-                        <org.osmdroid.views.MapView
-                            android:id="@+id/mapPendingPickup"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="#FAF6DB" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

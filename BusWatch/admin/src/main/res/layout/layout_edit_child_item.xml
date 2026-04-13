@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_details_card"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Collapsible Header -->
+    <LinearLayout
+        android:id="@+id/btnToggleChildInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        tools:ignore="UseCompoundDrawables">
+
+        <TextView
+            android:id="@+id/tvChildHeaderName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/child_information"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/child" />
+
+        <ImageView
+            android:id="@+id/ivChildChevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_chevron_down"
+            app:tint="@color/black"
+            android:rotation="-90"
+            android:contentDescription="@null" />
+    </LinearLayout>
+
+    <!-- Collapsible Content -->
+    <LinearLayout
+        android:id="@+id/layoutChildContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
+
+        <!-- Row 1: First Name and Middle Name -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp"
+            android:baselineAligned="false">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/child_s_first_name" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etChildFirstName" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/child_s_first_name" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/middle_name" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etChildMiddleName" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/middle_name" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 2: Last Name and Suffix -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp"
+            android:baselineAligned="false">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/child_s_last_name" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etChildLastName" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/child_s_last_name" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/suffix" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <FrameLayout
+                    android:id="@+id/btnEditChildSuffix"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvChildSuffix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/none"
+                        android:textColor="#888888"
+                        android:textSize="14sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#888888"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 3: Class and Grade -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp"
+            android:baselineAligned="false">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_label" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etChildClass" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/class_label" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/grade" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <FrameLayout
+                    android:id="@+id/btnEditChildGrade"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvChildGrade"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/grade"
+                        android:textColor="#888888"
+                        android:textSize="14sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#888888"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 4: School and Address -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/school" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etChildSchool" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/school" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="24dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_address" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etChildAddress" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/home_address" />
+        </LinearLayout>
+
+        <!-- Medical Information Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/medical_information"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- Blood Type -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/blood_type" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <FrameLayout
+                android:id="@+id/btnEditChildBloodType"
+                android:layout_width="120dp" android:layout_height="40dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:id="@+id/tvChildBloodType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/placeholder_hyphen"
+                    android:textColor="#888888"
+                    android:textSize="14sp" />
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="#888888"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Allergies -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/allergies" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etChildAllergies" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/allergies" />
+        </LinearLayout>
+
+        <!-- Medical Conditions -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/medical_condition" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etChildConditions" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/medical_condition" />
+        </LinearLayout>
+
+        <!-- Current Medications -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/current_medications" android:textColor="#241E40" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+            <EditText android:id="@+id/etChildMedications" android:layout_width="match_parent" android:layout_height="40dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/current_medications" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

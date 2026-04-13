@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!-- Header Section (Matched with parent approval detail) -->
+    <View
+        android:id="@+id/headerBg"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="@color/dark_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnBackParentDetail"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back_button"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/headerBg"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/tvHeaderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/parent_information"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintStart_toEndOf="@id/btnBackParentDetail"
+        app:layout_constraintTop_toTopOf="@id/headerBg" />
+
+    <ImageButton
+        android:id="@+id/btnEditParent"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/edit"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/headerBg"
+        app:tint="@color/white" />
+
+    <!-- Main Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerBg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Parent Information Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardParentInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_details_card"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/icProfile"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@string/user_icon"
+                    android:src="@drawable/ic_person_placeholder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvParentInfoLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/parent_information"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/icProfile"
+                    app:layout_constraintStart_toEndOf="@id/icProfile"
+                    app:layout_constraintTop_toTopOf="@id/icProfile" />
+
+                <ImageView
+                    android:id="@+id/imgParent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:contentDescription="@string/profile_avatar"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_person_placeholder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/icProfile" />
+
+                <!-- Parent Grid -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgParent"
+                    app:layout_constraintTop_toTopOf="@id/imgParent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/first_name" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvFirstName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="13sp" android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2" android:orientation="vertical" android:layout_marginStart="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/email_label" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvEmail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/middle_name" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvMiddleName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="13sp" android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2" android:orientation="vertical" android:layout_marginStart="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/contact_phone_number" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvPhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="13sp" android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/last_name" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvLastName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="13sp" android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2" android:orientation="vertical" android:layout_marginStart="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/suffix" android:textColor="@color/gray_text" android:textSize="10sp" tools:ignore="SmallSp" />
+                            <TextView android:id="@+id/tvSuffix" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="13sp" android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Child's Information Card with Navigation -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardChildInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_details_card"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/icChild"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@string/child_icon"
+                    android:src="@drawable/child"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvChildInfoLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/child_information"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/icChild"
+                    app:layout_constraintEnd_toStartOf="@+id/layoutChildNavigation"
+                    app:layout_constraintStart_toEndOf="@id/icChild"
+                    app:layout_constraintTop_toTopOf="@id/icChild" />
+
+                <!-- Child Navigation Area (Visible if multiple children) -->
+                <LinearLayout
+                    android:id="@+id/layoutChildNavigation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/icChild"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/icChild">
+
+                    <ImageButton
+                        android:id="@+id/btnPrevChild"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/back_button"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvChildCounter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="4dp"
+                        android:text="@string/_1_1"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnNextChild"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/back_button"
+                        android:rotation="180"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/black" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imgChild"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:contentDescription="@string/child_photo"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_person_placeholder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/icChild" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/imgChild"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgChild"
+                    app:layout_constraintTop_toTopOf="@id/imgChild">
+                    <TextView android:id="@+id/tvChildFirstName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="14sp" android:textStyle="bold" />
+                    <TextView android:id="@+id/tvChildLastName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="14sp" android:textStyle="bold" />
+                    <TextView android:id="@+id/tvChildAge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/placeholder_hyphen" android:textColor="@color/gray_text" android:textSize="11sp" />
+                    <TextView android:id="@+id/tvChildGrade" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/placeholder_hyphen" android:textColor="@color/gray_text" android:textSize="11sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/lblHomeAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/home_address"
+                    android:textColor="@color/gray_text"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imgChild"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/tvHomeAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/placeholder_hyphen"
+                    android:textColor="@color/black"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lblHomeAddress" />
+
+                <TextView
+                    android:id="@+id/tvMedicalLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/medical_information"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvHomeAddress" />
+
+                <LinearLayout
+                    android:id="@+id/llMedicalInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/tvMedicalLabel">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/lblBloodType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/blood_type" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvBloodType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblBloodType" android:gravity="end" />
+                    </RelativeLayout>
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/lblAllergies" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/allergies" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvAllergies" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblAllergies" android:gravity="end" />
+                    </RelativeLayout>
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/lblMedicalCondition" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/medical_condition" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvConditions" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblMedicalCondition" android:gravity="end" />
+                    </RelativeLayout>
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <TextView android:id="@+id/lblMedications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/current_medications" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvMedications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblMedications" android:gravity="end" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Emergency Contact Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardEmergency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_details_card"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/icEmergency"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@string/phone_icon"
+                    android:src="@drawable/telephone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvEmergencyLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/emergency_contact"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/icEmergency"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/icEmergency"
+                    app:layout_constraintTop_toTopOf="@id/icEmergency" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/icEmergency">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/lblContactName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/contact_name" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvEmergencyName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblContactName" android:gravity="end" />
+                    </RelativeLayout>
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/lblContactPhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/contact_phone" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvEmergencyPhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblContactPhone" android:gravity="end" />
+                    </RelativeLayout>
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <TextView android:id="@+id/lblRelationship" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/relationship" android:textColor="@color/gray_text" android:textSize="11sp" android:layout_alignParentStart="true" />
+                        <TextView android:id="@+id/tvRelationship" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="@string/placeholder_hyphen" android:textColor="@color/black" android:textSize="11sp" android:textStyle="bold" android:layout_toEndOf="@id/lblRelationship" android:gravity="end" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Conditional Action Buttons (Visible for Pending status) -->
+            <LinearLayout
+                android:id="@+id/layoutActionButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReject"
+                    android:layout_width="130dp"
+                    android:layout_height="54dp"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/reject_caps"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#F44336"
+                    app:cornerRadius="27dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAccept"
+                    android:layout_width="130dp"
+                    android:layout_height="54dp"
+                    android:text="@string/approve_caps"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#4CAF50"
+                    app:cornerRadius="27dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

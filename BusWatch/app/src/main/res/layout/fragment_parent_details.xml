@@ -80,7 +80,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:contentDescription="@string/user_icon"
-                    android:src="@drawable/user"
+                    android:src="@drawable/ic_nav_account"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tint="#000000" />
@@ -97,7 +97,6 @@
                     app:layout_constraintStart_toEndOf="@id/icProfile"
                     app:layout_constraintTop_toTopOf="@id/icProfile" />
 
-                <!-- Profile Edit Button - Icon only -->
                 <ImageButton
                     android:id="@+id/btnParentsEdit"
                     android:layout_width="24dp"
@@ -115,12 +114,11 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_avatar_circle"
                     android:contentDescription="@string/profile_avatar"
-                    android:padding="2dp"
-                    android:src="@drawable/user"
+                    android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/icProfile" />
+                    app:layout_constraintTop_toBottomOf="@id/icProfile"
+                    tools:src="@drawable/ic_person_placeholder" />
 
                 <!-- Profile Grid -->
                 <LinearLayout
@@ -154,7 +152,7 @@
                                 tools:ignore="SmallSp" />
 
                             <TextView
-                                android:id="@+id/textView46"
+                                android:id="@+id/tvParentFullName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/robert_wilson"
@@ -178,7 +176,7 @@
                                 tools:ignore="SmallSp" />
 
                             <TextView
-                                android:id="@+id/textView48"
+                                android:id="@+id/tvParentEmail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
@@ -212,7 +210,7 @@
                                 tools:ignore="SmallSp" />
 
                             <TextView
-                                android:id="@+id/textView50"
+                                android:id="@+id/tvParentPhone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/_555_0101"
@@ -236,7 +234,7 @@
                                 tools:ignore="SmallSp" />
 
                             <TextView
-                                android:id="@+id/textView52"
+                                android:id="@+id/tvParentStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/rectangle_shape"
@@ -266,9 +264,10 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:contentDescription="@string/child_icon"
-                    android:src="@drawable/child"
+                    android:src="@drawable/ic_users"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -337,7 +336,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:contentDescription="@string/phone_icon"
-                    android:src="@drawable/telephone"
+                    android:src="@drawable/heart"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tint="#000000" />
@@ -353,6 +352,18 @@
                     app:layout_constraintBottom_toBottomOf="@id/icEmergency"
                     app:layout_constraintStart_toEndOf="@id/icEmergency"
                     app:layout_constraintTop_toTopOf="@id/icEmergency" />
+
+                <ImageButton
+                    android:id="@+id/btnEmergencyEdit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/edit"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_edit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#666666" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDetailsContacts"

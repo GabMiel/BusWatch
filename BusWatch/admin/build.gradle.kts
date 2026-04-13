@@ -48,6 +48,10 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.preference)
     implementation(libs.google.material)
+    implementation(libs.glide)
+
+    // OSM
+    implementation(libs.osmdroid.android)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

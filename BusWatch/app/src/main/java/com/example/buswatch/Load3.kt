@@ -6,14 +6,13 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.buswatch.common.R as CommonR
 
 class Load3 : AppCompatActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
-        // After user interacts with the permission popup, navigate to Login
+        // After user interacts with the permission popup, navigate to Log in
         navigateToLogin()
     }
 
@@ -42,7 +41,6 @@ class Load3 : AppCompatActivity() {
     private fun navigateToLogin() {
         val intent = Intent(this, Login::class.java)
         startActivity(intent)
-        overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
         finish()
     }
 }

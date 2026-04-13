@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -12,9 +13,9 @@
         android:layout_height="wrap_content"
         android:paddingBottom="32dp">
 
-        <!-- Top Header consistent with signup1 and signup3 -->
+        <!-- Top Header -->
         <ImageView
-            android:id="@+id/imageView33"
+            android:id="@+id/ivLogo"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="16dp"
@@ -25,146 +26,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView172"
+            android:id="@+id/tvBusWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/buswatch"
             android:textColor="#000000"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView33"
-            app:layout_constraintStart_toEndOf="@+id/imageView33"
-            app:layout_constraintTop_toTopOf="@+id/imageView33" />
-
-        <!-- Progress Indicators -->
-        <View
-            android:id="@+id/view39"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#FEBE1E"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView173"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/parent_information"
-            android:textColor="#FEBE1E"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view39"
-            app:layout_constraintTop_toTopOf="@+id/view39"
-            android:layout_marginStart="8dp" />
-
-        <View
-            android:id="@+id/view40"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#FEBE1E"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="149dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView174"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/child_information"
-            android:textColor="#FEBE1E"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view40"
-            app:layout_constraintTop_toTopOf="@+id/view40"
-            android:layout_marginStart="8dp" />
-
-        <View
-            android:id="@+id/view45"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#C4C4C4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="268dp"
-            android:layout_marginTop="79dp" />
-
-        <TextView
-            android:id="@+id/textView175"
-            android:layout_width="79dp"
-            android:layout_height="34dp"
-            android:text="@string/medical_information"
-            android:textColor="#C4C4C4"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view45"
-            app:layout_constraintTop_toTopOf="@+id/view45"
-            android:layout_marginStart="8dp" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@null"
-            android:importantForAccessibility="no"
-            android:src="@drawable/user"
-            app:layout_constraintBottom_toBottomOf="@+id/view39"
-            app:layout_constraintEnd_toEndOf="@+id/view39"
-            app:layout_constraintStart_toStartOf="@+id/view39"
-            app:layout_constraintTop_toTopOf="@+id/view39"
-            app:tint="#000000" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@null"
-            android:importantForAccessibility="no"
-            android:src="@drawable/child"
-            app:layout_constraintBottom_toBottomOf="@+id/view40"
-            app:layout_constraintEnd_toEndOf="@+id/view40"
-            app:layout_constraintStart_toStartOf="@+id/view40"
-            app:layout_constraintTop_toTopOf="@+id/view40"
-            app:tint="#000000" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@null"
-            android:importantForAccessibility="no"
-            android:src="@drawable/heart"
-            app:layout_constraintBottom_toBottomOf="@+id/view45"
-            app:layout_constraintEnd_toEndOf="@+id/view45"
-            app:layout_constraintStart_toStartOf="@+id/view45"
-            app:layout_constraintTop_toTopOf="@+id/view45"
-            app:tint="#000000" />
-
-        <TextView
-            android:id="@+id/textView177"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="138dp"
-            android:text="@string/create_account"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvChildNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/child_1"
-            android:textColor="#888888"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView177" />
+            app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+            app:layout_constraintStart_toEndOf="@+id/ivLogo"
+            app:layout_constraintTop_toTopOf="@+id/ivLogo" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glStart"
@@ -179,6 +50,165 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="32dp" />
+
+        <!-- Progress Indicators -->
+        <View
+            android:id="@+id/viewParent"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="79dp"
+            android:layout_marginStart="24dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            app:layout_constraintEnd_toStartOf="@+id/viewChild"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivParent"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/user"
+            app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+            app:layout_constraintEnd_toEndOf="@+id/viewParent"
+            app:layout_constraintStart_toStartOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView173"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/parent_information_newline"
+            android:textColor="#FEBE1E"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewParent"
+            app:layout_constraintStart_toStartOf="@+id/viewParent"
+            app:layout_constraintTop_toBottomOf="@+id/viewParent" />
+
+        <View
+            android:id="@+id/viewEmergency"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#C4C4C4"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toEndOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <ImageView
+            android:id="@+id/ivEmergency"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/heart"
+            app:layout_constraintBottom_toBottomOf="@+id/viewEmergency"
+            app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+            app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+            app:layout_constraintTop_toTopOf="@+id/viewEmergency"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView175"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/emergency"
+            android:textColor="#C4C4C4"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
+            app:layout_constraintStart_toStartOf="@+id/viewEmergency"
+            app:layout_constraintTop_toBottomOf="@+id/viewEmergency" />
+
+        <View
+            android:id="@+id/viewChild"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+            app:layout_constraintStart_toEndOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <ImageView
+            android:id="@+id/ivChildren"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/child"
+            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewChild"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/textView174"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/child_information_newline"
+            android:textColor="#FEBE1E"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toBottomOf="@+id/viewChild" />
+
+        <!-- Connecting Lines -->
+        <View
+            android:id="@+id/viewProgressLine1"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="#FEBE1E"
+            app:layout_constraintBottom_toBottomOf="@+id/viewParent"
+            app:layout_constraintEnd_toStartOf="@+id/viewChild"
+            app:layout_constraintStart_toEndOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <View
+            android:id="@+id/viewProgressLine2"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="#C4C4C4"
+            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+            app:layout_constraintStart_toEndOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewChild" />
+
+        <!-- Form Title -->
+        <TextView
+            android:id="@+id/tvCreateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/create_account"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView174" />
+
+        <TextView
+            android:id="@+id/tvChildNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/child_1"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount" />
 
         <!-- Avatar Section -->
         <LinearLayout
@@ -256,7 +286,7 @@
             app:layout_constraintStart_toStartOf="@+id/btnSignup2AddPhoto"
             app:layout_constraintTop_toTopOf="@+id/btnSignup2AddPhoto" />
 
-        <!-- First Name -->
+        <!-- Name Fields -->
         <LinearLayout
             android:id="@+id/llLabel1"
             android:layout_width="0dp"
@@ -281,8 +311,7 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"
-                android:importantForAccessibility="no" />
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <EditText
@@ -313,7 +342,6 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etChildFirstName" />
 
-        <!-- Last Name -->
         <LinearLayout
             android:id="@+id/llLabel2"
             android:layout_width="0dp"
@@ -338,8 +366,7 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"
-                android:importantForAccessibility="no" />
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <EditText
@@ -370,7 +397,6 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etChildLastName" />
 
-        <!-- Middle Name & Suffix Row -->
         <LinearLayout
             android:id="@+id/llLabelMiddle"
             android:layout_width="0dp"
@@ -381,7 +407,6 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/tvChildLastNameWarning">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -390,7 +415,6 @@
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
@@ -427,7 +451,6 @@
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintTop_toTopOf="@+id/etChildMiddleName">
-
             <TextView
                 android:id="@+id/tvSignup2SelectedSuffix"
                 android:layout_width="wrap_content"
@@ -437,15 +460,13 @@
                 android:text="@string/suffix"
                 android:textColor="#888888"
                 android:textSize="14sp" />
-
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="8dp"
-                android:contentDescription="@null"
-                android:importantForAccessibility="no"
                 android:src="@drawable/ic_chevron_down"
+                android:contentDescription="@null"
                 app:tint="#888888" />
         </FrameLayout>
 
@@ -457,11 +478,11 @@
             android:textColor="#FF0000"
             android:textSize="12sp"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/etChildMiddleName"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etChildMiddleName" />
 
-        <!-- Row: Age, Class, Grade Labels -->
+        <!-- Age, Grade, Section Row -->
         <LinearLayout
             android:id="@+id/llLabelRow3"
             android:layout_width="0dp"
@@ -473,11 +494,10 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/tvChildMiddleNameWarning">
 
-            <!-- Age Label -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:orientation="horizontal"
                 android:baselineAligned="false">
                 <TextView
@@ -494,37 +514,9 @@
                     android:textColor="#FF0000"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="2dp"
-                    android:importantForAccessibility="no" />
+                    android:layout_marginStart="2dp" />
             </LinearLayout>
 
-            <!-- Class Label -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:layout_marginStart="8dp"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/class_label"
-                    android:textColor="#241E40"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/asterisk"
-                    android:textColor="#FF0000"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="2dp"
-                    android:importantForAccessibility="no" />
-            </LinearLayout>
-
-            <!-- Grade Label -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -546,12 +538,34 @@
                     android:textColor="#FF0000"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="2dp"
-                    android:importantForAccessibility="no" />
+                    android:layout_marginStart="2dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_grade"
+                    android:textColor="#241E40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/asterisk"
+                    android:textColor="#FF0000"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="2dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Row: Age, Class, Grade Inputs -->
         <LinearLayout
             android:id="@+id/llInputRow3"
             android:layout_width="0dp"
@@ -567,28 +581,14 @@
                 android:id="@+id/etChildAge"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/age"
                 android:inputType="number"
-                android:autofillHints="none"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/etChildClass"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/rectangle_hollow_with_shadow"
-                android:hint="@string/class_label"
-                android:inputType="text"
-                android:autofillHints="none"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:autofillHints="none" />
 
             <FrameLayout
                 android:id="@+id/btnSignup2Grade"
@@ -599,30 +599,38 @@
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:clickable="true"
                 android:focusable="true">
-
                 <TextView
                     android:id="@+id/tvSignup2SelectedGrade"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="20dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/grade"
+                    android:text="@string/select_grade"
                     android:textColor="#888888"
                     android:textSize="14sp" />
-
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_gravity="center_vertical|end"
                     android:layout_marginEnd="4dp"
-                    android:contentDescription="@null"
-                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_chevron_down"
+                    android:contentDescription="@null"
                     app:tint="#888888" />
             </FrameLayout>
+
+            <EditText
+                android:id="@+id/etChildSection"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/section_grade"
+                android:inputType="text"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textSize="14sp"
+                android:autofillHints="none" />
         </LinearLayout>
 
         <TextView
@@ -636,7 +644,7 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llInputRow3" />
 
-        <!-- Row: School -->
+        <!-- School -->
         <LinearLayout
             android:id="@+id/llLabelSchool"
             android:layout_width="0dp"
@@ -661,8 +669,7 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"
-                android:importantForAccessibility="no" />
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <EditText
@@ -673,17 +680,17 @@
             android:background="@drawable/rectangle_hollow_with_shadow"
             android:hint="@string/enter_child_s_school"
             android:inputType="text"
-            android:autofillHints="none"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabelSchool" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelSchool"
+            android:autofillHints="none" />
 
-        <!-- Pickup Address Section -->
+        <!-- Home Address Section -->
         <LinearLayout
-            android:id="@+id/llLabelPickup"
+            android:id="@+id/llLabelHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -695,7 +702,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/pickup_address"
+                android:text="@string/home_address"
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -706,17 +713,16 @@
                 android:textColor="#FF0000"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginStart="2dp"
-                android:importantForAccessibility="no" />
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <EditText
-            android:id="@+id/etSignup2PickupAddress"
+            android:id="@+id/etSignup2HomeAddress"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/rectangle_hollow_with_shadow"
-            android:hint="@string/enter_pickup_address"
+            android:hint="@string/enter_home_address"
             android:inputType="textPostalAddress"
             android:autofillHints="postalAddress"
             android:paddingStart="12dp"
@@ -724,24 +730,22 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabelPickup" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelHome" />
 
-        <!-- Map Section -->
+        <!-- Map Section moved UP (Under Address) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clMapContainer"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/etSignup2PickupAddress">
-
+            app:layout_constraintTop_toBottomOf="@+id/etSignup2HomeAddress">
             <org.osmdroid.views.MapView
                 android:id="@+id/mapSignup2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FAF6DB" />
-
             <ImageButton
                 android:id="@+id/btnSignup2MyLocation"
                 android:layout_width="40dp"
@@ -757,8 +761,152 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:tint="#666666" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Medical Information Section moved DOWN (Under Map) -->
+        <TextView
+            android:id="@+id/tvMedicalInfoHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/medical_information"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/clMapContainer"
+            android:layout_marginTop="24dp" />
+
+        <!-- Blood Type -->
+        <TextView
+            android:id="@+id/llLabelBloodType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/blood_type_optional"
+            android:textColor="#241E40"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvMedicalInfoHeader" />
+
+        <FrameLayout
+            android:id="@+id/btnSignup2BloodType"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelBloodType">
+
+            <TextView
+                android:id="@+id/tvSignup2SelectedBloodType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:text="@string/select_blood_type"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_chevron_down"
+                android:contentDescription="@null"
+                app:tint="#888888" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/llLabelAllergies"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/allergies_optional"
+            android:textColor="#241E40"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignup2BloodType" />
+
+        <EditText
+            android:id="@+id/etChildAllergies"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_allergies"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelAllergies"
+            android:autofillHints="none" />
+
+        <TextView
+            android:id="@+id/llLabelMedications"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/current_medications_optional"
+            android:textColor="#241E40"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/etChildAllergies" />
+
+        <EditText
+            android:id="@+id/etChildMedications"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_medications"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelMedications"
+            android:autofillHints="none" />
+
+        <TextView
+            android:id="@+id/llLabelConditions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/medical_conditions_optional"
+            android:textColor="#241E40"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/etChildMedications" />
+
+        <EditText
+            android:id="@+id/etChildConditions"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rectangle_hollow_with_shadow"
+            android:hint="@string/enter_child_medical_conditions"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/glEnd"
+            app:layout_constraintStart_toStartOf="@+id/glStart"
+            app:layout_constraintTop_toBottomOf="@+id/llLabelConditions"
+            android:autofillHints="none" />
 
         <Button
             android:id="@+id/btnSignup2AddChild"
@@ -773,7 +921,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/clMapContainer" />
+            app:layout_constraintTop_toBottomOf="@+id/etChildConditions" />
 
         <!-- Navigation Buttons -->
         <LinearLayout
@@ -787,7 +935,6 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/btnSignup2AddChild">
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSignup2Back"
                 android:layout_width="0dp"
@@ -796,13 +943,10 @@
                 android:layout_weight="1"
                 android:text="@string/back_caps"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
                 app:backgroundTint="#FFFFFF"
                 app:cornerRadius="20dp"
                 app:strokeColor="#000000"
                 app:strokeWidth="1dp" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSignup2Next"
                 android:layout_width="0dp"
@@ -810,10 +954,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="@string/next"
-                android:textAllCaps="true"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
                 app:backgroundTint="#FEBE1E"
                 app:cornerRadius="20dp" />
         </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/good_morning_driver"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed-medium"/>
@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/_9_41_am"
-                    android:textColor="#FDFDFD"
+                    android:textColor="@color/text_white_secondary"
                     android:textSize="12sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/students_for"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-condensed-medium"
@@ -116,14 +116,14 @@
         android:paddingEnd="16dp"
         android:paddingTop="10dp"
         android:paddingBottom="12dp"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="4dp">
         <TextView
             android:id="@+id/btnStartTrip"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:text="@string/start_trip"
-            android:textColor="#000000"
+            android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -138,7 +138,7 @@
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#373636"
+        android:background="@color/nav_background"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -161,7 +161,7 @@
                 android:background="@null"
                 android:contentDescription="@string/account"
                 android:src="@drawable/ic_nav_account"
-                app:tint="#A99E9E"
+                app:tint="@color/nav_inactive"
                 android:clickable="false" />
 
             <TextView
@@ -169,7 +169,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/account"
-                android:textColor="#A99E9E"
+                android:textColor="@color/nav_inactive"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -192,7 +192,7 @@
                 android:background="@null"
                 android:contentDescription="@string/home"
                 android:src="@drawable/ic_nav_home"
-                app:tint="#FEBE1E"
+                app:tint="@color/yellow_primary"
                 android:clickable="false" />
 
             <TextView
@@ -200,14 +200,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home"
-                android:textColor="#FEBE1E"
+                android:textColor="@color/yellow_primary"
                 android:textSize="11sp" />
 
             <View
                 android:layout_width="20dp"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
-                android:background="#FEBE1E" />
+                android:background="@color/yellow_primary" />
         </LinearLayout>
 
         <!-- Settings Container -->
@@ -229,7 +229,7 @@
                 android:background="@null"
                 android:contentDescription="@string/settings"
                 android:src="@drawable/ic_nav_settings"
-                app:tint="#A99E9E"
+                app:tint="@color/nav_inactive"
                 android:clickable="false" />
 
             <TextView
@@ -237,7 +237,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"
-                android:textColor="#A99E9E"
+                android:textColor="@color/nav_inactive"
                 android:textSize="11sp" />
         </LinearLayout>
 

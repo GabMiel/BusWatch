@@ -2,13 +2,14 @@ package com.example.buswatch
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Patterns
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -16,38 +17,64 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
+import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class Signup1 : AppCompatActivity() {
     private var selectedLanguage: String? = null
     private var selectedSuffix: String? = null
+    private var isPasswordVisible = false
     private var isConfirmPasswordVisible = false
     private var selectedCountryCode = "+63"
-    private var maxPhoneDigits = 10 // Philippines mobile without leading 0 (10 digits)
-    private var isPhoneFormatting = false
+    private var maxPhoneDigits = 10 
+    private var isParentPhoneFormatting = false
+    private var parentAvatarUri: Uri? = null
     
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
     private lateinit var etMiddleName: EditText
     private lateinit var tvSelectedSuffix: TextView
     private lateinit var etEmail: EditText
-    private lateinit var etPhone: EditText
+    private lateinit var etParentPhone: EditText
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var tvSelectedLanguage: TextView
     private lateinit var tvCountryCode: TextView
+    private lateinit var ivParentAvatar: ImageView
     
     private lateinit var tvFirstNameWarning: TextView
     private lateinit var tvLastNameWarning: TextView
     private lateinit var tvMiddleNameWarning: TextView
+    private lateinit var tvEmailWarning: TextView
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     private var savedSignupData: Bundle? = null
+    private var emailValidationJob: Job? = null
+    private var isEmailValid = false
+
+    private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { 
+            parentAvatarUri = it
+            Glide.with(this).load(it).circleCrop().into(ivParentAvatar)
+        }
+    }
 
     private val signup2Launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -62,10 +89,21 @@ class Signup1 : AppCompatActivity() {
                 if (!selectedSuffix.isNullOrEmpty()) {
                     tvSelectedSuffix.text = selectedSuffix
                     tvSelectedSuffix.setTextColor(Color.BLACK)
+                } else {
+                    tvSelectedSuffix.text = getString(CommonR.string.suffix)
+                    tvSelectedSuffix.setTextColor("#888888".toColorInt())
                 }
 
                 etEmail.setText(it.getStringExtra("email"))
-                etPhone.setText(it.getStringExtra("phone")?.substringAfter(" ") ?: "")
+                
+                val fullPhone = it.getStringExtra("phone") ?: ""
+                if (fullPhone.contains(" ")) {
+                    selectedCountryCode = fullPhone.substringBefore(" ")
+                    tvCountryCode.text = selectedCountryCode
+                    etParentPhone.setText(fullPhone.substringAfter(" "))
+                    updateParentPhoneFilter()
+                }
+
                 etPassword.setText(it.getStringExtra("password"))
                 etConfirmPassword.setText(it.getStringExtra("password"))
                 
@@ -74,6 +112,12 @@ class Signup1 : AppCompatActivity() {
                     tvSelectedLanguage.text = selectedLanguage
                     tvSelectedLanguage.setTextColor(Color.BLACK)
                 }
+
+                @Suppress("DEPRECATION")
+                parentAvatarUri = it.getParcelableExtra("parentAvatarUri")
+                if (parentAvatarUri != null) {
+                    Glide.with(this).load(parentAvatarUri).circleCrop().into(ivParentAvatar)
+                }
             }
         }
     }
@@ -81,6 +125,9 @@ class Signup1 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup1)
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         etFirstName = findViewById(R.id.editTextText3)
         etLastName = findViewById(R.id.editTextText4)
@@ -91,55 +138,62 @@ class Signup1 : AppCompatActivity() {
         tvMiddleNameWarning = findViewById(R.id.tvMiddleNameWarning)
         
         val suffixSelector = findViewById<FrameLayout>(R.id.btnSignup1Suffix)
-        tvSelectedSuffix = suffixSelector.getChildAt(0) as TextView
+        tvSelectedSuffix = findViewById(R.id.tvSignup1SelectedSuffix)
         
         etEmail = findViewById(R.id.etSignup1Email)
-        etPhone = findViewById(R.id.editTextText7)
+        tvEmailWarning = findViewById(R.id.tvEmailWarning)
+        etParentPhone = findViewById(R.id.etParentPhone)
         etPassword = findViewById(R.id.editTextTextPassword6)
         etConfirmPassword = findViewById(R.id.editTextTextPassword7)
         
-        val countryCodeSelector = findViewById<FrameLayout>(R.id.btnSignup1CountryCode)
-        tvCountryCode = findViewById(R.id.tvSignup1CountryCode)
+        val countryCodeSelector = findViewById<FrameLayout>(R.id.btnSignup1ParentCountryCode)
+        tvCountryCode = findViewById(R.id.tvSignup1ParentCountryCode)
         
+        val viewPasswordButton = findViewById<ImageButton>(R.id.btnSignup1ViewPassword)
         val viewConfirmPasswordButton = findViewById<ImageButton>(R.id.btnSignup1ViewConfirmPassword)
         
         val languageSelector = findViewById<FrameLayout>(R.id.btnSignup1Language)
-        tvSelectedLanguage = languageSelector.getChildAt(0) as TextView
+        tvSelectedLanguage = findViewById(R.id.tvSignup1SelectedLanguage)
         
-        // Initial state
+        ivParentAvatar = findViewById(R.id.ivParentAvatar)
+        val btnAddPhoto = findViewById<Button>(R.id.btnSignup1AddPhoto)
+        
+        btnAddPhoto.setOnClickListener { pickAvatarLauncher.launch("image/*") }
+
         tvSelectedLanguage.text = getString(CommonR.string.select_language)
         tvSelectedLanguage.setTextColor("#888888".toColorInt())
         tvSelectedSuffix.text = getString(CommonR.string.suffix)
         tvSelectedSuffix.setTextColor("#888888".toColorInt())
 
-        // Password shouldn't be hidden
-        etPassword.transformationMethod = null
+        etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+        etConfirmPassword.transformationMethod = PasswordTransformationMethod.getInstance()
 
         val nextButton = findViewById<Button>(R.id.btnSignup1Next)
         val signInButton = findViewById<Button>(R.id.btnSignup1Signin)
 
-        // Setup real-time name validation
         setupNameWatcher(etFirstName, tvFirstNameWarning)
         setupNameWatcher(etLastName, tvLastNameWarning)
         setupNameWatcher(etMiddleName, tvMiddleNameWarning)
+        setupEmailWatcher()
 
-        // Character limits
         etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
         etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
         etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
-        updatePhoneFilter()
+        updateParentPhoneFilter()
 
-        setupPhoneFormatting()
+        setupParentPhoneFormatting()
+
+        viewPasswordButton.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            etPassword.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            viewPasswordButton.setImageResource(if (isPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
+            etPassword.setSelection(etPassword.text.length)
+        }
 
         viewConfirmPasswordButton.setOnClickListener {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
-            if (isConfirmPasswordVisible) {
-                etConfirmPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                viewConfirmPasswordButton.setImageResource(CommonR.drawable.ic_eye)
-            } else {
-                etConfirmPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                viewConfirmPasswordButton.setImageResource(CommonR.drawable.ic_eye_off)
-            }
+            etConfirmPassword.transformationMethod = if (isConfirmPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            viewConfirmPasswordButton.setImageResource(if (isConfirmPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
             etConfirmPassword.setSelection(etConfirmPassword.text.length)
         }
 
@@ -154,8 +208,8 @@ class Signup1 : AppCompatActivity() {
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
                     tvCountryCode.text = selectedCountryCode
-                    etPhone.text.clear() // Clear input when selecting other country
-                    updatePhoneFilter()
+                    etParentPhone.text.clear() 
+                    updateParentPhoneFilter()
                 }
                 .show()
         }
@@ -189,15 +243,14 @@ class Signup1 : AppCompatActivity() {
                     selectedLanguage = languages[which]
                     tvSelectedLanguage.text = selectedLanguage
                     tvSelectedLanguage.setTextColor(Color.BLACK)
-                }
-            }.show()
+                }}.show()
         }
 
         nextButton.setOnClickListener {
             val firstName = etFirstName.text.toString().trim()
             val lastName = etLastName.text.toString().trim()
             val email = etEmail.text.toString().trim()
-            val phone = etPhone.text.toString().replace(" ", "")
+            val phone = etParentPhone.text.toString().replace(" ", "")
             val password = etPassword.text.toString().trim()
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
@@ -206,7 +259,6 @@ class Signup1 : AppCompatActivity() {
                 return@setOnClickListener
             }
             
-            // Validate maximized digits
             if (phone.length != maxPhoneDigits) {
                 Toast.makeText(this, "Please enter a valid $maxPhoneDigits-digit phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -217,44 +269,95 @@ class Signup1 : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!isEmailValid) {
+                Toast.makeText(this, "Please enter a valid and unique email address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (password != confirmPassword) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val fullPhone = "$selectedCountryCode $phone"
-
-            val intent = Intent(this, Signup2::class.java).apply {
-                savedSignupData?.let { putExtras(it) }
-                putExtra("firstName", firstName)
-                putExtra("lastName", lastName)
-                putExtra("middleName", etMiddleName.text.toString().trim())
-                putExtra("suffix", selectedSuffix ?: "")
-                putExtra("email", email)
-                putExtra("phone", fullPhone)
-                putExtra("password", password)
-                putExtra("preferredLanguage", selectedLanguage)
-            }
-            signup2Launcher.launch(intent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_left)
-            }
+            proceedToSignup2(firstName, lastName, email, phone, password)
         }
 
         signInButton.setOnClickListener {
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
-            }
+            startActivity(Intent(this, Login::class.java))
             finish()
         }
+    }
+
+    private fun setupEmailWatcher() {
+        etEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                emailValidationJob?.cancel()
+                val email = s?.toString()?.trim() ?: ""
+                
+                if (email.isEmpty()) {
+                    tvEmailWarning.visibility = View.GONE
+                    isEmailValid = false
+                    return
+                }
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    tvEmailWarning.text = "Invalid email format"
+                    tvEmailWarning.setTextColor(Color.RED)
+                    tvEmailWarning.visibility = View.VISIBLE
+                    isEmailValid = false
+                } else {
+                    tvEmailWarning.text = "Checking availability..."
+                    tvEmailWarning.setTextColor(Color.GRAY)
+                    tvEmailWarning.visibility = View.VISIBLE
+                    
+                    emailValidationJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(500) // Debounce
+                        checkEmailUniqueness(email)
+                    }
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun checkEmailUniqueness(email: String) {
+        db.collection("parents")
+            .whereEqualTo("profile.email", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    tvEmailWarning.text = "Email is already registered"
+                    tvEmailWarning.setTextColor(Color.RED)
+                    isEmailValid = false
+                } else {
+                    tvEmailWarning.text = "Email is available"
+                    tvEmailWarning.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
+                    isEmailValid = true
+                }
+            }
+            .addOnFailureListener {
+                tvEmailWarning.visibility = View.GONE
+                isEmailValid = true // Allow proceeding if check fails
+            }
+    }
+
+    private fun proceedToSignup2(firstName: String, lastName: String, email: String, phone: String, password: String) {
+        val fullPhone = "$selectedCountryCode $phone"
+        val intent = Intent(this, Signup2::class.java).apply {
+            savedSignupData?.let { putExtras(it) }
+            putExtra("firstName", firstName)
+            putExtra("lastName", lastName)
+            putExtra("middleName", etMiddleName.text.toString().trim())
+            putExtra("suffix", selectedSuffix ?: "")
+            putExtra("email", email)
+            putExtra("phone", fullPhone)
+            putExtra("password", password)
+            putExtra("preferredLanguage", selectedLanguage)
+            putExtra("parentAvatarUri", parentAvatarUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        signup2Launcher.launch(intent)
     }
 
     private fun setupNameWatcher(editText: EditText, warningView: TextView) {
@@ -262,11 +365,7 @@ class Signup1 : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val input = s?.toString() ?: ""
-                if (isInvalidName(input)) {
-                    warningView.visibility = View.VISIBLE
-                } else {
-                    warningView.visibility = View.GONE
-                }
+                warningView.visibility = if (isInvalidName(input)) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -274,88 +373,76 @@ class Signup1 : AppCompatActivity() {
 
     private fun isInvalidName(name: String): Boolean {
         if (name.isEmpty()) return false
-        val regex = Regex("^[a-zA-Z\\s.-]*$")
-        return !regex.matches(name)
+        return !Regex("^[a-zA-Z\\s.-]*$").matches(name)
     }
 
-    private fun setupPhoneFormatting() {
-        etPhone.addTextChangedListener(object : TextWatcher {
+    private fun setupParentPhoneFormatting() {
+        etParentPhone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                if (isPhoneFormatting || s == null) return
-                isPhoneFormatting = true
-                applyPhoneFormatting(s, selectedCountryCode)
-                isPhoneFormatting = false
+                if (isParentPhoneFormatting || s == null) return
+                isParentPhoneFormatting = true
+                applyParentPhoneFormatting(s, selectedCountryCode)
+                isParentPhoneFormatting = false
             }
         })
     }
 
-    private fun applyPhoneFormatting(s: Editable, countryCode: String) {
+    private fun applyParentPhoneFormatting(s: Editable, countryCode: String) {
         val digits = s.toString().replace(" ", "")
         val formatted = StringBuilder()
         
         when (countryCode) {
-            "+63", "+1", "+64" -> { // PH (10 digits after prefix), USA, Canada, NZ: XXX XXX XXXX
+            "+63", "+1", "+64" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
-                    if ((i == 2 || i == 5) && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
+                    if ((i == 2 || i == 5) && i != digits.length - 1) formatted.append(" ")
                 }
             }
-            "+44" -> { // UK: XXXXX XXXXX (10 digits)
+            "+44" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
-                    if (i == 4 && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
+                    if (i == 4 && i != digits.length - 1) formatted.append(" ")
                 }
             }
-            "+61" -> { // Australia: XXX XXX XXX (9 digits)
+            "+61" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
-                    if ((i == 2 || i == 5) && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
+                    if ((i == 2 || i == 5) && i != digits.length - 1) formatted.append(" ")
                 }
             }
-            "+65" -> { // Singapore: XXXX XXXX (8 digits)
+            "+65" -> { 
                 for (i in digits.indices) {
                     formatted.append(digits[i])
-                    if (i == 3 && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
+                    if (i == 3 && i != digits.length - 1) formatted.append(" ")
                 }
             }
-            "+353" -> { // Ireland: XX XXX XXXX (9 digits)
+            "+353" -> {
                 for (i in digits.indices) {
                     formatted.append(digits[i])
-                    if ((i == 1 || i == 4) && i != digits.length - 1) {
-                        formatted.append(" ")
-                    }
+                    if ((i == 1 || i == 4) && i != digits.length - 1) formatted.append(" ")
                 }
             }
             else -> formatted.append(digits)
         }
 
         if (formatted.toString() != s.toString()) {
-            val selection = etPhone.selectionStart
+            val selection = etParentPhone.selectionStart
             val oldLength = s.length
             s.replace(0, s.length, formatted.toString())
-            
             val newLength = formatted.length
             val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
-            etPhone.setSelection(newSelection)
+            etParentPhone.setSelection(newSelection)
         }
     }
 
-    private fun updatePhoneFilter() {
+    private fun updateParentPhoneFilter() {
         val spaces = when (selectedCountryCode) {
             "+63", "+1", "+61", "+64", "+353" -> 2
             "+44", "+65" -> 1
             else -> 0
         }
-        etPhone.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
+        etParentPhone.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
     }
 }

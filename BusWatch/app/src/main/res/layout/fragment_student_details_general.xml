@@ -128,8 +128,8 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="16dp"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/class_label" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
-                    <TextView android:id="@+id/tvClass" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/section_label" android:textSize="11sp" android:textColor="#666666" tools:ignore="SmallSp"/>
+                    <TextView android:id="@+id/tvSection" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
             </GridLayout>
 
@@ -153,7 +153,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pickup_address"
+                    android:text="@string/home_address"
                     android:textColor="#666666"
                     android:textSize="11sp" />
 
@@ -175,7 +175,7 @@
                     android:layout_marginTop="12dp">
 
                     <org.osmdroid.views.MapView
-                        android:id="@+id/mapPickupLocation"
+                        android:id="@+id/mapHomeLocation"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#FAF6DB" />

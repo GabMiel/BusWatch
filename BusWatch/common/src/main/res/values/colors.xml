@@ -35,6 +35,9 @@
     <color name="text_secondary">#AAAAAA</color>
     <color name="card_highlight">#F8DC98</color>
     <color name="map_placeholder">#D8E0E8</color>
+    <color name="nav_background">#373636</color>
+    <color name="nav_inactive">#A99E9E</color>
+    <color name="text_white_secondary">#FDFDFD</color>
 
     <!-- Accessibility improved colors -->
     <color name="accessible_error_red">#D32F2F</color>

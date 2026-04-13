@@ -17,6 +17,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 
 class StudentDetailsMedicalFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -24,6 +25,7 @@ class StudentDetailsMedicalFragment : Fragment() {
     private var childName: String? = null
     private var currentChildData: kotlin.collections.Map<String, Any>? = null
     private var isFromChildrenList: Boolean = false
+    private var studentListener: ListenerRegistration? = null
 
     companion object {
         fun newInstance(childName: String?): StudentDetailsMedicalFragment {
@@ -55,8 +57,12 @@ class StudentDetailsMedicalFragment : Fragment() {
     private fun fetchStudentMedicalData() {
         val uid = auth.currentUser?.uid ?: return
 
-        db.collection("parents").document(uid).get()
-            .addOnSuccessListener { document ->
+        studentListener?.remove()
+        studentListener = db.collection("parents").document(uid)
+            .addSnapshotListener { document, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
                 if (isAdded && document != null && document.exists()) {
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
@@ -66,7 +72,7 @@ class StudentDetailsMedicalFragment : Fragment() {
                     var foundChild: kotlin.collections.Map<String, Any>? = null
                     
                     if (childMap != null) {
-                        val fullName = "${childMap["firstName"]} ${childMap["lastName"]}"
+                        val fullName = "${childMap["firstName"]} ${childMap["lastName"]}".trim()
                         if (childName == null || fullName == childName) {
                             foundChild = childMap
                             isFromChildrenList = false
@@ -75,7 +81,7 @@ class StudentDetailsMedicalFragment : Fragment() {
                     
                     if (foundChild == null && childrenList != null) {
                         foundChild = childrenList.find { 
-                            "${it["firstName"]} ${it["lastName"]}" == childName 
+                            "${it["firstName"]} ${it["lastName"]}".trim() == childName 
                         }
                         if (foundChild != null) isFromChildrenList = true
                     }
@@ -85,9 +91,6 @@ class StudentDetailsMedicalFragment : Fragment() {
                     val parentMedical = document.get("medical") as? kotlin.collections.Map<String, Any>
                     foundChild?.let { displayMedicalInfo(it, parentMedical) }
                 }
-            }
-            .addOnFailureListener {
-                if (isAdded) Toast.makeText(context, "Error fetching medical data", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -108,7 +111,7 @@ class StudentDetailsMedicalFragment : Fragment() {
         setupChips(view.findViewById(R.id.cgConditions), medical?.get("conditions") as? String)
         setupChips(view.findViewById(R.id.cgDietary), medical?.get("dietary") as? String)
         
-        val specialNeeds = medical?.get("specialNeeds") as? String ?: "None"
+        val specialNeeds = medical?.get("specialNeeds") as? String ?: ""
         view.findViewById<TextView>(R.id.tvSpecialNeeds).text = if (specialNeeds.isEmpty()) "None" else specialNeeds
     }
 
@@ -175,16 +178,16 @@ class StudentDetailsMedicalFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val updatedMedical = medical.toMutableMap()
-            updatedMedical["bloodType"] = etBloodType.text.toString()
-            updatedMedical["insuranceProvider"] = etInsurance.text.toString()
-            updatedMedical["policyNumber"] = etPolicy.text.toString()
-            updatedMedical["physicianName"] = etPhysName.text.toString()
-            updatedMedical["physicianPhone"] = etPhysPhone.text.toString()
-            updatedMedical["allergies"] = etAllergies.text.toString()
-            updatedMedical["medications"] = etMeds.text.toString()
-            updatedMedical["conditions"] = etConditions.text.toString()
-            updatedMedical["specialNeeds"] = etSpecial.text.toString()
-            updatedMedical["dietary"] = etDietary.text.toString()
+            updatedMedical["bloodType"] = etBloodType.text.toString().trim()
+            updatedMedical["insuranceProvider"] = etInsurance.text.toString().trim()
+            updatedMedical["policyNumber"] = etPolicy.text.toString().trim()
+            updatedMedical["physicianName"] = etPhysName.text.toString().trim()
+            updatedMedical["physicianPhone"] = etPhysPhone.text.toString().trim()
+            updatedMedical["allergies"] = etAllergies.text.toString().trim()
+            updatedMedical["medications"] = etMeds.text.toString().trim()
+            updatedMedical["conditions"] = etConditions.text.toString().trim()
+            updatedMedical["specialNeeds"] = etSpecial.text.toString().trim()
+            updatedMedical["dietary"] = etDietary.text.toString().trim()
 
             saveUpdatedMedicalData(updatedMedical, dialog)
         }
@@ -207,14 +210,15 @@ class StudentDetailsMedicalFragment : Fragment() {
                 val newList = childrenList.toMutableList()
                 
                 val index = newList.indexOfFirst { 
-                    "${it["firstName"]} ${it["lastName"]}" == childName 
+                    "${it["firstName"]} ${it["lastName"]}".trim() == childName 
                 }
                 
                 if (index != -1) {
                     newList[index] = updatedChild
                     docRef.update("children", newList)
                         .addOnSuccessListener {
-                            onUpdateSuccess(updatedChild, dialog)
+                            dialog.dismiss()
+                            Toast.makeText(context, "Medical information updated", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener { onUpdateFailure() }
                 }
@@ -222,20 +226,19 @@ class StudentDetailsMedicalFragment : Fragment() {
         } else {
             docRef.update("child", updatedChild)
                 .addOnSuccessListener {
-                    onUpdateSuccess(updatedChild, dialog)
+                    dialog.dismiss()
+                    Toast.makeText(context, "Medical information updated", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { onUpdateFailure() }
         }
     }
 
-    private fun onUpdateSuccess(updatedChild: kotlin.collections.Map<String, Any>, dialog: AlertDialog) {
-        currentChildData = updatedChild
-        displayMedicalInfo(updatedChild, null)
-        dialog.dismiss()
-        Toast.makeText(context, "Medical information updated", Toast.LENGTH_SHORT).show()
-    }
-
     private fun onUpdateFailure() {
         Toast.makeText(context, "Failed to update information", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        studentListener?.remove()
     }
 }

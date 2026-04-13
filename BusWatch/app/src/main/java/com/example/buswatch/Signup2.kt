@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -31,7 +33,8 @@ import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.yalantis.ucrop.UCrop
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -39,26 +42,27 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
-import java.io.File
 import java.io.Serializable
+import java.util.Locale
 
 class Signup2 : AppCompatActivity() {
 
     private var avatarUri: Uri? = null
     private var selectedSuffix: String? = null
     private var selectedGrade: String? = null
+    private var selectedBloodType: String? = "Select blood type"
 
     private lateinit var etChildFirstName: EditText
     private lateinit var etChildLastName: EditText
     private lateinit var etChildMiddleName: EditText
     private lateinit var tvSelectedSuffix: TextView
     private lateinit var etChildAge: EditText
-    private lateinit var etChildClass: EditText
+    private lateinit var etChildSection: EditText
     private lateinit var tvSelectedGrade: TextView
     private lateinit var etChildSchool: EditText
     private lateinit var ivAvatar: ImageView
     private lateinit var tvChildNumber: TextView
-    private lateinit var etPickupAddress: EditText
+    private lateinit var etHomeAddress: EditText
     private lateinit var mapView: MapView
     private lateinit var btnMyLocation: ImageButton
     
@@ -67,10 +71,17 @@ class Signup2 : AppCompatActivity() {
     private lateinit var tvMiddleNameWarning: TextView
     private lateinit var tvAgeWarning: TextView
 
+    private lateinit var tvSelectedBloodType: TextView
+    private lateinit var etChildAllergies: EditText
+    private lateinit var etChildMedications: EditText
+    private lateinit var etChildConditions: EditText
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
     private var childrenList = ArrayList<HashMap<String, Any?>>()
     private var currentChildIndex = 0
 
-    private var lastSourceUriAvatar: Uri? = null
     private var currentMarker: Marker? = null
     private var selectedLatitude: Double? = null
     private var selectedLongitude: Double? = null
@@ -78,8 +89,8 @@ class Signup2 : AppCompatActivity() {
 
     private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { 
-            lastSourceUriAvatar = it
-            startCrop(it) 
+            avatarUri = it
+            Glide.with(this).load(it).circleCrop().into(ivAvatar)
         }
     }
 
@@ -101,7 +112,9 @@ class Signup2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Initialize osmdroid configuration
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        
         Configuration.getInstance().load(this, getSharedPreferences("osmdroid", MODE_PRIVATE))
         
         setContentView(R.layout.signup2)
@@ -124,13 +137,19 @@ class Signup2 : AppCompatActivity() {
         tvSelectedGrade = findViewById(R.id.tvSignup2SelectedGrade)
         
         etChildAge = findViewById(R.id.etChildAge)
-        etChildClass = findViewById(R.id.etChildClass)
+        etChildSection = findViewById(R.id.etChildSection)
         etChildSchool = findViewById(R.id.etSignup2School)
         ivAvatar = findViewById(R.id.imageView39)
         tvChildNumber = findViewById(R.id.tvChildNumber)
-        etPickupAddress = findViewById(R.id.etSignup2PickupAddress)
+        etHomeAddress = findViewById(R.id.etSignup2HomeAddress)
         mapView = findViewById(R.id.mapSignup2)
         btnMyLocation = findViewById(R.id.btnSignup2MyLocation)
+
+        val bloodTypeSelector = findViewById<FrameLayout>(R.id.btnSignup2BloodType)
+        tvSelectedBloodType = findViewById(R.id.tvSignup2SelectedBloodType)
+        etChildAllergies = findViewById(R.id.etChildAllergies)
+        etChildMedications = findViewById(R.id.etChildMedications)
+        etChildConditions = findViewById(R.id.etChildConditions)
 
         val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
@@ -147,13 +166,11 @@ class Signup2 : AppCompatActivity() {
             }
         }
 
-        // Setup real-time validation
         setupNameWatcher(etChildFirstName, tvFirstNameWarning)
         setupNameWatcher(etChildLastName, tvLastNameWarning)
         setupNameWatcher(etChildMiddleName, tvMiddleNameWarning)
         setupAgeWatcher()
 
-        // Character limits
         etChildFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
         etChildLastName.filters = arrayOf(InputFilter.LengthFilter(50))
         etChildMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
@@ -182,7 +199,18 @@ class Signup2 : AppCompatActivity() {
                 .show()
         }
 
-        // Restore state or initialize from intent
+        bloodTypeSelector.setOnClickListener {
+            val bloodTypes = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown")
+            AlertDialog.Builder(this)
+                .setTitle("Select Blood Type")
+                .setItems(bloodTypes) { _, which ->
+                    selectedBloodType = bloodTypes[which]
+                    tvSelectedBloodType.text = selectedBloodType
+                    tvSelectedBloodType.setTextColor(Color.BLACK)
+                }
+                .show()
+        }
+
         if (savedInstanceState != null) {
             currentChildIndex = savedInstanceState.getInt("currentIndex", 0)
             @Suppress("UNCHECKED_CAST", "DEPRECATION")
@@ -191,13 +219,6 @@ class Signup2 : AppCompatActivity() {
             } else {
                 savedInstanceState.getSerializable("childrenList") as? ArrayList<HashMap<String, Any?>>
             } ?: ArrayList()
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                lastSourceUriAvatar = savedInstanceState.getParcelable("lastSourceUriAvatar", Uri::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                lastSourceUriAvatar = savedInstanceState.getParcelable("lastSourceUriAvatar")
-            }
         } else {
             @Suppress("UNCHECKED_CAST", "DEPRECATION")
             val additionalFromIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -213,13 +234,17 @@ class Signup2 : AppCompatActivity() {
                     "middleName" to (intent.getStringExtra("childMiddleName") ?: ""),
                     "suffix" to (intent.getStringExtra("childSuffix") ?: ""),
                     "age" to (intent.getStringExtra("childAge") ?: ""),
-                    "class" to (intent.getStringExtra("childClass") ?: ""),
+                    "section" to (intent.getStringExtra("childSection") ?: ""),
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
                     "address" to (intent.getStringExtra("childAddress") ?: ""),
-                    "avatarUrl" to intent.getStringExtra("childAvatarUrl"),
+                    "childAvatarUri" to (intent.getParcelableExtra<Uri>("childAvatarUri") ?: (intent.getStringExtra("childAvatarUrl"))?.toUri()),
                     "latitude" to intent.getDoubleExtra("childLatitude", 0.0).takeIf { it != 0.0 },
-                    "longitude" to intent.getDoubleExtra("childLongitude", 0.0).takeIf { it != 0.0 }
+                    "longitude" to intent.getDoubleExtra("childLongitude", 0.0).takeIf { it != 0.0 },
+                    "bloodType" to (intent.getStringExtra("childBloodType") ?: ""),
+                    "allergies" to (intent.getStringExtra("childAllergies") ?: ""),
+                    "medications" to (intent.getStringExtra("childMedications") ?: ""),
+                    "conditions" to (intent.getStringExtra("childConditions") ?: "")
                 )
                 childrenList.add(firstChild)
                 additionalFromIntent?.let { childrenList.addAll(it) }
@@ -258,26 +283,28 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childMiddleName", primaryChild["middleName"] as String)
                     putExtra("childSuffix", primaryChild["suffix"] as String)
                     putExtra("childAge", primaryChild["age"] as String)
-                    putExtra("childClass", primaryChild["class"] as String)
+                    putExtra("childSection", primaryChild["section"] as String)
                     putExtra("childGrade", primaryChild["grade"] as String)
                     putExtra("childSchool", primaryChild["school"] as String)
                     putExtra("childAddress", primaryChild["address"] as String)
-                    putExtra("childAvatarUrl", primaryChild["avatarUrl"] as String?)
+                    
+                    putExtra("childAvatarUri", primaryChild["childAvatarUri"] as? Uri)
+                    
                     putExtra("childLatitude", primaryChild["latitude"] as? Double ?: 0.0)
                     putExtra("childLongitude", primaryChild["longitude"] as? Double ?: 0.0)
+                    
+                    putExtra("childBloodType", primaryChild["bloodType"] as? String ?: "")
+                    putExtra("childAllergies", primaryChild["allergies"] as? String ?: "")
+                    putExtra("childMedications", primaryChild["medications"] as? String ?: "")
+                    putExtra("childConditions", primaryChild["conditions"] as? String ?: "")
 
                     if (childrenList.size > 1) {
                         val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))
                         putExtra("additionalChildren", additionalChildren as Serializable)
                     }
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 signup3Launcher.launch(nextIntent)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
-                } else {
-                    @Suppress("DEPRECATION")
-                    overridePendingTransition(CommonR.anim.slide_in_right, CommonR.anim.slide_out_left)
-                }
             }
         }
     }
@@ -293,7 +320,10 @@ class Signup2 : AppCompatActivity() {
 
         val receive = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { updateMarker(it) }
+                p?.let { 
+                    updateMarker(it)
+                    getAddressFromLocation(it.latitude, it.longitude)
+                }
                 return true
             }
             override fun longPressHelper(p: GeoPoint?): Boolean = false
@@ -310,9 +340,37 @@ class Signup2 : AppCompatActivity() {
                 val userPoint = GeoPoint(it.latitude, it.longitude)
                 mapView.controller.animateTo(userPoint)
                 updateMarker(userPoint)
+                getAddressFromLocation(it.latitude, it.longitude)
             } ?: run {
                 Toast.makeText(this, "Unable to get current location. Make sure GPS is on.", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun getAddressFromLocation(latitude: Double, longitude: Double) {
+        try {
+            val geocoder = Geocoder(this, Locale.getDefault())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(latitude, longitude, 1) { addresses ->
+                    if (addresses.isNotEmpty()) {
+                        val address = addresses[0].getAddressLine(0)
+                        runOnUiThread {
+                            etHomeAddress.setText(address)
+                            etHomeAddress.setSelection(etHomeAddress.text.length)
+                        }
+                    }
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0].getAddressLine(0)
+                    etHomeAddress.setText(address)
+                    etHomeAddress.setSelection(etHomeAddress.text.length)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -320,7 +378,7 @@ class Signup2 : AppCompatActivity() {
         if (currentMarker == null) {
             currentMarker = Marker(mapView).apply {
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                title = "Pickup Location"
+                title = "Home Location"
             }
             mapView.overlays.add(currentMarker)
         }
@@ -330,90 +388,12 @@ class Signup2 : AppCompatActivity() {
         mapView.invalidate()
     }
 
-    private fun startCrop(uri: Uri) {
-        val destinationFileName = "avatar_crop_${System.currentTimeMillis()}.jpg"
-        val uCrop = UCrop.of(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
-        
-        val options = UCrop.Options().apply {
-            setToolbarColor(ContextCompat.getColor(this@Signup2, android.R.color.white))
-            setToolbarWidgetColor(Color.BLACK)
-            setActiveControlsWidgetColor(ContextCompat.getColor(this@Signup2, CommonR.color.yellow_primary))
-            setCompressionFormat(android.graphics.Bitmap.CompressFormat.JPEG)
-            setCompressionQuality(90)
-            setHideBottomControls(false)
-            setFreeStyleCropEnabled(false)
-        }
-
-        uCrop.withAspectRatio(1f, 1f)
-
-        uCrop.withOptions(options)
-        uCrop.start(this, UCrop.REQUEST_CROP)
-    }
-
-    private fun showPreviewDialog(uri: Uri) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_photo, null)
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        val ivAvatarPreview = dialogView.findViewById<ImageView>(R.id.ivPreviewAvatar)
-        val cvAvatar = dialogView.findViewById<View>(R.id.cvAvatarPreview)
-        val btnSave = dialogView.findViewById<Button>(R.id.btnPreviewSave)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btnPreviewCancel)
-        val btnDelete = dialogView.findViewById<ImageButton>(R.id.btnDeletePhoto)
-
-        cvAvatar.visibility = View.VISIBLE
-        Glide.with(this).load(uri).circleCrop().into(ivAvatarPreview)
-        cvAvatar.setOnClickListener {
-            dialog.dismiss()
-            lastSourceUriAvatar?.let { startCrop(it) }
-        }
-
-        btnDelete.setOnClickListener {
-            dialog.dismiss()
-            avatarUri = null
-            ivAvatar.setImageResource(CommonR.drawable.user)
-            lastSourceUriAvatar = null
-            Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show()
-        }
-
-        btnCancel.setOnClickListener { dialog.dismiss() }
-        btnSave.setOnClickListener {
-            dialog.dismiss()
-            avatarUri = uri
-            Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
-        }
-
-        dialog.show()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && data != null) {
-            val resultUri = UCrop.getOutput(data)
-            if (resultUri != null) {
-                showPreviewDialog(resultUri)
-            }
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            val cropError = UCrop.getError(data!!)
-            Toast.makeText(this, "Crop error: ${cropError?.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun setupNameWatcher(editText: EditText, warningView: TextView) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val input = s?.toString() ?: ""
-                if (isInvalidName(input)) {
-                    warningView.visibility = View.VISIBLE
-                } else {
-                    warningView.visibility = View.GONE
-                }
+                warningView.visibility = if (isInvalidName(input)) View.VISIBLE else View.GONE
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -432,12 +412,12 @@ class Signup2 : AppCompatActivity() {
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.warning_brown))
                         }
-                        age in 16..25 -> {
+                        age in 16..20 -> {
                             tvAgeWarning.text = getString(CommonR.string.age_warning_old)
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.warning_brown))
                         }
-                        age >= 26 -> {
+                        age >= 21 -> {
                             tvAgeWarning.text = getString(CommonR.string.age_warning_restricted)
                             tvAgeWarning.visibility = View.VISIBLE
                             tvAgeWarning.setTextColor(ContextCompat.getColor(this@Signup2, CommonR.color.accessible_error_red))
@@ -464,28 +444,24 @@ class Signup2 : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putInt("currentIndex", currentChildIndex)
         outState.putSerializable("childrenList", childrenList)
-        outState.putParcelable("lastSourceUriAvatar", lastSourceUriAvatar)
-        selectedLatitude?.let { outState.putDouble("selectedLat", it) }
-        selectedLongitude?.let { outState.putDouble("selectedLon", it) }
     }
 
     private fun validateFields(): Boolean {
         val fName = etChildFirstName.text.toString().trim()
         val lName = etChildLastName.text.toString().trim()
         val ageStr = etChildAge.text.toString().trim()
-        val age = ageStr.toIntOrNull() ?: 0
-        val className = etChildClass.text.toString().trim()
+        val sectionName = etChildSection.text.toString().trim()
         val grade = selectedGrade ?: ""
         val school = etChildSchool.text.toString().trim()
-        val address = etPickupAddress.text.toString().trim()
+        val address = etHomeAddress.text.toString().trim()
 
-        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || className.isEmpty() || grade.isEmpty() || school.isEmpty() || address.isEmpty() || avatarUri == null) {
+        if (fName.isEmpty() || lName.isEmpty() || ageStr.isEmpty() || sectionName.isEmpty() || grade.isEmpty() || school.isEmpty() || address.isEmpty() || avatarUri == null) {
             Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show()
             return false
         }
 
         if (selectedLatitude == null || selectedLongitude == null) {
-            Toast.makeText(this, "Please select the pickup location on the map", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please select the home location on the map", Toast.LENGTH_SHORT).show()
             return false
         }
         
@@ -494,6 +470,7 @@ class Signup2 : AppCompatActivity() {
             return false
         }
 
+        val age = ageStr.toIntOrNull() ?: 0
         if (age >= 26) {
             Toast.makeText(this, "Registration restricted for ages 26 and above.", Toast.LENGTH_SHORT).show()
             return false
@@ -509,13 +486,17 @@ class Signup2 : AppCompatActivity() {
             "middleName" to etChildMiddleName.text.toString().trim(),
             "suffix" to (selectedSuffix ?: ""),
             "age" to etChildAge.text.toString().trim(),
-            "class" to etChildClass.text.toString().trim(),
+            "section" to etChildSection.text.toString().trim(),
             "grade" to (selectedGrade ?: ""),
             "school" to etChildSchool.text.toString().trim(),
-            "address" to etPickupAddress.text.toString().trim(),
-            "avatarUrl" to avatarUri?.toString(),
+            "address" to etHomeAddress.text.toString().trim(),
+            "childAvatarUri" to avatarUri,
             "latitude" to selectedLatitude,
-            "longitude" to selectedLongitude
+            "longitude" to selectedLongitude,
+            "bloodType" to if (selectedBloodType == "Select blood type") "" else selectedBloodType,
+            "allergies" to etChildAllergies.text.toString().trim(),
+            "medications" to etChildMedications.text.toString().trim(),
+            "conditions" to etChildConditions.text.toString().trim()
         )
         
         if (currentChildIndex < childrenList.size) {
@@ -542,7 +523,7 @@ class Signup2 : AppCompatActivity() {
             }
 
             etChildAge.setText(child["age"] as? String ?: "")
-            etChildClass.setText(child["class"] as? String ?: "")
+            etChildSection.setText(child["section"] as? String ?: "")
             
             selectedGrade = child["grade"] as? String ?: ""
             if (!selectedGrade.isNullOrEmpty()) {
@@ -554,13 +535,13 @@ class Signup2 : AppCompatActivity() {
             }
 
             etChildSchool.setText(child["school"] as? String ?: "")
-            etPickupAddress.setText(child["address"] as? String ?: "")
+            etHomeAddress.setText(child["address"] as? String ?: "")
             
-            avatarUri = (child["avatarUrl"] as? String)?.toUri()
+            avatarUri = child["childAvatarUri"] as? Uri
             if (avatarUri != null) {
                 Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
             } else {
-                ivAvatar.setImageResource(CommonR.drawable.user)
+                ivAvatar.setImageResource(CommonR.drawable.child)
             }
 
             selectedLatitude = child["latitude"] as? Double
@@ -572,6 +553,19 @@ class Signup2 : AppCompatActivity() {
             } else {
                 removeMarker()
             }
+
+            selectedBloodType = child["bloodType"] as? String ?: "Select blood type"
+            if (selectedBloodType != "Select blood type" && !selectedBloodType.isNullOrEmpty()) {
+                tvSelectedBloodType.text = selectedBloodType
+                tvSelectedBloodType.setTextColor(Color.BLACK)
+            } else {
+                tvSelectedBloodType.text = getString(CommonR.string.select_blood_type)
+                tvSelectedBloodType.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
+            }
+            etChildAllergies.setText(child["allergies"] as? String ?: "")
+            etChildMedications.setText(child["medications"] as? String ?: "")
+            etChildConditions.setText(child["conditions"] as? String ?: "")
+
         } else {
             clearFields()
         }
@@ -596,15 +590,22 @@ class Signup2 : AppCompatActivity() {
         tvSelectedSuffix.text = getString(CommonR.string.suffix)
         tvSelectedSuffix.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
         etChildAge.text.clear()
-        etChildClass.text.clear()
+        etChildSection.text.clear()
         selectedGrade = ""
         tvSelectedGrade.text = getString(CommonR.string.select_grade)
         tvSelectedGrade.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
         etChildSchool.text.clear()
-        etPickupAddress.text.clear()
-        ivAvatar.setImageResource(CommonR.drawable.user)
+        etHomeAddress.text.clear()
+        ivAvatar.setImageResource(CommonR.drawable.child)
         avatarUri = null
         removeMarker()
+        
+        selectedBloodType = "Select blood type"
+        tvSelectedBloodType.text = getString(CommonR.string.select_blood_type)
+        tvSelectedBloodType.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
+        etChildAllergies.text.clear()
+        etChildMedications.text.clear()
+        etChildConditions.text.clear()
     }
 
     private fun updateChildHeader() {
@@ -636,28 +637,29 @@ class Signup2 : AppCompatActivity() {
                 putExtra("childMiddleName", etChildMiddleName.text.toString().trim())
                 putExtra("childSuffix", selectedSuffix ?: "")
                 putExtra("childAge", etChildAge.text.toString().trim())
-                putExtra("childClass", etChildClass.text.toString().trim())
+                putExtra("childSection", etChildSection.text.toString().trim())
                 putExtra("childGrade", selectedGrade ?: "")
                 putExtra("childSchool", etChildSchool.text.toString().trim())
-                putExtra("childAddress", etPickupAddress.text.toString().trim())
-                putExtra("childAvatarUrl", avatarUri?.toString())
+                putExtra("childAddress", etHomeAddress.text.toString().trim())
+                
+                putExtra("childAvatarUri", avatarUri)
+                
                 putExtra("childLatitude", selectedLatitude ?: 0.0)
                 putExtra("childLongitude", selectedLongitude ?: 0.0)
+
+                putExtra("childBloodType", if (selectedBloodType == "Select blood type") "" else selectedBloodType)
+                putExtra("childAllergies", etChildAllergies.text.toString().trim())
+                putExtra("childMedications", etChildMedications.text.toString().trim())
+                putExtra("childConditions", etChildConditions.text.toString().trim())
 
                 if (childrenList.size > 1) {
                     val additionalChildren = ArrayList(childrenList.subList(1, childrenList.size))
                     putExtra("additionalChildren", additionalChildren as Serializable)
                 }
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             setResult(RESULT_OK, resultIntent)
             finish()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                @Suppress("DEPRECATION")
-                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, CommonR.anim.stay, CommonR.anim.slide_out_right)
-            } else {
-                @Suppress("DEPRECATION")
-                overridePendingTransition(CommonR.anim.stay, CommonR.anim.slide_out_right)
-            }
         }
     }
 }

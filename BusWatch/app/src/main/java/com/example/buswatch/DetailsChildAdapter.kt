@@ -24,8 +24,10 @@ data class ChildDetail(
     val middleName: String = "",
     val suffix: String = "",
     val age: String = "",
-    val id: String = "", // Added ID to uniquely identify children in Firestore
-    var isSelected: Boolean = false
+    val section: String = "",
+    val id: String = "",
+    var isSelected: Boolean = false,
+    val originalData: kotlin.collections.Map<String, Any>? = null
 )
 
 class DetailsChildAdapter(
@@ -66,6 +68,7 @@ class DetailsChildAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.tvChildName)
         val grade: TextView = view.findViewById(R.id.tvChildGrade)
+        val section: TextView = view.findViewById(R.id.tvChildSection)
         val school: TextView = view.findViewById(R.id.tvChildSchool)
         val status: TextView = view.findViewById(R.id.tvChildStatus)
         val avatar: ImageView = view.findViewById(R.id.imgChildAvatar)
@@ -82,13 +85,16 @@ class DetailsChildAdapter(
         val child = children[position]
         holder.name.text = child.name
         holder.grade.text = child.grade
+        holder.section.text = child.section
         holder.school.text = child.school
         holder.status.text = child.status
         
-        // Handle Avatar loading using Glide
-        if (!child.avatarUrl.isNullOrEmpty()) {
+        // Handle Avatar loading using Glide - use childAvatarUrl or fallback to avatarUrl
+        val finalAvatarUrl = child.avatarUrl ?: child.originalData?.get("childAvatarUrl") as? String
+
+        if (!finalAvatarUrl.isNullOrEmpty()) {
             Glide.with(holder.avatar.context)
-                .load(child.avatarUrl)
+                .load(finalAvatarUrl)
                 .placeholder(CommonR.drawable.child)
                 .error(CommonR.drawable.child)
                 .circleCrop()

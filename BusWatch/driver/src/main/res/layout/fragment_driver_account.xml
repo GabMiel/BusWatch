@@ -42,8 +42,8 @@
                 android:id="@+id/tvDriverSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/robert_wilson_name"
-                android:textColor="#AAAAAA"
+                android:text="@string/robert_wilson"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>
@@ -132,7 +132,7 @@
                                     android:text="@string/full_name_label" android:textColor="@color/gray_text" android:textSize="11sp"/>
                                 <TextView android:id="@+id/tvProfileFullName"
                                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:text="@string/mike_johnson" android:textColor="@color/text_dark"
+                                    android:text="@string/robert_wilson" android:textColor="@color/text_dark"
                                     android:textSize="13sp" android:textStyle="bold"/>
                             </LinearLayout>
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                                     android:text="@string/email_label" android:textColor="@color/gray_text" android:textSize="11sp"/>
                                 <TextView android:id="@+id/tvProfileEmail"
                                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:text="@string/john_smith_school_com" android:textColor="@color/text_dark"
+                                    android:text="@string/robertwilson_gmail_com" android:textColor="@color/text_dark"
                                     android:textSize="11sp" android:textStyle="bold"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -155,7 +155,7 @@
                                     android:text="@string/phone_label" android:textColor="@color/gray_text" android:textSize="11sp"/>
                                 <TextView android:id="@+id/tvProfilePhone"
                                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:text="@string/_555_0101" android:textColor="@color/text_dark"
+                                    android:text="@string/_555_987_6543" android:textColor="@color/text_dark"
                                     android:textSize="13sp" android:textStyle="bold"/>
                             </LinearLayout>
                             <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                             android:text="@string/name" android:textColor="@color/gray_text" android:textSize="11sp"/>
                         <TextView android:id="@+id/tvSchoolName"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/school_name_placeholder" android:textColor="@color/text_dark"
+                            android:text="@string/the_immaculate_mother_academy" android:textColor="@color/text_dark"
                             android:textSize="13sp" android:textStyle="bold"/>
                     </LinearLayout>
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
@@ -279,7 +279,7 @@
                         android:text="@string/address" android:textColor="@color/gray_text" android:textSize="11sp"/>
                     <TextView android:id="@+id/tvSchoolAddress"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/school_name_placeholder" android:textColor="@color/text_dark"
+                        android:text="@string/kingstown_2_subdivision_caloocan_city" android:textColor="@color/text_dark"
                         android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
@@ -292,7 +292,7 @@
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#373636"
+        android:background="@color/nav_background"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -314,21 +314,22 @@
                 android:layout_height="28dp"
                 android:background="@null"
                 android:contentDescription="@string/account"
-                android:src="@drawable/ic_nav_account_yellow"
+                android:src="@drawable/ic_nav_account"
+                app:tint="@color/yellow_primary"
                 android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/account"
-                android:textColor="#FEBE1E"
+                android:textColor="@color/yellow_primary"
                 android:textSize="11sp" />
 
             <View
                 android:layout_width="20dp"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
-                android:background="#FEBE1E" />
+                android:background="@color/yellow_primary" />
         </LinearLayout>
 
         <!-- Home Container -->
@@ -349,7 +350,8 @@
                 android:layout_height="28dp"
                 android:background="@null"
                 android:contentDescription="@string/home"
-                android:src="@drawable/ic_nav_home_gray"
+                android:src="@drawable/ic_nav_home"
+                app:tint="@color/nav_inactive"
                 android:clickable="false" />
 
             <TextView
@@ -357,7 +359,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home"
-                android:textColor="#A99E9E"
+                android:textColor="@color/nav_inactive"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -380,6 +382,7 @@
                 android:background="@null"
                 android:contentDescription="@string/settings"
                 android:src="@drawable/ic_nav_settings"
+                app:tint="@color/nav_inactive"
                 android:clickable="false" />
 
             <TextView
@@ -387,7 +390,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"
-                android:textColor="#A99E9E"
+                android:textColor="@color/nav_inactive"
                 android:textSize="11sp" />
         </LinearLayout>
 
