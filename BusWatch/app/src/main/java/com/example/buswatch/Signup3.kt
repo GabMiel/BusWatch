@@ -4,11 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -337,15 +335,25 @@ class Signup3 : AppCompatActivity() {
         c1Name: String, c1Phone: String, c1Relation: String,
         c2Name: String, c2Phone: String, c2Relation: String
     ) {
-        @Suppress("DEPRECATION")
-        val primaryAvatarUri = intent.getParcelableExtra<Uri>("childAvatarUri")
-        @Suppress("DEPRECATION")
-        val parentAvatarUri = intent.getParcelableExtra<Uri>("parentAvatarUri")
+        val primaryAvatarUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("childAvatarUri", Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("childAvatarUri")
+        }
         
-        @Suppress("UNCHECKED_CAST", "DEPRECATION")
+        val parentAvatarUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("parentAvatarUri", Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("parentAvatarUri")
+        }
+        
+        @Suppress("UNCHECKED_CAST")
         val additionalChildren = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("additionalChildren", ArrayList::class.java)
         } else {
+            @Suppress("DEPRECATION")
             intent.getSerializableExtra("additionalChildren")
         } as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
 
@@ -433,10 +441,11 @@ class Signup3 : AppCompatActivity() {
             )
         )
 
-        @Suppress("UNCHECKED_CAST", "DEPRECATION")
+        @Suppress("UNCHECKED_CAST")
         val additionalChildren = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("additionalChildren", ArrayList::class.java)
         } else {
+            @Suppress("DEPRECATION")
             intent.getSerializableExtra("additionalChildren")
         } as? ArrayList<HashMap<String, Any?>>
 

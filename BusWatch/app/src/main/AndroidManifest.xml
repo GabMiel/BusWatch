@@ -31,7 +31,6 @@
         <activity android:name=".BusDetails" />
         <activity android:name=".ForgotPassword" />
         <activity android:name=".ParentMainActivity" />
-        <activity android:name=".TestFetchActivity" />
 
         <activity android:name="com.example.buswatch.driver.DriverHome" />
         <activity android:name="com.example.buswatch.admin.AdminHome" />

@@ -282,27 +282,6 @@ class ParentDetailsFragment : Fragment() {
         )
     }
 
-    private fun uploadParentAvatar(uid: String, uri: Uri) {
-        val path = "parents/$uid/parent_avatar.jpg"
-        val ref = storage.reference.child(path)
-
-        ref.putFile(uri)
-            .addOnSuccessListener {
-                ref.downloadUrl.addOnSuccessListener { url ->
-                    db.collection("parents").document(uid)
-                        .update("profile.parentAvatarUrl", url.toString())
-                        .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Parent photo updated!", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), "Error saving photo: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
     private fun showAddChildDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_child, null)
         val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)

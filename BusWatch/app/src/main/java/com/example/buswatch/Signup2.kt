@@ -213,21 +213,30 @@ class Signup2 : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             currentChildIndex = savedInstanceState.getInt("currentIndex", 0)
-            @Suppress("UNCHECKED_CAST", "DEPRECATION")
+            @Suppress("UNCHECKED_CAST")
             childrenList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 savedInstanceState.getSerializable("childrenList", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>>
             } else {
+                @Suppress("DEPRECATION")
                 savedInstanceState.getSerializable("childrenList") as? ArrayList<HashMap<String, Any?>>
             } ?: ArrayList()
         } else {
-            @Suppress("UNCHECKED_CAST", "DEPRECATION")
+            @Suppress("UNCHECKED_CAST")
             val additionalFromIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getSerializableExtra("additionalChildren", ArrayList::class.java) as? ArrayList<HashMap<String, Any?>>
             } else {
+                @Suppress("DEPRECATION")
                 intent.getSerializableExtra("additionalChildren") as? ArrayList<HashMap<String, Any?>>
             }
             
             if (additionalFromIntent != null || intent.hasExtra("childFirstName")) {
+                val avatarFromIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableExtra("childAvatarUri", Uri::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableExtra("childAvatarUri")
+                }
+
                 val firstChild = hashMapOf<String, Any?>(
                     "firstName" to (intent.getStringExtra("childFirstName") ?: ""),
                     "lastName" to (intent.getStringExtra("childLastName") ?: ""),
@@ -238,7 +247,7 @@ class Signup2 : AppCompatActivity() {
                     "grade" to (intent.getStringExtra("childGrade") ?: ""),
                     "school" to (intent.getStringExtra("childSchool") ?: ""),
                     "address" to (intent.getStringExtra("childAddress") ?: ""),
-                    "childAvatarUri" to (intent.getParcelableExtra<Uri>("childAvatarUri") ?: (intent.getStringExtra("childAvatarUrl"))?.toUri()),
+                    "childAvatarUri" to (avatarFromIntent ?: (intent.getStringExtra("childAvatarUrl"))?.toUri())?.toString(),
                     "latitude" to intent.getDoubleExtra("childLatitude", 0.0).takeIf { it != 0.0 },
                     "longitude" to intent.getDoubleExtra("childLongitude", 0.0).takeIf { it != 0.0 },
                     "bloodType" to (intent.getStringExtra("childBloodType") ?: ""),
@@ -288,7 +297,8 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childSchool", primaryChild["school"] as String)
                     putExtra("childAddress", primaryChild["address"] as String)
                     
-                    putExtra("childAvatarUri", primaryChild["childAvatarUri"] as? Uri)
+                    val uriString = primaryChild["childAvatarUri"] as? String
+                    putExtra("childAvatarUri", uriString?.toUri())
                     
                     putExtra("childLatitude", primaryChild["latitude"] as? Double ?: 0.0)
                     putExtra("childLongitude", primaryChild["longitude"] as? Double ?: 0.0)
@@ -490,7 +500,7 @@ class Signup2 : AppCompatActivity() {
             "grade" to (selectedGrade ?: ""),
             "school" to etChildSchool.text.toString().trim(),
             "address" to etHomeAddress.text.toString().trim(),
-            "childAvatarUri" to avatarUri,
+            "childAvatarUri" to avatarUri?.toString(),
             "latitude" to selectedLatitude,
             "longitude" to selectedLongitude,
             "bloodType" to if (selectedBloodType == "Select blood type") "" else selectedBloodType,
@@ -537,7 +547,8 @@ class Signup2 : AppCompatActivity() {
             etChildSchool.setText(child["school"] as? String ?: "")
             etHomeAddress.setText(child["address"] as? String ?: "")
             
-            avatarUri = child["childAvatarUri"] as? Uri
+            val uriString = child["childAvatarUri"] as? String
+            avatarUri = uriString?.toUri()
             if (avatarUri != null) {
                 Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
             } else {
