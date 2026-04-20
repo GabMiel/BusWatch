@@ -1,7 +1,6 @@
 package com.example.buswatch.admin
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -37,18 +36,17 @@ class AddDriverDialog(
     private val onDriverAdded: () -> Unit
 ) {
     private var isPasswordVisible = false
-    private var isConfirmPasswordVisible = false
     private var isPhoneFormatting = false
     private var selectedCountryCode = "+63"
     private var maxPhoneDigits = 10
     private var selectedImageUri: Uri? = null
-    private lateinit var imgDriverPhoto: ImageView
+    private var imgDriverPhoto: ImageView? = null
     
     private val pickImageLauncher: ActivityResultLauncher<Intent> = 
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 selectedImageUri = result.data?.data
-                imgDriverPhoto.setImageURI(selectedImageUri)
+                imgDriverPhoto?.setImageURI(selectedImageUri)
             }
         }
 
@@ -78,33 +76,33 @@ class AddDriverDialog(
         val btnViewPassword = dialogView.findViewById<ImageButton>(R.id.btnViewPassword)
 
         // Photo picker
-        frameDriverPhoto.setOnClickListener {
+        frameDriverPhoto?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             pickImageLauncher.launch(intent)
         }
 
         // Character limits
-        etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
-        etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
-        etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
+        etFirstName?.filters = arrayOf(InputFilter.LengthFilter(50))
+        etLastName?.filters = arrayOf(InputFilter.LengthFilter(50))
+        etMiddleName?.filters = arrayOf(InputFilter.LengthFilter(20))
 
-        btnViewPassword.setOnClickListener {
+        btnViewPassword?.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
-            etPassword.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            etPassword?.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
             btnViewPassword.setImageResource(if (isPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
-            etPassword.setSelection(etPassword.text.length)
+            etPassword?.setSelection(etPassword.text.length)
         }
 
-        setupNameWatcher(etFirstName, tvFirstNameWarning)
-        setupNameWatcher(etLastName, tvLastNameWarning)
-        setupNameWatcher(etMiddleName, tvMiddleNameWarning)
+        if (etFirstName != null && tvFirstNameWarning != null) setupNameWatcher(etFirstName, tvFirstNameWarning)
+        if (etLastName != null && tvLastNameWarning != null) setupNameWatcher(etLastName, tvLastNameWarning)
+        if (etMiddleName != null && tvMiddleNameWarning != null) setupNameWatcher(etMiddleName, tvMiddleNameWarning)
 
-        etEmail.addTextChangedListener(object : TextWatcher {
+        etEmail?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val email = s?.toString() ?: ""
                 val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-                tvEmailWarning.isVisible = email.isNotEmpty() && !isValid
+                tvEmailWarning?.isVisible = email.isNotEmpty() && !isValid
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -115,11 +113,11 @@ class AddDriverDialog(
                 "+44", "+65" -> 1
                 else -> 0
             }
-            etContactNumber.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
+            etContactNumber?.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
         }
         updatePhoneFilter()
 
-        etContactNumber.addTextChangedListener(object : TextWatcher {
+        etContactNumber?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -162,88 +160,87 @@ class AddDriverDialog(
                 }
 
                 if (formatted.toString() != s.toString()) {
-                    val selection = etContactNumber.selectionStart
+                    val selection = etContactNumber?.selectionStart ?: 0
                     val oldLength = s.length
                     s.replace(0, s.length, formatted.toString())
                     val newLength = formatted.length
                     val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
-                    etContactNumber.setSelection(newSelection)
+                    etContactNumber?.setSelection(newSelection)
                 }
                 isPhoneFormatting = false
-                tvPhoneWarning.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
+                tvPhoneWarning?.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
             }
         })
 
-        dialogView.findViewById<FrameLayout>(R.id.btnCountryCode).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnCountryCode)?.setOnClickListener {
             val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
             val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
             val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
             AlertDialog.Builder(activity)
-                .setTitle("Select Country Code")
+                .setTitle(activity.getString(CommonR.string.select_country_code))
                 .setItems(countries) { _, which ->
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
-                    tvCountryCode.text = selectedCountryCode
-                    etContactNumber.text.clear()
+                    tvCountryCode?.text = selectedCountryCode
+                    etContactNumber?.text?.clear()
                     updatePhoneFilter()
                 }.show()
         }
 
-        dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown)?.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV")
             AlertDialog.Builder(activity)
-                .setTitle("Select Suffix")
+                .setTitle(activity.getString(CommonR.string.select_suffix))
                 .setItems(suffixes) { _, which ->
-                    tvSuffix.text = suffixes[which]
-                    tvSuffix.setTextColor(Color.BLACK)
+                    tvSuffix?.text = suffixes[which]
+                    tvSuffix?.setTextColor(Color.BLACK)
                 }.show()
         }
 
-        dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown).setOnClickListener {
-            val languages = arrayOf("English", "Filipino (Inactive)")
+        dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown)?.setOnClickListener {
+            val languages = arrayOf(activity.getString(CommonR.string.english), "Filipino (Inactive)")
             AlertDialog.Builder(activity)
-                .setTitle("Select Language")
+                .setTitle(activity.getString(CommonR.string.select_language))
                 .setItems(languages) { _, which ->
                     if (which == 0) {
-                        tvLanguage.text = "English"
-                        tvLanguage.setTextColor(Color.BLACK)
+                        tvLanguage?.text = languages[0]
+                        tvLanguage?.setTextColor(Color.BLACK)
                     } else {
                         Toast.makeText(activity, "Filipino is currently unavailable", Toast.LENGTH_SHORT).show()
                     }
                 }.show()
         }
 
-        dialogView.findViewById<ImageButton>(R.id.btnCloseAddDriver).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<ImageButton>(R.id.btnCloseAddDriver)?.setOnClickListener { dialog.dismiss() }
 
-        dialogView.findViewById<Button>(R.id.btnAddDriverSubmit).setOnClickListener {
-            val firstName = etFirstName.text.toString().trim()
-            val middleName = etMiddleName.text.toString().trim()
-            val lastName = etLastName.text.toString().trim()
-            val email = etEmail.text.toString().trim()
-            val phone = etContactNumber.text.toString().replace(" ", "")
-            val license = etLicense.text.toString().trim()
-            val password = etPassword.text.toString().trim()
-            val language = tvLanguage.text.toString()
+        dialogView.findViewById<Button>(R.id.btnAddDriverSubmit)?.setOnClickListener {
+            val firstName = etFirstName?.text?.toString()?.trim() ?: ""
+            val middleName = etMiddleName?.text?.toString()?.trim() ?: ""
+            val lastName = etLastName?.text?.toString()?.trim() ?: ""
+            val email = etEmail?.text?.toString()?.trim() ?: ""
+            val phone = etContactNumber?.text?.toString()?.replace(" ", "") ?: ""
+            val license = etLicense?.text?.toString()?.trim() ?: ""
+            val password = etPassword?.text?.toString()?.trim() ?: ""
+            val language = tvLanguage?.text?.toString() ?: "English"
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || license.isEmpty() || password.isEmpty()) {
-                Toast.makeText(activity, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.fill_all_required), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$".toRegex()
             if (!password.matches(passwordRegex)) {
-                Toast.makeText(activity, "Password must be at least 8 characters with 1 uppercase and 1 number", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.password_validation_hint), Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
             db.collection("drivers").whereEqualTo("email", email).get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
-                        tvEmailWarning.text = "Email address already registered"
-                        tvEmailWarning.isVisible = true
+                        tvEmailWarning?.setText(CommonR.string.email_already_registered)
+                        tvEmailWarning?.isVisible = true
                     } else {
-                        // Start registration process
-                        registerDriverAccount(email, password, firstName, middleName, lastName, tvSuffix.text.toString(), phone, selectedCountryCode, license, language, dialog)
+                        registerDriverAccount(email, password, firstName, middleName, lastName, tvSuffix?.text?.toString() ?: "", phone, selectedCountryCode, license, language, dialog)
                     }
                 }
         }
@@ -254,7 +251,7 @@ class AddDriverDialog(
         val options = com.google.firebase.FirebaseApp.getInstance().options
         val secondaryApp = try {
             com.google.firebase.FirebaseApp.initializeApp(activity, options, "Secondary")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             com.google.firebase.FirebaseApp.getInstance("Secondary")
         }
         val secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
@@ -288,12 +285,12 @@ class AddDriverDialog(
                     override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                         onComplete(resultData["secure_url"] as? String ?: "")
                     }
-                    override fun onError(requestId: String, error: ErrorInfo) {
+                    override fun onError(requestId: String, _error: ErrorInfo) {
                         onComplete("")
                     }
-                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                    override fun onReschedule(requestId: String, _error: ErrorInfo) {}
                 }).dispatch()
-        }
+        } ?: onComplete("")
     }
 
     private fun saveDriverToFirestore(uid: String, email: String, fName: String, mName: String, lName: String, suffix: String, phone: String, countryCode: String, license: String, lang: String, avatarUrl: String, auth: FirebaseAuth, dialog: AlertDialog) {
@@ -301,7 +298,7 @@ class AddDriverDialog(
             "firstName" to fName,
             "middleName" to mName,
             "lastName" to lName,
-            "suffix" to (if (suffix == "None" || suffix == "Suffix") "" else suffix),
+            "suffix" to (if (suffix == "None" || suffix == "Suffix" || suffix == "") "" else suffix),
             "email" to email,
             "phone" to "$countryCode $phone",
             "licenseNumber" to license,
@@ -315,7 +312,7 @@ class AddDriverDialog(
         db.collection("drivers").document(uid).set(driverData)
             .addOnSuccessListener {
                 auth.signOut()
-                Toast.makeText(activity, "Driver added successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.driver_added_success), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 onDriverAdded()
             }

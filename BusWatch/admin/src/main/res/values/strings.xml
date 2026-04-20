@@ -9,7 +9,7 @@
     <string name="add_new_conductor">ADD NEW CONDUCTOR</string>
     <string name="add_new_driver">ADD NEW DRIVER</string>
     <string name="search">Search</string>
-    <string name="search_hint">Search by name...</string>
+    <string name="search_hint">Search by name&#8230;</string>
     <string name="stop_student_count_format">%d Students assigned</string>
     <string name="stop_details">STOP DETAILS</string>
     <string name="stop_information">STOP INFORMATION</string>
@@ -17,4 +17,14 @@
     <string name="coordinates_label">COORDINATES</string>
     <string name="assigned_students">ASSIGNED STUDENTS</string>
     <string name="add_student">+ ADD</string>
+    <string name="approvals">APPROVALS</string>
+    <string name="registration">REGISTRATION</string>
+    <string name="map">MAP</string>
+    <string name="stops">STOPS</string>
+    <string name="student_avatar">Student Avatar</string>
+    <string name="student_name_placeholder">Student Name</string>
+    <string name="stop_not_assigned">Stop: Not Assigned</string>
+    <string name="assign_stop">ASSIGN STOP</string>
+    <string name="routing">ROUTING</string>
+    <string name="student_stop_assignment">Student Stop Assignment</string>
 </resources>

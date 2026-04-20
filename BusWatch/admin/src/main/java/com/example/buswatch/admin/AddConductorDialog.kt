@@ -1,7 +1,6 @@
 package com.example.buswatch.admin
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -41,13 +40,13 @@ class AddConductorDialog(
     private var selectedCountryCode = "+63"
     private var maxPhoneDigits = 10
     private var selectedImageUri: Uri? = null
-    private lateinit var imgConductorPhoto: ImageView
+    private var imgConductorPhoto: ImageView? = null
     
     private val pickImageLauncher: ActivityResultLauncher<Intent> = 
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 selectedImageUri = result.data?.data
-                imgConductorPhoto.setImageURI(selectedImageUri)
+                imgConductorPhoto?.setImageURI(selectedImageUri)
             }
         }
 
@@ -79,40 +78,40 @@ class AddConductorDialog(
         val btnViewConfirmPassword = dialogView.findViewById<ImageButton>(R.id.btnViewConfirmPassword)
 
         // Photo picker
-        frameConductorPhoto.setOnClickListener {
+        frameConductorPhoto?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             pickImageLauncher.launch(intent)
         }
 
         // Character limits
-        etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
-        etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
-        etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
+        etFirstName?.filters = arrayOf(InputFilter.LengthFilter(50))
+        etLastName?.filters = arrayOf(InputFilter.LengthFilter(50))
+        etMiddleName?.filters = arrayOf(InputFilter.LengthFilter(20))
 
-        btnViewPassword.setOnClickListener {
+        btnViewPassword?.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
-            etPassword.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            etPassword?.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
             btnViewPassword.setImageResource(if (isPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
-            etPassword.setSelection(etPassword.text.length)
+            etPassword?.setSelection(etPassword.text.length)
         }
 
-        btnViewConfirmPassword.setOnClickListener {
+        btnViewConfirmPassword?.setOnClickListener {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
-            etConfirmPassword.transformationMethod = if (isConfirmPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            etConfirmPassword?.transformationMethod = if (isConfirmPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
             btnViewConfirmPassword.setImageResource(if (isConfirmPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
-            etConfirmPassword.setSelection(etConfirmPassword.text.length)
+            etConfirmPassword?.setSelection(etConfirmPassword.text.length)
         }
 
-        setupNameWatcher(etFirstName, tvFirstNameWarning)
-        setupNameWatcher(etLastName, tvLastNameWarning)
-        setupNameWatcher(etMiddleName, tvMiddleNameWarning)
+        if (etFirstName != null && tvFirstNameWarning != null) setupNameWatcher(etFirstName, tvFirstNameWarning)
+        if (etLastName != null && tvLastNameWarning != null) setupNameWatcher(etLastName, tvLastNameWarning)
+        if (etMiddleName != null && tvMiddleNameWarning != null) setupNameWatcher(etMiddleName, tvMiddleNameWarning)
 
-        etEmail.addTextChangedListener(object : TextWatcher {
+        etEmail?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val email = s?.toString() ?: ""
                 val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-                tvEmailWarning.isVisible = email.isNotEmpty() && !isValid
+                tvEmailWarning?.isVisible = email.isNotEmpty() && !isValid
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -123,11 +122,11 @@ class AddConductorDialog(
                 "+44", "+65" -> 1
                 else -> 0
             }
-            etContactNumber.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
+            etContactNumber?.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
         }
         updatePhoneFilter()
 
-        etContactNumber.addTextChangedListener(object : TextWatcher {
+        etContactNumber?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -178,11 +177,11 @@ class AddConductorDialog(
                     etContactNumber.setSelection(newSelection)
                 }
                 isPhoneFormatting = false
-                tvPhoneWarning.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
+                tvPhoneWarning?.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
             }
         })
 
-        dialogView.findViewById<FrameLayout>(R.id.btnCountryCode).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnCountryCode)?.setOnClickListener {
             val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
             val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
             val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
@@ -191,47 +190,47 @@ class AddConductorDialog(
                 .setItems(countries) { _, which ->
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
-                    tvCountryCode.text = selectedCountryCode
-                    etContactNumber.text.clear()
+                    tvCountryCode?.text = selectedCountryCode
+                    etContactNumber?.text?.clear()
                     updatePhoneFilter()
                 }.show()
         }
 
-        dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown)?.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV")
             AlertDialog.Builder(activity)
                 .setTitle("Select Suffix")
                 .setItems(suffixes) { _, which ->
-                    tvSuffix.text = suffixes[which]
-                    tvSuffix.setTextColor(Color.BLACK)
+                    tvSuffix?.text = suffixes[which]
+                    tvSuffix?.setTextColor(Color.BLACK)
                 }.show()
         }
 
-        dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown)?.setOnClickListener {
             val languages = arrayOf("English", "Filipino (Inactive)")
             AlertDialog.Builder(activity)
                 .setTitle("Select Language")
                 .setItems(languages) { _, which ->
                     if (which == 0) {
-                        tvLanguage.text = "English"
-                        tvLanguage.setTextColor(Color.BLACK)
+                        tvLanguage?.text = "English"
+                        tvLanguage?.setTextColor(Color.BLACK)
                     } else {
                         Toast.makeText(activity, "Filipino is currently unavailable", Toast.LENGTH_SHORT).show()
                     }
                 }.show()
         }
 
-        dialogView.findViewById<ImageButton>(R.id.btnCloseAddConductor).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<ImageButton>(R.id.btnCloseAddConductor)?.setOnClickListener { dialog.dismiss() }
 
-        dialogView.findViewById<TextView>(R.id.btnSaveConductor).setOnClickListener {
-            val firstName = etFirstName.text.toString().trim()
-            val middleName = etMiddleName.text.toString().trim()
-            val lastName = etLastName.text.toString().trim()
-            val email = etEmail.text.toString().trim()
-            val phone = etContactNumber.text.toString().replace(" ", "")
-            val password = etPassword.text.toString().trim()
-            val confirmPassword = etConfirmPassword.text.toString().trim()
-            val language = tvLanguage.text.toString()
+        dialogView.findViewById<TextView>(R.id.btnSaveConductor)?.setOnClickListener {
+            val firstName = etFirstName?.text?.toString()?.trim() ?: ""
+            val middleName = etMiddleName?.text?.toString()?.trim() ?: ""
+            val lastName = etLastName?.text?.toString()?.trim() ?: ""
+            val email = etEmail?.text?.toString()?.trim() ?: ""
+            val phone = etContactNumber?.text?.toString()?.replace(" ", "") ?: ""
+            val password = etPassword?.text?.toString()?.trim() ?: ""
+            val confirmPassword = etConfirmPassword?.text?.toString()?.trim() ?: ""
+            val language = tvLanguage?.text?.toString() ?: "English"
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
                 Toast.makeText(activity, "Please fill all required fields", Toast.LENGTH_SHORT).show()
@@ -245,7 +244,7 @@ class AddConductorDialog(
             }
 
             if (password != confirmPassword) {
-                tvConfirmPasswordWarning.isVisible = true
+                tvConfirmPasswordWarning?.isVisible = true
                 Toast.makeText(activity, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -253,10 +252,10 @@ class AddConductorDialog(
             db.collection("conductors").whereEqualTo("email", email).get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
-                        tvEmailWarning.text = "Email address already registered"
-                        tvEmailWarning.isVisible = true
+                        tvEmailWarning?.setText(CommonR.string.email_already_registered)
+                        tvEmailWarning?.isVisible = true
                     } else {
-                        registerConductorAccount(email, password, firstName, middleName, lastName, tvSuffix.text.toString(), phone, selectedCountryCode, language, dialog)
+                        registerConductorAccount(email, password, firstName, middleName, lastName, tvSuffix?.text?.toString() ?: "", phone, selectedCountryCode, language, dialog)
                     }
                 }
         }
@@ -267,7 +266,7 @@ class AddConductorDialog(
         val options = com.google.firebase.FirebaseApp.getInstance().options
         val secondaryApp = try {
             com.google.firebase.FirebaseApp.initializeApp(activity, options, "SecondaryConductor")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             com.google.firebase.FirebaseApp.getInstance("SecondaryConductor")
         }
         val secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
@@ -301,12 +300,12 @@ class AddConductorDialog(
                     override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                         onComplete(resultData["secure_url"] as? String ?: "")
                     }
-                    override fun onError(requestId: String, error: ErrorInfo) {
+                    override fun onError(requestId: String, _error: ErrorInfo) {
                         onComplete("")
                     }
-                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                    override fun onReschedule(requestId: String, _error: ErrorInfo) {}
                 }).dispatch()
-        }
+        } ?: onComplete("")
     }
 
     private fun saveConductorToFirestore(uid: String, email: String, fName: String, mName: String, lName: String, suffix: String, phone: String, countryCode: String, lang: String, avatarUrl: String, auth: FirebaseAuth, dialog: AlertDialog) {
@@ -314,7 +313,7 @@ class AddConductorDialog(
             "firstName" to fName,
             "middleName" to mName,
             "lastName" to lName,
-            "suffix" to (if (suffix == "None" || suffix == "Suffix") "" else suffix),
+            "suffix" to (if (suffix == "None" || suffix == "Suffix" || suffix == "") "" else suffix),
             "email" to email,
             "phone" to "$countryCode $phone",
             "preferredLanguage" to lang,
@@ -327,7 +326,7 @@ class AddConductorDialog(
         db.collection("conductors").document(uid).set(conductorData)
             .addOnSuccessListener {
                 auth.signOut()
-                Toast.makeText(activity, "Conductor added successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.conductor_added_success), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 onConductorAdded()
             }

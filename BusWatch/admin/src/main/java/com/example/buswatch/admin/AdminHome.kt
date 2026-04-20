@@ -83,7 +83,6 @@ class AdminHome : AppCompatActivity() {
     fun loadStops() = replaceFragment(StopsFragment())
     fun loadApprovals() = replaceFragment(ApprovalsFragment())
     fun loadArchive(tab: ArchiveTab) = replaceFragment(ArchiveFragment.newInstance(tab))
-    fun loadRouteMap() { /* If separate map fragment exists, replace it here */ }
 
     // --- Detail & Edit Triggers ---
 
@@ -138,6 +137,10 @@ class AdminHome : AppCompatActivity() {
     fun showParentApprovalDetail(user: UserAdmin) {
         showParentDetail(user) { supportFragmentManager.popBackStack() }
     }
+    
+    fun showMapApprovalDetail(request: MapRequest) {
+        replaceFragment(MapApprovalDetailFragment.newInstance(request))
+    }
 
     fun showAddNewRouteDialogInternal() {
         AddRouteDialog(this, db) {
@@ -164,10 +167,6 @@ class AdminHome : AppCompatActivity() {
         db.collection("buses").document(bus.id).update("status", "Archived").addOnSuccessListener { supportFragmentManager.popBackStack() }
     }
 
-    fun archiveStop(stop: StopAdmin) {
-        db.collection("stops").document(stop.id).update("status", "archived").addOnSuccessListener { supportFragmentManager.popBackStack() }
-    }
-
     fun archiveRouteInternal(route: RouteAdmin) {
         db.collection("routes").document(route.id).update("status", "Archived").addOnSuccessListener { supportFragmentManager.popBackStack() }
     }
@@ -183,8 +182,6 @@ class AdminHome : AppCompatActivity() {
             supportFragmentManager.popBackStack()
         }
     }
-
-    // Archive restoration logic can be added here if needed by fragments
 
     fun restoreUserInternal(user: UserAdmin) = db.collection("parents").document(user.id).update("status", "approved")
     fun restoreDriverInternal(user: UserAdmin) = db.collection("drivers").document(user.id).update("status", "active")

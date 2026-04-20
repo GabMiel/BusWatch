@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,10 +31,6 @@ class ApprovalsFragment : Fragment() {
     }
 
     private fun setupUI(view: View) {
-        view.findViewById<ImageButton>(R.id.btnBackApprovals)?.setOnClickListener {
-            (requireActivity() as? AdminHome)?.replaceFragment(DashboardFragment())
-        }
-
         view.findViewById<TextView>(R.id.tabMapLocations)?.setOnClickListener {
             isRegistrationTab = false
             updateTabUI(view)
@@ -53,7 +47,16 @@ class ApprovalsFragment : Fragment() {
     }
 
     private fun updateTabUI(view: View) {
-        // Tab styling logic here (active/inactive states)
+        val tabReg = view.findViewById<TextView>(R.id.tabRegistration)
+        val tabMap = view.findViewById<TextView>(R.id.tabMapLocations)
+        
+        if (isRegistrationTab) {
+            tabReg?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_active)
+            tabMap?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_inactive)
+        } else {
+            tabReg?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_inactive)
+            tabMap?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_active)
+        }
     }
 
     private fun fetchData() {
@@ -66,7 +69,7 @@ class ApprovalsFragment : Fragment() {
                 @Suppress("UNCHECKED_CAST")
                 val profile = doc.get("profile") as? Map<String, Any>
                 UserAdmin(doc.id, "${profile?.get("firstName")} ${profile?.get("lastName")}", "Parent", status = "pending")
-            }
+            }.toMutableList()
             view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = PendingUserAdapter(pendingUsers) { user ->
                 (requireActivity() as? AdminHome)?.showParentApprovalDetail(user)
             }
@@ -89,9 +92,9 @@ class ApprovalsFragment : Fragment() {
                     pendingLng = doc.getDouble("pendingLng") ?: 0.0,
                     docPath = doc.getString("docPath") ?: ""
                 )
-            }
+            }.toMutableList()
             view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = MapRequestAdapter(mapRequests) { request, _ ->
-                // Logic to show map approval detail
+                (requireActivity() as? AdminHome)?.showMapApprovalDetail(request)
             }
         }
     }

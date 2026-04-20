@@ -34,6 +34,7 @@ android {
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
@@ -64,6 +65,9 @@ dependencies {
     // OpenStreetMap
     implementation(libs.osmdroid.android)
     implementation(libs.androidx.preference)
+
+    // Cloudinary
+    implementation(libs.cloudinary.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

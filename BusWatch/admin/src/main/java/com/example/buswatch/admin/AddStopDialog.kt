@@ -1,11 +1,13 @@
 package com.example.buswatch.admin
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageButton
@@ -39,41 +41,44 @@ class AddStopDialog(
         val btnSmartFill = dialogView.findViewById<ImageButton>(R.id.btnSmartFill)
 
         // Setup Map
-        mapPicker.setMultiTouchControls(true)
-        mapPicker.controller.setZoom(17.0)
-        mapPicker.controller.setCenter(currentPoint)
+        mapPicker?.setMultiTouchControls(true)
+        mapPicker?.controller?.setZoom(17.0)
+        mapPicker?.controller?.setCenter(currentPoint)
 
         // Listener for map movement
-        mapPicker.addMapListener(object : org.osmdroid.events.MapListener {
+        mapPicker?.addMapListener(object : org.osmdroid.events.MapListener {
             override fun onScroll(event: org.osmdroid.events.ScrollEvent?): Boolean {
-                updateLocation(mapPicker.mapCenter as GeoPoint, tvCoordinates, etStopName)
+                val center = mapPicker.mapCenter as? GeoPoint
+                if (center != null) {
+                    updateLocation(center, tvCoordinates, etStopName)
+                }
                 return true
             }
             override fun onZoom(event: org.osmdroid.events.ZoomEvent?): Boolean = false
         })
 
         // My Location Button
-        btnMyLocation.setOnClickListener {
-            goToCurrentLocation(mapPicker)
+        btnMyLocation?.setOnClickListener {
+            mapPicker?.let { goToCurrentLocation(it) }
         }
 
         // Smart Fill Button
-        btnSmartFill.setOnClickListener {
-            autoFillStopName(etStopName)
+        btnSmartFill?.setOnClickListener {
+            etStopName?.let { autoFillStopName(it) }
         }
 
-        btnClose.setOnClickListener { dialog.dismiss() }
+        btnClose?.setOnClickListener { dialog.dismiss() }
 
-        btnAddAnother.setOnClickListener {
-            saveStopToFirestore(etStopName.text.toString(), currentPoint) {
-                etStopName.text.clear()
+        btnAddAnother?.setOnClickListener {
+            saveStopToFirestore(etStopName?.text?.toString() ?: "", currentPoint) {
+                etStopName?.text?.clear()
                 Toast.makeText(context, "Stop added! You can add another.", Toast.LENGTH_SHORT).show()
                 onStopAdded()
             }
         }
 
-        btnSaveStop.setOnClickListener {
-            saveStopToFirestore(etStopName.text.toString(), currentPoint) {
+        btnSaveStop?.setOnClickListener {
+            saveStopToFirestore(etStopName?.text?.toString() ?: "", currentPoint) {
                 dialog.dismiss()
                 onStopAdded()
             }
@@ -82,8 +87,10 @@ class AddStopDialog(
         dialog.show()
     }
 
+    @SuppressLint("MissingPermission")
     private fun goToCurrentLocation(map: MapView) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Location permission not granted", Toast.LENGTH_SHORT).show()
             return
         }
@@ -92,7 +99,9 @@ class AddStopDialog(
         val location: Location? = try {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) 
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        } catch (e: Exception) {
+        } catch (_: SecurityException) {
+            null
+        } catch (_: Exception) {
             null
         }
 
@@ -108,37 +117,62 @@ class AddStopDialog(
     private fun autoFillStopName(etName: EditText) {
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
-            val addresses = geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val streetName = address.thoroughfare ?: address.featureName ?: ""
-                if (streetName.isNotEmpty()) {
-                    etName.setText(streetName)
-                } else {
-                    Toast.makeText(context, "No street name found here", Toast.LENGTH_SHORT).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1) { addresses ->
+                    if (addresses.isNotEmpty()) {
+                        val address = addresses[0]
+                        val streetName = address.thoroughfare ?: address.featureName ?: ""
+                        if (streetName.isNotEmpty()) {
+                            etName.post { etName.setText(streetName) }
+                        }
+                    }
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    val streetName = address.thoroughfare ?: address.featureName ?: ""
+                    if (streetName.isNotEmpty()) {
+                        etName.setText(streetName)
+                    } else {
+                        Toast.makeText(context, "No street name found here", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(context, "Geocoding failed", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun updateLocation(point: GeoPoint, tvCoords: TextView, etName: EditText) {
+    private fun updateLocation(point: GeoPoint, tvCoords: TextView?, etName: EditText?) {
         currentPoint = point
-        tvCoords.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", point.latitude, point.longitude)
+        tvCoords?.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", point.latitude, point.longitude)
         
         // Dynamic hint as you scroll
-        if (etName.text.isEmpty()) {
+        if (etName != null && etName.text.isEmpty()) {
             try {
                 val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
-                    if (streetName.isNotEmpty()) {
-                        etName.hint = "Suggested: $streetName"
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(point.latitude, point.longitude, 1) { addresses ->
+                        if (addresses.isNotEmpty()) {
+                            val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
+                            if (streetName.isNotEmpty()) {
+                                etName.post { etName.hint = "Suggested: $streetName" }
+                            }
+                        }
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
+                    if (!addresses.isNullOrEmpty()) {
+                        val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
+                        if (streetName.isNotEmpty()) {
+                            etName.hint = "Suggested: $streetName"
+                        }
                     }
                 }
-            } catch (e: Exception) {}
+            } catch (_: Exception) {}
         }
     }
 

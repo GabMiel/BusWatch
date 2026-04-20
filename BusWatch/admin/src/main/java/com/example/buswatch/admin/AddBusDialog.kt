@@ -45,13 +45,13 @@ class AddBusDialog(
             "Others"
         )
 
-        dialogView.findViewById<FrameLayout>(R.id.btnVehicleTypeDropdown).setOnClickListener {
+        dialogView.findViewById<FrameLayout>(R.id.btnVehicleTypeDropdown)?.setOnClickListener {
             AlertDialog.Builder(context)
                 .setTitle("Select Vehicle Type")
                 .setItems(vehicleTypes) { _, which ->
                     val selected = vehicleTypes[which]
-                    tvSelectedVehicleType.text = selected
-                    tvSelectedVehicleType.setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                    tvSelectedVehicleType?.text = selected
+                    tvSelectedVehicleType?.setTextColor(ContextCompat.getColor(context, android.R.color.black))
                     val defaultVal = when (which) {
                         0 -> { minCap = 35; maxCap = 60; "45" }
                         1 -> { minCap = 18; maxCap = 35; "25" }
@@ -59,31 +59,35 @@ class AddBusDialog(
                         3 -> { minCap = 10; maxCap = 20; "14" }
                         else -> { minCap = 10; maxCap = 100; "" }
                     }
-                    etCapacity.setText(defaultVal)
-                    etCapacity.hint = if (which == 4) "10-100" else "$minCap-$maxCap"
-                    validateCapacity(etCapacity.text.toString(), minCap, maxCap, tvCapacityLabel, tvCapacityWarning) { valid ->
-                        isCapacityValid = valid
+                    etCapacity?.setText(defaultVal)
+                    etCapacity?.hint = if (which == 4) "10-100" else "$minCap-$maxCap"
+                    if (tvCapacityLabel != null && tvCapacityWarning != null) {
+                        validateCapacity(etCapacity?.text.toString(), minCap, maxCap, tvCapacityLabel, tvCapacityWarning) { valid ->
+                            isCapacityValid = valid
+                        }
                     }
                 }.show()
         }
 
-        etCapacity.addTextChangedListener(object : TextWatcher {
+        etCapacity?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateCapacity(s.toString(), minCap, maxCap, tvCapacityLabel, tvCapacityWarning) { valid ->
-                    isCapacityValid = valid
+                if (tvCapacityLabel != null && tvCapacityWarning != null) {
+                    validateCapacity(s.toString(), minCap, maxCap, tvCapacityLabel, tvCapacityWarning) { valid ->
+                        isCapacityValid = valid
+                    }
                 }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        dialogView.findViewById<ImageButton>(R.id.btnCloseAddBus).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<ImageButton>(R.id.btnCloseAddBus)?.setOnClickListener { dialog.dismiss() }
 
-        btnSaveBus.setOnClickListener {
-            val busNumber = etBusNumber.text.toString().trim()
-            val capacityStr = etCapacity.text.toString().trim()
-            val vehicleType = tvSelectedVehicleType.text.toString()
-            val plateNumber = etPlateNumber.text.toString().trim()
+        btnSaveBus?.setOnClickListener {
+            val busNumber = etBusNumber?.text?.toString()?.trim() ?: ""
+            val capacityStr = etCapacity?.text?.toString()?.trim() ?: ""
+            val vehicleType = tvSelectedVehicleType?.text?.toString() ?: ""
+            val plateNumber = etPlateNumber?.text?.toString()?.trim() ?: ""
 
             if (busNumber.isEmpty() || capacityStr.isEmpty() || vehicleType == "Select Type") {
                 Toast.makeText(context, "Please fill all required fields", Toast.LENGTH_SHORT).show()
@@ -137,13 +141,13 @@ class AddBusDialog(
         when {
             input < min -> {
                 label.isVisible = false
-                warning.text = "Minimum capacity is $min"
+                warning.text = context.getString(CommonR.string.capacity_min_warning, min)
                 warning.isVisible = true
                 onResult(false)
             }
             input > max -> {
                 label.isVisible = false
-                warning.text = "Maximum capacity is $max"
+                warning.text = context.getString(CommonR.string.capacity_max_warning, max)
                 warning.isVisible = true
                 onResult(false)
             }
@@ -155,15 +159,15 @@ class AddBusDialog(
                 val percentage = (input - min).toFloat() / range
                 when {
                     percentage < 0.6 -> {
-                        label.text = "Normal Capacity"
+                        label.setText(CommonR.string.capacity_normal)
                         label.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.holo_green_dark))
                     }
                     percentage < 0.85 -> {
-                        label.text = "High Capacity"
+                        label.setText(CommonR.string.capacity_high)
                         label.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.holo_orange_dark))
                     }
                     else -> {
-                        label.text = "Risk Capacity"
+                        label.setText(CommonR.string.capacity_risk)
                         label.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.holo_red_dark))
                     }
                 }

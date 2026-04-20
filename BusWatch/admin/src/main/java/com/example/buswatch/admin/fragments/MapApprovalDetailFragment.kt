@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.MapRequest
 import com.example.buswatch.admin.R
-import com.example.buswatch.common.R as CommonR
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.util.GeoPoint
@@ -50,20 +48,21 @@ class MapApprovalDetailFragment : Fragment() {
     }
 
     private fun loadRequesterInfo(view: View) {
-        view.findViewById<TextView>(R.id.tvStudentName).text = request.studentName
-        view.findViewById<TextView>(R.id.tvCurrentAddress).text = request.currentAddress
-        view.findViewById<TextView>(R.id.tvPendingAddress).text = request.pendingAddress
+        view.findViewById<TextView>(R.id.tvStudentName)?.text = request.studentName
+        view.findViewById<TextView>(R.id.tvCurrentAddress)?.text = request.currentAddress
+        view.findViewById<TextView>(R.id.tvPendingAddress)?.text = request.pendingAddress
 
         db.collection("parents").document(request.parentId).get().addOnSuccessListener { doc ->
             if (doc.exists()) {
                 @Suppress("UNCHECKED_CAST")
                 val profile = doc.get("profile") as? Map<String, Any>
-                view.findViewById<TextView>(R.id.tvParentFullName).text = "${profile?.get("firstName")} ${profile?.get("lastName")}"
-                view.findViewById<TextView>(R.id.tvParentPhone).text = profile?.get("phone") as? String
+                view.findViewById<TextView>(R.id.tvParentFullName)?.text = getString(com.example.buswatch.common.R.string.name_format, profile?.get("firstName"), profile?.get("lastName"))
+                view.findViewById<TextView>(R.id.tvParentPhone)?.text = profile?.get("phone") as? String
                 
                 val avatar = profile?.get("avatarUrl") as? String
-                if (!avatar.isNullOrEmpty()) {
-                    Glide.with(this).load(avatar).circleCrop().into(view.findViewById(R.id.imgParent))
+                val imgParent = view.findViewById<android.widget.ImageView>(R.id.imgParent)
+                if (!avatar.isNullOrEmpty() && imgParent != null) {
+                    Glide.with(this).load(avatar).circleCrop().into(imgParent)
                 }
             }
         }
@@ -73,8 +72,12 @@ class MapApprovalDetailFragment : Fragment() {
         val mapCurrent = view.findViewById<MapView>(R.id.mapCurrentLocation)
         val mapPending = view.findViewById<MapView>(R.id.mapPendingLocation)
 
-        setupMapMarker(mapCurrent, GeoPoint(request.currentLat, request.currentLng), "Current Location")
-        setupMapMarker(mapPending, GeoPoint(request.pendingLat, request.pendingLng), "Proposed Location")
+        if (mapCurrent != null) {
+            setupMapMarker(mapCurrent, GeoPoint(request.currentLat, request.currentLng), "Current Location")
+        }
+        if (mapPending != null) {
+            setupMapMarker(mapPending, GeoPoint(request.pendingLat, request.pendingLng), "Proposed Location")
+        }
     }
 
     private fun setupMapMarker(map: MapView, point: GeoPoint, title: String) {

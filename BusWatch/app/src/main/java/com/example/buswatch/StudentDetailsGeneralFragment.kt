@@ -15,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import com.example.buswatch.common.R as CommonR
 
 class StudentDetailsGeneralFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
@@ -52,57 +51,57 @@ class StudentDetailsGeneralFragment : Fragment() {
                 
                 // Hide button immediately if not approved
                 if (parentStatus.lowercase() != "approved") {
-                    view.findViewById<Button>(R.id.btnAssignStop).visibility = View.GONE
+                    view.findViewById<Button>(R.id.btnAssignStop)?.visibility = View.GONE
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                val child = doc.get("child") as? Map<String, Any>
-                if (child != null) {
-                    displayChildInfo(view, child)
-                    val currentStopId = child["stop"] as? String
-                    updateStopAndMapUI(view, child, currentStopId)
+                val childData = doc.get("child") as? kotlin.collections.Map<String, Any>
+                if (childData != null) {
+                    displayChildInfo(view, childData)
+                    val currentStopId = childData["stop"] as? String
+                    updateStopAndMapUI(view, currentStopId)
                 }
             }
         }
     }
 
-    private fun displayChildInfo(view: View, child: Map<String, Any>) {
-        view.findViewById<TextView>(R.id.tvStudentName).text = "${child["firstName"]} ${child["lastName"]}"
-        view.findViewById<TextView>(R.id.tvDob).text = child["age"]?.toString() ?: "-"
-        view.findViewById<TextView>(R.id.tvSchool).text = child["school"] as? String ?: "-"
-        view.findViewById<TextView>(R.id.tvGrade).text = child["grade"] as? String ?: "-"
-        view.findViewById<TextView>(R.id.tvSection).text = child["class"] as? String ?: "-"
-        view.findViewById<TextView>(R.id.tvAddress).text = child["address"] as? String ?: "-"
+    private fun displayChildInfo(view: View, childData: kotlin.collections.Map<String, Any>) {
+        view.findViewById<TextView>(R.id.tvStudentName).text = getString(com.example.buswatch.common.R.string.name_format, childData["firstName"], childData["lastName"])
+        view.findViewById<TextView>(R.id.tvDob).text = childData["age"]?.toString() ?: "-"
+        view.findViewById<TextView>(R.id.tvSchool).text = childData["school"] as? String ?: "-"
+        view.findViewById<TextView>(R.id.tvGrade).text = childData["grade"] as? String ?: "-"
+        view.findViewById<TextView>(R.id.tvSection).text = childData["class"] as? String ?: "-"
+        view.findViewById<TextView>(R.id.tvAddress).text = childData["address"] as? String ?: "-"
         
-        val lat = child["latitude"] as? Double ?: 0.0
-        val lng = child["longitude"] as? Double ?: 0.0
+        val lat = childData["latitude"] as? Double ?: 0.0
+        val lng = childData["longitude"] as? Double ?: 0.0
         homePoint = GeoPoint(lat, lng)
 
-        val avatar = child["childAvatarUrl"] as? String ?: ""
+        val avatar = childData["childAvatarUrl"] as? String ?: ""
         if (avatar.isNotEmpty()) {
             Glide.with(this).load(avatar).circleCrop().into(view.findViewById(R.id.imgStudentAvatar))
         }
     }
 
-    private fun updateStopAndMapUI(view: View, child: Map<String, Any>, stopId: String?) {
+    private fun updateStopAndMapUI(view: View, stopId: String?) {
         val tvStatus = view.findViewById<TextView>(R.id.tvAssignedStop)
         val btnAssign = view.findViewById<Button>(R.id.btnAssignStop)
         val mapView = view.findViewById<MapView>(R.id.mapHomeLocation)
 
         if (stopId.isNullOrEmpty()) {
             // No stop selected: Show "Set" button and Home on Map
-            tvStatus.visibility = View.VISIBLE
-            tvStatus.text = "Pickup Stop: Not Selected"
-            if (parentStatus.lowercase() == "approved") btnAssign.visibility = View.VISIBLE
+            tvStatus?.visibility = View.VISIBLE
+            tvStatus?.setText(com.example.buswatch.common.R.string.pickup_stop_not_selected)
+            if (parentStatus.lowercase() == "approved") btnAssign?.visibility = View.VISIBLE
             
             homePoint?.let { setupMap(mapView, it, "Home Location") }
         } else {
             // Stop confirmed: Hide button and update Map with Stop Location
-            btnAssign.visibility = View.GONE
+            btnAssign?.visibility = View.GONE
             db.collection("stops").document(stopId).get().addOnSuccessListener { stopDoc ->
                 val stopName = stopDoc.getString("name") ?: "Selected Stop"
-                tvStatus.visibility = View.VISIBLE
-                tvStatus.text = "Confirmed Stop: $stopName"
+                tvStatus?.visibility = View.VISIBLE
+                tvStatus?.text = getString(com.example.buswatch.common.R.string.confirmed_stop_format, stopName)
                 
                 val stopLat = stopDoc.getDouble("latitude") ?: 0.0
                 val stopLng = stopDoc.getDouble("longitude") ?: 0.0
@@ -113,7 +112,8 @@ class StudentDetailsGeneralFragment : Fragment() {
         }
     }
 
-    private fun setupMap(map: MapView, point: GeoPoint, title: String) {
+    private fun setupMap(map: MapView?, point: GeoPoint, title: String) {
+        if (map == null) return
         map.overlays.clear()
         map.setMultiTouchControls(true)
         map.controller.setZoom(18.0)
@@ -154,8 +154,8 @@ class StudentDetailsGeneralFragment : Fragment() {
             if (child != null) {
                 child["stop"] = stopId
                 db.collection("parents").document(uid).update("child", child).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Stop confirmed: $stopName", Toast.LENGTH_SHORT).show()
-                    updateStopAndMapUI(requireView(), child, stopId)
+                    Toast.makeText(requireContext(), getString(com.example.buswatch.common.R.string.confirmed_stop_format, stopName), Toast.LENGTH_SHORT).show()
+                    updateStopAndMapUI(requireView(), stopId)
                 }
             }
         }

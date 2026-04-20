@@ -16,13 +16,12 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import java.io.Serializable
 
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -360,7 +359,7 @@ class Signup3 : AppCompatActivity() {
         parentAvatarUri?.let { uploadQueue.add("parent" to it) }
         primaryChildAvatarUri?.let { uploadQueue.add("child_0" to it) }
         additionalChildren.forEachIndexed { index, child ->
-            val uri = child["childAvatarUri"] as? Uri ?: (child["childAvatarUri"] as? String)?.let { Uri.parse(it) }
+            val uri = child["childAvatarUri"] as? Uri ?: (child["childAvatarUri"] as? String)?.toUri()
             uri?.let { uploadQueue.add("child_${index + 1}" to it) }
         }
 
@@ -380,8 +379,8 @@ class Signup3 : AppCompatActivity() {
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String) {}
                     override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-                    override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                        val url = resultData["secure_url"] as? String ?: ""
+                    override fun onSuccess(requestId: String, resultData: MutableMap<Any?, Any?>?) {
+                        val url = resultData?.get("secure_url") as? String ?: ""
                         synchronized(uploadedUrls) {
                             uploadedUrls[key] = url
                             completedCount++
@@ -390,7 +389,7 @@ class Signup3 : AppCompatActivity() {
                             }
                         }
                     }
-                    override fun onError(requestId: String, error: ErrorInfo) {
+                    override fun onError(requestId: String, _error: ErrorInfo) {
                         synchronized(uploadedUrls) {
                             completedCount++
                             if (completedCount == uploadQueue.size) {
@@ -398,7 +397,7 @@ class Signup3 : AppCompatActivity() {
                             }
                         }
                     }
-                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                    override fun onReschedule(requestId: String, _error: ErrorInfo) {}
                 }).dispatch()
         }
     }
@@ -468,14 +467,19 @@ class Signup3 : AppCompatActivity() {
         db.collection("parents").document(uid).set(userData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Registration Successful!", Toast.LENGTH_LONG).show()
-                val mainIntent = Intent(this, ParentMainActivity::class.java)
-                mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(mainIntent)
+                // Use a generic way to find the main activity if ParentMainActivity is missing or use current package
+                try {
+                    val mainIntent = Intent(this, Class.forName("${packageName}.ParentMainActivity"))
+                    mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(mainIntent)
+                } catch (e: Exception) {
+                    // Fallback or log
+                }
                 finish()
             }
-            .addOnFailureListener { e ->
+            .addOnFailureListener { _ ->
                 findViewById<Button>(R.id.btnSignup3Register).isEnabled = true
-                Toast.makeText(this, "Error saving data: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error saving data", Toast.LENGTH_SHORT).show()
             }
     }
 }

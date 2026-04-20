@@ -120,6 +120,7 @@
     <string name="register">Register</string>
     <string name="preferred_language">Preferred Language</string>
     <string name="select_language">Select Language</string>
+    <string name="select_country_code">Select Country Code</string>
     <string name="english">English</string>
     <string name="filipino">Filipino</string>
     <string name="country_code_ph">+63</string>
@@ -186,7 +187,7 @@
     <string name="allergies_optional">Allergies (Optional)</string>
     <string name="peanuts">Peanuts</string>
     <string name="pineapple">Pineapple</string>
-    <string name="medical_condition">Medical Condition</string>
+    <string name="medical_condition">Condition</string>
     <string name="medical_conditions_optional">Medical Conditions (Optional)</string>
     <string name="asthma">Asthma</string>
     <string name="current_medications">Current Medications</string>
@@ -365,16 +366,7 @@
 
     <!-- Admin Dashboard & Management -->
     <string name="dashboard">DASHBOARD</string>
-    <string name="users">USERS</string>
     <string name="user_name">User Name</string>
-    <string name="parents">PARENTS</string>
-    <string name="drivers">DRIVERS</string>
-    <string name="conductors">CONDUCTORS</string>
-    <string name="buses">BUSES</string>
-    <string name="routes">ROUTES</string>
-    <string name="stops">STOPS</string>
-    <string name="routing">ROUTING</string>
-    <string name="approvals">APPROVALS</string>
     <string name="total_parents">Total Parents</string>
     <string name="total_drivers">Total Drivers</string>
     <string name="total_parents_caps">TOTAL PARENTS</string>
@@ -390,9 +382,7 @@
     <string name="archived_users">Archived Users</string>
     <string name="archived_users_caps">ARCHIVED USERS</string>
     <string name="view_pending_parents">View Pending Parents</string>
-    <string name="add_new_driver">Add New Driver</string>
     <string name="adding_new_driver">ADDING NEW DRIVER</string>
-    <string name="add_new_conductor">Add New Conductor</string>
     <string name="edit_driver_information">Edit Driver Information</string>
     <string name="add_new_bus">Add New Bus</string>
     <string name="adding_new_bus">ADDING NEW BUS</string>
@@ -406,18 +396,9 @@
     <string name="archived">Archived</string>
 
     <!-- Admin: Routing & Stops -->
-    <string name="tab_route_list">ROUTE LIST</string>
-    <string name="tab_all_routes_map">ALL ROUTES MAP</string>
     <string name="select_stops_for_route">Select Stops for Route</string>
     <string name="selected_stops_count">Selected: %1$d stops</string>
     <string name="save_route_caps">SAVE ROUTE</string>
-    <string name="stop_details">STOP DETAILS</string>
-    <string name="stop_information">STOP INFORMATION</string>
-    <string name="stop_name_label">STOP NAME</string>
-    <string name="coordinates_label">COORDINATES</string>
-    <string name="assigned_students">ASSIGNED STUDENTS</string>
-    <string name="add_student">+ ADD</string>
-    <string name="stop_student_count_format">%d Students assigned</string>
     <string name="assign_stop_caps">ASSIGN STOP</string>
     <string name="stop_not_assigned_format">Stop: %s</string>
     <string name="not_assigned_label">Not Assigned</string>
@@ -453,9 +434,9 @@
     <string name="capacity_hint">e.g. 40</string>
     <string name="select_type">Select Type</string>
     <string name="assign_driver_optional">Assign Driver (Optional)</string>
-    <string name="capacity_normal">Normal</string>
-    <string name="capacity_high">High</string>
-    <string name="capacity_risk">Overcapacity Risk</string>
+    <string name="capacity_normal">Normal Capacity</string>
+    <string name="capacity_high">High Capacity</string>
+    <string name="capacity_risk">Risk Capacity</string>
 
     <!-- Icons & Accessibility Content Descriptions -->
     <string name="logo">App logo</string>
@@ -507,13 +488,16 @@
     <string name="age_warning_old">Registration for this age will be monitored by an administrator. Please proceed with caution.</string>
     <string name="age_warning_restricted">Age 21 and above are restricted from registration.</string>
     <string name="error_invalid_capacity">Please enter a valid capacity (10–100)</string>
-    <string name="capacity_min_warning">Min capacity is 10</string>
-    <string name="capacity_max_warning">Max capacity is 100</string>
+    <string name="capacity_min_warning">Minimum capacity is %1$d</string>
+    <string name="capacity_max_warning">Maximum capacity is %1$d</string>
     <string name="no_students_found">No students found</string>
     <string name="details_updated">Details updated</string>
     <string name="changes_saved">Changes saved</string>
     <string name="driver_added_success">Driver added successfully</string>
+    <string name="conductor_added_success">Conductor added successfully</string>
     <string name="image_upload_failed">Image upload failed</string>
+    <string name="pickup_stop_not_selected">Pickup Stop: Not Selected</string>
+    <string name="confirmed_stop_format">Confirmed Stop: %s</string>
 
     <!-- Mock Data & Text Placeholders -->
     <string name="name_format">%1$s %2$s</string>
@@ -547,6 +531,5 @@
     <string name="_1_1">1/1</string>
     <string name="_3_15_2020">3/15/2020</string>
     <string name="color_secondary_text">#FDFDFD</string>
-    <string name="name">Name</string>
-    <string name="phone">Phone</string>
+    <string name="registration_caps">REGISTRATION</string>
 </resources>

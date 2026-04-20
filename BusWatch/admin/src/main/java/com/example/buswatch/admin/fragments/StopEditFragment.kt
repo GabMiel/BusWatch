@@ -1,11 +1,13 @@
 package com.example.buswatch.admin.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,9 +57,9 @@ class StopEditFragment : Fragment() {
         val btnMyLocation = view.findViewById<ImageButton>(R.id.btnMyLocation)
         val btnSmartFill = view.findViewById<ImageButton>(R.id.btnSmartFill)
         
-        etName.setText(stop.name)
+        etName?.setText(stop.name)
         currentPoint = GeoPoint(stop.latitude, stop.longitude)
-        tvCoords.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", stop.latitude, stop.longitude)
+        tvCoords?.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", stop.latitude, stop.longitude)
         
         if (mapView != null) {
             mapView.setMultiTouchControls(true)
@@ -66,7 +68,7 @@ class StopEditFragment : Fragment() {
             
             mapView.addMapListener(object : org.osmdroid.events.MapListener {
                 override fun onScroll(event: org.osmdroid.events.ScrollEvent?): Boolean {
-                    updateLocation(mapView.mapCenter as GeoPoint, tvCoords, etName)
+                    updateLocation(mapPickerCenter(mapView), tvCoords, etName)
                     return true
                 }
                 override fun onZoom(event: org.osmdroid.events.ZoomEvent?): Boolean = false
@@ -74,16 +76,20 @@ class StopEditFragment : Fragment() {
         }
 
         btnMyLocation?.setOnClickListener {
-            goToCurrentLocation(mapView)
+            if (mapView != null) {
+                goToCurrentLocation(mapView)
+            }
         }
 
         btnSmartFill?.setOnClickListener {
-            autoFillStopName(etName)
+            if (etName != null) {
+                autoFillStopName(etName)
+            }
         }
 
-        view.findViewById<View>(R.id.btnCancelEditStop).setOnClickListener { (requireActivity() as? AdminHome)?.loadStops() }
-        view.findViewById<View>(R.id.btnSaveStopChanges).setOnClickListener {
-            val newName = etName.text.toString().trim()
+        view.findViewById<View>(R.id.btnCancelEditStop)?.setOnClickListener { (requireActivity() as? AdminHome)?.loadStops() }
+        view.findViewById<View>(R.id.btnSaveStopChanges)?.setOnClickListener {
+            val newName = etName?.text?.toString()?.trim() ?: ""
             if (newName.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter a stop name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -100,26 +106,44 @@ class StopEditFragment : Fragment() {
         }
     }
 
-    private fun updateLocation(point: GeoPoint, tvCoords: TextView, etName: EditText) {
+    private fun mapPickerCenter(map: MapView): GeoPoint {
+        return map.mapCenter as GeoPoint
+    }
+
+    private fun updateLocation(point: GeoPoint, tvCoords: TextView?, etName: EditText?) {
         currentPoint = point
-        tvCoords.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", point.latitude, point.longitude)
+        tvCoords?.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", point.latitude, point.longitude)
         
-        if (etName.text.isEmpty()) {
+        if (etName != null && etName.text.isEmpty()) {
             try {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
-                    if (streetName.isNotEmpty()) {
-                        etName.hint = "Suggested: $streetName"
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(point.latitude, point.longitude, 1) { addresses ->
+                        if (addresses.isNotEmpty()) {
+                            val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
+                            if (streetName.isNotEmpty()) {
+                                etName.post { etName.hint = "Suggested: $streetName" }
+                            }
+                        }
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1)
+                    if (!addresses.isNullOrEmpty()) {
+                        val streetName = addresses[0].thoroughfare ?: addresses[0].featureName ?: ""
+                        if (streetName.isNotEmpty()) {
+                            etName.hint = "Suggested: $streetName"
+                        }
                     }
                 }
-            } catch (e: Exception) {}
+            } catch (_: Exception) {}
         }
     }
 
-    private fun goToCurrentLocation(map: MapView?) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    @SuppressLint("MissingPermission")
+    private fun goToCurrentLocation(map: MapView) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
             return
         }
@@ -128,11 +152,13 @@ class StopEditFragment : Fragment() {
         val location: Location? = try {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) 
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        } catch (e: Exception) {
+        } catch (_: SecurityException) {
+            null
+        } catch (_: Exception) {
             null
         }
 
-        if (location != null && map != null) {
+        if (location != null) {
             val userPoint = GeoPoint(location.latitude, location.longitude)
             map.controller.animateTo(userPoint)
             map.controller.setZoom(18.0)
@@ -144,17 +170,30 @@ class StopEditFragment : Fragment() {
     private fun autoFillStopName(etName: EditText) {
         try {
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            val addresses = geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                val streetName = address.thoroughfare ?: address.featureName ?: ""
-                if (streetName.isNotEmpty()) {
-                    etName.setText(streetName)
-                } else {
-                    Toast.makeText(requireContext(), "No street name found here", Toast.LENGTH_SHORT).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1) { addresses ->
+                    if (addresses.isNotEmpty()) {
+                        val address = addresses[0]
+                        val streetName = address.thoroughfare ?: address.featureName ?: ""
+                        if (streetName.isNotEmpty()) {
+                            etName.post { etName.setText(streetName) }
+                        }
+                    }
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(currentPoint.latitude, currentPoint.longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    val streetName = address.thoroughfare ?: address.featureName ?: ""
+                    if (streetName.isNotEmpty()) {
+                        etName.setText(streetName)
+                    } else {
+                        Toast.makeText(requireContext(), "No street name found here", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(requireContext(), "Geocoding failed", Toast.LENGTH_SHORT).show()
         }
     }
