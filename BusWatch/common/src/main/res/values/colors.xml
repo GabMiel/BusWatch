@@ -38,6 +38,7 @@
     <color name="nav_background">#373636</color>
     <color name="nav_inactive">#A99E9E</color>
     <color name="text_white_secondary">#FDFDFD</color>
+    <color name="accent_blue">#2196F3</color>
 
     <!-- Accessibility improved colors -->
     <color name="accessible_error_red">#D32F2F</color>

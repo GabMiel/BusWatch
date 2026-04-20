@@ -6,10 +6,12 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -22,11 +24,14 @@ class Map : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var childName: String? = null
+    
+    private var busListener: ListenerRegistration? = null
+    private var isMapMaximized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Configure osmdroid safely for SDK 30+
+        // Configure osmdroid
         val ctx = applicationContext
         val config = Configuration.getInstance()
         config.userAgentValue = ctx.packageName
@@ -49,12 +54,10 @@ class Map : AppCompatActivity() {
 
         val mapController = map.controller
         mapController.setZoom(15.0)
+        mapController.setCenter(GeoPoint(14.5995, 120.9842))
 
-        // Center on Manila (Placeholder)
-        val startPoint = GeoPoint(14.5995, 120.9842)
-        mapController.setCenter(startPoint)
-
-        fetchDriverAndBusData()
+        setupMaximizeButton()
+        fetchInitialData()
 
         // Back button
         findViewById<ImageButton>(R.id.btnMapBack).setOnClickListener {
@@ -73,7 +76,21 @@ class Map : AppCompatActivity() {
         }
     }
 
-    private fun fetchDriverAndBusData() {
+    private fun setupMaximizeButton() {
+        val btnMaximize = findViewById<ImageButton>(R.id.btnMaximizeMap)
+        val banner = findViewById<View>(R.id.bannerNextStop)
+        val bottomInfo = findViewById<View>(R.id.layoutBottomInfo)
+
+        btnMaximize?.setOnClickListener {
+            isMapMaximized = !isMapMaximized
+            banner?.isVisible = !isMapMaximized
+            bottomInfo?.isVisible = !isMapMaximized
+            
+            btnMaximize.setImageResource(if (isMapMaximized) CommonR.drawable.ic_close else CommonR.drawable.ic_eye)
+        }
+    }
+
+    private fun fetchInitialData() {
         val uid = auth.currentUser?.uid ?: return
 
         db.collection("parents").document(uid).get()
@@ -82,19 +99,29 @@ class Map : AppCompatActivity() {
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
                     val assignedBusId = childMap?.get("assignedBus") as? String ?: "Bus 001"
-                    
-                    db.collection("buses").document(assignedBusId).get()
-                        .addOnSuccessListener { busDoc ->
-                            if (busDoc.exists()) {
-                                val driverName = busDoc.getString("driverName") ?: "Mike Johnson"
-                                val busNo = busDoc.getString("busNumber") ?: assignedBusId
-                                findViewById<TextView>(R.id.tvDriverName).text = driverName
-                                
-                                val statusText = getString(CommonR.string.bus_driver_bus_001).replace("BUS-001", busNo)
-                                findViewById<TextView>(R.id.tvBusStatus).text = statusText
-                            }
-                        }
+                    startRealTimeBusUpdates(assignedBusId)
                 }
+            }
+    }
+
+    private fun startRealTimeBusUpdates(busId: String) {
+        busListener?.remove()
+        busListener = db.collection("buses").document(busId)
+            .addSnapshotListener { doc, error ->
+                if (error != null || doc == null || !doc.exists()) return@addSnapshotListener
+
+                val driverName = doc.getString("driverName") ?: "---"
+                val busNo = doc.getString("busNumber") ?: busId
+                
+                findViewById<TextView>(R.id.tvDriverName).text = driverName
+                findViewById<TextView>(R.id.tvBusStatus).text = "Bus Driver ($busNo)"
+                
+                // Optional: Update next stop if available in bus document
+                val nextStop = doc.getString("nextStop") ?: "Calculating..."
+                findViewById<TextView>(R.id.tvNextStopName).text = nextStop
+                
+                val eta = doc.getString("eta") ?: "-- MINS"
+                findViewById<TextView>(R.id.tvETA).text = eta
             }
     }
 
@@ -106,5 +133,10 @@ class Map : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         map.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        busListener?.remove()
     }
 }

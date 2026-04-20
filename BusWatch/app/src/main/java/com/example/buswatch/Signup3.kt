@@ -16,15 +16,17 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import java.io.Serializable
 
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
     
     private var selectedCountryCode1 = "+63"
     private var selectedCountryCode2 = "+63"
@@ -52,11 +54,6 @@ class Signup3 : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        storage = FirebaseStorage.getInstance()
-
-        val childFirstName = intent.getStringExtra("childFirstName") ?: "Child"
-        val childLastName = intent.getStringExtra("childLastName") ?: "Name"
-        findViewById<TextView>(R.id.tvChildNameDisplay).text = getString(CommonR.string.medical_information_for_child_s_name, childFirstName, childLastName)
 
         etContact1Name = findViewById(R.id.editTextText17)
         etEmergencyPhone1 = findViewById(R.id.etEmergencyPhone1)
@@ -321,7 +318,7 @@ class Signup3 : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
-                        uploadImagesAndSaveData(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation)
+                        uploadImagesToCloudinary(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation)
                     }
                 } else {
                     findViewById<Button>(R.id.btnSignup3Register).isEnabled = true
@@ -330,25 +327,25 @@ class Signup3 : AppCompatActivity() {
             }
     }
 
-    private fun uploadImagesAndSaveData(
+    private fun uploadImagesToCloudinary(
         uid: String,
         c1Name: String, c1Phone: String, c1Relation: String,
         c2Name: String, c2Phone: String, c2Relation: String
     ) {
-        val primaryAvatarUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("childAvatarUri", Uri::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("childAvatarUri")
-        }
-        
         val parentAvatarUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("parentAvatarUri", Uri::class.java)
         } else {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra("parentAvatarUri")
         }
-        
+
+        val primaryChildAvatarUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("childAvatarUri", Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("childAvatarUri")
+        }
+
         @Suppress("UNCHECKED_CAST")
         val additionalChildren = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("additionalChildren", ArrayList::class.java)
@@ -357,18 +354,17 @@ class Signup3 : AppCompatActivity() {
             intent.getSerializableExtra("additionalChildren")
         } as? ArrayList<HashMap<String, Any?>> ?: arrayListOf()
 
-        val uploadTasks = mutableListOf<Pair<String, Uri>>()
+        val uploadQueue = mutableListOf<Pair<String, Uri>>()
         val uploadedUrls = mutableMapOf<String, String>()
 
-        if (parentAvatarUri != null) uploadTasks.add("parentAvatar" to parentAvatarUri)
-        if (primaryAvatarUri != null) uploadTasks.add("primaryAvatar" to primaryAvatarUri)
-        
+        parentAvatarUri?.let { uploadQueue.add("parent" to it) }
+        primaryChildAvatarUri?.let { uploadQueue.add("child_0" to it) }
         additionalChildren.forEachIndexed { index, child ->
-            val uri = child["childAvatarUri"] as? Uri
-            if (uri != null) uploadTasks.add("child_${index}_avatar" to uri)
+            val uri = child["childAvatarUri"] as? Uri ?: (child["childAvatarUri"] as? String)?.let { Uri.parse(it) }
+            uri?.let { uploadQueue.add("child_${index + 1}" to it) }
         }
 
-        if (uploadTasks.isEmpty()) {
+        if (uploadQueue.isEmpty()) {
             saveUserData(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, emptyMap())
             return
         }
@@ -376,25 +372,34 @@ class Signup3 : AppCompatActivity() {
         var completedCount = 0
         Toast.makeText(this, "Uploading photos...", Toast.LENGTH_SHORT).show()
 
-        uploadTasks.forEach { (key, uri) ->
-            val path = "parents/$uid/avatars/$key.jpg"
-            val ref = storage.reference.child(path)
-            
-            ref.putFile(uri)
-                .continueWithTask { task ->
-                    if (!task.isSuccessful) task.exception?.let { throw it }
-                    ref.downloadUrl
-                }
-                .addOnCompleteListener { task ->
-                    completedCount++
-                    if (task.isSuccessful) {
-                        uploadedUrls[key] = task.result.toString()
+        uploadQueue.forEach { (key, uri) ->
+            MediaManager.get().upload(uri)
+                .unsigned("buswatch_unsigned")
+                .option("folder", "parents/$uid")
+                .option("public_id", key)
+                .callback(object : UploadCallback {
+                    override fun onStart(requestId: String) {}
+                    override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                    override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                        val url = resultData["secure_url"] as? String ?: ""
+                        synchronized(uploadedUrls) {
+                            uploadedUrls[key] = url
+                            completedCount++
+                            if (completedCount == uploadQueue.size) {
+                                saveUserData(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, uploadedUrls)
+                            }
+                        }
                     }
-                    
-                    if (completedCount == uploadTasks.size) {
-                        saveUserData(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, uploadedUrls)
+                    override fun onError(requestId: String, error: ErrorInfo) {
+                        synchronized(uploadedUrls) {
+                            completedCount++
+                            if (completedCount == uploadQueue.size) {
+                                saveUserData(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation, uploadedUrls)
+                            }
+                        }
                     }
-                }
+                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                }).dispatch()
         }
     }
 
@@ -412,7 +417,7 @@ class Signup3 : AppCompatActivity() {
             "email" to (intent.getStringExtra("email") ?: ""),
             "phone" to (intent.getStringExtra("phone") ?: ""),
             "preferredLanguage" to (intent.getStringExtra("preferredLanguage") ?: "English"),
-            "parentAvatarUrl" to (uploadedUrls["parentAvatar"] ?: "")
+            "parentAvatarUrl" to (uploadedUrls["parent"] ?: "")
         )
 
         val userData = hashMapOf<String, Any>(
@@ -431,7 +436,7 @@ class Signup3 : AppCompatActivity() {
                 "address" to (intent.getStringExtra("childAddress") ?: ""),
                 "latitude" to intent.getDoubleExtra("childLatitude", 0.0),
                 "longitude" to intent.getDoubleExtra("childLongitude", 0.0),
-                "childAvatarUrl" to (uploadedUrls["primaryAvatar"] ?: ""),
+                "childAvatarUrl" to (uploadedUrls["child_0"] ?: ""),
                 "status" to "AT HOME",
                 "stop" to ""
             ),
@@ -452,7 +457,7 @@ class Signup3 : AppCompatActivity() {
         if (additionalChildren != null && additionalChildren.isNotEmpty()) {
             val updatedChildren = additionalChildren.mapIndexed { index, child ->
                 val newChild = HashMap(child)
-                newChild["childAvatarUrl"] = uploadedUrls["child_${index}_avatar"] ?: ""
+                newChild["childAvatarUrl"] = uploadedUrls["child_${index + 1}"] ?: ""
                 newChild["status"] = "AT HOME"
                 if (newChild.containsKey("section")) newChild["class"] = newChild["section"]
                 newChild

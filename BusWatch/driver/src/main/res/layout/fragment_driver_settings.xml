@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <!-- Top Status Bar (Matched with App Settings) -->
+    <!-- Top Status Bar -->
     <View
         android:id="@+id/statusBarBg"
         android:layout_width="0dp"
@@ -15,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Header Section (Matched with App Settings style) -->
+    <!-- Header Section -->
     <View
         android:id="@+id/headerBackground"
         android:layout_width="0dp"
@@ -27,12 +28,12 @@
 
     <ImageButton
         android:id="@+id/btnBackSettings"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="24dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_back"
         android:contentDescription="@string/back_button"
+        android:src="@drawable/ic_back"
         app:layout_constraintBottom_toBottomOf="@id/headerBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/headerBackground"
@@ -42,7 +43,7 @@
         android:id="@+id/tvSettingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
         android:text="@string/settings"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="32dp">
 
-            <!-- Preferred Language Section (General) -->
+            <!-- General Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardGeneral"
                 android:layout_width="0dp"
@@ -79,7 +80,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/ivGeneralIcon"
+                    android:id="@+id/ivLanguageIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:contentDescription="@string/language_icon"
@@ -96,9 +97,9 @@
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/ivGeneralIcon"
-                    app:layout_constraintStart_toEndOf="@+id/ivGeneralIcon"
-                    app:layout_constraintTop_toTopOf="@+id/ivGeneralIcon" />
+                    app:layout_constraintBottom_toBottomOf="@+id/ivLanguageIcon"
+                    app:layout_constraintStart_toEndOf="@+id/ivLanguageIcon"
+                    app:layout_constraintTop_toTopOf="@+id/ivLanguageIcon" />
 
                 <TextView
                     android:id="@+id/tvLanguageLabel"
@@ -110,7 +111,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivGeneralIcon" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivLanguageIcon" />
 
                 <FrameLayout
                     android:id="@+id/btnSettingsLanguage"
@@ -143,6 +144,7 @@
                         android:src="@drawable/ic_chevron_down"
                         app:tint="#888888" />
                 </FrameLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Security Section -->
@@ -315,6 +317,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Account Container -->
         <LinearLayout
             android:id="@+id/containerNavAccount"
             android:layout_width="0dp"
@@ -325,6 +328,7 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
+
             <ImageButton
                 android:id="@+id/btnNavAccount"
                 android:layout_width="28dp"
@@ -334,6 +338,7 @@
                 android:src="@drawable/ic_nav_account"
                 app:tint="@color/nav_inactive"
                 android:clickable="false" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -342,6 +347,7 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
+        <!-- Home Container -->
         <LinearLayout
             android:id="@+id/containerNavHome"
             android:layout_width="0dp"
@@ -352,15 +358,16 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
+
             <ImageButton
                 android:id="@+id/btnNavHome"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@null"
                 android:contentDescription="@string/home"
-                android:src="@drawable/ic_nav_home"
-                app:tint="@color/nav_inactive"
+                android:src="@drawable/ic_nav_home_gray"
                 android:clickable="false" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -369,6 +376,7 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
+        <!-- Settings Container (Active) -->
         <LinearLayout
             android:id="@+id/containerNavSettings"
             android:layout_width="0dp"
@@ -379,27 +387,30 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
+
             <ImageButton
                 android:id="@+id/btnNavSettings"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@null"
                 android:contentDescription="@string/settings"
-                android:src="@drawable/ic_nav_settings"
-                app:tint="@color/yellow_primary"
+                android:src="@drawable/ic_nav_settings_yellow"
                 android:clickable="false" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"
                 android:textColor="@color/yellow_primary"
                 android:textSize="11sp" />
+
             <View
                 android:layout_width="20dp"
                 android:layout_height="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/yellow_primary" />
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

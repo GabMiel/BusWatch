@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.glide)
 
+    // Cloudinary
+    implementation(libs.cloudinary.android)
+
     // OSM
     implementation(libs.osmdroid.android)
 

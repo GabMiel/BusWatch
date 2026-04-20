@@ -41,6 +41,7 @@ class StudentHomeAdapter(
         val name: TextView = view.findViewById(R.id.tvStudentName)
         val grade: TextView = view.findViewById(R.id.tvStudentGrade)
         val school: TextView = view.findViewById(R.id.tvStudentSchool)
+        val stop: TextView = view.findViewById(R.id.tvStudentStop)
         val status: TextView = view.findViewById(R.id.tvStudentStatus)
         val avatar: ImageView = view.findViewById(R.id.imgStudent)
         val spinner: Spinner = view.findViewById(R.id.spinnerRideOption)
@@ -65,6 +66,7 @@ class StudentHomeAdapter(
         holder.name.text = student.name
         holder.grade.text = student.grade
         holder.school.text = student.school
+        holder.stop.text = "Stop: ${student.stop}"
         holder.status.text = student.status
         
         // Use Glide for avatar loading

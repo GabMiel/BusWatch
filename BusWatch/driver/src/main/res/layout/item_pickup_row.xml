@@ -30,10 +30,10 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/tvPickupDistance"
+        android:id="@+id/tvStudentGrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/_50_meters_away"
+        android:text="Grade 1"
         android:textColor="@color/gray_text"
         android:textSize="11sp"
         android:layout_marginEnd="10dp"/>

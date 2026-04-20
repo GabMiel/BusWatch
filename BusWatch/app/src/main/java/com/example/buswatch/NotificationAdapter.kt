@@ -1,11 +1,13 @@
 package com.example.buswatch
 
+import android.content.res.ColorStateList
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
@@ -50,21 +52,13 @@ class NotificationAdapter(
         
         holder.unreadIndicator.visibility = if (item.isRead) View.GONE else View.VISIBLE
         
-        // Dynamic icon based on type or content
-        when {
-            item.title.contains("Approved", ignoreCase = true) -> {
-                holder.icon.setImageResource(CommonR.drawable.ic_check)
-                holder.icon.backgroundTintList = holder.itemView.context.getColorStateList(android.R.color.holo_green_light)
-            }
-            item.title.contains("Rejected", ignoreCase = true) -> {
-                holder.icon.setImageResource(CommonR.drawable.ic_close)
-                holder.icon.backgroundTintList = holder.itemView.context.getColorStateList(android.R.color.holo_red_light)
-            }
-            else -> {
-                holder.icon.setImageResource(CommonR.drawable.ic_search)
-                holder.icon.backgroundTintList = holder.itemView.context.getColorStateList(CommonR.color.yellow_primary)
-            }
-        }
+        // Consistent yellow theme for most notifications
+        val yellowColor = ContextCompat.getColor(holder.itemView.context, CommonR.color.yellow_primary)
+        val lightYellowColor = ContextCompat.getColor(holder.itemView.context, CommonR.color.yellow_light)
+        
+        holder.icon.setImageResource(CommonR.drawable.bell)
+        holder.icon.imageTintList = ColorStateList.valueOf(yellowColor)
+        holder.icon.backgroundTintList = ColorStateList.valueOf(lightYellowColor)
 
         holder.itemView.setOnClickListener { onNotificationClick(item) }
     }

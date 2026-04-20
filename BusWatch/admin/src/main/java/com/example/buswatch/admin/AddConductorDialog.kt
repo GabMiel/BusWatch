@@ -1,0 +1,349 @@
+package com.example.buswatch.admin
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.view.LayoutInflater
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import com.example.buswatch.common.R as CommonR
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+
+class AddConductorDialog(
+    private val activity: AppCompatActivity,
+    private val db: FirebaseFirestore,
+    private val onConductorAdded: () -> Unit
+) {
+    private var isPasswordVisible = false
+    private var isConfirmPasswordVisible = false
+    private var isPhoneFormatting = false
+    private var selectedCountryCode = "+63"
+    private var maxPhoneDigits = 10
+    private var selectedImageUri: Uri? = null
+    private lateinit var imgConductorPhoto: ImageView
+    
+    private val pickImageLauncher: ActivityResultLauncher<Intent> = 
+        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                selectedImageUri = result.data?.data
+                imgConductorPhoto.setImageURI(selectedImageUri)
+            }
+        }
+
+    fun show() {
+        val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_add_conductor, null)
+        val dialog = AlertDialog.Builder(activity).setView(dialogView).create()
+
+        imgConductorPhoto = dialogView.findViewById(R.id.imgConductorPhoto)
+        val frameConductorPhoto = dialogView.findViewById<FrameLayout>(R.id.frameConductorPhoto)
+        val etFirstName = dialogView.findViewById<EditText>(R.id.etFirstName)
+        val etMiddleName = dialogView.findViewById<EditText>(R.id.etMiddleName)
+        val etLastName = dialogView.findViewById<EditText>(R.id.etLastName)
+        val tvSuffix = dialogView.findViewById<TextView>(R.id.tvSuffix)
+        val etEmail = dialogView.findViewById<EditText>(R.id.etEmail)
+        val etContactNumber = dialogView.findViewById<EditText>(R.id.etContactNumber)
+        val etPassword = dialogView.findViewById<EditText>(R.id.etPassword)
+        val etConfirmPassword = dialogView.findViewById<EditText>(R.id.etConfirmPassword)
+        val tvLanguage = dialogView.findViewById<TextView>(R.id.tvLanguage)
+        val tvCountryCode = dialogView.findViewById<TextView>(R.id.tvCountryCode)
+
+        val tvFirstNameWarning = dialogView.findViewById<TextView>(R.id.tvFirstNameWarning)
+        val tvMiddleNameWarning = dialogView.findViewById<TextView>(R.id.tvMiddleNameWarning)
+        val tvLastNameWarning = dialogView.findViewById<TextView>(R.id.tvLastNameWarning)
+        val tvEmailWarning = dialogView.findViewById<TextView>(R.id.tvEmailWarning)
+        val tvPhoneWarning = dialogView.findViewById<TextView>(R.id.tvPhoneWarning)
+        val tvConfirmPasswordWarning = dialogView.findViewById<TextView>(R.id.tvConfirmPasswordWarning)
+
+        val btnViewPassword = dialogView.findViewById<ImageButton>(R.id.btnViewPassword)
+        val btnViewConfirmPassword = dialogView.findViewById<ImageButton>(R.id.btnViewConfirmPassword)
+
+        // Photo picker
+        frameConductorPhoto.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickImageLauncher.launch(intent)
+        }
+
+        // Character limits
+        etFirstName.filters = arrayOf(InputFilter.LengthFilter(50))
+        etLastName.filters = arrayOf(InputFilter.LengthFilter(50))
+        etMiddleName.filters = arrayOf(InputFilter.LengthFilter(20))
+
+        btnViewPassword.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            etPassword.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            btnViewPassword.setImageResource(if (isPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
+            etPassword.setSelection(etPassword.text.length)
+        }
+
+        btnViewConfirmPassword.setOnClickListener {
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            etConfirmPassword.transformationMethod = if (isConfirmPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            btnViewConfirmPassword.setImageResource(if (isConfirmPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
+            etConfirmPassword.setSelection(etConfirmPassword.text.length)
+        }
+
+        setupNameWatcher(etFirstName, tvFirstNameWarning)
+        setupNameWatcher(etLastName, tvLastNameWarning)
+        setupNameWatcher(etMiddleName, tvMiddleNameWarning)
+
+        etEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val email = s?.toString() ?: ""
+                val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                tvEmailWarning.isVisible = email.isNotEmpty() && !isValid
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        fun updatePhoneFilter() {
+            val spaces = when (selectedCountryCode) {
+                "+63", "+1", "+61", "+64", "+353" -> 2
+                "+44", "+65" -> 1
+                else -> 0
+            }
+            etContactNumber.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits + spaces))
+        }
+        updatePhoneFilter()
+
+        etContactNumber.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isPhoneFormatting || s == null) return
+                isPhoneFormatting = true
+                val digits = s.toString().replace(" ", "")
+                val formatted = StringBuilder()
+                when (selectedCountryCode) {
+                    "+63", "+1", "+64" -> {
+                        for (i in digits.indices) {
+                            formatted.append(digits[i])
+                            if ((i == 2 || i == 5) && i != digits.length - 1) formatted.append(" ")
+                        }
+                    }
+                    "+44" -> {
+                        for (i in digits.indices) {
+                            formatted.append(digits[i])
+                            if (i == 4 && i != digits.length - 1) formatted.append(" ")
+                        }
+                    }
+                    "+61" -> {
+                        for (i in digits.indices) {
+                            formatted.append(digits[i])
+                            if ((i == 2 || i == 5) && i != digits.length - 1) formatted.append(" ")
+                        }
+                    }
+                    "+65" -> {
+                        for (i in digits.indices) {
+                            formatted.append(digits[i])
+                            if (i == 3 && i != digits.length - 1) formatted.append(" ")
+                        }
+                    }
+                    "+353" -> {
+                        for (i in digits.indices) {
+                            formatted.append(digits[i])
+                            if ((i == 1 || i == 4) && i != digits.length - 1) formatted.append(" ")
+                        }
+                    }
+                    else -> formatted.append(digits)
+                }
+
+                if (formatted.toString() != s.toString()) {
+                    val selection = etContactNumber.selectionStart
+                    val oldLength = s.length
+                    s.replace(0, s.length, formatted.toString())
+                    val newLength = formatted.length
+                    val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
+                    etContactNumber.setSelection(newSelection)
+                }
+                isPhoneFormatting = false
+                tvPhoneWarning.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
+            }
+        })
+
+        dialogView.findViewById<FrameLayout>(R.id.btnCountryCode).setOnClickListener {
+            val countries = arrayOf("Philippines (+63)", "USA/Canada (+1)", "UK (+44)", "Australia (+61)", "New Zealand (+64)", "Singapore (+65)", "Ireland (+353)")
+            val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
+            val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
+            AlertDialog.Builder(activity)
+                .setTitle("Select Country Code")
+                .setItems(countries) { _, which ->
+                    selectedCountryCode = codes[which]
+                    maxPhoneDigits = lengths[which]
+                    tvCountryCode.text = selectedCountryCode
+                    etContactNumber.text.clear()
+                    updatePhoneFilter()
+                }.show()
+        }
+
+        dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown).setOnClickListener {
+            val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV")
+            AlertDialog.Builder(activity)
+                .setTitle("Select Suffix")
+                .setItems(suffixes) { _, which ->
+                    tvSuffix.text = suffixes[which]
+                    tvSuffix.setTextColor(Color.BLACK)
+                }.show()
+        }
+
+        dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown).setOnClickListener {
+            val languages = arrayOf("English", "Filipino (Inactive)")
+            AlertDialog.Builder(activity)
+                .setTitle("Select Language")
+                .setItems(languages) { _, which ->
+                    if (which == 0) {
+                        tvLanguage.text = "English"
+                        tvLanguage.setTextColor(Color.BLACK)
+                    } else {
+                        Toast.makeText(activity, "Filipino is currently unavailable", Toast.LENGTH_SHORT).show()
+                    }
+                }.show()
+        }
+
+        dialogView.findViewById<ImageButton>(R.id.btnCloseAddConductor).setOnClickListener { dialog.dismiss() }
+
+        dialogView.findViewById<TextView>(R.id.btnSaveConductor).setOnClickListener {
+            val firstName = etFirstName.text.toString().trim()
+            val middleName = etMiddleName.text.toString().trim()
+            val lastName = etLastName.text.toString().trim()
+            val email = etEmail.text.toString().trim()
+            val phone = etContactNumber.text.toString().replace(" ", "")
+            val password = etPassword.text.toString().trim()
+            val confirmPassword = etConfirmPassword.text.toString().trim()
+            val language = tvLanguage.text.toString()
+
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
+                Toast.makeText(activity, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$".toRegex()
+            if (!password.matches(passwordRegex)) {
+                Toast.makeText(activity, "Password must be at least 8 characters with 1 uppercase and 1 number", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (password != confirmPassword) {
+                tvConfirmPasswordWarning.isVisible = true
+                Toast.makeText(activity, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            db.collection("conductors").whereEqualTo("email", email).get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        tvEmailWarning.text = "Email address already registered"
+                        tvEmailWarning.isVisible = true
+                    } else {
+                        registerConductorAccount(email, password, firstName, middleName, lastName, tvSuffix.text.toString(), phone, selectedCountryCode, language, dialog)
+                    }
+                }
+        }
+        dialog.show()
+    }
+
+    private fun registerConductorAccount(email: String, pass: String, fName: String, mName: String, lName: String, suffix: String, phone: String, countryCode: String, lang: String, dialog: AlertDialog) {
+        val options = com.google.firebase.FirebaseApp.getInstance().options
+        val secondaryApp = try {
+            com.google.firebase.FirebaseApp.initializeApp(activity, options, "SecondaryConductor")
+        } catch (e: Exception) {
+            com.google.firebase.FirebaseApp.getInstance("SecondaryConductor")
+        }
+        val secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
+
+        secondaryAuth.createUserWithEmailAndPassword(email, pass)
+            .addOnSuccessListener { authResult ->
+                val uid = authResult.user?.uid ?: return@addOnSuccessListener
+                
+                if (selectedImageUri != null) {
+                    uploadPhotoToCloudinary(uid) { avatarUrl ->
+                        saveConductorToFirestore(uid, email, fName, mName, lName, suffix, phone, countryCode, lang, avatarUrl, secondaryAuth, dialog)
+                    }
+                } else {
+                    saveConductorToFirestore(uid, email, fName, mName, lName, suffix, phone, countryCode, lang, "", secondaryAuth, dialog)
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(activity, "Auth Error: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun uploadPhotoToCloudinary(uid: String, onComplete: (String) -> Unit) {
+        selectedImageUri?.let { uri ->
+            MediaManager.get().upload(uri)
+                .unsigned("buswatch_unsigned")
+                .option("folder", "conductors/$uid")
+                .option("public_id", "avatar")
+                .callback(object : UploadCallback {
+                    override fun onStart(requestId: String) {}
+                    override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                    override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                        onComplete(resultData["secure_url"] as? String ?: "")
+                    }
+                    override fun onError(requestId: String, error: ErrorInfo) {
+                        onComplete("")
+                    }
+                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                }).dispatch()
+        }
+    }
+
+    private fun saveConductorToFirestore(uid: String, email: String, fName: String, mName: String, lName: String, suffix: String, phone: String, countryCode: String, lang: String, avatarUrl: String, auth: FirebaseAuth, dialog: AlertDialog) {
+        val conductorData = hashMapOf(
+            "firstName" to fName,
+            "middleName" to mName,
+            "lastName" to lName,
+            "suffix" to (if (suffix == "None" || suffix == "Suffix") "" else suffix),
+            "email" to email,
+            "phone" to "$countryCode $phone",
+            "preferredLanguage" to lang,
+            "conductorAvatar" to avatarUrl,
+            "status" to "active",
+            "role" to "Conductor",
+            "createdAt" to com.google.firebase.Timestamp.now()
+        )
+
+        db.collection("conductors").document(uid).set(conductorData)
+            .addOnSuccessListener {
+                auth.signOut()
+                Toast.makeText(activity, "Conductor added successfully", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                onConductorAdded()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(activity, "Firestore Error: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun setupNameWatcher(editText: EditText, warningView: TextView) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val input = s?.toString() ?: ""
+                warningView.isVisible = input.isNotEmpty() && !input.matches(Regex("^[a-zA-Z\\s.-]*$"))
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+}

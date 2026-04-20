@@ -1,350 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="#F5F5F5">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Header Section -->
+    <RelativeLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="40dp">
-
-        <View
-            android:id="@+id/headerBg"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:background="@drawable/rectangle_shape_gray_sharp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="64dp"
+        android:background="@color/dark_header"
+        android:paddingHorizontal="8dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnBusBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="34dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back_button"
-            android:scaleType="fitCenter"
-            android:src="@drawable/arrow"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#FFFFFF" />
+            android:src="@drawable/ic_back"
+            app:tint="@color/white" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/tvHeaderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/btnBusBack"
             android:text="@string/bus_details"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btnBusBack"
-            app:layout_constraintStart_toEndOf="@+id/btnBusBack"
-            app:layout_constraintTop_toTopOf="@+id/btnBusBack" />
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-        <!-- Bus Information Section -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardBusInfo"
-            android:layout_width="0dp"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/rectangle_shape"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/headerBg">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/imageView25"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="@string/bus_icon"
-                android:src="@drawable/bus"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <!-- Bus Information Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_details_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/bus_information"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02" />
+
+                <!-- Bus Number Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/bus_number" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp" />
+                    <TextView
+                        android:id="@+id/valBusNo"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+
+                <!-- Status and Capacity -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="16dp"
+                    android:baselineAligned="false">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:layout_marginEnd="8dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/status" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp" />
+                        <TextView android:id="@+id/valStatus"
+                            android:layout_width="match_parent" android:layout_height="48dp"
+                            android:background="@drawable/rectangle_hollow_with_shadow"
+                            android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                            android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/capacity" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp" />
+                        <TextView android:id="@+id/valCap"
+                            android:layout_width="match_parent" android:layout_height="48dp"
+                            android:background="@drawable/rectangle_hollow_with_shadow"
+                            android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                            android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Students and Seats -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:layout_marginEnd="8dp" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/total_of_students" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp" />
+                        <TextView android:id="@+id/valTotalStuds"
+                            android:layout_width="match_parent" android:layout_height="48dp"
+                            android:background="@drawable/rectangle_hollow_with_shadow"
+                            android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                            android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/available_seats" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp" />
+                        <TextView android:id="@+id/valSeats"
+                            android:layout_width="match_parent" android:layout_height="48dp"
+                            android:background="@drawable/rectangle_hollow_with_shadow"
+                            android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                            android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Driver Information Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_details_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/driver_information"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02" />
+
+                <!-- Driver Name Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Driver Name" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp,HardcodedText" />
+                    <TextView
+                        android:id="@+id/valName"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+
+                <!-- Phone Number Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/phone_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp" />
+                    <TextView
+                        android:id="@+id/tvDriverPhone"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+
+                <!-- Email Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/email" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp" />
+                    <TextView
+                        android:id="@+id/tvDriverEmail"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+
+                <!-- License Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/license_number" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp" />
+                    <TextView
+                        android:id="@+id/tvDriverLicense"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/textView96"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="@string/bus_information"
-                android:textColor="#050505"
+                android:id="@+id/btnBackAction"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="32dp"
+                android:text="BACK"
+                android:textColor="#000000"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView25"
-                app:layout_constraintStart_toEndOf="@+id/imageView25"
-                app:layout_constraintTop_toTopOf="@+id/imageView25" />
+                android:gravity="center"
+                android:letterSpacing="0.08"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:clickable="true"
+                android:focusable="true"
+                tools:ignore="HardcodedText" />
 
-            <!-- Labels and Values Row 1 -->
-            <TextView
-                android:id="@+id/labelBusNo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/bus_number"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView25"
-                app:layout_constraintWidth_percent="0.45" />
-
-            <TextView
-                android:id="@+id/labelTotalStuds"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/total_of_students"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/labelBusNo"
-                app:layout_constraintTop_toTopOf="@+id/labelBusNo"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:id="@+id/valBusNo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bus_001"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/labelBusNo"
-                app:layout_constraintTop_toBottomOf="@+id/labelBusNo" />
-
-            <TextView
-                android:id="@+id/valTotalStuds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_28_students"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/labelTotalStuds"
-                app:layout_constraintTop_toBottomOf="@+id/labelTotalStuds" />
-
-            <!-- Labels and Values Row 2 -->
-            <TextView
-                android:id="@+id/labelStatus"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/status"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/valBusNo"
-                app:layout_constraintWidth_percent="0.45" />
-
-            <TextView
-                android:id="@+id/labelSeats"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/available_seats"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/labelStatus"
-                app:layout_constraintTop_toTopOf="@+id/labelStatus"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:id="@+id/valStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/rectangle_shape"
-                android:backgroundTint="#F8DC98"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:text="@string/active"
-                android:textColor="#944600"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/labelStatus"
-                app:layout_constraintTop_toBottomOf="@+id/labelStatus" />
-
-            <TextView
-                android:id="@+id/valSeats"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_12_seats"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/labelSeats"
-                app:layout_constraintTop_toBottomOf="@+id/labelSeats" />
-
-            <!-- Capacity Row -->
-            <TextView
-                android:id="@+id/labelCap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/capacity"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/valStatus" />
-
-            <TextView
-                android:id="@+id/valCap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_40_students"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/labelCap"
-                app:layout_constraintTop_toBottomOf="@+id/labelCap" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Driver Information Section -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cardDriver"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/rectangle_shape"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardBusInfo">
-
-            <ImageView
-                android:id="@+id/imageView26"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="@string/user_icon"
-                android:src="@drawable/user"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView115"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="@string/driver_information"
-                android:textColor="#050505"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-                app:layout_constraintStart_toEndOf="@+id/imageView26"
-                app:layout_constraintTop_toTopOf="@+id/imageView26" />
-
-            <ImageView
-                android:id="@+id/imgAvatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/driver_avatar"
-                android:scaleType="centerCrop"
-                android:src="@drawable/user"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView26" />
-
-            <!-- Reverted Driver Details side column -->
-            <TextView
-                android:id="@+id/textView117"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/email"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/imgAvatar"
-                app:layout_constraintTop_toTopOf="@+id/imgAvatar" />
-
-            <TextView
-                android:id="@+id/textView118"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/john_smith_school_com"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView117"
-                app:layout_constraintTop_toBottomOf="@+id/textView117" />
-
-            <TextView
-                android:id="@+id/textView119"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/phone"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/textView117"
-                app:layout_constraintTop_toBottomOf="@+id/textView118" />
-
-            <TextView
-                android:id="@+id/textView120"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_555_0101"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/textView119"
-                app:layout_constraintTop_toBottomOf="@+id/textView119" />
-
-            <TextView
-                android:id="@+id/textView121"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/license_number"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/textView117"
-                app:layout_constraintTop_toBottomOf="@+id/textView120" />
-
-            <TextView
-                android:id="@+id/textView122"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dl123456"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/textView121"
-                app:layout_constraintTop_toBottomOf="@+id/textView121" />
-
-            <!-- Name Label and Value -->
-            <TextView
-                android:id="@+id/labelName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/name"
-                android:textColor="#666666"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imgAvatar" />
-
-            <TextView
-                android:id="@+id/valName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mike_johnson"
-                android:textColor="#050505"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelName" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ playServicesMapsVersion = "20.0.0"
 firebaseBom = "34.11.0"
 googleServices = "4.4.4"
 glide = "5.0.5"
+cloudinary = "3.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+cloudinary-android = { group = "com.cloudinary", name = "cloudinary-android", version.ref = "cloudinary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -218,10 +218,10 @@ class Signup1 : AppCompatActivity() {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
             AlertDialog.Builder(this)
                 .setTitle("Select Suffix")
-                .setItems(suffixes) { _, which ->
-                    selectedSuffix = if (which == 0) "" else suffixes[which]
-                    tvSelectedSuffix.text = if (which == 0) getString(CommonR.string.suffix) else suffixes[which]
-                    tvSelectedSuffix.setTextColor(if (which == 0) "#888888".toColorInt() else Color.BLACK)
+                .setItems(suffixes) { _, pos ->
+                    selectedSuffix = if (pos == 0) "" else suffixes[pos]
+                    tvSelectedSuffix.text = if (pos == 0) getString(CommonR.string.suffix) else suffixes[pos]
+                    tvSelectedSuffix.setTextColor(if (pos == 0) "#888888".toColorInt() else Color.BLACK)
                 }
                 .show()
         }
@@ -302,18 +302,18 @@ class Signup1 : AppCompatActivity() {
                 }
 
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    tvEmailWarning.text = "Invalid email format"
+                    tvEmailWarning.text = getString(CommonR.string.invalid_email_format)
                     tvEmailWarning.setTextColor(Color.RED)
                     tvEmailWarning.visibility = View.VISIBLE
                     isEmailValid = false
                 } else {
-                    tvEmailWarning.text = "Checking availability..."
+                    tvEmailWarning.text = getString(CommonR.string.checking_availability)
                     tvEmailWarning.setTextColor(Color.GRAY)
                     tvEmailWarning.visibility = View.VISIBLE
                     
                     emailValidationJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(500) // Debounce
-                        checkEmailUniqueness(email)
+                        delay(600) // Debounce
+                        checkEmailAvailability(email)
                     }
                 }
             }
@@ -321,24 +321,54 @@ class Signup1 : AppCompatActivity() {
         })
     }
 
-    private fun checkEmailUniqueness(email: String) {
-        db.collection("parents")
-            .whereEqualTo("profile.email", email)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    tvEmailWarning.text = "Email is already registered"
-                    tvEmailWarning.setTextColor(Color.RED)
-                    isEmailValid = false
+    private fun checkEmailAvailability(email: String) {
+        // First check Auth (real-time availability in Firebase Auth)
+        auth.fetchSignInMethodsForEmail(email)
+            .addOnCompleteListener { authTask ->
+                if (authTask.isSuccessful) {
+                    val isAuthUsed = authTask.result?.signInMethods?.isNotEmpty() ?: false
+                    if (isAuthUsed) {
+                        tvEmailWarning.text = getString(CommonR.string.email_already_registered)
+                        tvEmailWarning.setTextColor(Color.RED)
+                        isEmailValid = false
+                    } else {
+                        // Then check Firestore for "pending" or "approved" parents
+                        db.collection("parents")
+                            .whereEqualTo("profile.email", email)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (!documents.isEmpty) {
+                                    tvEmailWarning.text = getString(CommonR.string.email_already_registered)
+                                    tvEmailWarning.setTextColor(Color.RED)
+                                    isEmailValid = false
+                                } else {
+                                    tvEmailWarning.text = getString(CommonR.string.email_available)
+                                    tvEmailWarning.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
+                                    isEmailValid = true
+                                }
+                            }
+                            .addOnFailureListener {
+                                // If Firestore check fails, but Auth is clear, we cautiously allow
+                                tvEmailWarning.visibility = View.GONE
+                                isEmailValid = true
+                            }
+                    }
                 } else {
-                    tvEmailWarning.text = "Email is available"
-                    tvEmailWarning.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
-                    isEmailValid = true
+                    // Fallback to Firestore only if fetchSignInMethods fails
+                    db.collection("parents")
+                        .whereEqualTo("profile.email", email)
+                        .get()
+                        .addOnSuccessListener { docs ->
+                            if (!docs.isEmpty) {
+                                tvEmailWarning.text = getString(CommonR.string.email_already_registered)
+                                tvEmailWarning.setTextColor(Color.RED)
+                                isEmailValid = false
+                            } else {
+                                tvEmailWarning.visibility = View.GONE
+                                isEmailValid = true
+                            }
+                        }
                 }
-            }
-            .addOnFailureListener {
-                tvEmailWarning.visibility = View.GONE
-                isEmailValid = true // Allow proceeding if check fails
             }
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_details_card"
@@ -359,7 +360,7 @@
                 android:paddingHorizontal="12dp"
                 android:textSize="14sp" />
 
-            <!-- Home Address Section Header with Change Button -->
+            <!-- Home Address Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -403,6 +404,52 @@
                 android:paddingVertical="8dp"
                 android:textSize="14sp"
                 android:enabled="false" />
+
+            <!-- Pickup Stop Section -->
+            <LinearLayout
+                android:id="@+id/layoutEditStopHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pickup Stop"
+                    android:textColor="#241E40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditChangeStop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="CHANGE STOP"
+                    android:textSize="11sp"
+                    android:textColor="#000000"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="12dp"
+                    app:backgroundTint="#FEBE1E"
+                    app:cornerRadius="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEditAssignedStop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:text="Not Selected"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false" />
 
             <!-- Map Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -455,7 +502,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:text="@string/cancel_caps"
+            android:text="CANCEL"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"

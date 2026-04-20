@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,12 +26,11 @@
             android:paddingEnd="20dp"
             android:letterSpacing="0.1"
             android:fontFamily="sans-serif-condensed"
-            android:contentDescription="@string/users"
             android:ellipsize="end"
             android:singleLine="true"/>
     </RelativeLayout>
 
-    <!-- PARENTS / DRIVERS Tab Switcher -->
+    <!-- PARENTS / DRIVERS / CONDUCTORS Tab Switcher -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="38dp"
@@ -71,40 +71,73 @@
             android:background="@drawable/bg_tab_active"
             android:clickable="true"
             android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/tabConductors"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/conductors"
+            android:textColor="@color/gray_text"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:letterSpacing="0.04"
+            android:background="@drawable/bg_tab_inactive"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
 
-    <!-- Search Bar -->
+    <!-- Search & Filter Row -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:background="@drawable/bg_search"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:layout_marginTop="12dp">
 
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_search"
-            android:contentDescription="@string/search"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_search"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
 
-        <EditText
-            android:id="@+id/searchUsers"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:hint="@string/search_hint"
-            android:textSize="14sp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:importantForAutofill="no"/>
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_search"
+                android:contentDescription="@string/search"/>
+
+            <EditText
+                android:id="@+id/searchUsers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/search_hint"
+                android:textSize="14sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:importantForAutofill="no"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnSort"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/rectangle_hollow"
+            android:src="@drawable/ic_filter"
+            android:padding="10dp"
+            app:tint="@color/black"
+            android:contentDescription="Sort" />
     </LinearLayout>
 
     <!-- Action Button Row -->
@@ -145,5 +178,111 @@
         android:clipToPadding="false"
         tools:itemCount="3"
         tools:listitem="@layout/item_driver"/>
+
+    <!-- Pagination Controls -->
+    <LinearLayout
+        android:id="@+id/layoutPagination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:background="#F8F8F8">
+
+        <TextView
+            android:id="@+id/btnFirstPage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:text="«"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/btnPrevPage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:text="‹"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="8dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Page "
+                android:textColor="#555555"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/etCurrentPage"
+                android:layout_width="32dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_hollow"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:padding="2dp"
+                android:imeOptions="actionDone"
+                android:selectAllOnFocus="true"
+                android:importantForAutofill="no" />
+
+            <TextView
+                android:id="@+id/tvTotalPages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" of 1"
+                android:textColor="#555555"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnNextPage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:text="›"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btnLastPage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:text="»"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_route_list">ROUTE LISTS</string>
+    <string name="tab_all_routes_map">ROUTE MAP</string>
+    <string name="conductors">CONDUCTORS</string>
+    <string name="parents">PARENTS</string>
+    <string name="drivers">DRIVERS</string>
+    <string name="users">USERS</string>
+    <string name="add_new_conductor">ADD NEW CONDUCTOR</string>
+    <string name="add_new_driver">ADD NEW DRIVER</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search by name...</string>
+    <string name="stop_student_count_format">%d Students assigned</string>
+    <string name="stop_details">STOP DETAILS</string>
+    <string name="stop_information">STOP INFORMATION</string>
+    <string name="stop_name_label">STOP NAME</string>
+    <string name="coordinates_label">COORDINATES</string>
+    <string name="assigned_students">ASSIGNED STUDENTS</string>
+    <string name="add_student">+ ADD</string>
+</resources>

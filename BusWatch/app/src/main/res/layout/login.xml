@@ -25,37 +25,12 @@
             android:contentDescription="@string/logo"
             android:src="@drawable/logo" />
 
-        <!-- Vertical Bar and Sign In text -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <View
-                android:id="@+id/viewSignInBar"
-                android:layout_width="4dp"
-                android:layout_height="40dp"
-                android:background="#EEEEEE" />
-
-            <TextView
-                android:id="@+id/tvSignIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/sign_in"
-                android:textColor="#FEBE1E"
-                android:textSize="32sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
         <!-- Form starts here -->
         <TextView
             android:id="@+id/tvLabelEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="64dp"
             android:text="@string/email"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -148,6 +123,17 @@
             android:textAllCaps="false" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="#FEBE1E"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/llSignup"

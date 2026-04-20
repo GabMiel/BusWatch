@@ -193,7 +193,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView174" />
 
-        <!-- Avatar Section (Added) -->
+        <!-- Avatar Section (Optional) -->
         <LinearLayout
             android:id="@+id/llLabelPhoto"
             android:layout_width="0dp"
@@ -210,14 +210,6 @@
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/asterisk"
-                android:textColor="#FF0000"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <FrameLayout

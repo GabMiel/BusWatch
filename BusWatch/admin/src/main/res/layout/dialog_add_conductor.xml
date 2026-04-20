@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_details_card"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="ADDING NEW CONDUCTOR"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02"
+                app:drawableStartCompat="@drawable/ic_person_add"
+                android:drawablePadding="10dp" />
+
+            <ImageButton
+                android:id="@+id/btnCloseAddConductor"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Close"
+                app:tint="@color/black" />
+        </RelativeLayout>
+
+        <!-- Profile Photo -->
+        <FrameLayout
+            android:id="@+id/frameConductorPhoto"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/imgConductorPhoto"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@drawable/ic_person_placeholder"
+                android:background="@drawable/bg_avatar_circle"
+                android:scaleType="centerCrop"
+                android:contentDescription="Photo" />
+
+            <TextView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_button_yellow"
+                android:text="+"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <!-- Name Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="First Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etFirstName"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                    android:inputType="textPersonName" android:hint="e.g. Juan" android:importantForAutofill="no"/>
+                <TextView android:id="@+id/tvFirstNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Middle Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <EditText android:id="@+id/etMiddleName"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                    android:inputType="textPersonName" android:hint="Optional" android:importantForAutofill="no"/>
+                <TextView android:id="@+id/tvMiddleNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Last Name & Suffix Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Last Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <EditText android:id="@+id/etLastName"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                    android:inputType="textPersonName" android:hint="e.g. Dela Cruz" android:importantForAutofill="no"/>
+                <TextView android:id="@+id/tvLastNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Suffix" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <FrameLayout android:id="@+id/btnSuffixDropdown"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true" android:focusable="true">
+                    <TextView android:id="@+id/tvSuffix"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
+                        android:text="None" android:textColor="#666666" android:textSize="14sp"/>
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="8dp" android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Email Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Email Address" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <EditText android:id="@+id/etEmail"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                android:inputType="textEmailAddress" android:hint="conductor@buswatch.com" android:importantForAutofill="no"/>
+            <TextView android:id="@+id/tvEmailWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid email or duplicate email" />
+        </LinearLayout>
+
+        <!-- Phone & Language Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Phone Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal">
+                    <FrameLayout android:id="@+id/btnCountryCode"
+                        android:layout_width="60dp" android:layout_height="match_parent"
+                        android:background="@drawable/rectangle_hollow_with_shadow">
+                        <TextView android:id="@+id/tvCountryCode"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_gravity="center" android:text="+63" android:textColor="#000000" android:textSize="14sp"/>
+                    </FrameLayout>
+                    <EditText android:id="@+id/etContactNumber"
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:inputType="phone" android:hint="9XX XXX XXXX" android:maxLength="12" android:importantForAutofill="no"/>
+                </LinearLayout>
+                <TextView android:id="@+id/tvPhoneWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid phone number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Language" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <FrameLayout android:id="@+id/btnLanguageDropdown"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:clickable="true" android:focusable="true">
+                    <TextView android:id="@+id/tvLanguage"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
+                        android:text="English" android:textColor="#666666" android:textSize="14sp"/>
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="8dp" android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Password Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Password" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="48dp">
+                <EditText android:id="@+id/etPassword"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="44dp" android:textSize="14sp"
+                    android:inputType="textPassword" android:hint="Min. 8 chars, 1 Upper, 1 Number" android:importantForAutofill="no"/>
+                <ImageButton android:id="@+id/btnViewPassword"
+                    android:layout_width="40dp" android:layout_height="match_parent"
+                    android:layout_gravity="end" android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_eye_off" app:tint="#888888" android:contentDescription="Show password"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Confirm Password Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:id="@+id/tvConfirmPasswordLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Confirm Password" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="48dp">
+                <EditText android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="44dp" android:textSize="14sp"
+                    android:inputType="textPassword" android:hint="Repeat password" android:importantForAutofill="no"/>
+                <ImageButton android:id="@+id/btnViewConfirmPassword"
+                    android:layout_width="40dp" android:layout_height="match_parent"
+                    android:layout_gravity="end" android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_eye_off" app:tint="#888888" android:contentDescription="Show password"/>
+            </FrameLayout>
+            <TextView android:id="@+id/tvConfirmPasswordWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Passwords do not match" />
+        </LinearLayout>
+
+        <!-- SAVE -->
+        <TextView
+            android:id="@+id/btnSaveConductor"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="SAVE CONDUCTOR"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_button_yellow"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -28,6 +28,7 @@
                 android:padding="16dp"
                 android:layout_marginBottom="20dp">
                 <TextView
+                    android:id="@+id/tvGreeting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/good_morning_driver"
@@ -43,6 +44,46 @@
                     android:textColor="@color/text_white_secondary"
                     android:textSize="12sp"
                     android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <!-- Route Summary Card (New) -->
+            <LinearLayout
+                android:id="@+id/cardAssignedRoute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_details_card"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ASSIGNED ROUTE"
+                    android:textColor="@color/gray_text"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:id="@+id/tvAssignedRouteName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Route A - Main Campus"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvAssignedBus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bus: BUS-001 (40 Seats)"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp"/>
             </LinearLayout>
 
             <!-- Students For: label -->
@@ -165,7 +206,6 @@
                 android:clickable="false" />
 
             <TextView
-                android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/account"
@@ -196,7 +236,6 @@
                 android:clickable="false" />
 
             <TextView
-                android:id="@+id/textView56"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home"
@@ -233,7 +272,6 @@
                 android:clickable="false" />
 
             <TextView
-                android:id="@+id/textView57"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"

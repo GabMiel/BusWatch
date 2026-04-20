@@ -72,6 +72,15 @@
             tools:text="@string/the_immaculate_mother_academy_inc"
             android:textColor="#444444"
             android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvStudentStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            tools:text="Stop: Main Gate"
+            android:textColor="#444444"
+            android:textSize="11sp" />
     </LinearLayout>
 
     <!-- Options Section -->

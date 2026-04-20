@@ -16,7 +16,7 @@
     <string name="save_caps">SAVE</string>
     <string name="save_changes_caps">SAVE CHANGES</string>
     <string name="cancel">@android:string/cancel</string>
-    <string name="cancel_caps">CANCEL</string>
+    <string name="cancel_caps">@android:string/cancel</string>
     <string name="confirm_caps">CONFIRM</string>
     <string name="continue_caps">CONTINUE</string>
     <string name="confirmation">Confirmation</string>
@@ -31,7 +31,7 @@
     <string name="not_applicable">N/A</string>
     <string name="qty">Qty</string>
     <string name="search">Search</string>
-    <string name="search_hint">Search…</string>
+    <string name="search_hint">Search&#8230;</string>
     <string name="all">All</string>
     <string name="unread">Unread</string>
     <string name="edit">Edit</string>
@@ -58,7 +58,16 @@
     <string name="view_details">Show details</string>
     <string name="message_goes_here">Message goes here</string>
 
-    <!-- Onboarding / Startup (startup.xml, load1.xml, load2.xml, load3.xml) -->
+    <!-- Pagination & Navigation Icons -->
+    <string name="first_page">«</string>
+    <string name="prev_page">‹</string>
+    <string name="next_page">›</string>
+    <string name="last_page">»</string>
+    <string name="page_label">Page</string>
+    <string name="page_of_format">of %1$d</string>
+    <string name="sort">Sort</string>
+
+    <!-- Onboarding / Startup -->
     <string name="secure_and_private">Secure and Private</string>
     <string name="load1_description">Know exactly where your child’s bus is at all times. Our real-time GPS tracking provides peace of mind with accurate updates.</string>
     <string name="reliable_real_time_tracking"><![CDATA[Reliable & Real-time Tracking]]></string>
@@ -67,7 +76,7 @@
     <string name="allow_access_to_your_location">Allow access to your location</string>
     <string name="load3_description">By allowing access bus tracking app finds your location and provides you with best rides</string>
 
-    <!-- Authentication: Login (login.xml) -->
+    <!-- Authentication: Login -->
     <string name="sign_in">Sign In</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
@@ -80,12 +89,12 @@
     <string name="sign_up">Sign Up</string>
     <string name="password_placeholder">••••••</string>
 
-    <!-- Authentication: Forgot Password (forgot_password.xml) -->
+    <!-- Authentication: Forgot Password -->
     <string name="forgot_password">Forgot Password?</string>
     <string name="forgot_password_desc">Enter your email address and we will send you a link to reset your password.</string>
     <string name="send_reset_link">SEND RESET LINK</string>
 
-    <!-- Authentication: Sign Up (signup1.xml, signup2.xml, signup3.xml) -->
+    <!-- Authentication: Sign Up -->
     <string name="create_account">Create Account</string>
     <string name="registration">Registration</string>
     <string name="first_name">First Name</string>
@@ -117,7 +126,7 @@
     <string name="phone_hint">912 345 6789</string>
     <string name="enter_contact_full_name">Enter contact full name</string>
 
-    <!-- Parent Home & Main Navigation (activity_parent_main.xml, fragment_home.xml) -->
+    <!-- Parent Home & Main Navigation -->
     <string name="home">Home</string>
     <string name="good_morning">Good morning</string>
     <string name="good_afternoon">Good afternoon</string>
@@ -137,7 +146,7 @@
     <string name="status_at_school">At School</string>
     <string name="status_heading_home">Heading Home</string>
 
-    <!-- Student & Medical Details (activity_student_details, fragment_student_details_*, dialog_edit_student_*) -->
+    <!-- Student & Medical Details -->
     <string name="student">Student</string>
     <string name="student_details">Student Details</string>
     <string name="student_name_label">Student Name</string>
@@ -164,7 +173,7 @@
     <string name="age_years_format">%1$s years old</string>
     <string name="_6_years_old">6 years old</string>
 
-    <!-- Medical Details (dialog_edit_student_medical.xml, fragment_student_details_medical.xml) -->
+    <!-- Medical Details -->
     <string name="medical_details">Medical Details</string>
     <string name="medical_information">Medical Information</string>
     <string name="medical_information_for_child_s_name">Medical Information for: %1$s %2$s</string>
@@ -200,7 +209,7 @@
     <string name="e_g_asthma_diabetes_none">e.g., Asthma, Diabetes (None)</string>
     <string name="e_g_peanuts_shellfish_none">e.g., Peanuts, Shellfish (None)</string>
 
-    <!-- Emergency Contacts (dialog_edit_student_emergency.xml, fragment_student_details_emergency.xml) -->
+    <!-- Emergency Contacts -->
     <string name="emergency">Emergency</string>
     <string name="emergency_contact">Emergency Contact</string>
     <string name="emergency_contact_1">Emergency Contact 1</string>
@@ -217,7 +226,7 @@
     <string name="enter_contact_phone_hint">Enter contact phone</string>
     <string name="e_g_mother_father_guardian">e.g., Mother, Father, Guardian</string>
 
-    <!-- Enrollment & Add Child (dialog_add_child.xml, signup2.xml) -->
+    <!-- Enrollment & Add Child -->
     <string name="enrollment_form">Enrollment Form</string>
     <string name="add_child">Add Child</string>
     <string name="add_child_button">ADD CHILD</string>
@@ -236,7 +245,7 @@
     <string name="enter_child_s_name">Enter child’s name</string>
     <string name="enter_child_s_first_name">Enter child’s first name</string>
     <string name="enter_child_s_last_name">Enter child’s last name</string>
-    <string name="enter_child_s_middle">Enter child’s middle…</string>
+    <string name="enter_child_s_middle">Enter child’s middle&#8230;</string>
     <string name="enter_child_s_suffix">e.g., Jr., III</string>
     <string name="enter_child_s_age"> Enter child’s age</string>
     <string name="enter_child_s_school">Enter child’s school</string>
@@ -251,7 +260,7 @@
     <string name="child_number_saved">Child %1$d saved. Preparing for Child %2$d.</string>
     <string name="child_counter_format">%1$d/%2$d</string>
 
-    <!-- Bus & Driver Information (busdetails.xml, fragment_view_driver.xml) -->
+    <!-- Bus & Driver Information -->
     <string name="bus_details">Bus Details</string>
     <string name="bus_information">Bus Information</string>
     <string name="bus_number">Bus Number</string>
@@ -269,10 +278,11 @@
     <string name="driver_name">Driver Name</string>
     <string name="license_number">License No.</string>
     <string name="license_number_label">License No.</string>
-    <string name="dl123456">DL123456</string>
     <string name="dl123356">DL123456</string>
+    <string name="dl123456">DL123456</string>
+    <string name="vehicle_type">Vehicle Type</string>
 
-    <!-- Driver App Feature Strings (driver module layouts) -->
+    <!-- Driver App Feature Strings -->
     <string name="good_morning_driver">Good morning, Driver!</string>
     <string name="good_afternoon_driver">Good afternoon, Driver!</string>
     <string name="students_for">Students For:</string>
@@ -288,7 +298,7 @@
     <string name="drop_off">DROP OFF</string>
     <string name="stop">Stop:</string>
 
-    <!-- Notifications (notification.xml, item_notification.xml) -->
+    <!-- Notifications -->
     <string name="notifications">Notifications</string>
     <string name="no_notifications_yet">No notifications yet</string>
     <string name="temporary_route_change">Temporary route change due to road construction on Main Street</string>
@@ -296,7 +306,7 @@
     <string name="_13hrs_ago">13hrs Ago</string>
     <string name="no_notifications_icon">No Notifications Icon</string>
 
-    <!-- Parent Profile & Settings (fragment_settings.xml, dialog_edit_profile.xml) -->
+    <!-- Parent Profile & Settings -->
     <string name="account">Account</string>
     <string name="settings">Settings</string>
     <string name="parent">Parent</string>
@@ -329,7 +339,7 @@
     <string name="enter_current_password">Enter current password</string>
     <string name="enter_new_password">Enter new password</string>
 
-    <!-- Location & Maps (map.xml, dialog_confirm_pickup_location.xml) -->
+    <!-- Location & Maps -->
     <string name="map_locations">Map Locations</string>
     <string name="my_location">My Location</string>
     <string name="no_address_set">No address set</string>
@@ -353,12 +363,13 @@
     <string name="proposed_new_location">PROPOSED NEW LOCATION</string>
     <string name="kingstown_2_subdivision_caloocan_city">Kingstown 2 Subdivision, Caloocan City</string>
 
-    <!-- Admin Dashboard & Management (admin module layouts) -->
+    <!-- Admin Dashboard & Management -->
     <string name="dashboard">DASHBOARD</string>
     <string name="users">USERS</string>
     <string name="user_name">User Name</string>
     <string name="parents">PARENTS</string>
     <string name="drivers">DRIVERS</string>
+    <string name="conductors">CONDUCTORS</string>
     <string name="buses">BUSES</string>
     <string name="routes">ROUTES</string>
     <string name="stops">STOPS</string>
@@ -369,6 +380,9 @@
     <string name="total_parents_caps">TOTAL PARENTS</string>
     <string name="total_drivers_caps">TOTAL DRIVERS</string>
     <string name="total_bus_caps">TOTAL BUS</string>
+    <string name="total_conductors_caps">TOTAL CONDUCTORS</string>
+    <string name="total_stops_caps">TOTAL STOPS</string>
+    <string name="total_routes_caps">TOTAL ROUTES</string>
     <string name="pending_parents">Pending Parents</string>
     <string name="pending_parents_caps">PENDING PARENTS</string>
     <string name="pending_parents_caps_2">PENDING PARENTS</string>
@@ -378,10 +392,11 @@
     <string name="view_pending_parents">View Pending Parents</string>
     <string name="add_new_driver">Add New Driver</string>
     <string name="adding_new_driver">ADDING NEW DRIVER</string>
+    <string name="add_new_conductor">Add New Conductor</string>
     <string name="edit_driver_information">Edit Driver Information</string>
-    <string name="add_new_bus">ADD NEW BUS</string>
+    <string name="add_new_bus">Add New Bus</string>
     <string name="adding_new_bus">ADDING NEW BUS</string>
-    <string name="add_new_route">ADD NEW ROUTE</string>
+    <string name="add_new_route">Add New Route</string>
     <string name="adding_new_route">ADDING NEW ROUTE</string>
     <string name="parent_approval_detail">Parent Approval Detail</string>
     <string name="parent_approved">Parent approved</string>
@@ -389,6 +404,34 @@
     <string name="location_change_request">Location Change Request</string>
     <string name="archived_successfully">Archived successfully</string>
     <string name="archived">Archived</string>
+
+    <!-- Admin: Routing & Stops -->
+    <string name="tab_route_list">ROUTE LIST</string>
+    <string name="tab_all_routes_map">ALL ROUTES MAP</string>
+    <string name="select_stops_for_route">Select Stops for Route</string>
+    <string name="selected_stops_count">Selected: %1$d stops</string>
+    <string name="save_route_caps">SAVE ROUTE</string>
+    <string name="stop_details">STOP DETAILS</string>
+    <string name="stop_information">STOP INFORMATION</string>
+    <string name="stop_name_label">STOP NAME</string>
+    <string name="coordinates_label">COORDINATES</string>
+    <string name="assigned_students">ASSIGNED STUDENTS</string>
+    <string name="add_student">+ ADD</string>
+    <string name="stop_student_count_format">%d Students assigned</string>
+    <string name="assign_stop_caps">ASSIGN STOP</string>
+    <string name="stop_not_assigned_format">Stop: %s</string>
+    <string name="not_assigned_label">Not Assigned</string>
+    <string name="choose_conductor_optional">Choose Conductor (Optional)</string>
+    <string name="select_conductor">Select Conductor</string>
+
+    <!-- Live Trip & Roster -->
+    <string name="live_trip_format">LIVE TRIP: %s</string>
+    <string name="heading_to_next_stop_caps">HEADING TO NEXT STOP:</string>
+    <string name="student_roster_caps">STUDENT ROSTER</string>
+    <string name="on_board_format">%1$d / %2$d On Board</string>
+    <string name="eta_format">%d MINS</string>
+    <string name="assigned_route_caps">ASSIGNED ROUTE</string>
+    <string name="bus_seats_format">Bus: %1$s (%2$d Seats)</string>
 
     <!-- Admin: Dialog Warning Strings -->
     <string name="restore_warning_title">Restore User</string>
@@ -408,7 +451,6 @@
     <string name="bus_number_hint">e.g. BUS-001</string>
     <string name="plate_number_hint">ABC 1234</string>
     <string name="capacity_hint">e.g. 40</string>
-    <string name="vehicle_type">Vehicle Type</string>
     <string name="select_type">Select Type</string>
     <string name="assign_driver_optional">Assign Driver (Optional)</string>
     <string name="capacity_normal">Normal</string>
@@ -459,7 +501,7 @@
     <string name="failed_to_submit_request">Failed to submit request</string>
     <string name="email_already_registered">Email is already registered</string>
     <string name="email_available">Email is available</string>
-    <string name="checking_availability">Checking availability...</string>
+    <string name="checking_availability">Checking availability&#8230;</string>
     <string name="phone_length_warning">Please enter a valid %1$d-digit phone number</string>
     <string name="age_warning_young">Age under 3 is unusually young for school transport.</string>
     <string name="age_warning_old">Registration for this age will be monitored by an administrator. Please proceed with caution.</string>
@@ -497,9 +539,6 @@
     <string name="placeholder_phone">Phone: 0923–023–1023</string>
     <string name="_0992_329_0293">0992–329–0293</string>
     <string name="_555_0101">555–0101</string>
-    <string name="_555_987_6543">(555) 987–6543</string>
-    <string name="_09991111234">09991111234</string>
-    <string name="_099278371823">099278371823</string>
     <string name="count_parents">128</string>
     <string name="count_drivers">24</string>
     <string name="count_pending">7</string>

@@ -35,6 +35,7 @@ class HomeFragment : Fragment() {
     private var parentStatus: String = "pending"
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var timeRunnable: Runnable
+    private var hasShownStopPopup = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -144,17 +145,24 @@ class HomeFragment : Fragment() {
 
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? KMap<String, Any>
+                    var missingStop = false
                     if (childMap != null) {
                         studentList.add(mapToStudentHome("primary", childMap, parentAddress))
+                        if ((childMap["stop"] as? String ?: "").isEmpty()) missingStop = true
                     }
 
                     @Suppress("UNCHECKED_CAST")
                     val childrenList = document.get("children") as? List<KMap<String, Any>>
                     childrenList?.forEachIndexed { index, map ->
                         studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
+                        if ((map["stop"] as? String ?: "").isEmpty()) missingStop = true
                     }
 
                     setupRecyclerView(studentList)
+
+                    if (parentStatus.lowercase() == "approved" && missingStop && !hasShownStopPopup) {
+                        showStopAssignmentPopup()
+                    }
                 }
             }
             .addOnFailureListener {
@@ -162,6 +170,65 @@ class HomeFragment : Fragment() {
                 progressBar.visibility = View.GONE
                 Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun showStopAssignmentPopup() {
+        hasShownStopPopup = true
+        AlertDialog.Builder(requireContext())
+            .setTitle("Setup Pickup Stop")
+            .setMessage("You haven't selected a pickup stop for your child yet. Would you like to set it up now for easier tracking?")
+            .setPositiveButton("Setup Now") { _, _ ->
+                // Navigate to assignment or show dialog
+                showStopPickerDialog()
+            }
+            .setNegativeButton("Remind Later", null)
+            .show()
+    }
+
+    private fun showStopPickerDialog() {
+        db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
+            if (snapshots.isEmpty) {
+                Toast.makeText(requireContext(), "No stops available yet", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
+            val stopNames = snapshots.map { it.getString("name") ?: "Unknown" }.toTypedArray()
+            val stopIds = snapshots.map { it.id }
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Select a Pickup Stop")
+                .setItems(stopNames) { _, which ->
+                    updateStudentStop(stopIds[which], stopNames[which])
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+
+    private fun updateStudentStop(stopId: String, stopName: String) {
+        val currentUser = auth.currentUser ?: return
+        db.collection("parents").document(currentUser.uid).get().addOnSuccessListener { doc ->
+            val batch = db.batch()
+            val parentRef = db.collection("parents").document(currentUser.uid)
+            
+            @Suppress("UNCHECKED_CAST")
+            val child = doc.get("child") as? MutableMap<String, Any>
+            if (child != null) {
+                child["stop"] = stopId
+                batch.update(parentRef, "child", child)
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            val children = doc.get("children") as? List<MutableMap<String, Any>>
+            if (children != null) {
+                val updatedChildren = children.map { it.apply { this["stop"] = stopId } }
+                batch.update(parentRef, "children", updatedChildren)
+            }
+
+            batch.commit().addOnSuccessListener {
+                Toast.makeText(requireContext(), "Pickup stop set to $stopName", Toast.LENGTH_SHORT).show()
+                fetchUserData("", requireView().findViewById(R.id.textView90)) // Refresh
+            }
+        }
     }
 
     private fun mapToStudentHome(id: String, map: KMap<String, Any>, parentAddress: String): StudentHome {

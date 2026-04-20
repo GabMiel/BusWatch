@@ -47,6 +47,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
     implementation(libs.gms.play.services.maps)
+    implementation(libs.google.material)
+    implementation(libs.glide)
+
+    // Cloudinary
+    implementation(libs.cloudinary.android)
     
     // OpenStreetMap
     implementation(libs.osmdroid.android)
@@ -55,6 +60,8 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

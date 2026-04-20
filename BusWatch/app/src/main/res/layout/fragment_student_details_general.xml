@@ -167,7 +167,7 @@
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <!-- Map Container styled like signup2 -->
+                <!-- Map Container -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clMapContainer"
                     android:layout_width="match_parent"
@@ -180,6 +180,29 @@
                         android:layout_height="match_parent"
                         android:background="#FAF6DB" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- NEW: Stop Assignment Button -->
+                <Button
+                    android:id="@+id/btnAssignStop"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_button_yellow"
+                    android:text="SET PICKUP STOP"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvAssignedStop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Current Stop: Not Selected"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

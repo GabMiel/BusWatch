@@ -210,7 +210,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount" />
 
-        <!-- Avatar Section -->
+        <!-- Avatar Section (Optional) -->
         <LinearLayout
             android:id="@+id/llLabelPhoto"
             android:layout_width="0dp"
@@ -228,15 +228,6 @@
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/asterisk"
-                android:textColor="#FF0000"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginStart="2dp"
-                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <FrameLayout
@@ -876,8 +867,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabelMedications"
-            android:autofillHints="none" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelMedications" />
 
         <TextView
             android:id="@+id/llLabelConditions"
@@ -906,7 +896,7 @@
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelConditions"
-            android:autofillHints="none" />
+            tools:ignore="TextFields" />
 
         <Button
             android:id="@+id/btnSignup2AddChild"
