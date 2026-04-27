@@ -13,6 +13,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -29,11 +31,27 @@ class DriverEditFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var user: UserAdmin
     private var selectedImageUri: Uri? = null
-    private val PICK_IMAGE_REQUEST = 1001
+
+    private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
 
     companion object {
         fun newInstance(user: UserAdmin) = DriverEditFragment().apply {
             this.user = user
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                if (data != null && data.data != null) {
+                    selectedImageUri = data.data
+                    view?.findViewById<ImageView>(R.id.imgDriver)?.let {
+                        Glide.with(this).load(selectedImageUri).circleCrop().into(it)
+                    }
+                }
+            }
         }
     }
 
@@ -70,17 +88,7 @@ class DriverEditFragment : Fragment() {
 
         view.findViewById<View>(R.id.rlEditDriverAvatar)?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            selectedImageUri = data.data
-            view?.findViewById<ImageView>(R.id.imgDriver)?.let {
-                Glide.with(this).load(selectedImageUri).circleCrop().into(it)
-            }
+            pickImageLauncher.launch(intent)
         }
     }
 
@@ -141,13 +149,13 @@ class DriverEditFragment : Fragment() {
         }
 
         if (selectedImageUri != null) {
-            uploadImageAndSave(view, firstName, lastName, email, phone, code)
+            uploadImageAndSave(firstName, lastName, email, phone, code)
         } else {
             performUpdate(firstName, lastName, email, phone, code, null)
         }
     }
 
-    private fun uploadImageAndSave(view: View, firstName: String, lastName: String, email: String, phone: String, code: String) {
+    private fun uploadImageAndSave(firstName: String, lastName: String, email: String, phone: String, code: String) {
         Toast.makeText(requireContext(), "Uploading photo...", Toast.LENGTH_SHORT).show()
         MediaManager.get().upload(selectedImageUri)
             .unsigned("buswatch_unsigned")

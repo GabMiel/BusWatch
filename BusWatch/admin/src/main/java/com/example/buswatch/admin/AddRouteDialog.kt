@@ -3,9 +3,6 @@ package com.example.buswatch.admin
 import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +13,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
@@ -191,7 +192,7 @@ class AddRouteDialog(
                 }
                 
                 target.text = items[which]
-                capacityTarget.text = "$busCapacity Seats"
+                capacityTarget.text = context.getString(CommonR.string._12_seats).replace("12", busCapacity.toString())
             }.show()
         }.addOnFailureListener {
             Toast.makeText(context, "Error fetching buses: ${it.message}", Toast.LENGTH_SHORT).show()
@@ -219,11 +220,11 @@ class AddRouteDialog(
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
         
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return BitmapDrawable(context.resources, bitmap)
+        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888).applyCanvas {
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(this)
+        }
+        return bitmap.toDrawable(context.resources)
     }
 
     private fun setupStopPickerMap(map: MapView, countTarget: TextView) {
@@ -232,7 +233,7 @@ class AddRouteDialog(
         map.controller.setCenter(GeoPoint(14.7566, 121.0450)) // IMA Area
 
         routePolyline = Polyline(map)
-        routePolyline?.outlinePaint?.color = Color.parseColor("#4A90E2") // Modern Blue
+        routePolyline?.outlinePaint?.color = "#4A90E2".toColorInt() // Modern Blue
         routePolyline?.outlinePaint?.strokeWidth = 8f
         map.overlays.add(routePolyline)
 
@@ -266,7 +267,7 @@ class AddRouteDialog(
                         m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     }
                     updateRouteLine()
-                    countTarget.text = "Selected: ${selectedStopIds.size} stops"
+                    countTarget.text = context.getString(R.string.selected_stops_count, selectedStopIds.size)
                     map.invalidate()
                     true
                 }

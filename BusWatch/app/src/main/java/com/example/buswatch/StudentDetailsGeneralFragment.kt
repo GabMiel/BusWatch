@@ -3,11 +3,9 @@ package com.example.buswatch
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.DashPathEffect
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
@@ -26,6 +24,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.cloudinary.android.MediaManager
@@ -45,6 +46,7 @@ import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.io.File
+import com.example.buswatch.common.R as CommonR
 import kotlin.collections.Map as KMap
 
 class StudentDetailsGeneralFragment : Fragment() {
@@ -60,10 +62,8 @@ class StudentDetailsGeneralFragment : Fragment() {
     private var tempAvatarUri: Uri? = null
     private var dialogAvatarView: ImageView? = null
     
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            // Permission granted
-        }
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+        // Permission result handled
     }
 
     private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -168,7 +168,7 @@ class StudentDetailsGeneralFragment : Fragment() {
     }
 
     private fun displayChildInfo(view: View, childData: KMap<String, Any>) {
-        view.findViewById<TextView>(R.id.tvStudentName).text = getString(com.example.buswatch.common.R.string.name_format, childData["firstName"], childData["lastName"])
+        view.findViewById<TextView>(R.id.tvStudentName).text = getString(CommonR.string.name_format, childData["firstName"], childData["lastName"])
         view.findViewById<TextView>(R.id.tvDob).text = childData["age"]?.toString() ?: "-"
         view.findViewById<TextView>(R.id.tvSchool).text = childData["school"] as? String ?: "-"
         view.findViewById<TextView>(R.id.tvGrade).text = childData["grade"] as? String ?: "-"
@@ -186,7 +186,7 @@ class StudentDetailsGeneralFragment : Fragment() {
 
         val homeMap = view.findViewById<MapView>(R.id.mapHomeLocation)
         homePoint?.let { 
-            setupMarkerOnMap(homeMap, it, "Home Location", com.example.buswatch.common.R.drawable.ic_location) 
+            setupMarkerOnMap(homeMap, it, CommonR.drawable.ic_location) 
         } ?: run {
             homeMap.controller.setCenter(defaultPoint)
         }
@@ -195,7 +195,7 @@ class StudentDetailsGeneralFragment : Fragment() {
         if (avatar.isNotEmpty()) {
             Glide.with(this).load(avatar).circleCrop().into(view.findViewById(R.id.imgStudentAvatar))
         } else {
-            view.findViewById<ImageView>(R.id.imgStudentAvatar).setImageResource(com.example.buswatch.common.R.drawable.user)
+            view.findViewById<ImageView>(R.id.imgStudentAvatar).setImageResource(CommonR.drawable.user)
         }
     }
 
@@ -205,15 +205,15 @@ class StudentDetailsGeneralFragment : Fragment() {
         val stopMap = view.findViewById<MapView>(R.id.mapStopLocation)
 
         if (stopId.isNullOrEmpty()) {
-            tvStatus?.setText(com.example.buswatch.common.R.string.pickup_stop_not_selected)
-            btnAssign?.text = "SET PICKUP STOP"
+            tvStatus?.setText(CommonR.string.pickup_stop_not_selected)
+            btnAssign?.setText(CommonR.string.assign_stop_caps)
             loadAllStopsOnMap(stopMap, null)
         } else {
             btnAssign?.text = "CHANGE PICKUP STOP"
             db.collection("stops").document(stopId).get().addOnSuccessListener { stopDoc ->
                 if (!isAdded) return@addOnSuccessListener
                 val stopName = stopDoc.getString("name") ?: "Selected Stop"
-                tvStatus?.text = getString(com.example.buswatch.common.R.string.confirmed_stop_format, stopName)
+                tvStatus?.text = getString(CommonR.string.confirmed_stop_format, stopName)
                 loadAllStopsOnMap(stopMap, stopId)
             }
         }
@@ -247,9 +247,9 @@ class StudentDetailsGeneralFragment : Fragment() {
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 
                 val iconRes = if (isSelected) 
-                    com.example.buswatch.common.R.drawable.ic_stop_marker_red 
+                    CommonR.drawable.ic_stop_marker_red 
                 else 
-                    com.example.buswatch.common.R.drawable.ic_stop_marker_blue
+                    CommonR.drawable.ic_stop_marker_blue
                 
                 val size = if (isSelected) 36 else 28
                 marker.icon = getScaledDrawable(ContextCompat.getDrawable(requireContext(), iconRes), size, size)
@@ -260,7 +260,7 @@ class StudentDetailsGeneralFragment : Fragment() {
             if (selectedPoint != null && homePoint != null) {
                 val line = Polyline(map)
                 line.setPoints(listOf(homePoint!!, selectedPoint))
-                line.outlinePaint.color = Color.parseColor("#FEBE1E")
+                line.outlinePaint.color = "#FEBE1E".toColorInt()
                 line.outlinePaint.strokeWidth = 6f
                 line.outlinePaint.pathEffect = DashPathEffect(floatArrayOf(15f, 15f), 0f)
                 map.overlays.add(0, line)
@@ -271,7 +271,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                 homeMarker.position = hp
                 homeMarker.title = "Home Location"
                 homeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                val hIcon = ContextCompat.getDrawable(requireContext(), com.example.buswatch.common.R.drawable.ic_location)
+                val hIcon = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_location)
                 homeMarker.icon = getScaledDrawable(hIcon, 32, 32)
                 map.overlays.add(homeMarker)
             }
@@ -296,14 +296,14 @@ class StudentDetailsGeneralFragment : Fragment() {
         val density = resources.displayMetrics.density
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width, height)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
-        return BitmapDrawable(resources, bitmap)
+        return bitmap.toDrawable(resources)
     }
 
-    private fun setupMarkerOnMap(map: MapView?, point: GeoPoint, title: String, iconRes: Int) {
+    private fun setupMarkerOnMap(map: MapView?, point: GeoPoint, iconRes: Int) {
         if (map == null) return
         map.overlays.clear()
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -314,16 +314,16 @@ class StudentDetailsGeneralFragment : Fragment() {
         
         val marker = Marker(map)
         marker.position = point
-        marker.title = title
+        marker.title = "Home Location"
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         val icon = ContextCompat.getDrawable(requireContext(), iconRes)
-        val size = if (iconRes == com.example.buswatch.common.R.drawable.ic_stop_marker_red) 36 else 32
+        val size = if (iconRes == CommonR.drawable.ic_stop_marker_red) 36 else 32
         marker.icon = getScaledDrawable(icon, size, size)
         map.overlays.add(marker)
         map.invalidate()
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "ClickableViewAccessibility")
     private fun showStopPickerDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_pickup_stop, null)
         val dialog = AlertDialog.Builder(requireContext(), android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
@@ -352,7 +352,7 @@ class StudentDetailsGeneralFragment : Fragment() {
             homeMarker.position = it
             homeMarker.title = "Home Location"
             homeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            val icon = ContextCompat.getDrawable(requireContext(), com.example.buswatch.common.R.drawable.ic_location)
+            val icon = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_location)
             homeMarker.icon = getScaledDrawable(icon, 32, 32)
             map.overlays.add(homeMarker)
         }
@@ -380,15 +380,15 @@ class StudentDetailsGeneralFragment : Fragment() {
                 marker.position = point
                 marker.title = name
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                val icon = ContextCompat.getDrawable(requireContext(), com.example.buswatch.common.R.drawable.ic_stop_marker_blue)
+                val icon = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_blue)
                 marker.icon = getScaledDrawable(icon, 32, 32)
                 
                 marker.setOnMarkerClickListener { m, _ ->
                     markers.forEach { otherMarker ->
-                        val defaultIcon = ContextCompat.getDrawable(requireContext(), com.example.buswatch.common.R.drawable.ic_stop_marker_blue)
+                        val defaultIcon = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_blue)
                         otherMarker.icon = getScaledDrawable(defaultIcon, 32, 32)
                     }
-                    val selectedIcon = ContextCompat.getDrawable(requireContext(), com.example.buswatch.common.R.drawable.ic_stop_marker_red)
+                    val selectedIcon = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_red)
                     m.icon = getScaledDrawable(selectedIcon, 36, 36)
                     
                     selectedStopId = doc.id
@@ -470,7 +470,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                     updatedChild["stop"] = stopId
                     db.collection("parents").document(uid).update("child", updatedChild).addOnSuccessListener {
                         if (!isAdded) return@addOnSuccessListener
-                        Toast.makeText(requireContext(), getString(com.example.buswatch.common.R.string.confirmed_stop_format, stopName), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(CommonR.string.confirmed_stop_format, stopName), Toast.LENGTH_SHORT).show()
                         updateStopAndMapUI(requireView(), stopId)
                     }
                     return@addOnSuccessListener
@@ -488,7 +488,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                     newList[index] = updatedChild
                     db.collection("parents").document(uid).update("children", newList).addOnSuccessListener {
                         if (!isAdded) return@addOnSuccessListener
-                        Toast.makeText(requireContext(), getString(com.example.buswatch.common.R.string.confirmed_stop_format, stopName), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(CommonR.string.confirmed_stop_format, stopName), Toast.LENGTH_SHORT).show()
                         updateStopAndMapUI(requireView(), stopId)
                     }
                 }
@@ -545,10 +545,10 @@ class StudentDetailsGeneralFragment : Fragment() {
                 etAddress.setText(child["address"] as? String ?: "")
                 
                 selectedSuffix = child["suffix"] as? String ?: ""
-                tvSelectedSuffix.text = if (selectedSuffix.isEmpty()) getString(com.example.buswatch.common.R.string.suffix) else selectedSuffix
+                tvSelectedSuffix.text = if (selectedSuffix.isEmpty()) getString(CommonR.string.suffix) else selectedSuffix
                 
                 selectedGrade = child["grade"] as? String ?: ""
-                tvSelectedGrade.text = if (selectedGrade.isEmpty()) getString(com.example.buswatch.common.R.string.grade) else selectedGrade
+                tvSelectedGrade.text = if (selectedGrade.isEmpty()) getString(CommonR.string.grade) else selectedGrade
                 
                 val avatar = child["childAvatarUrl"] as? String ?: child["avatarUrl"] as? String ?: ""
                 if (avatar.isNotEmpty()) {
@@ -566,7 +566,7 @@ class StudentDetailsGeneralFragment : Fragment() {
                 
                 val editMap = dialogView.findViewById<MapView>(R.id.mapEditHome)
                 homePoint?.let { 
-                    setupMarkerOnMap(editMap, it, "Home Location", com.example.buswatch.common.R.drawable.ic_location) 
+                    setupMarkerOnMap(editMap, it, CommonR.drawable.ic_location)
                 } ?: run {
                     editMap.controller.setCenter(defaultPoint)
                 }
@@ -577,12 +577,12 @@ class StudentDetailsGeneralFragment : Fragment() {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
             AlertDialog.Builder(requireContext()).setItems(suffixes) { _, pos ->
                 selectedSuffix = if (pos == 0) "" else suffixes[pos]
-                tvSelectedSuffix.text = if (pos == 0) getString(com.example.buswatch.common.R.string.suffix) else suffixes[pos]
+                tvSelectedSuffix.text = if (pos == 0) getString(CommonR.string.suffix) else suffixes[pos]
             }.show()
         }
 
         dialogView.findViewById<FrameLayout>(R.id.btnEditGrade).setOnClickListener {
-            val grades = resources.getStringArray(com.example.buswatch.common.R.array.grades_array)
+            val grades = resources.getStringArray(CommonR.array.grades_array)
             AlertDialog.Builder(requireContext()).setItems(grades) { _, pos ->
                 selectedGrade = grades[pos]
                 tvSelectedGrade.text = selectedGrade

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -34,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="EDIT BUS"
+        android:text="@string/edit"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -71,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:gravity="center_vertical"
-                    android:text="BUS INFORMATION"
+                    android:text="@string/bus_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -86,9 +85,9 @@
                     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:orientation="horizontal" android:layout_marginBottom="4dp">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Bus Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                            android:text="@string/bus_number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                            android:text="@string/asterisk" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
                     </LinearLayout>
                     <EditText
                         android:id="@+id/etBusNumber"
@@ -97,7 +96,7 @@
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                         android:inputType="textCapCharacters"
-                        android:hint="Enter bus number"
+                        android:hint="@string/bus_number_hint"
                         android:importantForAutofill="no"/>
                 </LinearLayout>
 
@@ -111,9 +110,9 @@
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="4dp">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Vehicle Type" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                                android:text="@string/vehicle_type" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                                android:text="@string/asterisk" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
                         </LinearLayout>
                         <FrameLayout android:id="@+id/btnVehicleTypeDropdown"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -122,7 +121,7 @@
                             <TextView android:id="@+id/tvSelectedVehicleType"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
-                                android:text="Select Type" android:textColor="#666666" android:textSize="14sp"/>
+                                android:text="@string/select_type" android:textColor="#666666" android:textSize="14sp"/>
                             <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_gravity="end|center_vertical"
                                 android:layout_marginEnd="8dp" android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
                         </FrameLayout>
@@ -133,15 +132,15 @@
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="4dp">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Capacity" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                                android:text="@string/capacity" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                                android:text="@string/asterisk" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
                         </LinearLayout>
                         <EditText android:id="@+id/etCapacity"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                            android:inputType="number" android:hint="Qty" android:importantForAutofill="no"/>
+                            android:inputType="number" android:hint="@string/qty" android:importantForAutofill="no"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -159,14 +158,14 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Plate Number (Optional)" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        android:text="@string/plate_number_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <EditText
                         android:id="@+id/etPlateNumber"
                         android:layout_width="match_parent" android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                         android:inputType="textCapCharacters"
-                        android:hint="ABC 1234"
+                        android:hint="@string/plate_number_hint"
                         android:importantForAutofill="no"/>
                 </LinearLayout>
 
@@ -185,7 +184,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="CANCEL"
+                    android:text="@string/cancel_caps"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -201,7 +200,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="SAVE CHANGES"
+                    android:text="@string/save_changes_caps"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"

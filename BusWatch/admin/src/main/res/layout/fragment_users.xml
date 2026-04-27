@@ -130,7 +130,7 @@
         android:paddingEnd="16dp"
         android:paddingTop="12dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/item_user_row"/>
+        tools:listitem="@layout/item_user"/>
 
     <!-- Pagination Controls -->
     <LinearLayout
@@ -148,7 +148,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:gravity="center"
-            android:text="«"
+            android:text="@string/first_page"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -161,7 +161,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:gravity="center"
-            android:text="‹"
+            android:text="@string/prev_page"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -181,9 +181,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Page "
+                android:text="@string/page_label"
                 android:textColor="#555555"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:paddingEnd="4dp" />
 
             <EditText
                 android:id="@+id/etCurrentPage"
@@ -199,15 +200,18 @@
                 android:padding="2dp"
                 android:imeOptions="actionDone"
                 android:selectAllOnFocus="true"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="no"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/tvTotalPages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" of 1"
+                android:text="@string/none"
                 android:textColor="#555555"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:paddingStart="4dp"
+                tools:text=" of 1" />
         </LinearLayout>
 
         <TextView
@@ -215,7 +219,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:gravity="center"
-            android:text="›"
+            android:text="@string/next_page"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -228,7 +232,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:gravity="center"
-            android:text="»"
+            android:text="@string/last_page"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"

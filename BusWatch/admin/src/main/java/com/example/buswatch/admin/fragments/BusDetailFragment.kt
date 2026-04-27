@@ -73,8 +73,8 @@ class BusDetailFragment : Fragment() {
                     if (dDoc.exists()) {
                         val first = dDoc.getString("firstName") ?: ""
                         val last = dDoc.getString("lastName") ?: ""
-                        tvDName.text = "$first $last".trim()
-                        tvDPhone.text = dDoc.getString("phone") ?: "No Phone"
+                        tvDName.text = getString(CommonR.string.name_format, first, last)
+                        tvDPhone.text = dDoc.getString("phone") ?: getString(R.string.no_phone)
                         
                         val photoUrl = dDoc.getString("driverAvatar") ?: dDoc.getString("profilePhoto")
                         if (!photoUrl.isNullOrEmpty() && imgDriver != null) {
@@ -84,13 +84,13 @@ class BusDetailFragment : Fragment() {
                                 .into(imgDriver)
                         }
                     } else {
-                        tvDName.text = "No Driver Assigned"
-                        tvDPhone.text = "---"
+                        tvDName.text = getString(R.string.no_driver_assigned)
+                        tvDPhone.text = getString(CommonR.string.placeholder_hyphen)
                     }
                 }
             } else {
-                tvDName.text = "No Driver Assigned"
-                tvDPhone.text = "---"
+                tvDName.text = getString(R.string.no_driver_assigned)
+                tvDPhone.text = getString(CommonR.string.placeholder_hyphen)
             }
         }
     }

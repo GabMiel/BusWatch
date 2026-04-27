@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -22,7 +21,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="12dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back"
+        android:contentDescription="@string/back"
         android:src="@drawable/ic_back"
         app:layout_constraintBottom_toBottomOf="@id/headerBg"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="EDIT DRIVER"
+        android:text="@string/edit_driver_information"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -71,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:gravity="center_vertical"
-                    android:text="DRIVER INFORMATION"
+                    android:text="@string/driver_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -94,7 +93,7 @@
                         android:src="@drawable/ic_person_placeholder"
                         android:background="@drawable/bg_avatar_circle"
                         android:scaleType="centerCrop"
-                        android:contentDescription="Photo" />
+                        android:contentDescription="@string/photo" />
 
                     <TextView
                         android:id="@+id/btnChangeDriverPhoto"
@@ -102,7 +101,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="bottom|end"
                         android:background="@drawable/bg_button_yellow"
-                        android:text="+"
+                        android:text="@string/plus"
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -124,14 +123,14 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="First Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/first_name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <EditText android:id="@+id/etFirstName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                            android:inputType="textPersonName" android:hint="e.g. Juan" android:importantForAutofill="no"/>
+                            android:inputType="textPersonName" android:hint="@string/enter_your_first_name" android:importantForAutofill="no"/>
                         <TextView android:id="@+id/tvFirstNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+                            android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone" android:text="@string/name_warning" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -140,14 +139,14 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Middle Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/middle_name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <EditText android:id="@+id/etMiddleName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                            android:inputType="textPersonName" android:hint="Optional" android:importantForAutofill="no"/>
+                            android:inputType="textPersonName" android:hint="@string/none" android:importantForAutofill="no"/>
                         <TextView android:id="@+id/tvMiddleNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+                            android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone" android:text="@string/name_warning" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -166,14 +165,14 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Last Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/last_name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <EditText android:id="@+id/etLastName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                            android:inputType="textPersonName" android:hint="e.g. Dela Cruz" android:importantForAutofill="no"/>
+                            android:inputType="textPersonName" android:hint="@string/enter_your_last_name" android:importantForAutofill="no"/>
                         <TextView android:id="@+id/tvLastNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
+                            android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone" android:text="@string/name_warning" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -182,7 +181,7 @@
                         android:layout_weight="0.7"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Suffix" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/suffix" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <FrameLayout android:id="@+id/btnSuffixDropdown"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -190,7 +189,7 @@
                             <TextView android:id="@+id/tvSuffix"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
-                                android:text="None" android:textColor="#666666" android:textSize="14sp"/>
+                                android:text="@string/none" android:textColor="#666666" android:textSize="14sp"/>
                             <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_gravity="end|center_vertical"
                                 android:layout_marginEnd="8dp" android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
                         </FrameLayout>
@@ -204,14 +203,14 @@
                     android:orientation="vertical"
                     android:layout_marginBottom="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Email Address" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        android:text="@string/email_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <EditText android:id="@+id/etEmail"
                         android:layout_width="match_parent" android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                        android:inputType="textEmailAddress" android:hint="driver@buswatch.com" android:importantForAutofill="no"/>
+                        android:inputType="textEmailAddress" android:hint="@string/enter_email" android:importantForAutofill="no"/>
                     <TextView android:id="@+id/tvEmailWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid email or duplicate email" />
+                        android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone" android:text="@string/invalid_email" />
                 </LinearLayout>
 
                 <!-- License No. Row -->
@@ -221,12 +220,12 @@
                     android:orientation="vertical"
                     android:layout_marginBottom="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Driver's License No." android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        android:text="@string/license_number_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <EditText android:id="@+id/etLicenseNumber"
                         android:layout_width="match_parent" android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                        android:inputType="textCapCharacters" android:maxLength="10" android:hint="AB12345678" android:importantForAutofill="no"/>
+                        android:inputType="textCapCharacters" android:maxLength="10" android:hint="@string/dl123456" android:importantForAutofill="no"/>
                 </LinearLayout>
 
                 <!-- Phone & Language Row -->
@@ -244,24 +243,24 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Phone Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/phone_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal">
                             <FrameLayout android:id="@+id/btnCountryCode"
                                 android:layout_width="60dp" android:layout_height="match_parent"
                                 android:background="@drawable/rectangle_hollow_with_shadow">
                                 <TextView android:id="@+id/tvCountryCode"
                                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:layout_gravity="center" android:text="+63" android:textColor="#000000" android:textSize="14sp"/>
+                                    android:layout_gravity="center" android:text="@string/country_code_ph" android:textColor="#000000" android:textSize="14sp"/>
                             </FrameLayout>
                             <EditText android:id="@+id/etPhone"
                                 android:layout_width="match_parent" android:layout_height="match_parent"
                                 android:layout_marginStart="4dp"
                                 android:background="@drawable/rectangle_hollow_with_shadow"
                                 android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                                android:inputType="phone" android:hint="9XX XXX XXXX" android:maxLength="12" android:importantForAutofill="no"/>
+                                android:inputType="phone" android:hint="@string/phone_hint" android:maxLength="12" android:importantForAutofill="no"/>
                         </LinearLayout>
                         <TextView android:id="@+id/tvPhoneWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid phone number" />
+                            android:textColor="#FF0000" android:textSize="11sp" android:visibility="gone" android:text="@string/invalid_phone" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -270,7 +269,7 @@
                         android:layout_weight="0.8"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Language" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                            android:text="@string/preferred_language" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                         <FrameLayout android:id="@+id/btnLanguageDropdown"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -278,7 +277,7 @@
                             <TextView android:id="@+id/tvLanguage"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
-                                android:text="English" android:textColor="#666666" android:textSize="14sp"/>
+                                android:text="@string/english" android:textColor="#666666" android:textSize="14sp"/>
                             <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_gravity="end|center_vertical"
                                 android:layout_marginEnd="8dp" android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
                         </FrameLayout>
@@ -300,7 +299,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="CANCEL"
+                    android:text="@string/cancel_caps"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -316,7 +315,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="SAVE CHANGES"
+                    android:text="@string/save_changes_caps"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"

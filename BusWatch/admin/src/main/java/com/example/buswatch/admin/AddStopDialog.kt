@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Geocoder
 import android.location.Location
@@ -22,6 +21,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
@@ -82,7 +84,7 @@ class AddStopDialog(
             setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
                 override fun onMarkerDrag(marker: Marker?) {}
                 override fun onMarkerDragEnd(marker: Marker?) {
-                    marker?.position?.let { updateLocation(it, tvCoordinates, etStopName) }
+                    marker?.position?.let { updateLocation(it, tvCoordinates) }
                 }
                 override fun onMarkerDragStart(marker: Marker?) {}
             })
@@ -94,7 +96,7 @@ class AddStopDialog(
                 p?.let {
                     selectionMarker?.position = it
                     mapPicker?.invalidate()
-                    updateLocation(it, tvCoordinates, etStopName)
+                    updateLocation(it, tvCoordinates)
                 }
                 return true
             }
@@ -123,7 +125,7 @@ class AddStopDialog(
         }
 
         btnMyLocation?.setOnClickListener {
-            mapPicker?.let { goToCurrentLocation(it, tvCoordinates, etStopName) }
+            mapPicker?.let { goToCurrentLocation(it, tvCoordinates) }
         }
 
         btnSmartFill?.setOnClickListener { autoFillStopName(etStopName) }
@@ -145,7 +147,7 @@ class AddStopDialog(
             }
         }
 
-        updateLocation(currentPoint, tvCoordinates, etStopName)
+        updateLocation(currentPoint, tvCoordinates)
         dialog.show()
     }
 
@@ -176,15 +178,15 @@ class AddStopDialog(
         val density = context.resources.displayMetrics.density
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return BitmapDrawable(context.resources, bitmap)
+        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888).applyCanvas {
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(this)
+        }
+        return bitmap.toDrawable(context.resources)
     }
 
     @SuppressLint("MissingPermission")
-    private fun goToCurrentLocation(map: MapView, tvCoords: TextView?, etName: EditText?) {
+    private fun goToCurrentLocation(map: MapView, tvCoords: TextView?) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "Location permission not granted", Toast.LENGTH_SHORT).show()
@@ -203,7 +205,7 @@ class AddStopDialog(
             map.controller.setZoom(18.0)
             selectionMarker?.position = userPoint
             map.invalidate()
-            updateLocation(userPoint, tvCoords, etName)
+            updateLocation(userPoint, tvCoords)
         } else {
             Toast.makeText(context, "Could not find current location", Toast.LENGTH_SHORT).show()
         }
@@ -232,7 +234,7 @@ class AddStopDialog(
         } catch (_: Exception) { Toast.makeText(context, "Geocoding failed", Toast.LENGTH_SHORT).show() }
     }
 
-    private fun updateLocation(point: GeoPoint, tvCoords: TextView?, etName: EditText?) {
+    private fun updateLocation(point: GeoPoint, tvCoords: TextView?) {
         currentPoint = point
         tvCoords?.text = String.format(Locale.US, "Lat: %.6f, Lng: %.6f", point.latitude, point.longitude)
     }

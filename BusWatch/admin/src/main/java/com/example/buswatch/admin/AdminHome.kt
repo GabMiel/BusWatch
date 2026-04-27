@@ -106,7 +106,7 @@ class AdminHome : AppCompatActivity() {
     }
 
     fun showDriverDetail(user: UserAdmin, onBack: () -> Unit = {}) {
-        replaceFragment(DriverDetailFragment.newInstance(user))
+        replaceFragment(DriverDetailFragment.newInstance(user, onBack))
     }
 
     fun editDriverDetail(user: UserAdmin) {

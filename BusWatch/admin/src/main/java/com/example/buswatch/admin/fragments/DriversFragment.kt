@@ -1,6 +1,5 @@
 package com.example.buswatch.admin.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,6 +21,7 @@ import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.DriverAdapter
 import com.example.buswatch.admin.R
 import com.example.buswatch.admin.UserAdmin
+import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
@@ -136,7 +136,9 @@ class DriversFragment : Fragment() {
                 updatePaginationUI()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error fetching drivers: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Error fetching drivers: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -169,7 +171,7 @@ class DriversFragment : Fragment() {
         val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
-        view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $totalPages"
+        view.findViewById<TextView>(R.id.tvTotalPages)?.text = getString(CommonR.string.page_of_format, totalPages)
         
         view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
         view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1

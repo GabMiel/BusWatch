@@ -14,7 +14,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.cloudinary.android.MediaManager
@@ -34,13 +37,46 @@ class ParentEditFragment : Fragment() {
     private val childrenUris = mutableMapOf<String, Uri>() // tag (child or children_index) to Uri
     private val originalChildrenData = mutableMapOf<String, Map<String, Any>>()
     
-    private val PICK_IMAGE_PARENT = 1001
-    private val PICK_IMAGE_CHILD = 1002
+    private lateinit var pickParentImageLauncher: ActivityResultLauncher<Intent>
+    private lateinit var pickChildImageLauncher: ActivityResultLauncher<Intent>
     private var currentChildTagForPhoto: String? = null
 
     companion object {
         fun newInstance(user: UserAdmin) = ParentEditFragment().apply {
             this.user = user
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pickParentImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                data?.data?.let { uri ->
+                    parentAvatarUri = uri
+                    view?.findViewById<ImageView>(R.id.imgParent)?.let {
+                        Glide.with(this).load(uri).circleCrop().into(it)
+                    }
+                }
+            }
+        }
+        pickChildImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                data?.data?.let { uri ->
+                    currentChildTagForPhoto?.let { tag ->
+                        childrenUris[tag] = uri
+                        val container = view?.findViewById<LinearLayout>(R.id.layoutChildrenContainer)
+                        for (i in 0 until (container?.childCount ?: 0)) {
+                            val itemView = container?.getChildAt(i)
+                            if (itemView?.tag == tag) {
+                                Glide.with(this).load(uri).circleCrop().into(itemView.findViewById(R.id.imgChild))
+                                break
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -69,7 +105,7 @@ class ParentEditFragment : Fragment() {
 
         view.findViewById<View>(R.id.btnChangeParentPhoto)?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, PICK_IMAGE_PARENT)
+            pickParentImageLauncher.launch(intent)
         }
 
         view.findViewById<View>(R.id.btnEditParentSuffix)?.setOnClickListener {
@@ -101,35 +137,6 @@ class ParentEditFragment : Fragment() {
             .show()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            val uri = data.data ?: return
-            when (requestCode) {
-                PICK_IMAGE_PARENT -> {
-                    parentAvatarUri = uri
-                    view?.findViewById<ImageView>(R.id.imgParent)?.let {
-                        Glide.with(this).load(uri).circleCrop().into(it)
-                    }
-                }
-                PICK_IMAGE_CHILD -> {
-                    currentChildTagForPhoto?.let { tag ->
-                        childrenUris[tag] = uri
-                        // Refresh UI to show the new local URI
-                        val container = view?.findViewById<LinearLayout>(R.id.layoutChildrenContainer)
-                        for (i in 0 until (container?.childCount ?: 0)) {
-                            val itemView = container?.getChildAt(i)
-                            if (itemView?.tag == tag) {
-                                Glide.with(this).load(uri).circleCrop().into(itemView.findViewById(R.id.imgChild))
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun loadData(view: View) {
         val childrenContainer = view.findViewById<LinearLayout>(R.id.layoutChildrenContainer)
         db.collection("parents").document(user.id).get().addOnSuccessListener { doc ->
@@ -143,6 +150,7 @@ class ParentEditFragment : Fragment() {
             view.findViewById<TextView>(R.id.tvSuffix).text = profile?.get("suffix") as? String ?: "NONE"
             view.findViewById<EditText>(R.id.etPhone).setText(profile?.get("phone") as? String ?: doc.getString("phone") ?: "")
             
+            @Suppress("UNCHECKED_CAST")
             val emergencyContacts = doc.get("emergencyContacts") as? List<Map<String, Any>>
             if (emergencyContacts != null && emergencyContacts.isNotEmpty()) {
                 val first = emergencyContacts[0]
@@ -200,22 +208,17 @@ class ParentEditFragment : Fragment() {
         
         val content = itemView.findViewById<LinearLayout>(R.id.layoutChildContent)
         val chevron = itemView.findViewById<ImageView>(R.id.ivChildChevron)
-        content.visibility = View.VISIBLE
+        content.isVisible = true
         
         itemView.findViewById<LinearLayout>(R.id.btnToggleChildInfo).setOnClickListener {
-            if (content.visibility == View.VISIBLE) { 
-                content.visibility = View.GONE
-                chevron.rotation = -90f 
-            } else { 
-                content.visibility = View.VISIBLE
-                chevron.rotation = 0f 
-            }
+            content.isVisible = !content.isVisible
+            chevron.rotation = if (content.isVisible) 0f else -90f
         }
 
         itemView.findViewById<View>(R.id.btnChangeChildPhoto).setOnClickListener {
             currentChildTagForPhoto = tag
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, PICK_IMAGE_CHILD)
+            pickChildImageLauncher.launch(intent)
         }
 
         itemView.findViewById<View>(R.id.btnEditChildSuffix).setOnClickListener {
@@ -317,8 +320,8 @@ class ParentEditFragment : Fragment() {
         val additionalChildren = mutableListOf<Map<String, Any>>()
         val subCollectionUpdates = mutableMapOf<String, Map<String, Any>>()
 
-        for (i in 0 until container.childCount) {
-            val itemView = container.getChildAt(i)
+        for (i in 0 until (container?.childCount ?: 0)) {
+            val itemView = container?.getChildAt(i) ?: continue
             val tag = itemView.tag as? String ?: continue
             
             val original = originalChildrenData[tag] ?: emptyMap()

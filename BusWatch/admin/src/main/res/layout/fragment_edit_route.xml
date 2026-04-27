@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -34,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="EDIT ROUTE"
+        android:text="@string/edit_route"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -71,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ROUTE INFORMATION"
+                    android:text="@string/route_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -150,17 +149,17 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Morning Schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    android:text="@string/morning_schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
                     <TextView android:id="@+id/tvMorningStart"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="Start Time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center" android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
                     <TextView android:id="@+id/tvMorningEnd"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="End Time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center" android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
                 </LinearLayout>
             </LinearLayout>
@@ -173,17 +172,17 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Afternoon Schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    android:text="@string/afternoon_schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
                     <TextView android:id="@+id/tvAfternoonStart"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="Start Time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center" android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
                     <TextView android:id="@+id/tvAfternoonEnd"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="End Time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center" android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
                 </LinearLayout>
             </LinearLayout>
@@ -213,8 +212,7 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Choose Conductor (Optional)" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                    tools:ignore="HardcodedText" />
+                    android:text="@string/choose_conductor_optional" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp" />
                 <FrameLayout
                     android:id="@+id/btnConductorDropdown"
                     android:layout_width="match_parent" android:layout_height="48dp"
@@ -223,8 +221,7 @@
                     <TextView android:id="@+id/tvSelectedConductor"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
-                        android:text="Select Conductor" android:textColor="#666666" android:textSize="14sp"
-                        tools:ignore="HardcodedText" />
+                        android:text="@string/select_conductor" android:textColor="#666666" android:textSize="14sp" />
                     <ImageView android:layout_width="16dp" android:layout_height="16dp"
                         android:layout_gravity="end|center_vertical" android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_chevron_down" app:tint="#888888" android:contentDescription="@null"/>
@@ -260,7 +257,7 @@
                         android:padding="8dp"
                         android:elevation="6dp"
                         app:tint="@color/black"
-                        android:contentDescription="Maximize Map" />
+                        android:contentDescription="@string/view" />
 
                     <!-- Current Location Button (Locator) -->
                     <ImageButton
@@ -275,14 +272,13 @@
                         android:padding="10dp"
                         android:elevation="6dp"
                         app:tint="@color/black"
-                        android:contentDescription="My Location" />
+                        android:contentDescription="@string/my_location" />
                 </FrameLayout>
                 <TextView android:id="@+id/tvStopsCount"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Selected: 0 stops"
-                    android:textSize="11sp" android:textColor="#666666"
-                    tools:ignore="HardcodedText" />
+                    android:text="@string/selected_stops_count"
+                    android:textSize="11sp" android:textColor="#666666" />
             </LinearLayout>
 
             <!-- Buttons Row -->
@@ -298,10 +294,10 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="CANCEL" android:textColor="#000000" android:textSize="16sp"
+                    android:text="@string/cancel" android:textColor="#000000" android:textSize="16sp"
                     android:textStyle="bold" android:gravity="center" android:letterSpacing="0.08"
                     android:background="@drawable/rectangle_hollow_with_shadow" android:clickable="true"
-                    android:focusable="true" tools:ignore="HardcodedText" />
+                    android:focusable="true" />
 
                 <TextView
                     android:id="@+id/btnSaveRouteChanges"
@@ -309,10 +305,10 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="SAVE CHANGES" android:textColor="#000000" android:textSize="16sp"
+                    android:text="@string/save_changes" android:textColor="#000000" android:textSize="16sp"
                     android:textStyle="bold" android:gravity="center" android:letterSpacing="0.08"
                     android:background="@drawable/bg_button_yellow" android:clickable="true"
-                    android:focusable="true" tools:ignore="HardcodedText" />
+                    android:focusable="true" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

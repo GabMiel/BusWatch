@@ -1,6 +1,5 @@
 package com.example.buswatch.admin
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -11,16 +10,14 @@ import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -184,7 +181,7 @@ class AddConductorDialog(
             val codes = arrayOf("+63", "+1", "+44", "+61", "+64", "+65", "+353")
             val lengths = arrayOf(10, 10, 10, 9, 10, 8, 9)
             AlertDialog.Builder(activity)
-                .setTitle("Select Country Code")
+                .setTitle(activity.getString(CommonR.string.select_country_code))
                 .setItems(countries) { _, which ->
                     selectedCountryCode = codes[which]
                     maxPhoneDigits = lengths[which]
@@ -197,7 +194,7 @@ class AddConductorDialog(
         dialogView.findViewById<FrameLayout>(R.id.btnSuffixDropdown)?.setOnClickListener {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV")
             AlertDialog.Builder(activity)
-                .setTitle("Select Suffix")
+                .setTitle(activity.getString(CommonR.string.select_suffix))
                 .setItems(suffixes) { _, which ->
                     tvSuffix?.text = suffixes[which]
                     tvSuffix?.setTextColor(Color.BLACK)
@@ -205,12 +202,12 @@ class AddConductorDialog(
         }
 
         dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown)?.setOnClickListener {
-            val languages = arrayOf("English", "Filipino (Inactive)")
+            val languages = arrayOf(activity.getString(CommonR.string.english), "Filipino (Inactive)")
             AlertDialog.Builder(activity)
-                .setTitle("Select Language")
+                .setTitle(activity.getString(CommonR.string.select_language))
                 .setItems(languages) { _, which ->
                     if (which == 0) {
-                        tvLanguage?.text = "English"
+                        tvLanguage?.text = languages[0]
                         tvLanguage?.setTextColor(Color.BLACK)
                     } else {
                         Toast.makeText(activity, "Filipino is currently unavailable", Toast.LENGTH_SHORT).show()
@@ -231,13 +228,13 @@ class AddConductorDialog(
             val language = tvLanguage?.text?.toString() ?: "English"
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(activity, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.fill_all_required), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$".toRegex()
             if (!password.matches(passwordRegex)) {
-                Toast.makeText(activity, "Password must be at least 8 characters with 1 uppercase and 1 number", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, activity.getString(CommonR.string.password_validation_hint), Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 

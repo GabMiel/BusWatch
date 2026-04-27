@@ -12,7 +12,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -80,13 +79,12 @@ class StopDetailFragment : Fragment() {
         }
     }
 
-    private fun getScaledDrawable(drawable: Drawable?, widthDp: Int, heightDp: Int): Drawable? {
+    private fun getScaledDrawable(drawable: Drawable?, sizeDp: Int): Drawable? {
         if (drawable == null) return null
         val density = resources.displayMetrics.density
-        val width = (widthDp * density).toInt()
-        val height = (heightDp * density).toInt()
+        val size = (sizeDp * density).toInt()
         
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
@@ -106,7 +104,7 @@ class StopDetailFragment : Fragment() {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             
             val pinDrawable = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_red)
-            marker.icon = getScaledDrawable(pinDrawable, 36, 36)
+            marker.icon = getScaledDrawable(pinDrawable, 36)
 
             mapView.overlays.add(marker)
             mapView.invalidate()
@@ -135,7 +133,7 @@ class StopDetailFragment : Fragment() {
                     }
                 }
             }
-            view.findViewById<TextView>(R.id.tvStopStudentCount).text = "${assignedStudents.size} Students"
+            view.findViewById<TextView>(R.id.tvStopStudentCount).text = getString(R.string.stop_student_count_format, assignedStudents.size)
             view.findViewById<RecyclerView>(R.id.recyclerAssignedStudents)?.adapter = AssignedStudentAdapter(assignedStudents)
         }
     }

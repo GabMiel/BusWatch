@@ -98,7 +98,7 @@ class BusEditFragment : Fragment() {
         db.collection("buses").document(bus.id).get().addOnSuccessListener { doc ->
             if (doc == null || !doc.exists()) return@addOnSuccessListener
             etBusNumber.setText(doc.getString("busNumber") ?: "")
-            etCapacity.setText(doc.getString("capacity")?.toString() ?: doc.get("capacity")?.toString() ?: "")
+            etCapacity.setText(doc.get("capacity")?.toString() ?: "")
             etPlateNumber.setText(doc.getString("plateNumber") ?: "")
             
             val vehicleType = doc.getString("vehicleType") ?: "Select Type"

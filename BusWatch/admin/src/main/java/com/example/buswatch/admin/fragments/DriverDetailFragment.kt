@@ -17,10 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 class DriverDetailFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var user: UserAdmin
+    private var onBack: (() -> Unit)? = null
 
     companion object {
-        fun newInstance(user: UserAdmin) = DriverDetailFragment().apply {
+        fun newInstance(user: UserAdmin, onBack: (() -> Unit)? = null) = DriverDetailFragment().apply {
             this.user = user
+            this.onBack = onBack
         }
     }
 
@@ -32,7 +34,7 @@ class DriverDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         view.findViewById<ImageButton>(R.id.btnBackDriverDetail)?.setOnClickListener { 
-            (requireActivity() as? AdminHome)?.replaceFragment(DriversFragment())
+            onBack?.invoke() ?: (requireActivity() as? AdminHome)?.replaceFragment(DriversFragment())
         }
         
         loadData(view)

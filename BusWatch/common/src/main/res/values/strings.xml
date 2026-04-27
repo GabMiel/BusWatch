@@ -402,10 +402,15 @@
     <string name="selected_stops_count">Selected: %1$d stops</string>
     <string name="save_route_caps">SAVE ROUTE</string>
     <string name="assign_stop_caps">ASSIGN STOP</string>
+    <string name="assign_stop">Assign Stop</string>
     <string name="stop_not_assigned_format">Stop: %s</string>
     <string name="not_assigned_label">Not Assigned</string>
     <string name="choose_conductor_optional">Choose Conductor (Optional)</string>
     <string name="select_conductor">Select Conductor</string>
+    <string name="seats_format">%1$d Seats</string>
+    <string name="choose_nearest_stop">Choose the nearest stop for your child. This will finalize their pickup point.</string>
+    <string name="selected_stop_caps">SELECTED STOP</string>
+    <string name="tap_marker_on_map">Tap a marker on the map</string>
 
     <!-- Live Trip & Roster -->
     <string name="live_trip_format">LIVE TRIP: %s</string>

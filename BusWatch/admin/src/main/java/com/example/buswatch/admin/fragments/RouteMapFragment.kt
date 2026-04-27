@@ -91,7 +91,7 @@ class RouteMapFragment : Fragment() {
                             if (loadedCount == stopIds.size && routePoints.size > 1) {
                                 val line = Polyline(map)
                                 line.setPoints(routePoints)
-                                line.color = routeColor
+                                line.outlinePaint.color = routeColor
                                 line.outlinePaint.strokeWidth = 8f
                                 map.overlays.add(line)
                                 map.invalidate()

@@ -8,12 +8,10 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -21,7 +19,6 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +31,6 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import java.io.File
 import java.util.Calendar
-import kotlin.random.Random
 
 class DriverHome : AppCompatActivity() {
 
@@ -310,12 +306,6 @@ class DriverHome : AppCompatActivity() {
         }
     }
 
-    private fun loadAfternoon() {
-        currentTab = "Afternoon"
-        loadHome()
-        updateTabUI(false)
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun loadLiveTracking() {
         setContentView(R.layout.fragment_live_tracking)
@@ -353,7 +343,7 @@ class DriverHome : AppCompatActivity() {
                 mv.controller.setZoom(15.0)
                 mv.controller.setCenter(GeoPoint(14.5995, 120.9842))
                 
-                mv.setOnTouchListener { v, event ->
+                mv.setOnTouchListener { v, _ ->
                     v.parent.requestDisallowInterceptTouchEvent(true)
                     false
                 }

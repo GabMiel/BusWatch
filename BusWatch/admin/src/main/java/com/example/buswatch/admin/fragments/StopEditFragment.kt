@@ -21,7 +21,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -93,7 +92,7 @@ class StopEditFragment : Fragment() {
                 position = currentPoint
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 val pinDrawable = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_red)
-                icon = getScaledDrawable(pinDrawable, 32, 32)
+                icon = getScaledDrawable(pinDrawable)
                 isDraggable = true
                 setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
                     override fun onMarkerDrag(marker: Marker?) {}
@@ -171,7 +170,7 @@ class StopEditFragment : Fragment() {
         }
     }
 
-    private fun getScaledDrawable(drawable: Drawable?, widthDp: Int, heightDp: Int): Drawable? {
+    private fun getScaledDrawable(drawable: Drawable?, widthDp: Int = 32, heightDp: Int = 32): Drawable? {
         if (drawable == null) return null
         val density = resources.displayMetrics.density
         val width = (widthDp * density).toInt()

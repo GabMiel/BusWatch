@@ -1,6 +1,5 @@
 package com.example.buswatch
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.collections.Map as KMap
 
 data class StudentHome(
     val id: String,
@@ -29,8 +29,8 @@ data class StudentHome(
 )
 
 class StudentHomeAdapter(
-    private var students: List<StudentHome>,
-    var isInteractable: Boolean = false,
+    private val students: List<StudentHome>,
+    @Suppress("unused") private val isTracking: Boolean,
     private val onItemClick: (StudentHome) -> Unit
 ) : RecyclerView.Adapter<StudentHomeAdapter.ViewHolder>() {
 
@@ -50,12 +50,6 @@ class StudentHomeAdapter(
         val schedule: TextView = view.findViewById(R.id.tvBusSchedule)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateStudents(newStudents: List<StudentHome>) {
-        this.students = newStudents
-        notifyDataSetChanged()
-    }
-
     fun getStudents(): List<StudentHome> = students
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -68,7 +62,7 @@ class StudentHomeAdapter(
         holder.name.text = student.name
         holder.grade.text = student.grade
         holder.school.text = student.school
-        holder.stop.text = "Stop: ${student.stop}"
+        holder.stop.text = holder.itemView.context.getString(CommonR.string.stop_not_assigned_format, student.stop)
         holder.status.text = student.status
         holder.schedule.text = student.schedule
         
@@ -83,7 +77,6 @@ class StudentHomeAdapter(
             holder.avatar.setImageResource(student.avatarResId)
         }
 
-        // Card is active/green if status is "Heading to Stop" or "On Board"
         val isActive = student.status == "Heading to Stop" || student.status == "On Board"
         
         if (isActive) {
@@ -92,7 +85,7 @@ class StudentHomeAdapter(
             holder.card.isClickable = true
             holder.card.isEnabled = true
             holder.ivArrow.visibility = View.VISIBLE
-            holder.spinner.visibility = View.GONE // Hide spinner when trip is active
+            holder.spinner.visibility = View.GONE
         } else {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_black_border)
             holder.card.setOnClickListener(null)
@@ -102,7 +95,6 @@ class StudentHomeAdapter(
             holder.spinner.visibility = View.VISIBLE
         }
 
-        // Setup Spinner
         val options = holder.itemView.context.resources.getStringArray(CommonR.array.ride_options)
         val adapter = ArrayAdapter(
             holder.itemView.context,
@@ -136,10 +128,10 @@ class StudentHomeAdapter(
             val index = student.id.toIntOrNull() ?: return
             docRef.get().addOnSuccessListener { document ->
                 @Suppress("UNCHECKED_CAST")
-                val children = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
+                val children = document.get("children") as? List<KMap<String, Any>> ?: return@addOnSuccessListener
                 val newList = children.toMutableList()
                 if (index < newList.size) {
-                    val updatedChild = (newList[index] as kotlin.collections.Map<String, Any>).toMutableMap()
+                    val updatedChild = newList[index].toMutableMap()
                     updatedChild["rideOption"] = option
                     newList[index] = updatedChild
                     docRef.update("children", newList)

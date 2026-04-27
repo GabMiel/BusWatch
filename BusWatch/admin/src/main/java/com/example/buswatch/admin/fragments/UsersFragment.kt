@@ -18,6 +18,7 @@ import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.R
 import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.admin.UserAdapter
+import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
@@ -148,7 +149,7 @@ class UsersFragment : Fragment() {
         val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
-        view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $totalPages"
+        view.findViewById<TextView>(R.id.tvTotalPages)?.text = getString(CommonR.string.page_of_format, totalPages)
         
         view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
         view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1

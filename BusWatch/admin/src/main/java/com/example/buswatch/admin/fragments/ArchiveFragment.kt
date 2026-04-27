@@ -1,5 +1,6 @@
 package com.example.buswatch.admin.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.admin.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import java.io.Serializable
 import kotlin.math.ceil
 
 class ArchiveFragment : Fragment() {
@@ -39,7 +41,12 @@ class ArchiveFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val tab = arguments?.getSerializable("tab") as? AdminHome.ArchiveTab
+        val tab = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable("tab", AdminHome.ArchiveTab::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getSerializable("tab") as? AdminHome.ArchiveTab
+        }
         if (tab != null) currentTab = tab
     }
 

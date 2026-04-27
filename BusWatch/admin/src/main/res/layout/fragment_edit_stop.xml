@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -34,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="EDIT STOP"
+        android:text="@string/edit"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -71,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="STOP INFORMATION"
+                    android:text="@string/stop_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -86,14 +85,14 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Stop Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    android:text="@string/stop_name_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
                     <EditText android:id="@+id/etStopName"
                         android:layout_width="0dp" android:layout_height="48dp"
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
-                        android:inputType="textCapWords" android:hint="e.g. West Gate" android:importantForAutofill="no"/>
+                        android:inputType="textCapWords" android:hint="@string/search_hint" android:importantForAutofill="no"/>
                     <ImageButton android:id="@+id/btnSmartFill"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
@@ -101,7 +100,7 @@
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:src="@drawable/ic_search"
                         app:tint="@color/black"
-                        android:contentDescription="Auto-fill Address"/>
+                        android:contentDescription="@string/search"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -110,7 +109,7 @@
                 android:id="@+id/tvMapLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pick Location on Map" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                android:text="@string/map" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
 
             <!-- Map View Container -->
             <FrameLayout
@@ -138,7 +137,7 @@
                     android:padding="8dp"
                     android:elevation="6dp"
                     app:tint="@color/black"
-                    android:contentDescription="Maximize Map" />
+                    android:contentDescription="@string/view" />
 
                 <!-- Current Location Button -->
                 <ImageButton
@@ -153,7 +152,7 @@
                     android:padding="10dp"
                     android:elevation="6dp"
                     app:tint="@color/black"
-                    android:contentDescription="My Location" />
+                    android:contentDescription="@string/my_location" />
             </FrameLayout>
 
             <!-- Coordinates Display -->
@@ -162,9 +161,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:text="Lat: 0.0000, Lng: 0.0000"
+                android:text="@string/coordinates_label"
                 android:textColor="#888888"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:gravity="center" />
 
             <!-- ACTION BUTTONS -->
@@ -180,7 +179,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="CANCEL"
+                    android:text="@string/cancel_caps"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -195,7 +194,7 @@
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="1"
-                    android:text="SAVE CHANGES"
+                    android:text="@string/save_changes_caps"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"

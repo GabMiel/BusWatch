@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import java.util.Locale
@@ -150,7 +151,6 @@ class HomeFragment : Fragment() {
                 if (updates.isNotEmpty()) {
                     docRef.update(updates).addOnSuccessListener {
                         Toast.makeText(requireContext(), "Pickup request sent. Live tracking enabled.", Toast.LENGTH_LONG).show()
-                        // refresh local UI indirectly by Firestore listener if it's already set up
                     }
                 }
             }
@@ -199,7 +199,6 @@ class HomeFragment : Fragment() {
             }
             
             parentStatus = document.getString("status") ?: "pending"
-            val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
 
             db.collection("stops").get().addOnSuccessListener { stopsSnapshot ->
                 if (!isAdded) return@addOnSuccessListener
@@ -215,13 +214,13 @@ class HomeFragment : Fragment() {
                     @Suppress("UNCHECKED_CAST")
                     val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
                     if (childMap != null) {
-                        studentList.add(mapToStudentHome("primary", childMap, parentAddress, stopsMap, routesSnapshot.documents))
+                        studentList.add(mapToStudentHome("primary", childMap, stopsMap, routesSnapshot.documents))
                     }
 
                     @Suppress("UNCHECKED_CAST")
                     val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
                     childrenList?.forEachIndexed { index, map ->
-                        studentList.add(mapToStudentHome(index.toString(), map, parentAddress, stopsMap, routesSnapshot.documents))
+                        studentList.add(mapToStudentHome(index.toString(), map, stopsMap, routesSnapshot.documents))
                     }
 
                     setupRecyclerView(studentList)
@@ -233,9 +232,8 @@ class HomeFragment : Fragment() {
     private fun mapToStudentHome(
         id: String, 
         map: kotlin.collections.Map<String, Any>, 
-        parentAddress: String, 
         stopsMap: kotlin.collections.Map<String, String>,
-        routeDocs: List<com.google.firebase.firestore.DocumentSnapshot>
+        routeDocs: List<DocumentSnapshot>
     ): StudentHome {
         val fName = map["firstName"] as? String ?: ""
         val lName = map["lastName"] as? String ?: ""
@@ -255,15 +253,15 @@ class HomeFragment : Fragment() {
             if (assignedRoute != null) {
                 val ms = assignedRoute.getString("morningStartTime") ?: ""
                 val me = assignedRoute.getString("morningEndTime") ?: ""
-                val `as` = assignedRoute.getString("afternoonStartTime") ?: ""
+                val asStart = assignedRoute.getString("afternoonStartTime") ?: ""
                 val ae = assignedRoute.getString("afternoonEndTime") ?: ""
                 
-                if (ms.isNotEmpty() && me.isNotEmpty() && `as`.isNotEmpty() && ae.isNotEmpty()) {
-                    scheduleStr = "AM: $ms-$me | PM: $`as`-$ae"
+                if (ms.isNotEmpty() && me.isNotEmpty() && asStart.isNotEmpty() && ae.isNotEmpty()) {
+                    scheduleStr = "AM: $ms-$me | PM: $asStart-$ae"
                 } else if (ms.isNotEmpty() && me.isNotEmpty()) {
                     scheduleStr = "AM: $ms-$me"
-                } else if (`as`.isNotEmpty() && ae.isNotEmpty()) {
-                    scheduleStr = "PM: $`as`-$ae"
+                } else if (asStart.isNotEmpty() && ae.isNotEmpty()) {
+                    scheduleStr = "PM: $asStart-$ae"
                 }
             }
         }

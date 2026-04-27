@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_details_card"
@@ -11,7 +10,7 @@
         android:id="@+id/tvPickupStopTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Pickup Stop"
+        android:text="@string/assign_stop"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -23,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Choose the nearest stop for your child. This will finalize their pickup point."
+        android:text="@string/choose_nearest_stop"
         android:textColor="#666666"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +61,7 @@
                 android:padding="8dp"
                 android:elevation="6dp"
                 app:tint="@color/black"
-                android:contentDescription="See Whole View" />
+                android:contentDescription="@string/view" />
 
             <!-- Locator Button (Go to My Location) -->
             <ImageButton
@@ -77,7 +76,7 @@
                 android:padding="10dp"
                 android:elevation="6dp"
                 app:tint="@color/black"
-                android:contentDescription="My Location" />
+                android:contentDescription="@string/my_location" />
         </FrameLayout>
     </androidx.cardview.widget.CardView>
 
@@ -86,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="SELECTED STOP"
+        android:text="@string/selected_stop_caps"
         android:textColor="#241E40"
         android:textSize="11sp"
         android:textStyle="bold"
@@ -102,7 +101,7 @@
         android:gravity="center_vertical"
         android:paddingHorizontal="12dp"
         android:paddingVertical="12dp"
-        android:text="Tap a marker on the map"
+        android:text="@string/tap_marker_on_map"
         android:textColor="#888888"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +122,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="CANCEL"
+            android:text="@string/cancel_caps"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"

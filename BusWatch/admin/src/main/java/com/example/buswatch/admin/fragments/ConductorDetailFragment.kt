@@ -17,10 +17,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 class ConductorDetailFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var user: UserAdmin
+    private var onBack: (() -> Unit)? = null
 
     companion object {
-        fun newInstance(user: UserAdmin, onBack: () -> Unit = {}) = ConductorDetailFragment().apply {
+        fun newInstance(user: UserAdmin, onBack: (() -> Unit)? = null) = ConductorDetailFragment().apply {
             this.user = user
+            this.onBack = onBack
         }
     }
 
@@ -36,7 +38,7 @@ class ConductorDetailFragment : Fragment() {
 
     private fun setupUI(view: View) {
         view.findViewById<ImageButton>(R.id.btnBackConductorDetail)?.setOnClickListener { 
-            (requireActivity() as? AdminHome)?.replaceFragment(ConductorsFragment())
+            onBack?.invoke() ?: (requireActivity() as? AdminHome)?.replaceFragment(ConductorsFragment())
         }
     }
 

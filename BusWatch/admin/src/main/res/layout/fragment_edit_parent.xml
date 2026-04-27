@@ -101,7 +101,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="bottom|end"
                         android:background="@drawable/bg_button_yellow"
-                        android:text="+"
+                        android:text="@string/plus_sign"
                         android:textColor="#000000"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -114,12 +114,12 @@
                     android:baselineAligned="false">
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="FIRST NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/first_name_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                         <EditText android:id="@+id/etFirstName" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/first_name" />
                     </LinearLayout>
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MIDDLE NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/middle_name_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                         <EditText android:id="@+id/etMiddleName" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/middle_name" />
                     </LinearLayout>
                 </LinearLayout>
@@ -130,11 +130,11 @@
                     android:baselineAligned="false">
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="10dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LAST NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/last_name_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                         <EditText android:id="@+id/etLastName" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:hint="@string/last_name" />
                     </LinearLayout>
                     <LinearLayout android:layout_width="100dp" android:layout_height="wrap_content" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SUFFIX" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/suffix_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                         <FrameLayout
                             android:id="@+id/btnEditParentSuffix"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -165,7 +165,7 @@
                 <!-- Row 3: Phone Number -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PHONE NUMBER" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/phone_number_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                     <EditText android:id="@+id/etPhone" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:inputType="phone" android:importantForAutofill="no" android:hint="@string/phone_number" />
                 </LinearLayout>
             </LinearLayout>
@@ -191,13 +191,13 @@
                     android:textStyle="bold"
                     android:letterSpacing="0.02" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CONTACT NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/contact_name_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                 <EditText android:id="@+id/etEmergencyName" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="15dp" android:textSize="14sp" android:inputType="textPersonName" android:importantForAutofill="no" android:layout_marginBottom="16dp" android:hint="@string/contact_full_name" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CONTACT PHONE" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/contact_phone_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                 <EditText android:id="@+id/etEmergencyPhone" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="15dp" android:textSize="14sp" android:inputType="phone" android:importantForAutofill="no" android:layout_marginBottom="16dp" android:hint="@string/contact_phone_number" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RELATIONSHIP" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/relationship_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp"/>
                 <EditText android:id="@+id/etRelationship" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="15dp" android:textSize="14sp" android:inputType="text" android:importantForAutofill="no" android:hint="@string/relationship" />
 
             </LinearLayout>
@@ -208,12 +208,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:gravity="center_vertical"
-                android:text="CHILDREN INFORMATION"
+                android:text="@string/children_information"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.02"
-                tools:ignore="HardcodedText" />
+                android:letterSpacing="0.02" />
 
             <!-- Children's Information Container -->
             <LinearLayout
@@ -238,7 +237,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="CANCEL"
+                    android:text="@string/cancel"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -246,8 +245,7 @@
                     android:letterSpacing="0.08"
                     android:background="@drawable/rectangle_hollow_with_shadow"
                     android:clickable="true"
-                    android:focusable="true"
-                    tools:ignore="HardcodedText" />
+                    android:focusable="true" />
 
                 <TextView
                     android:id="@+id/btnSaveParentChanges"
@@ -255,7 +253,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="@string/save_changes_caps"
+                    android:text="@string/save_changes"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
