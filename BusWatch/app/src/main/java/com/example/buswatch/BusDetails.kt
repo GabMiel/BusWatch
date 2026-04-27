@@ -63,13 +63,51 @@ class BusDetails : AppCompatActivity() {
                         assignedBusId = foundChild?.get("assignedBus") as? String
                     }
 
-                    val busId = assignedBusId ?: "Bus 001"
-                    startRealTimeBusUpdates(busId)
+                    if (assignedBusId != null) {
+                        startRealTimeBusUpdates(assignedBusId)
+                    } else {
+                        // If no bus assigned to child, try to find a route they are on
+                        findBusFromRoute()
+                    }
                 }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Error fetching student record", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun findBusFromRoute() {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("parents").document(uid).get().addOnSuccessListener { doc ->
+            @Suppress("UNCHECKED_CAST")
+            val childMap = doc.get("child") as? kotlin.collections.Map<String, Any>
+            @Suppress("UNCHECKED_CAST")
+            val childrenList = doc.get("children") as? List<kotlin.collections.Map<String, Any>>
+            
+            var targetChild: kotlin.collections.Map<String, Any>? = null
+            if (childMap != null) {
+                val fullName = "${childMap["firstName"]} ${childMap["lastName"]}".trim()
+                if (childName == null || fullName == childName) targetChild = childMap
+            }
+            if (targetChild == null && childrenList != null) {
+                targetChild = childrenList.find { "${it["firstName"]} ${it["lastName"]}".trim() == childName }
+            }
+
+            val stopId = targetChild?.get("stop") as? String
+            if (stopId != null) {
+                db.collection("routes")
+                    .whereArrayContains("stopIds", stopId)
+                    .whereEqualTo("status", "Active")
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener { snapshots ->
+                        if (!snapshots.isEmpty) {
+                            val busId = snapshots.documents[0].getString("busId")
+                            if (busId != null) startRealTimeBusUpdates(busId)
+                        }
+                    }
+            }
+        }
     }
 
     private fun startRealTimeBusUpdates(busId: String) {
@@ -87,8 +125,8 @@ class BusDetails : AppCompatActivity() {
                     findViewById<TextView>(R.id.valBusNo)?.text = doc.getString("busNumber") ?: busId
                     
                     val totalStudents = doc.getLong("totalStudents") ?: 0
-                    val capacity = doc.getLong("capacity") ?: 40
-                    val availableSeats = capacity - totalStudents
+                    val capacity = doc.getLong("capacity") ?: 0
+                    val availableSeats = if (capacity > 0) capacity - totalStudents else 0
                     
                     findViewById<TextView>(R.id.valTotalStuds)?.text = "$totalStudents Students"
                     findViewById<TextView>(R.id.valCap)?.text = "$capacity Capacity"
@@ -97,11 +135,17 @@ class BusDetails : AppCompatActivity() {
                     val status = doc.getString("status") ?: "Active"
                     findViewById<TextView>(R.id.valStatus)?.text = status
 
-                    // Update Driver UI
-                    findViewById<TextView>(R.id.valName)?.text = doc.getString("driverName") ?: "---"
-                    findViewById<TextView>(R.id.tvDriverEmail)?.text = doc.getString("driverEmail") ?: "---"
-                    findViewById<TextView>(R.id.tvDriverPhone)?.text = doc.getString("driverPhone") ?: "---"
-                    findViewById<TextView>(R.id.tvDriverLicense)?.text = doc.getString("driverLicense") ?: "---"
+                    val driverId = doc.getString("driverId")
+                    if (driverId != null) {
+                        db.collection("drivers").document(driverId).get().addOnSuccessListener { dDoc ->
+                            if (dDoc.exists()) {
+                                findViewById<TextView>(R.id.valName)?.text = "${dDoc.getString("firstName")} ${dDoc.getString("lastName")}"
+                                findViewById<TextView>(R.id.tvDriverEmail)?.text = dDoc.getString("email") ?: "---"
+                                findViewById<TextView>(R.id.tvDriverPhone)?.text = dDoc.getString("phoneNumber") ?: "---"
+                                findViewById<TextView>(R.id.tvDriverLicense)?.text = dDoc.getString("licenseNumber") ?: "---"
+                            }
+                        }
+                    }
                 }
             }
     }

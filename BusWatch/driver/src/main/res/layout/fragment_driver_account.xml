@@ -56,15 +56,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/profile_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/user"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <ImageView
                     android:id="@+id/imgDriverProfile"

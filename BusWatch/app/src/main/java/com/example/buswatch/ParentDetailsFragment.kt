@@ -30,6 +30,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.example.buswatch.common.R as CommonR
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -38,7 +41,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.storage.FirebaseStorage
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -52,7 +54,6 @@ import kotlin.collections.Map as KMap
 class ParentDetailsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
     private var childrenList = mutableListOf<ChildDetail>()
     private lateinit var adapter: DetailsChildAdapter
     private var isDeleteMode = false
@@ -87,7 +88,6 @@ class ParentDetailsFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        storage = FirebaseStorage.getInstance()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         Configuration.getInstance().load(requireContext(), requireActivity().getSharedPreferences("osmdroid", AppCompatActivity.MODE_PRIVATE))
 
@@ -403,13 +403,17 @@ class ParentDetailsFragment : Fragment() {
             val medications = dialogView.findViewById<EditText>(R.id.etAddChildMedications).text.toString().trim()
             val conditions = dialogView.findViewById<EditText>(R.id.etAddChildConditions).text.toString().trim()
 
-            if (fName.isEmpty() || lName.isEmpty() || age.isEmpty() || section.isEmpty() || school.isEmpty() || address.isEmpty() || selectedGrade.isEmpty() || tempAvatarUri == null || selectedLatitude == null) {
-                Toast.makeText(requireContext(), "Please fill in all required fields and upload photo (*)", Toast.LENGTH_SHORT).show()
+            if (fName.isEmpty() || lName.isEmpty() || age.isEmpty() || section.isEmpty() || school.isEmpty() || address.isEmpty() || selectedGrade.isEmpty() || selectedLatitude == null) {
+                Toast.makeText(requireContext(), "Please fill in all required fields (*)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             btn.isEnabled = false
-            uploadNewChildFull(fName, lName, mName, selectedSuffix, age, section, school, selectedGrade, address, selectedLatitude!!, selectedLongitude!!, selectedBloodType, allergies, medications, conditions, dialog)
+            if (tempAvatarUri != null) {
+                uploadChildPhotoAndSave(fName, lName, mName, selectedSuffix, age, section, school, selectedGrade, address, selectedLatitude!!, selectedLongitude!!, selectedBloodType, allergies, medications, conditions, dialog)
+            } else {
+                saveChildData(fName, lName, mName, selectedSuffix, age, section, school, selectedGrade, address, selectedLatitude!!, selectedLongitude!!, selectedBloodType, allergies, medications, conditions, "", dialog)
+            }
         }
         dialog.show()
     }
@@ -452,7 +456,7 @@ class ParentDetailsFragment : Fragment() {
         }
     }
 
-    private fun uploadNewChildFull(
+    private fun uploadChildPhotoAndSave(
         fName: String, lName: String, mName: String, suffix: String,
         age: String, section: String, school: String, grade: String,
         address: String, lat: Double, lon: Double, blood: String,
@@ -461,68 +465,68 @@ class ParentDetailsFragment : Fragment() {
         val uid = auth.currentUser?.uid ?: return
         val uploadUri = tempAvatarUri ?: return
 
-        val streamExists = try {
-            requireContext().contentResolver.openInputStream(uploadUri)?.use { true } ?: false
-        } catch (_: Exception) { false }
-
-        if (!streamExists) {
-            Toast.makeText(requireContext(), "Error: Image file not found or inaccessible", Toast.LENGTH_SHORT).show()
-            dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
-            return
-        }
+        Toast.makeText(requireContext(), "Uploading child photo...", Toast.LENGTH_SHORT).show()
 
         val ts = System.currentTimeMillis()
         val cleanedFName = fName.filter { it.isLetterOrDigit() }
-        val path = "parents/$uid/child_${cleanedFName}_${ts}.jpg"
-        val ref = storage.reference.child(path)
+        val publicId = "child_${cleanedFName}_$ts"
 
-        Toast.makeText(requireContext(), "Adding child profile...", Toast.LENGTH_SHORT).show()
-
-        ref.putFile(uploadUri)
-            .addOnSuccessListener {
-                ref.downloadUrl.addOnSuccessListener { url ->
-                    val newChild = mapOf(
-                        "firstName" to fName,
-                        "lastName" to lName,
-                        "middleName" to mName,
-                        "suffix" to suffix,
-                        "age" to age,
-                        "class" to section,
-                        "school" to school,
-                        "grade" to grade,
-                        "address" to address,
-                        "latitude" to lat,
-                        "longitude" to lon,
-                        "childAvatarUrl" to url.toString(),
-                        "avatarPath" to path,
-                        "bloodType" to blood,
-                        "allergies" to allergies,
-                        "medications" to meds,
-                        "conditions" to conds,
-                        "status" to "AT HOME"
-                    )
-
-                    db.collection("parents").document(uid).set(
-                        mapOf("children" to FieldValue.arrayUnion(newChild)),
-                        SetOptions.merge()
-                    ).addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Child profile added successfully!", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }.addOnFailureListener { e ->
-                        Toast.makeText(requireContext(), "Database Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                        dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
-                    }
-                }.addOnFailureListener { e ->
-                    Log.e("UploadDebug", "Download URL failed", e)
-                    Toast.makeText(requireContext(), "Could not get photo URL: ${e.message}", Toast.LENGTH_SHORT).show()
+        MediaManager.get().upload(uploadUri)
+            .unsigned("buswatch_unsigned")
+            .option("folder", "parents/$uid")
+            .option("public_id", publicId)
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String) {}
+                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                override fun onSuccess(requestId: String, resultData: MutableMap<Any?, Any?>?) {
+                    val url = resultData?.get("secure_url") as? String ?: ""
+                    saveChildData(fName, lName, mName, suffix, age, section, school, grade, address, lat, lon, blood, allergies, meds, conds, url, dialog)
+                }
+                override fun onError(requestId: String, error: ErrorInfo?) {
+                    Toast.makeText(requireContext(), "Upload failed: ${error?.description}", Toast.LENGTH_SHORT).show()
                     dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
                 }
-            }
-            .addOnFailureListener { e ->
-                Log.e("UploadDebug", "Upload failed", e)
-                Toast.makeText(requireContext(), "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
-            }
+                override fun onReschedule(requestId: String, error: ErrorInfo?) {}
+            }).dispatch()
+    }
+
+    private fun saveChildData(
+        fName: String, lName: String, mName: String, suffix: String,
+        age: String, section: String, school: String, grade: String,
+        address: String, lat: Double, lon: Double, blood: String,
+        allergies: String, meds: String, conds: String, photoUrl: String, dialog: AlertDialog
+    ) {
+        val uid = auth.currentUser?.uid ?: return
+        val newChild = mapOf(
+            "firstName" to fName,
+            "lastName" to lName,
+            "middleName" to mName,
+            "suffix" to suffix,
+            "age" to age,
+            "class" to section,
+            "school" to school,
+            "grade" to grade,
+            "address" to address,
+            "latitude" to lat,
+            "longitude" to lon,
+            "childAvatarUrl" to photoUrl,
+            "bloodType" to blood,
+            "allergies" to allergies,
+            "medications" to meds,
+            "conditions" to conds,
+            "status" to "AT HOME"
+        )
+
+        db.collection("parents").document(uid).set(
+            mapOf("children" to FieldValue.arrayUnion(newChild)),
+            SetOptions.merge()
+        ).addOnSuccessListener {
+            Toast.makeText(requireContext(), "Child profile added successfully!", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }.addOnFailureListener { e ->
+            Toast.makeText(requireContext(), "Database Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            dialog.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
+        }
     }
 
 
@@ -543,6 +547,8 @@ class ParentDetailsFragment : Fragment() {
             tempAvatarUri = null
             dialogAvatarView?.setImageResource(CommonR.drawable.user)
             tvPhotoRequired?.visibility = View.VISIBLE
+            tvPhotoRequired?.text = "Child Photo (Optional)"
+            tvPhotoRequired?.setTextColor(Color.GRAY)
         }
         dialogView.findViewById<Button>(R.id.btnPreviewCancel).setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<Button>(R.id.btnPreviewSave).setOnClickListener {
@@ -696,7 +702,7 @@ class ParentDetailsFragment : Fragment() {
             Toast.makeText(requireContext(), "Updating profile...", Toast.LENGTH_SHORT).show()
 
             if (tempAvatarUri != null) {
-                uploadParentAvatar(tempAvatarUri!!, updates, dialog)
+                uploadParentPhotoAndSave(tempAvatarUri!!, updates, dialog)
             } else {
                 db.collection("parents").document(uid).update(updates)
                     .addOnSuccessListener {
@@ -806,53 +812,39 @@ class ParentDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun uploadParentAvatar(uploadUri: Uri, updates: MutableMap<String, Any>? = null, dialog: AlertDialog? = null) {
+    private fun uploadParentPhotoAndSave(uploadUri: Uri, updates: MutableMap<String, Any>, dialog: AlertDialog) {
         val uid = auth.currentUser?.uid ?: return
 
-        val streamExists = try {
-            requireContext().contentResolver.openInputStream(uploadUri)?.use { true } ?: false
-        } catch (_: Exception) { false }
-
-        if (!streamExists) {
-            Toast.makeText(requireContext(), "Error: Image file not found or inaccessible", Toast.LENGTH_SHORT).show()
-            dialog?.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
-            return
-        }
-
-        val ref = storage.reference.child("parents/$uid/parent_avatar.jpg")
         Toast.makeText(requireContext(), "Uploading parent photo...", Toast.LENGTH_SHORT).show()
 
-        ref.putFile(uploadUri)
-            .addOnSuccessListener {
-                ref.downloadUrl.addOnSuccessListener { url ->
-                    val finalUpdates = updates ?: mutableMapOf()
-                    finalUpdates["profile.parentAvatarUrl"] = url.toString()
-                    finalUpdates["profile.parentAvatarPath"] = "parents/$uid/parent_avatar.jpg"
+        MediaManager.get().upload(uploadUri)
+            .unsigned("buswatch_unsigned")
+            .option("folder", "parents/$uid")
+            .option("public_id", "parent_avatar")
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String) {}
+                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                override fun onSuccess(requestId: String, resultData: MutableMap<Any?, Any?>?) {
+                    val url = resultData?.get("secure_url") as? String ?: ""
+                    updates["profile.parentAvatarUrl"] = url
 
                     db.collection("parents").document(uid)
-                        .update(finalUpdates)
+                        .update(updates)
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Parent photo updated successfully!", Toast.LENGTH_SHORT).show()
-                            dialog?.dismiss()
+                            Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(requireContext(), "Database Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                            dialog?.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
-                            dialog?.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
+                            dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
                         }
-                }.addOnFailureListener { e ->
-                    Log.e("UploadDebug", "Download URL failed", e)
-                    Toast.makeText(requireContext(), "Could not get photo URL: ${e.message}", Toast.LENGTH_SHORT).show()
-                    dialog?.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
-                    dialog?.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
                 }
-            }
-            .addOnFailureListener { e ->
-                Log.e("UploadDebug", "Upload failed", e)
-                Toast.makeText(requireContext(), "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                dialog?.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
-                dialog?.findViewById<Button>(R.id.btnAddChildConfirm)?.isEnabled = true
-            }
+                override fun onError(requestId: String, error: ErrorInfo?) {
+                    Toast.makeText(requireContext(), "Upload failed: ${error?.description}", Toast.LENGTH_SHORT).show()
+                    dialog.findViewById<Button>(R.id.btnSaveProfile)?.isEnabled = true
+                }
+                override fun onReschedule(requestId: String, error: ErrorInfo?) {}
+            }).dispatch()
     }
 
     override fun onDestroyView() {

@@ -70,15 +70,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="BUS INFORMATION"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/ic_bus_logo"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <!-- Bus Number Row -->
                 <LinearLayout
@@ -86,17 +83,20 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginBottom="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Bus Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Bus Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                    </LinearLayout>
                     <EditText
                         android:id="@+id/etBusNumber"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:textSize="14sp"
-                        android:inputType="number"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:inputType="textCapCharacters"
                         android:hint="Enter bus number"
                         android:importantForAutofill="no"/>
                 </LinearLayout>
@@ -108,8 +108,13 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:layout_marginEnd="8dp" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Vehicle Type" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:layout_marginBottom="4dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Vehicle Type" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                        </LinearLayout>
                         <FrameLayout android:id="@+id/btnVehicleTypeDropdown"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -125,8 +130,13 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="0.8" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Capacity" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:layout_marginBottom="4dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Capacity" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text=" *" android:textColor="@color/error_red" android:textSize="12sp" android:textStyle="bold"/>
+                        </LinearLayout>
                         <EditText android:id="@+id/etCapacity"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -149,15 +159,12 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Plate Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        android:text="Plate Number (Optional)" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <EditText
                         android:id="@+id/etPlateNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_width="match_parent" android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:textSize="14sp"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                         android:inputType="textCapCharacters"
                         android:hint="ABC 1234"
                         android:importantForAutofill="no"/>

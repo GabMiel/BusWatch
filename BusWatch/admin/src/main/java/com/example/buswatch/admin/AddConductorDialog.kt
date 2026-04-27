@@ -11,12 +11,14 @@ import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class AddConductorDialog(
     private val activity: AppCompatActivity,
     private val db: FirebaseFirestore,
+    private val pickImageLauncher: ActivityResultLauncher<Intent>,
     private val onConductorAdded: () -> Unit
 ) {
     private var isPasswordVisible = false
@@ -41,14 +44,11 @@ class AddConductorDialog(
     private var maxPhoneDigits = 10
     private var selectedImageUri: Uri? = null
     private var imgConductorPhoto: ImageView? = null
-    
-    private val pickImageLauncher: ActivityResultLauncher<Intent> = 
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                selectedImageUri = result.data?.data
-                imgConductorPhoto?.setImageURI(selectedImageUri)
-            }
-        }
+
+    fun handleImageResult(uri: Uri?) {
+        selectedImageUri = uri
+        imgConductorPhoto?.setImageURI(uri)
+    }
 
     fun show() {
         val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_add_conductor, null)
@@ -77,13 +77,11 @@ class AddConductorDialog(
         val btnViewPassword = dialogView.findViewById<ImageButton>(R.id.btnViewPassword)
         val btnViewConfirmPassword = dialogView.findViewById<ImageButton>(R.id.btnViewConfirmPassword)
 
-        // Photo picker
         frameConductorPhoto?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             pickImageLauncher.launch(intent)
         }
 
-        // Character limits
         etFirstName?.filters = arrayOf(InputFilter.LengthFilter(50))
         etLastName?.filters = arrayOf(InputFilter.LengthFilter(50))
         etMiddleName?.filters = arrayOf(InputFilter.LengthFilter(20))
@@ -222,7 +220,7 @@ class AddConductorDialog(
 
         dialogView.findViewById<ImageButton>(R.id.btnCloseAddConductor)?.setOnClickListener { dialog.dismiss() }
 
-        dialogView.findViewById<TextView>(R.id.btnSaveConductor)?.setOnClickListener {
+        dialogView.findViewById<Button>(R.id.btnSaveConductor)?.setOnClickListener {
             val firstName = etFirstName?.text?.toString()?.trim() ?: ""
             val middleName = etMiddleName?.text?.toString()?.trim() ?: ""
             val lastName = etLastName?.text?.toString()?.trim() ?: ""
@@ -232,7 +230,7 @@ class AddConductorDialog(
             val confirmPassword = etConfirmPassword?.text?.toString()?.trim() ?: ""
             val language = tvLanguage?.text?.toString() ?: "English"
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(activity, "Please fill all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

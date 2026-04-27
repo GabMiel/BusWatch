@@ -84,7 +84,7 @@ class SettingsFragment : Fragment() {
                 .show()
         }
 
-        val logoutButton = view.findViewById<Button>(R.id.btnSettingsLogout)
+        val logoutButton = view.findViewById<Button>(R.id.btnLogout)
         logoutButton.setOnClickListener {
             auth.signOut()
             val intent = Intent(requireContext(), Login::class.java)

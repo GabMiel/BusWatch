@@ -11,15 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
+        <!-- Personal Info Card -->
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardPersonalInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_details_card"
             android:padding="20dp">
 
-            <!-- Edit Button - Icon only -->
             <ImageButton
                 android:id="@+id/btnGeneralEdit"
                 android:layout_width="24dp"
@@ -36,8 +37,6 @@
                 android:id="@+id/rlStudentAvatar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:clickable="true"
-                android:focusable="true"
                 android:background="@drawable/bg_avatar_circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,7 +64,6 @@
                     android:id="@+id/tvStudentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/placeholder_hyphen"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -83,7 +81,6 @@
 
             </LinearLayout>
 
-            <!-- Information Grid -->
             <GridLayout
                 android:id="@+id/infoGrid"
                 android:layout_width="match_parent"
@@ -132,79 +129,99 @@
                     <TextView android:id="@+id/tvSection" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_hyphen" android:textColor="#000000" android:textStyle="bold" android:textSize="13sp"/>
                 </LinearLayout>
             </GridLayout>
-
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="#D1CFCF"
-                app:layout_constraintTop_toBottomOf="@id/infoGrid" />
-
-            <!-- Address Section -->
-            <LinearLayout
-                android:id="@+id/addressLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/divider1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_address"
-                    android:textColor="#666666"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:id="@+id/tvAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/placeholder_hyphen"
-                    android:textColor="#000000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <!-- Map Container -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/clMapContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="12dp">
-
-                    <org.osmdroid.views.MapView
-                        android:id="@+id/mapHomeLocation"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#FAF6DB" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- NEW: Stop Assignment Button -->
-                <Button
-                    android:id="@+id/btnAssignStop"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_button_yellow"
-                    android:text="SET PICKUP STOP"
-                    android:textColor="#000000"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/tvAssignedStop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Current Stop: Not Selected"
-                    android:textColor="#666666"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Home Address Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardHomeAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_details_card"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvHomeAddressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_address"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/placeholder_hyphen"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvHomeAddressLabel" />
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapHomeLocation"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/tvAddress" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Pickup Stop Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardPickupStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_details_card"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvPickupStopLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PICKUP STOP"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvAssignedStop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pickup_stop_not_selected"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPickupStopLabel" />
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapStopLocation"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/tvAssignedStop" />
+
+            <Button
+                android:id="@+id/btnAssignStop"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_yellow"
+                android:text="SET PICKUP STOP"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                app:layout_constraintTop_toBottomOf="@id/mapStopLocation" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

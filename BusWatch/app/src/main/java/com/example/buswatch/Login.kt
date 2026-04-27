@@ -173,7 +173,18 @@ class Login : AppCompatActivity() {
                                         if (driverDoc != null && driverDoc.exists()) {
                                             navigateBasedOnRole("driver")
                                         } else {
-                                            navigateBasedOnRole("parent")
+                                            // Check conductors collection
+                                            db.collection("conductors").document(uid).get()
+                                                .addOnSuccessListener { conductorDoc ->
+                                                    if (conductorDoc != null && conductorDoc.exists()) {
+                                                        navigateBasedOnRole("conductor")
+                                                    } else {
+                                                        navigateBasedOnRole("parent")
+                                                    }
+                                                }
+                                                .addOnFailureListener {
+                                                    navigateBasedOnRole("parent")
+                                                }
                                         }
                                     }
                                     .addOnFailureListener {
@@ -202,7 +213,7 @@ class Login : AppCompatActivity() {
     private fun navigateBasedOnRole(role: String?) {
         val intent = when (role?.lowercase()) {
             "admin" -> Intent(this, com.example.buswatch.admin.AdminHome::class.java)
-            "driver" -> Intent(this, com.example.buswatch.driver.DriverHome::class.java)
+            "driver", "conductor" -> Intent(this, com.example.buswatch.driver.DriverHome::class.java)
             "parent" -> Intent(this, ParentMainActivity::class.java)
             else -> Intent(this, ParentMainActivity::class.java)
         }

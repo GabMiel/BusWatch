@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Header Section (Consistent with Driver Live Tracking) -->
+    <!-- Header Section -->
     <RelativeLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!-- Next Stop Banner (Aligned with Driver's) -->
+    <!-- Next Stop Banner -->
     <LinearLayout
         android:id="@+id/bannerNextStop"
         android:layout_width="match_parent"
@@ -101,31 +101,51 @@
             tools:text="10 MINS" />
     </LinearLayout>
 
-    <!-- Map Area -->
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapView"
+    <!-- Map Area Container -->
+    <FrameLayout
+        android:id="@+id/mapContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/layoutBottomInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bannerNextStop" />
+        app:layout_constraintTop_toBottomOf="@id/bannerNextStop">
 
-    <!-- Maximize Button -->
-    <ImageButton
-        android:id="@+id/btnMaximizeMap"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_shape"
-        android:backgroundTint="#CCFFFFFF"
-        android:contentDescription="Maximize Map"
-        android:elevation="4dp"
-        android:padding="10dp"
-        android:src="@drawable/ic_eye"
-        app:layout_constraintEnd_toEndOf="@id/mapView"
-        app:layout_constraintTop_toTopOf="@id/mapView"
-        app:tint="@color/black" />
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Maximize Button -->
+        <ImageButton
+            android:id="@+id/btnMaximizeMap"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#CCFFFFFF"
+            android:contentDescription="Maximize Map"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_eye"
+            app:tint="@color/black" />
+
+        <!-- Locator Button -->
+        <ImageButton
+            android:id="@+id/btnMyLocation"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#CCFFFFFF"
+            android:contentDescription="Locate Bus"
+            android:elevation="4dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_my_location"
+            app:tint="@color/black" />
+    </FrameLayout>
 
     <!-- Bottom Driver Info Section -->
     <LinearLayout
@@ -138,7 +158,6 @@
         android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Drag handle indicator -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
@@ -159,48 +178,31 @@
             android:letterSpacing="0.02"
             tools:ignore="HardcodedText" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="12dp">
+            android:paddingVertical="12dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imgDriver"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/bg_avatar_circle"
-                android:padding="2dp"
-                android:src="@drawable/user"
-                android:contentDescription="@string/user_avatar"/>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvDriverName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/imgDriver"
-                android:layout_marginStart="16dp"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                tools:text="Mike Johnson" />
 
-                <TextView
-                    android:id="@+id/tvDriverName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    tools:text="Mike Johnson" />
-
-                <TextView
-                    android:id="@+id/tvBusStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:alpha="0.7"
-                    android:textSize="13sp"
-                    tools:text="Bus Driver (BUS-001)" />
-            </LinearLayout>
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/tvBusStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:alpha="0.7"
+                android:textSize="13sp"
+                tools:text="Bus Driver (BUS-001)" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/btnMapBusDetails"

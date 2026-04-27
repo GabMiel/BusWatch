@@ -97,10 +97,10 @@
                     android:layout_below="@id/viewAddChildAvatarBg"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    android:text="@string/photo_required"
-                    android:textColor="#FF0000"
+                    android:text="Child Photo (Optional)"
+                    android:textColor="#888888"
                     android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </RelativeLayout>
 
             <!-- Name Fields -->

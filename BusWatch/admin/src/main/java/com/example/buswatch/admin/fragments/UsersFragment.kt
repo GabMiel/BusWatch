@@ -1,14 +1,16 @@
 package com.example.buswatch.admin.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,18 +18,17 @@ import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.R
 import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.admin.UserAdapter
-import com.example.buswatch.admin.StopAdmin
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlin.math.ceil
 
 class UsersFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
-    private val itemsPerPage = 20
+    private val itemsPerPage = 10
     private var currentPage = 1
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
-    private var selectedStopId: String? = null
-    private var selectedStopName: String? = null
+    private var searchQuery = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_users, container, false)
@@ -36,7 +37,6 @@ class UsersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchCount()
         fetchPage()
     }
 
@@ -60,96 +60,99 @@ class UsersFragment : Fragment() {
             }
         }
 
-        view.findViewById<ImageButton>(R.id.btnFilterByStop)?.setOnClickListener {
-            showStopFilterDialog()
-        }
-
-        view.findViewById<TextView>(R.id.btnClearFilter)?.setOnClickListener {
-            selectedStopId = null
-            selectedStopName = null
-            currentPage = 1
-            updateFilterUI()
-            fetchCount()
-            fetchPage()
-        }
-    }
-
-    private fun showStopFilterDialog() {
-        db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
-            val stops = snapshots.map { doc ->
-                StopAdmin(doc.id, doc.getString("name") ?: "N/A", 0.0, 0.0)
+        val etSearch = view.findViewById<EditText>(R.id.searchUsers)
+        etSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchQuery = s?.toString()?.lowercase() ?: ""
+                currentPage = 1
+                fetchPage()
             }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
-            if (stops.isEmpty()) {
-                Toast.makeText(requireContext(), "No active stops found", Toast.LENGTH_SHORT).show()
-                return@addOnSuccessListener
-            }
-
-            val stopNames = stops.map { it.name }.toTypedArray()
-            AlertDialog.Builder(requireContext())
-                .setTitle("Filter by Stop")
-                .setItems(stopNames) { _, which ->
-                    selectedStopId = stops[which].id
-                    selectedStopName = stops[which].name
-                    currentPage = 1
-                    updateFilterUI()
-                    fetchCount()
-                    fetchPage()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
-    }
-
-    private fun updateFilterUI() {
-        val view = view ?: return
-        val layout = view.findViewById<LinearLayout>(R.id.layoutFilterStatus)
-        val info = view.findViewById<TextView>(R.id.tvFilterInfo)
-
-        if (selectedStopId != null) {
-            layout.visibility = View.VISIBLE
-            info.text = "Filtering by Stop: $selectedStopName"
-        } else {
-            layout.visibility = View.GONE
-        }
-    }
-
-    private fun fetchCount() {
-        var query: Query = db.collection("parents").whereEqualTo("status", "approved")
-        
-        if (selectedStopId != null) {
-            query = query.whereEqualTo("child.stop", selectedStopId)
-        }
-
-        query.get().addOnSuccessListener { 
-            totalCount = it.size()
-        }
+        setupPagination(view)
     }
 
     private fun fetchPage() {
-        var query: Query = db.collection("parents").whereEqualTo("status", "approved")
-        
-        if (selectedStopId != null) {
-            query = query.whereEqualTo("child.stop", selectedStopId)
-        }
-
-        query.orderBy("lastName", sortDirection)
-            .limit(itemsPerPage.toLong())
+        db.collection("parents").whereEqualTo("status", "approved")
             .get()
             .addOnSuccessListener { snapshots ->
-                val users = snapshots.map { doc ->
+                val allUsers = snapshots.map { doc ->
                     @Suppress("UNCHECKED_CAST")
                     val profile = doc.get("profile") as? Map<String, Any>
-                    UserAdmin(doc.id, "${profile?.get("firstName")} ${profile?.get("lastName")}", "Parent", status = "approved")
-                }.toMutableList()
-                view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(users, 
+                    val firstName = profile?.get("firstName") as? String ?: ""
+                    val lastName = profile?.get("lastName") as? String ?: ""
+                    val avatarUrl = profile?.get("parentAvatarUrl") as? String ?: doc.getString("avatarUrl") ?: ""
+                    UserAdmin(doc.id, "$firstName $lastName", "Parent", status = "approved", avatarUrl = avatarUrl)
+                }.filter { 
+                    it.name.lowercase().contains(searchQuery)
+                }
+                
+                val sortedUsers = if (sortDirection == Query.Direction.ASCENDING) {
+                    allUsers.sortedBy { it.name.lowercase() }
+                } else {
+                    allUsers.sortedByDescending { it.name.lowercase() }
+                }
+                
+                totalCount = sortedUsers.size
+                val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+                if (currentPage > totalPages) currentPage = totalPages
+                if (currentPage < 1) currentPage = 1
+                
+                val start = (currentPage - 1) * itemsPerPage
+                val end = minOf(start + itemsPerPage, totalCount)
+                
+                val pagedUsers = if (start < totalCount) sortedUsers.subList(start, end) else emptyList()
+
+                view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedUsers.toMutableList(), 
                     { (requireActivity() as? AdminHome)?.showParentDetail(it) { fetchPage() } }, 
                     { (requireActivity() as? AdminHome)?.editParentDetail(it) }, 
-                    { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) }
+                    { user, _ -> 
+                        (requireActivity() as? AdminHome)?.archiveUser(user) { fetchPage() } 
+                    }
                 )
+                updatePaginationUI()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error fetching users: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun setupPagination(view: View) {
+        val etPage = view.findViewById<EditText>(R.id.etCurrentPage)
+        etPage?.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val input = v.text.toString().toIntOrNull() ?: 1
+                handleJumpToPage(input)
+                true
+            } else false
+        }
+        view.findViewById<View>(R.id.btnFirstPage)?.setOnClickListener { handleJumpToPage(1) }
+        view.findViewById<View>(R.id.btnPrevPage)?.setOnClickListener { handleJumpToPage(currentPage - 1) }
+        view.findViewById<View>(R.id.btnNextPage)?.setOnClickListener { handleJumpToPage(currentPage + 1) }
+        view.findViewById<View>(R.id.btnLastPage)?.setOnClickListener { 
+            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+            handleJumpToPage(totalPages)
+        }
+    }
+
+    private fun handleJumpToPage(page: Int) {
+        val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        currentPage = page.coerceIn(1, maxPage)
+        fetchPage()
+    }
+
+    private fun updatePaginationUI() {
+        val view = view ?: return
+        val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        
+        view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
+        view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $totalPages"
+        
+        view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
+        view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1
+        view.findViewById<View>(R.id.btnNextPage)?.isEnabled = currentPage < totalPages
+        view.findViewById<View>(R.id.btnLastPage)?.isEnabled = currentPage < totalPages
     }
 }

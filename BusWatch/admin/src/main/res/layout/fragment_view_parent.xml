@@ -43,6 +43,19 @@
         app:layout_constraintTop_toTopOf="@id/headerBg"
         tools:ignore="HardcodedText" />
 
+    <ImageButton
+        android:id="@+id/btnEditParentAction"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Edit"
+        android:src="@drawable/edit"
+        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/headerBg"
+        app:tint="@color/white" />
+
     <!-- Main Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -70,15 +83,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/parent_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/user"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <ImageView
                     android:id="@+id/imgParent"
@@ -140,22 +150,18 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_details_card"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:layout_marginBottom="24dp">
+                android:padding="24dp" android:layout_marginBottom="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/emergency_contact"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/telephone"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CONTACT NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText" />
                 <TextView android:id="@+id/tvEmergencyName" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen" android:layout_marginBottom="16dp"/>
@@ -172,14 +178,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:text="CHILDREN INFORMATION"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02"
-                app:drawableStartCompat="@drawable/child"
                 tools:ignore="HardcodedText" />
 
             <!-- Children's Information Container -->
@@ -191,31 +195,18 @@
                 android:layout_marginBottom="8dp"
                 android:minHeight="50dp">
                 <!-- Runtime populated -->
-                <include layout="@layout/layout_view_child_item" tools:visibility="visible" />
             </LinearLayout>
 
-            <!-- Approval Buttons (Pending Status) -->
+            <!-- Approval Buttons (Reject and Approve) -->
             <LinearLayout
                 android:id="@+id/layoutApprovalButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
                 <com.google.android.material.button.MaterialButton android:id="@+id/btnReject" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="@string/reject_caps" android:textColor="@color/white" android:textSize="14sp" android:textStyle="bold" app:backgroundTint="#F44336" app:cornerRadius="27dp" />
                 <com.google.android.material.button.MaterialButton android:id="@+id/btnAccept" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:layout_marginStart="8dp" android:text="@string/approve_caps" android:textColor="@color/white" android:textSize="14sp" android:textStyle="bold" app:backgroundTint="#4CAF50" app:cornerRadius="27dp" />
-            </LinearLayout>
-
-            <!-- Standard Actions (BACK and EDIT) -->
-            <LinearLayout
-                android:id="@+id/layoutStandardButtons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-                <TextView android:id="@+id/btnBackParentAction" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="BACK" android:textColor="#000000" android:textSize="15sp" android:textStyle="bold" android:gravity="center" android:letterSpacing="0.08" android:background="@drawable/rectangle_hollow_with_shadow" android:clickable="true" android:focusable="true" tools:ignore="HardcodedText" />
-                <TextView android:id="@+id/btnEditParentAction" android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1" android:layout_marginStart="8dp" android:text="EDIT" android:textColor="#000000" android:textSize="15sp" android:textStyle="bold" android:gravity="center" android:letterSpacing="0.08" android:background="@drawable/bg_button_yellow" android:clickable="true" android:focusable="true" tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </LinearLayout>

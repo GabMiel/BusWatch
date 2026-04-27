@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
@@ -17,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 data class StudentHome(
-    val id: String, // index in children list or "primary"
+    val id: String,
     val name: String,
     val grade: String,
     val school: String,
@@ -25,7 +24,8 @@ data class StudentHome(
     val avatarResId: Int,
     val avatarUrl: String? = null,
     val stop: String = "---",
-    val rideOption: String = "Round Trip"
+    val rideOption: String = "Round Trip",
+    val schedule: String = "Schedule: Not Set"
 )
 
 class StudentHomeAdapter(
@@ -46,6 +46,8 @@ class StudentHomeAdapter(
         val avatar: ImageView = view.findViewById(R.id.imgStudent)
         val spinner: Spinner = view.findViewById(R.id.spinnerRideOption)
         val card: View = view.findViewById(R.id.studentCard)
+        val ivArrow: ImageView = view.findViewById(R.id.ivArrowIndicator)
+        val schedule: TextView = view.findViewById(R.id.tvBusSchedule)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -68,8 +70,8 @@ class StudentHomeAdapter(
         holder.school.text = student.school
         holder.stop.text = "Stop: ${student.stop}"
         holder.status.text = student.status
+        holder.schedule.text = student.schedule
         
-        // Use Glide for avatar loading
         if (!student.avatarUrl.isNullOrEmpty()) {
             Glide.with(holder.avatar.context)
                 .load(student.avatarUrl)
@@ -81,20 +83,26 @@ class StudentHomeAdapter(
             holder.avatar.setImageResource(student.avatarResId)
         }
 
-        // Background and clickability based on interaction state
-        if (isInteractable) {
+        // Card is active/green if status is "Heading to Stop" or "On Board"
+        val isActive = student.status == "Heading to Stop" || student.status == "On Board"
+        
+        if (isActive) {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_light_green)
             holder.card.setOnClickListener { onItemClick(student) }
             holder.card.isClickable = true
             holder.card.isEnabled = true
+            holder.ivArrow.visibility = View.VISIBLE
+            holder.spinner.visibility = View.GONE // Hide spinner when trip is active
         } else {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_black_border)
             holder.card.setOnClickListener(null)
             holder.card.isClickable = false
             holder.card.isEnabled = false
+            holder.ivArrow.visibility = View.GONE
+            holder.spinner.visibility = View.VISIBLE
         }
 
-        // Setup Spinner with custom small text layout from common module
+        // Setup Spinner
         val options = holder.itemView.context.resources.getStringArray(CommonR.array.ride_options)
         val adapter = ArrayAdapter(
             holder.itemView.context,
@@ -104,7 +112,6 @@ class StudentHomeAdapter(
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         holder.spinner.adapter = adapter
 
-        // Set current selection without triggering listener
         val initialPosition = options.indexOf(student.rideOption).takeIf { it != -1 } ?: 0
         holder.spinner.setSelection(initialPosition, false)
 
@@ -112,37 +119,30 @@ class StudentHomeAdapter(
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 val selectedOption = options[pos]
                 if (selectedOption != student.rideOption) {
-                    updateRideOptionInFirebase(student, selectedOption, holder.itemView)
+                    updateRideOptionInFirebase(student, selectedOption)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun updateRideOptionInFirebase(student: StudentHome, option: String, view: View) {
+    private fun updateRideOptionInFirebase(student: StudentHome, option: String) {
         val uid = auth.currentUser?.uid ?: return
         val docRef = db.collection("parents").document(uid)
 
         if (student.id == "primary") {
             docRef.update("child.rideOption", option)
-                .addOnFailureListener {
-                    Toast.makeText(view.context, "Failed to update ride option", Toast.LENGTH_SHORT).show()
-                }
         } else {
-            // It's an index in the children list
             val index = student.id.toIntOrNull() ?: return
             docRef.get().addOnSuccessListener { document ->
                 @Suppress("UNCHECKED_CAST")
                 val children = document.get("children") as? List<kotlin.collections.Map<String, Any>> ?: return@addOnSuccessListener
                 val newList = children.toMutableList()
                 if (index < newList.size) {
-                    val updatedChild = newList[index].toMutableMap()
+                    val updatedChild = (newList[index] as kotlin.collections.Map<String, Any>).toMutableMap()
                     updatedChild["rideOption"] = option
                     newList[index] = updatedChild
                     docRef.update("children", newList)
-                        .addOnFailureListener {
-                            Toast.makeText(view.context, "Failed to update ride option", Toast.LENGTH_SHORT).show()
-                        }
                 }
             }
         }

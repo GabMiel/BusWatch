@@ -28,20 +28,6 @@
             android:letterSpacing="0.1"
             android:fontFamily="sans-serif-condensed"
             android:contentDescription="@string/routing"/>
-
-        <TextView
-            android:id="@+id/tabArchivedRoutesHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:paddingEnd="16dp"
-            android:text="ARCHIVE"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true" />
     </RelativeLayout>
 
     <!-- Navigation Tabs -->

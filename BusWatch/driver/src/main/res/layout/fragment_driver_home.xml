@@ -5,9 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="#FFFFFF">
 
-    <ScrollView
+    <!-- 1. TOP HEADER (Simple Horizontal Flow) -->
+    <LinearLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@drawable/square_shape"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/header_logo"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:contentDescription="@string/logo"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/buswatch"
+            android:textColor="#040303"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 2. SCROLLABLE CONTENT (Takes up flexible middle space) -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/main_scroller"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -21,21 +51,40 @@
 
             <!-- Greeting Card -->
             <LinearLayout
+                android:id="@+id/greeting_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_greeting_card"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:layout_marginBottom="20dp">
-                <TextView
-                    android:id="@+id/tvGreeting"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/good_morning_driver"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed-medium"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/good_morning_driver"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvShiftTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="06:00 AM - 07:30 AM"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvCurrentTime"
                     android:layout_width="wrap_content"
@@ -46,47 +95,6 @@
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <!-- Route Summary Card (New) -->
-            <LinearLayout
-                android:id="@+id/cardAssignedRoute"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_details_card"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="20dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ASSIGNED ROUTE"
-                    android:textColor="@color/gray_text"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    tools:ignore="SmallSp" />
-
-                <TextView
-                    android:id="@+id/tvAssignedRouteName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Route A - Main Campus"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
-
-                <TextView
-                    android:id="@+id/tvAssignedBus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bus: BUS-001 (40 Seats)"
-                    android:textColor="@color/accent_blue"
-                    android:textSize="13sp"
-                    android:layout_marginTop="2dp"/>
-            </LinearLayout>
-
-            <!-- Students For: label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,17 +102,15 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed-medium"
                 android:layout_marginBottom="10dp"/>
 
-            <!-- Morning / Afternoon Tabs -->
+            <!-- Tabs -->
             <LinearLayout
+                android:id="@+id/tabs_container"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_tab_container"
-                android:clipChildren="true"
-                android:clipToPadding="true"
                 android:padding="2dp"
                 android:layout_marginBottom="14dp">
 
@@ -118,7 +124,6 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:gravity="center"
-                    android:letterSpacing="0.04"
                     android:background="@drawable/bg_tab_active"
                     android:clickable="true"
                     android:focusable="true"/>
@@ -132,33 +137,32 @@
                     android:textColor="@color/gray_text"
                     android:textSize="12sp"
                     android:gravity="center"
-                    android:letterSpacing="0.04"
                     android:background="@drawable/bg_tab_inactive"
                     android:clickable="true"
                     android:focusable="true"/>
             </LinearLayout>
 
-            <!-- Student List -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerStudents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_student_row" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Start Trip Button Container -->
+    <!-- 3. ACTION BUTTON (Fixed above Nav) -->
     <LinearLayout
+        android:id="@+id/layoutStartTrip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingHorizontal="16dp"
         android:paddingTop="10dp"
         android:paddingBottom="12dp"
         android:background="@color/white"
-        android:elevation="4dp">
+        android:elevation="8dp">
         <TextView
             android:id="@+id/btnStartTrip"
             android:layout_width="match_parent"
@@ -168,13 +172,12 @@
             android:textSize="17sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:fontFamily="sans-serif-condensed-medium"
             android:background="@drawable/bg_start_trip"
             android:clickable="true"
             android:focusable="true"/>
     </LinearLayout>
 
-    <!-- Bottom Navigation -->
+    <!-- 4. BOTTOM NAVIGATION (Fixed at bottom) -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -183,7 +186,6 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- Account Container -->
         <LinearLayout
             android:id="@+id/containerNavAccount"
             android:layout_width="0dp"
@@ -194,17 +196,12 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
-
-            <ImageButton
-                android:id="@+id/btnNavAccount"
+            <ImageView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:background="@null"
-                android:contentDescription="@string/account"
                 android:src="@drawable/ic_nav_account"
                 app:tint="@color/nav_inactive"
-                android:clickable="false" />
-
+                android:contentDescription="@string/account" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -213,7 +210,6 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Home Container (Active) -->
         <LinearLayout
             android:id="@+id/containerNavHome"
             android:layout_width="0dp"
@@ -224,24 +220,18 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
-
-            <ImageButton
-                android:id="@+id/btnNavHome"
+            <ImageView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:background="@null"
-                android:contentDescription="@string/home"
                 android:src="@drawable/ic_nav_home"
                 app:tint="@color/yellow_primary"
-                android:clickable="false" />
-
+                android:contentDescription="@string/home" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home"
                 android:textColor="@color/yellow_primary"
                 android:textSize="11sp" />
-
             <View
                 android:layout_width="20dp"
                 android:layout_height="2dp"
@@ -249,7 +239,6 @@
                 android:background="@color/yellow_primary" />
         </LinearLayout>
 
-        <!-- Settings Container -->
         <LinearLayout
             android:id="@+id/containerNavSettings"
             android:layout_width="0dp"
@@ -260,17 +249,12 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
-
-            <ImageButton
-                android:id="@+id/btnNavSettings"
+            <ImageView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:background="@null"
-                android:contentDescription="@string/settings"
                 android:src="@drawable/ic_nav_settings"
                 app:tint="@color/nav_inactive"
-                android:clickable="false" />
-
+                android:contentDescription="@string/settings" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -278,7 +262,6 @@
                 android:textColor="@color/nav_inactive"
                 android:textSize="11sp" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.buswatch.common.R as CommonR
 
 data class UserAdmin(
     val id: String,
@@ -26,6 +29,7 @@ class UserAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.tvUserName)
         val role: TextView = view.findViewById(R.id.tvUserRole)
+        val avatar: ImageView = view.findViewById(R.id.imgAvatar)
         val btnView: ImageButton = view.findViewById(R.id.btnView)
         val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
         val btnArchive: ImageButton = view.findViewById(R.id.btnArchive)
@@ -40,6 +44,12 @@ class UserAdapter(
         val user = users[position]
         holder.name.text = user.name
         holder.role.text = user.role
+
+        Glide.with(holder.itemView.context)
+            .load(user.avatarUrl)
+            .placeholder(CommonR.drawable.ic_person_placeholder)
+            .circleCrop()
+            .into(holder.avatar)
 
         holder.btnView.setOnClickListener { onViewClick(user) }
         holder.btnEdit.setOnClickListener { onEditClick(user) }

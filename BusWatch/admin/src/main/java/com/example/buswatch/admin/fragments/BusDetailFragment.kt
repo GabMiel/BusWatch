@@ -36,13 +36,8 @@ class BusDetailFragment : Fragment() {
     }
 
     private fun setupUI(view: View) {
-        val onBack = { (requireActivity() as? AdminHome)?.replaceFragment(BusesFragment()) }
-        
-        view.findViewById<ImageButton>(R.id.btnBackBusDetail)?.setOnClickListener { onBack() }
-        view.findViewById<View>(R.id.btnBackBusAction)?.setOnClickListener { onBack() }
-        
-        view.findViewById<View>(R.id.btnEditBusAction)?.setOnClickListener {
-            (requireActivity() as? AdminHome)?.editBusDetail(bus)
+        view.findViewById<ImageButton>(R.id.btnBackBusDetail)?.setOnClickListener {
+            (requireActivity() as? AdminHome)?.replaceFragment(BusesFragment())
         }
     }
 
@@ -81,9 +76,12 @@ class BusDetailFragment : Fragment() {
                         tvDName.text = "$first $last".trim()
                         tvDPhone.text = dDoc.getString("phone") ?: "No Phone"
                         
-                        val photoUrl = dDoc.getString("profilePhoto")
+                        val photoUrl = dDoc.getString("driverAvatar") ?: dDoc.getString("profilePhoto")
                         if (!photoUrl.isNullOrEmpty() && imgDriver != null) {
-                            Glide.with(this).load(photoUrl).circleCrop().into(imgDriver)
+                            Glide.with(this).load(photoUrl)
+                                .placeholder(CommonR.drawable.ic_person_placeholder)
+                                .circleCrop()
+                                .into(imgDriver)
                         }
                     } else {
                         tvDName.text = "No Driver Assigned"

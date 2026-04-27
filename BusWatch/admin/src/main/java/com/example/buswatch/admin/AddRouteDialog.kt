@@ -1,19 +1,31 @@
 package com.example.buswatch.admin
 
+import android.app.TimePickerDialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
+import java.util.Calendar
+import java.util.Locale
+import kotlin.random.Random
 
 class AddRouteDialog(
     private val context: Context,
@@ -25,6 +37,14 @@ class AddRouteDialog(
     private var selectedConductorId: String? = null
     private var selectedStopIds = mutableListOf<String>()
     private var busCapacity = 0
+    private var isMaximized = false
+    private var routePolyline: Polyline? = null
+    private val allMarkers = mutableMapOf<String, Marker>()
+
+    private var morningStartTime: String = ""
+    private var morningEndTime: String = ""
+    private var afternoonStartTime: String = ""
+    private var afternoonEndTime: String = ""
 
     fun show() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_route, null)
@@ -37,6 +57,31 @@ class AddRouteDialog(
         val tvSelectedConductor = dialogView.findViewById<TextView>(R.id.tvSelectedConductor)
         val tvSelectedStopsCount = dialogView.findViewById<TextView>(R.id.tvSelectedStopsCount)
         val mapRoutePicker = dialogView.findViewById<MapView>(R.id.mapRoutePicker)
+        val btnMaximize = dialogView.findViewById<ImageButton>(R.id.btnMaximizeMap)
+        val btnMyLocation = dialogView.findViewById<ImageButton>(R.id.btnMyLocation)
+
+        val tvMorningStart = dialogView.findViewById<TextView>(R.id.tvMorningStart)
+        val tvMorningEnd = dialogView.findViewById<TextView>(R.id.tvMorningEnd)
+        val tvAfternoonStart = dialogView.findViewById<TextView>(R.id.tvAfternoonStart)
+        val tvAfternoonEnd = dialogView.findViewById<TextView>(R.id.tvAfternoonEnd)
+
+        // UI elements to hide when maximized
+        val headerLayout = dialogView.findViewById<View>(R.id.headerLayout)
+        val layoutRouteName = dialogView.findViewById<View>(R.id.layoutRouteName)
+        val layoutDriver = dialogView.findViewById<View>(R.id.layoutDriver)
+        val layoutBus = dialogView.findViewById<View>(R.id.layoutBus)
+        val layoutCapacity = dialogView.findViewById<View>(R.id.layoutCapacity)
+        val layoutConductor = dialogView.findViewById<View>(R.id.layoutConductor)
+        val layoutActions = dialogView.findViewById<View>(R.id.btnSaveRoute)
+        val mapContainer = dialogView.findViewById<FrameLayout>(R.id.mapContainer)
+        val layoutMorning = dialogView.findViewById<View>(R.id.layoutMorningTime)
+        val layoutAfternoon = dialogView.findViewById<View>(R.id.layoutAfternoonTime)
+
+        // Time Pickers
+        tvMorningStart?.setOnClickListener { showTimePicker { time -> morningStartTime = time; tvMorningStart.text = time } }
+        tvMorningEnd?.setOnClickListener { showTimePicker { time -> morningEndTime = time; tvMorningEnd.text = time } }
+        tvAfternoonStart?.setOnClickListener { showTimePicker { time -> afternoonStartTime = time; tvAfternoonStart.text = time } }
+        tvAfternoonEnd?.setOnClickListener { showTimePicker { time -> afternoonEndTime = time; tvAfternoonEnd.text = time } }
 
         // Dropdown Buttons
         dialogView.findViewById<FrameLayout>(R.id.btnDriverDropdown).setOnClickListener {
@@ -52,6 +97,42 @@ class AddRouteDialog(
         // Setup Map for Stop Selection
         setupStopPickerMap(mapRoutePicker, tvSelectedStopsCount)
 
+        btnMaximize?.setOnClickListener {
+            isMaximized = !isMaximized
+            headerLayout?.isVisible = !isMaximized
+            layoutRouteName?.isVisible = !isMaximized
+            layoutDriver?.isVisible = !isMaximized
+            layoutBus?.isVisible = !isMaximized
+            layoutCapacity?.isVisible = !isMaximized
+            layoutConductor?.isVisible = !isMaximized
+            layoutActions?.isVisible = !isMaximized
+            layoutMorning?.isVisible = !isMaximized
+            layoutAfternoon?.isVisible = !isMaximized
+
+            val params = mapContainer?.layoutParams
+            if (isMaximized) {
+                params?.height = (480 * context.resources.displayMetrics.density).toInt()
+                btnMaximize.setImageResource(CommonR.drawable.ic_close)
+            } else {
+                params?.height = (250 * context.resources.displayMetrics.density).toInt()
+                btnMaximize.setImageResource(CommonR.drawable.ic_eye)
+            }
+            mapContainer?.layoutParams = params
+            mapRoutePicker?.invalidate()
+        }
+
+        btnMyLocation?.setOnClickListener {
+            if (allMarkers.isNotEmpty()) {
+                val markerList = allMarkers.values.toList()
+                val randomMarker = markerList[Random.nextInt(markerList.size)]
+                mapRoutePicker?.controller?.animateTo(randomMarker.position)
+                mapRoutePicker?.controller?.setZoom(17.0)
+            } else {
+                mapRoutePicker?.controller?.animateTo(GeoPoint(14.7566, 121.0450))
+                mapRoutePicker?.controller?.setZoom(15.0)
+            }
+        }
+
         dialogView.findViewById<ImageButton>(R.id.btnCloseAddRoute).setOnClickListener { dialog.dismiss() }
         
         dialogView.findViewById<TextView>(R.id.btnSaveRoute).setOnClickListener {
@@ -61,9 +142,26 @@ class AddRouteDialog(
         dialog.show()
     }
 
+    private fun showTimePicker(onTimeSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        TimePickerDialog(context, { _, h, m ->
+            val amPm = if (h < 12) "AM" else "PM"
+            val hourFormatted = if (h % 12 == 0) 12 else h % 12
+            val timeString = String.format(Locale.getDefault(), "%02d:%02d %s", hourFormatted, m, amPm)
+            onTimeSelected(timeString)
+        }, hour, minute, false).show()
+    }
+
     private fun showDriverPicker(target: TextView) {
         db.collection("drivers").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
-            val items = snapshots.map { it.getString("firstName") + " " + it.getString("lastName") }.toTypedArray()
+            if (snapshots.isEmpty) {
+                Toast.makeText(context, "No active drivers found", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
+            val items = snapshots.map { "${it.getString("firstName") ?: ""} ${it.getString("lastName") ?: ""}".trim() }.toTypedArray()
             val ids = snapshots.map { it.id }
             AlertDialog.Builder(context).setTitle("Select Driver").setItems(items) { _, which ->
                 selectedDriverId = ids[which]
@@ -74,21 +172,39 @@ class AddRouteDialog(
 
     private fun showBusPicker(target: TextView, capacityTarget: TextView) {
         db.collection("buses").whereEqualTo("status", "Active").get().addOnSuccessListener { snapshots ->
-            val items = snapshots.map { it.getString("busNumber") ?: "N/A" }.toTypedArray()
-            val capacities = snapshots.map { it.getLong("capacity")?.toInt() ?: 0 }
-            val ids = snapshots.map { it.id }
+            if (snapshots.isEmpty) {
+                Toast.makeText(context, "No active buses found", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
+            val buses = snapshots.documents
+            val items = buses.map { it.getString("busNumber") ?: "N/A" }.toTypedArray()
+            
             AlertDialog.Builder(context).setTitle("Select Bus").setItems(items) { _, which ->
-                selectedBusId = ids[which]
-                busCapacity = capacities[which]
+                val doc = buses[which]
+                selectedBusId = doc.id
+                
+                val cap = doc.get("capacity")
+                busCapacity = when (cap) {
+                    is Number -> cap.toInt()
+                    is String -> cap.toIntOrNull() ?: 0
+                    else -> 0
+                }
+                
                 target.text = items[which]
                 capacityTarget.text = "$busCapacity Seats"
             }.show()
+        }.addOnFailureListener {
+            Toast.makeText(context, "Error fetching buses: ${it.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun showConductorPicker(target: TextView) {
         db.collection("conductors").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
-            val items = snapshots.map { it.getString("firstName") + " " + it.getString("lastName") }.toTypedArray()
+            if (snapshots.isEmpty) {
+                Toast.makeText(context, "No active conductors found", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
+            val items = snapshots.map { "${it.getString("firstName") ?: ""} ${it.getString("lastName") ?: ""}".trim() }.toTypedArray()
             val ids = snapshots.map { it.id }
             AlertDialog.Builder(context).setTitle("Select Conductor").setItems(items) { _, which ->
                 selectedConductorId = ids[which]
@@ -97,12 +213,34 @@ class AddRouteDialog(
         }
     }
 
+    private fun getScaledDrawable(drawable: Drawable?, widthDp: Int, heightDp: Int): Drawable? {
+        if (drawable == null) return null
+        val density = context.resources.displayMetrics.density
+        val width = (widthDp * density).toInt()
+        val height = (heightDp * density).toInt()
+        
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return BitmapDrawable(context.resources, bitmap)
+    }
+
     private fun setupStopPickerMap(map: MapView, countTarget: TextView) {
         map.setMultiTouchControls(true)
         map.controller.setZoom(15.0)
-        map.controller.setCenter(GeoPoint(14.5995, 120.9842)) // Default Manila
+        map.controller.setCenter(GeoPoint(14.7566, 121.0450)) // IMA Area
+
+        routePolyline = Polyline(map)
+        routePolyline?.outlinePaint?.color = Color.parseColor("#4A90E2") // Modern Blue
+        routePolyline?.outlinePaint?.strokeWidth = 8f
+        map.overlays.add(routePolyline)
 
         db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
+            // Making icons larger and more distinguishable
+            val unselectedIcon = getScaledDrawable(ContextCompat.getDrawable(context, CommonR.drawable.ic_stop_marker), 36, 36)
+            val selectedIcon = getScaledDrawable(ContextCompat.getDrawable(context, CommonR.drawable.ic_stop_marker_red), 48, 48)
+
             for (doc in snapshots) {
                 val lat = doc.getDouble("latitude") ?: 0.0
                 val lng = doc.getDouble("longitude") ?: 0.0
@@ -113,23 +251,36 @@ class AddRouteDialog(
                 marker.position = GeoPoint(lat, lng)
                 marker.title = name
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker.icon = if (selectedStopIds.contains(stopId)) selectedIcon else unselectedIcon
                 
-                // Interaction for selection
+                allMarkers[stopId] = marker
+
                 marker.setOnMarkerClickListener { m, _ ->
                     if (selectedStopIds.contains(stopId)) {
                         selectedStopIds.remove(stopId)
-                        m.icon = null // Default icon
+                        m.icon = unselectedIcon
+                        m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     } else {
                         selectedStopIds.add(stopId)
-                        // Could use a different color icon here to show selected
+                        m.icon = selectedIcon
+                        m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     }
+                    updateRouteLine()
                     countTarget.text = "Selected: ${selectedStopIds.size} stops"
+                    map.invalidate()
                     true
                 }
                 map.overlays.add(marker)
             }
             map.invalidate()
         }
+    }
+
+    private fun updateRouteLine() {
+        val points = selectedStopIds.mapNotNull { stopId ->
+            allMarkers[stopId]?.position
+        }
+        routePolyline?.setPoints(points)
     }
 
     private fun saveRoute(name: String, dialog: AlertDialog) {
@@ -146,7 +297,11 @@ class AddRouteDialog(
             "stopIds" to selectedStopIds,
             "status" to "Active",
             "maxCapacity" to busCapacity,
-            "currentCapacity" to 0, // Will be updated by student assignments
+            "currentCapacity" to 0,
+            "morningStartTime" to morningStartTime,
+            "morningEndTime" to morningEndTime,
+            "afternoonStartTime" to afternoonStartTime,
+            "afternoonEndTime" to afternoonEndTime,
             "createdAt" to com.google.firebase.Timestamp.now()
         )
 

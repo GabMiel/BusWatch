@@ -17,21 +17,18 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:clickable="true"
-        android:focusable="true"
-        tools:ignore="UseCompoundDrawables">
+        android:focusable="true">
 
         <TextView
             android:id="@+id/tvChildHeaderName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:text="CHILD NAME"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:drawableStartCompat="@drawable/child"
             tools:ignore="HardcodedText" />
 
         <ImageView
@@ -40,7 +37,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_chevron_down"
             app:tint="@color/black"
-            android:rotation="-90"
+            android:rotation="0"
             android:contentDescription="@null" />
     </LinearLayout>
 
@@ -51,8 +48,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="20dp"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="visible">
 
         <!-- Profile Photo -->
         <ImageView
@@ -156,7 +152,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp" android:orientation="vertical">
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="SECTION" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                     tools:ignore="SmallSp,HardcodedText" />

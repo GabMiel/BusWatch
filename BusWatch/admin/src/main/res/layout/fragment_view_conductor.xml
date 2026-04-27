@@ -71,15 +71,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="CONDUCTOR INFORMATION"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/user"
-                    app:drawableTint="@color/black"
                     tools:ignore="HardcodedText" />
 
                 <!-- Profile Photo -->
@@ -109,8 +106,8 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="First Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="First Name" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvFirstName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -124,8 +121,8 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Middle Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="Middle Name" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvMiddleName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -148,8 +145,8 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Last Name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="Last Name" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvLastName"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -163,8 +160,8 @@
                         android:layout_weight="0.7"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Suffix" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="Suffix" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvSuffix"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -178,8 +175,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" android:layout_marginBottom="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Email Address" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                        tools:ignore="HardcodedText" />
+                        android:text="Email Address" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp,HardcodedText" />
                     <TextView android:id="@+id/tvEmail"
                         android:layout_width="match_parent" android:layout_height="48dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
@@ -190,19 +187,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:baselineAligned="false"
+                    android:orientation="horizontal" android:baselineAligned="false"
                     android:layout_marginBottom="16dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Phone Number" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="Phone Number" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvPhone"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -216,8 +211,8 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Language" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"
-                            tools:ignore="HardcodedText" />
+                            android:text="Language" android:textColor="#444444" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvLanguage"
                             android:layout_width="match_parent" android:layout_height="48dp"
                             android:background="@drawable/rectangle_hollow_with_shadow"
@@ -226,48 +221,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <!-- Buttons Row (BACK and EDIT) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <TextView
-                    android:id="@+id/btnBackConductorAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="BACK"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/rectangle_hollow_with_shadow"
-                    android:clickable="true"
-                    android:focusable="true"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/btnEditConductorAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="EDIT"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/bg_button_yellow"
-                    android:clickable="true"
-                    android:focusable="true"
-                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </LinearLayout>

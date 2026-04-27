@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -33,22 +34,23 @@ import com.google.firebase.firestore.FirebaseFirestore
 class AddDriverDialog(
     private val activity: AppCompatActivity,
     private val db: FirebaseFirestore,
+    private val pickImageLauncher: ActivityResultLauncher<Intent>,
     private val onDriverAdded: () -> Unit
 ) {
     private var isPasswordVisible = false
+    private var isConfirmPasswordVisible = false
     private var isPhoneFormatting = false
     private var selectedCountryCode = "+63"
     private var maxPhoneDigits = 10
     private var selectedImageUri: Uri? = null
     private var imgDriverPhoto: ImageView? = null
-    
-    private val pickImageLauncher: ActivityResultLauncher<Intent> = 
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                selectedImageUri = result.data?.data
-                imgDriverPhoto?.setImageURI(selectedImageUri)
-            }
-        }
+
+    // This property will be used to update the UI when an image is picked
+    // The activity/fragment should call this dialog's handleImageResult
+    fun handleImageResult(uri: Uri?) {
+        selectedImageUri = uri
+        imgDriverPhoto?.setImageURI(uri)
+    }
 
     fun show() {
         val dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_add_driver, null)
@@ -64,6 +66,7 @@ class AddDriverDialog(
         val etContactNumber = dialogView.findViewById<EditText>(R.id.etContactNumber)
         val etLicense = dialogView.findViewById<EditText>(R.id.etLicense)
         val etPassword = dialogView.findViewById<EditText>(R.id.etPassword)
+        val etConfirmPassword = dialogView.findViewById<EditText>(R.id.etConfirmPassword)
         val tvLanguage = dialogView.findViewById<TextView>(R.id.tvLanguage)
         val tvCountryCode = dialogView.findViewById<TextView>(R.id.tvCountryCode)
 
@@ -72,16 +75,16 @@ class AddDriverDialog(
         val tvLastNameWarning = dialogView.findViewById<TextView>(R.id.tvLastNameWarning)
         val tvEmailWarning = dialogView.findViewById<TextView>(R.id.tvEmailWarning)
         val tvPhoneWarning = dialogView.findViewById<TextView>(R.id.tvPhoneWarning)
+        val tvConfirmPasswordWarning = dialogView.findViewById<TextView>(R.id.tvConfirmPasswordWarning)
 
         val btnViewPassword = dialogView.findViewById<ImageButton>(R.id.btnViewPassword)
+        val btnViewConfirmPassword = dialogView.findViewById<ImageButton>(R.id.btnViewConfirmPassword)
 
-        // Photo picker
         frameDriverPhoto?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             pickImageLauncher.launch(intent)
         }
 
-        // Character limits
         etFirstName?.filters = arrayOf(InputFilter.LengthFilter(50))
         etLastName?.filters = arrayOf(InputFilter.LengthFilter(50))
         etMiddleName?.filters = arrayOf(InputFilter.LengthFilter(20))
@@ -91,6 +94,13 @@ class AddDriverDialog(
             etPassword?.transformationMethod = if (isPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
             btnViewPassword.setImageResource(if (isPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
             etPassword?.setSelection(etPassword.text.length)
+        }
+
+        btnViewConfirmPassword?.setOnClickListener {
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            etConfirmPassword?.transformationMethod = if (isConfirmPasswordVisible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            btnViewConfirmPassword.setImageResource(if (isConfirmPasswordVisible) CommonR.drawable.ic_eye else CommonR.drawable.ic_eye_off)
+            etConfirmPassword?.setSelection(etConfirmPassword.text.length)
         }
 
         if (etFirstName != null && tvFirstNameWarning != null) setupNameWatcher(etFirstName, tvFirstNameWarning)
@@ -160,12 +170,12 @@ class AddDriverDialog(
                 }
 
                 if (formatted.toString() != s.toString()) {
-                    val selection = etContactNumber?.selectionStart ?: 0
+                    val selection = etContactNumber.selectionStart
                     val oldLength = s.length
                     s.replace(0, s.length, formatted.toString())
                     val newLength = formatted.length
                     val newSelection = (selection + (newLength - oldLength)).coerceIn(0, newLength)
-                    etContactNumber?.setSelection(newSelection)
+                    etContactNumber.setSelection(newSelection)
                 }
                 isPhoneFormatting = false
                 tvPhoneWarning?.isVisible = digits.isNotEmpty() && digits.length != maxPhoneDigits
@@ -221,9 +231,10 @@ class AddDriverDialog(
             val phone = etContactNumber?.text?.toString()?.replace(" ", "") ?: ""
             val license = etLicense?.text?.toString()?.trim() ?: ""
             val password = etPassword?.text?.toString()?.trim() ?: ""
+            val confirmPassword = etConfirmPassword?.text?.toString()?.trim() ?: ""
             val language = tvLanguage?.text?.toString() ?: "English"
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || license.isEmpty() || password.isEmpty()) {
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || license.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(activity, activity.getString(CommonR.string.fill_all_required), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -231,6 +242,12 @@ class AddDriverDialog(
             val passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,}$".toRegex()
             if (!password.matches(passwordRegex)) {
                 Toast.makeText(activity, activity.getString(CommonR.string.password_validation_hint), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (password != confirmPassword) {
+                tvConfirmPasswordWarning?.isVisible = true
+                Toast.makeText(activity, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -250,9 +267,9 @@ class AddDriverDialog(
     private fun registerDriverAccount(email: String, pass: String, fName: String, mName: String, lName: String, suffix: String, phone: String, countryCode: String, license: String, lang: String, dialog: AlertDialog) {
         val options = com.google.firebase.FirebaseApp.getInstance().options
         val secondaryApp = try {
-            com.google.firebase.FirebaseApp.initializeApp(activity, options, "Secondary")
+            com.google.firebase.FirebaseApp.initializeApp(activity, options, "SecondaryDriver")
         } catch (_: Exception) {
-            com.google.firebase.FirebaseApp.getInstance("Secondary")
+            com.google.firebase.FirebaseApp.getInstance("SecondaryDriver")
         }
         val secondaryAuth = FirebaseAuth.getInstance(secondaryApp)
 

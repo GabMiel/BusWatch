@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import java.util.Locale
-import kotlin.collections.Map as KMap
 
 class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -35,7 +34,6 @@ class HomeFragment : Fragment() {
     private var parentStatus: String = "pending"
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var timeRunnable: Runnable
-    private var hasShownStopPopup = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,16 +70,39 @@ class HomeFragment : Fragment() {
                 val adapter = rvStudentsHome.adapter as? StudentHomeAdapter
                 if (adapter != null) {
                     val currentStudents = adapter.getStudents()
-                    val headingToStopText = getString(CommonR.string.status_heading_to_stop)
-                    val updatedStudents = currentStudents.map { it.copy(status = headingToStopText) }
                     
-                    adapter.isInteractable = true
-                    adapter.updateStudents(updatedStudents)
+                    val missingStop = currentStudents.any { it.stop == "Not assigned" || it.stop.isEmpty() }
+                    
+                    if (missingStop) {
+                        Toast.makeText(requireContext(), "Please ensure all children have an assigned stop first.", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
 
-                    Toast.makeText(requireContext(), "Tracking enabled. Select a student card.", Toast.LENGTH_SHORT).show()
+                    // Build detailed confirmation message with categorization
+                    val message = StringBuilder("Are you sure you want to proceed with the following ride options?\n\n")
+                    
+                    val categories = listOf("Morning Trip", "Afternoon Trip", "Not Riding")
+                    categories.forEach { category ->
+                        val matching = currentStudents.filter { it.rideOption == category }
+                        if (matching.isNotEmpty()) {
+                            message.append("$category:\n")
+                            matching.forEach { s -> message.append("  • ${s.name}\n") }
+                            message.append("\n")
+                        }
+                    }
+
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Pickup Request")
+                        .setMessage(message.toString().trim())
+                        .setPositiveButton("Confirm") { _, _ ->
+                            val headingToStopText = getString(CommonR.string.status_heading_to_stop)
+                            updateAllChildrenStatus(headingToStopText)
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
                 }
             } else {
-                showApprovalPendingDialog()
+                Toast.makeText(requireContext(), "Account pending approval", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -97,6 +118,43 @@ class HomeFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun updateAllChildrenStatus(newStatus: String) {
+        val uid = auth.currentUser?.uid ?: return
+        val docRef = db.collection("parents").document(uid)
+
+        docRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val updates = mutableMapOf<String, Any>()
+                
+                @Suppress("UNCHECKED_CAST")
+                val primaryChild = document.get("child") as? kotlin.collections.Map<String, Any>
+                if (primaryChild != null) {
+                    val updatedPrimary = primaryChild.toMutableMap()
+                    updatedPrimary["status"] = newStatus
+                    updates["child"] = updatedPrimary
+                }
+
+                @Suppress("UNCHECKED_CAST")
+                val children = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                if (children != null) {
+                    val updatedChildren = children.map { child ->
+                        val mutableChild = child.toMutableMap()
+                        mutableChild["status"] = newStatus
+                        mutableChild 
+                    }
+                    updates["children"] = updatedChildren
+                }
+
+                if (updates.isNotEmpty()) {
+                    docRef.update(updates).addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Pickup request sent. Live tracking enabled.", Toast.LENGTH_LONG).show()
+                        // refresh local UI indirectly by Firestore listener if it's already set up
+                    }
+                }
+            }
+        }
     }
 
     private fun setupRealTimeClock(tvTime: TextView) {
@@ -126,114 +184,90 @@ class HomeFragment : Fragment() {
 
         progressBar.visibility = View.VISIBLE
         
-        db.collection("parents").document(currentUser.uid).get()
-            .addOnSuccessListener { document ->
-                if (!isAdded) return@addOnSuccessListener
+        db.collection("parents").document(currentUser.uid).addSnapshotListener { document, _ ->
+            if (!isAdded || document == null || !document.exists()) {
                 progressBar.visibility = View.GONE
-                if (document != null && document.exists()) {
-                    @Suppress("UNCHECKED_CAST")
-                    val profile = document.get("profile") as? KMap<String, Any>
-                    val firstName = profile?.get("firstName") as? String ?: document.getString("firstName") ?: "User"
+                return@addSnapshotListener
+            }
+            
+            @Suppress("UNCHECKED_CAST")
+            val profile = document.get("profile") as? kotlin.collections.Map<String, Any>
+            val firstName = profile?.get("firstName") as? String ?: document.getString("firstName") ?: "User"
 
-                    val greeting = "$greetingPrefix, $firstName!"
-                    tvGreeting.text = greeting
-                    
-                    parentStatus = document.getString("status") ?: "pending"
+            if (greetingPrefix.isNotEmpty()) {
+                tvGreeting.text = getString(CommonR.string.greeting_format, greetingPrefix, firstName)
+            }
+            
+            parentStatus = document.getString("status") ?: "pending"
+            val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
+
+            db.collection("stops").get().addOnSuccessListener { stopsSnapshot ->
+                if (!isAdded) return@addOnSuccessListener
+                
+                val stopsMap = stopsSnapshot.documents.associate { (it.id) to (it.getString("name") ?: "Unknown") }
+                
+                db.collection("routes").get().addOnSuccessListener { routesSnapshot ->
+                    if (!isAdded) return@addOnSuccessListener
+                    progressBar.visibility = View.GONE
 
                     val studentList = mutableListOf<StudentHome>()
-                    val parentAddress = document.getString("address") ?: getString(CommonR.string.placeholder_hyphen)
 
                     @Suppress("UNCHECKED_CAST")
-                    val childMap = document.get("child") as? KMap<String, Any>
-                    var missingStop = false
+                    val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
                     if (childMap != null) {
-                        studentList.add(mapToStudentHome("primary", childMap, parentAddress))
-                        if ((childMap["stop"] as? String ?: "").isEmpty()) missingStop = true
+                        studentList.add(mapToStudentHome("primary", childMap, parentAddress, stopsMap, routesSnapshot.documents))
                     }
 
                     @Suppress("UNCHECKED_CAST")
-                    val childrenList = document.get("children") as? List<KMap<String, Any>>
+                    val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
                     childrenList?.forEachIndexed { index, map ->
-                        studentList.add(mapToStudentHome(index.toString(), map, parentAddress))
-                        if ((map["stop"] as? String ?: "").isEmpty()) missingStop = true
+                        studentList.add(mapToStudentHome(index.toString(), map, parentAddress, stopsMap, routesSnapshot.documents))
                     }
 
                     setupRecyclerView(studentList)
-
-                    if (parentStatus.lowercase() == "approved" && missingStop && !hasShownStopPopup) {
-                        showStopAssignmentPopup()
-                    }
                 }
-            }
-            .addOnFailureListener {
-                if (!isAdded) return@addOnFailureListener
-                progressBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun showStopAssignmentPopup() {
-        hasShownStopPopup = true
-        AlertDialog.Builder(requireContext())
-            .setTitle("Setup Pickup Stop")
-            .setMessage("You haven't selected a pickup stop for your child yet. Would you like to set it up now for easier tracking?")
-            .setPositiveButton("Setup Now") { _, _ ->
-                // Navigate to assignment or show dialog
-                showStopPickerDialog()
-            }
-            .setNegativeButton("Remind Later", null)
-            .show()
-    }
-
-    private fun showStopPickerDialog() {
-        db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
-            if (snapshots.isEmpty) {
-                Toast.makeText(requireContext(), "No stops available yet", Toast.LENGTH_SHORT).show()
-                return@addOnSuccessListener
-            }
-            val stopNames = snapshots.map { it.getString("name") ?: "Unknown" }.toTypedArray()
-            val stopIds = snapshots.map { it.id }
-
-            AlertDialog.Builder(requireContext())
-                .setTitle("Select a Pickup Stop")
-                .setItems(stopNames) { _, which ->
-                    updateStudentStop(stopIds[which], stopNames[which])
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
-    }
-
-    private fun updateStudentStop(stopId: String, stopName: String) {
-        val currentUser = auth.currentUser ?: return
-        db.collection("parents").document(currentUser.uid).get().addOnSuccessListener { doc ->
-            val batch = db.batch()
-            val parentRef = db.collection("parents").document(currentUser.uid)
-            
-            @Suppress("UNCHECKED_CAST")
-            val child = doc.get("child") as? MutableMap<String, Any>
-            if (child != null) {
-                child["stop"] = stopId
-                batch.update(parentRef, "child", child)
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            val children = doc.get("children") as? List<MutableMap<String, Any>>
-            if (children != null) {
-                val updatedChildren = children.map { it.apply { this["stop"] = stopId } }
-                batch.update(parentRef, "children", updatedChildren)
-            }
-
-            batch.commit().addOnSuccessListener {
-                Toast.makeText(requireContext(), "Pickup stop set to $stopName", Toast.LENGTH_SHORT).show()
-                fetchUserData("", requireView().findViewById(R.id.textView90)) // Refresh
             }
         }
     }
 
-    private fun mapToStudentHome(id: String, map: KMap<String, Any>, parentAddress: String): StudentHome {
+    private fun mapToStudentHome(
+        id: String, 
+        map: kotlin.collections.Map<String, Any>, 
+        parentAddress: String, 
+        stopsMap: kotlin.collections.Map<String, String>,
+        routeDocs: List<com.google.firebase.firestore.DocumentSnapshot>
+    ): StudentHome {
         val fName = map["firstName"] as? String ?: ""
         val lName = map["lastName"] as? String ?: ""
+        
+        val stopId = map["stop"] as? String ?: ""
+        val stopDisplay = stopsMap[stopId] ?: if (stopId.isNotEmpty()) stopId else "Not assigned"
+
+        // Find Route Schedule
+        var scheduleStr = "Schedule: Not Set"
+        if (stopId.isNotEmpty()) {
+            val assignedRoute = routeDocs.find { doc ->
+                @Suppress("UNCHECKED_CAST")
+                val stops = doc.get("stopIds") as? List<String>
+                stops?.contains(stopId) == true
+            }
+            
+            if (assignedRoute != null) {
+                val ms = assignedRoute.getString("morningStartTime") ?: ""
+                val me = assignedRoute.getString("morningEndTime") ?: ""
+                val `as` = assignedRoute.getString("afternoonStartTime") ?: ""
+                val ae = assignedRoute.getString("afternoonEndTime") ?: ""
+                
+                if (ms.isNotEmpty() && me.isNotEmpty() && `as`.isNotEmpty() && ae.isNotEmpty()) {
+                    scheduleStr = "AM: $ms-$me | PM: $`as`-$ae"
+                } else if (ms.isNotEmpty() && me.isNotEmpty()) {
+                    scheduleStr = "AM: $ms-$me"
+                } else if (`as`.isNotEmpty() && ae.isNotEmpty()) {
+                    scheduleStr = "PM: $`as`-$ae"
+                }
+            }
+        }
+        
         return StudentHome(
             id = id,
             name = "$fName $lName".trim(),
@@ -241,9 +275,10 @@ class HomeFragment : Fragment() {
             school = map["school"] as? String ?: getString(CommonR.string.the_immaculate_mother_academy_inc),
             status = map["status"] as? String ?: getString(CommonR.string.status_at_home),
             avatarResId = CommonR.drawable.user,
-            avatarUrl = map["avatarUrl"] as? String,
-            stop = map["address"] as? String ?: parentAddress,
-            rideOption = map["rideOption"] as? String ?: "Round Trip"
+            avatarUrl = map["childAvatarUrl"] as? String ?: map["avatarUrl"] as? String,
+            stop = stopDisplay,
+            rideOption = map["rideOption"] as? String ?: "Morning Trip",
+            schedule = scheduleStr
         )
     }
 
@@ -257,7 +292,13 @@ class HomeFragment : Fragment() {
             rvStudentsHome.visibility = View.VISIBLE
             btnPickUp.visibility = View.VISIBLE
             rvStudentsHome.layoutManager = LinearLayoutManager(requireContext())
-            rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
+            
+            val isTracking = students.any { 
+                it.status == getString(CommonR.string.status_heading_to_stop) || 
+                it.status == getString(CommonR.string.status_on_board) 
+            }
+            
+            rvStudentsHome.adapter = StudentHomeAdapter(students, isTracking) { student ->
                 val intent = Intent(requireContext(), com.example.buswatch.Map::class.java)
                 intent.putExtra("childName", student.name)
                 startActivity(intent)
@@ -269,13 +310,5 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-    
-    private fun showApprovalPendingDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Account Pending")
-            .setMessage("Your account is currently waiting for admin approval. You will be able to track your child once your account is approved.")
-            .setPositiveButton("OK", null)
-            .show()
     }
 }

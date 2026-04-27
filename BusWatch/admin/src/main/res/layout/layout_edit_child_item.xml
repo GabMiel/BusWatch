@@ -17,21 +17,18 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:clickable="true"
-        android:focusable="true"
-        tools:ignore="UseCompoundDrawables">
+        android:focusable="true">
 
         <TextView
             android:id="@+id/tvChildHeaderName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:text="@string/child_information"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/child" />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/ivChildChevron"
@@ -39,7 +36,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_chevron_down"
             app:tint="@color/black"
-            android:rotation="-90"
+            android:rotation="0"
             android:contentDescription="@null" />
     </LinearLayout>
 
@@ -50,7 +47,43 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="20dp"
-        android:visibility="gone">
+        android:visibility="visible">
+
+        <!-- Profile Photo -->
+        <FrameLayout
+            android:id="@+id/btnChangeChildPhoto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="40dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/transparent">
+                <ImageView
+                    android:id="@+id/imgChild"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_person_placeholder"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/child_photo" />
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_button_yellow"
+                android:text="+"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </FrameLayout>
 
         <!-- Row 1: First Name and Middle Name -->
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -180,10 +213,8 @@
                 android:focusable="true">
                 <TextView
                     android:id="@+id/tvChildBloodType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="12dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" android:layout_marginStart="12dp"
                     android:text="@string/placeholder_hyphen"
                     android:textColor="#888888"
                     android:textSize="14sp" />

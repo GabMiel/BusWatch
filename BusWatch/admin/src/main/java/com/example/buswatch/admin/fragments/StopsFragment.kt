@@ -1,6 +1,8 @@
 package com.example.buswatch.admin.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.admin.AddStopDialog
 import com.example.buswatch.admin.AdminHome
@@ -20,13 +23,15 @@ import com.example.buswatch.admin.StopAdapter
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlin.math.ceil
 
 class StopsFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
-    private val itemsPerPage = 20
+    private val itemsPerPage = 10
     private var currentPage = 1
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
+    private var searchQuery = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_stops, container, false)
@@ -41,26 +46,32 @@ class StopsFragment : Fragment() {
 
     private fun setupUI(view: View) {
         val rv = view.findViewById<RecyclerView>(R.id.recyclerStops)
-        rv?.layoutManager = GridLayoutManager(requireContext(), resources.getInteger(R.integer.stops_grid_span))
+        rv?.layoutManager = LinearLayoutManager(requireContext())
 
         view.findViewById<TextView>(R.id.btnAddNewStop)?.setOnClickListener {
             AddStopDialog(requireContext(), db) { fetchPage() }.show()
         }
 
         view.findViewById<ImageButton>(R.id.btnSort)?.setOnClickListener {
-            showSortOptions()
+            (requireActivity() as? AdminHome)?.showSortOptions("stops") { dir ->
+                sortDirection = dir
+                currentPage = 1
+                fetchPage()
+            }
         }
 
-        setupPagination(view)
-    }
+        val etSearch = view.findViewById<EditText>(R.id.searchStops)
+        etSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchQuery = s?.toString()?.lowercase() ?: ""
+                currentPage = 1
+                fetchPage()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
-    private fun showSortOptions() {
-        val options = arrayOf("A-Z", "Z-A")
-        AlertDialog.Builder(requireContext()).setTitle("Sort Stops").setItems(options) { _, which ->
-            sortDirection = if (which == 0) Query.Direction.ASCENDING else Query.Direction.DESCENDING
-            currentPage = 1
-            fetchPage()
-        }.show()
+        setupPagination(view)
     }
 
     private fun fetchCount() {
@@ -73,38 +84,73 @@ class StopsFragment : Fragment() {
     private fun fetchPage() {
         db.collection("stops")
             .whereEqualTo("status", "active")
-            .orderBy("name", sortDirection)
-            .limit(itemsPerPage.toLong())
             .get()
             .addOnSuccessListener { snapshots ->
-                val stops = snapshots.map { doc ->
+                val allStops = snapshots.map { doc ->
                     StopAdmin(doc.id, doc.getString("name") ?: "N/A", doc.getDouble("latitude") ?: 0.0, doc.getDouble("longitude") ?: 0.0)
+                }.filter { 
+                    it.name.lowercase().contains(searchQuery)
+                }
+
+                val sortedStops = if (sortDirection == Query.Direction.ASCENDING) {
+                    allStops.sortedBy { it.name.lowercase() }
+                } else {
+                    allStops.sortedByDescending { it.name.lowercase() }
                 }
                 
-                // Fetch student counts for each stop
-                val countTasks = stops.map { stop ->
-                    db.collection("parents")
-                        .whereEqualTo("child.stop", stop.id)
-                        .get()
-                        .continueWith { task ->
-                            stop.studentCount = task.result?.size() ?: 0
-                            stop
-                        }
+                totalCount = sortedStops.size
+                val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+                if (currentPage > totalPages) currentPage = totalPages
+                if (currentPage < 1) currentPage = 1
+                
+                val start = (currentPage - 1) * itemsPerPage
+                val end = minOf(start + itemsPerPage, totalCount)
+                val pagedStops = if (start < totalCount) sortedStops.subList(start, end) else emptyList()
+                
+                if (pagedStops.isEmpty()) {
+                    view?.findViewById<RecyclerView>(R.id.recyclerStops)?.adapter = StopAdapter(emptyList(), {}, {}, {})
+                    updatePaginationUI()
+                    return@addOnSuccessListener
                 }
 
-                Tasks.whenAllSuccess<StopAdmin>(countTasks).addOnSuccessListener { updatedStops ->
-                    view?.findViewById<RecyclerView>(R.id.recyclerStops)?.adapter = StopAdapter(updatedStops,
+                // Fetch student counts for paged stops from ALL parents
+                db.collection("parents").get().addOnSuccessListener { parentDocs ->
+                    val stopCounts = mutableMapOf<String, Int>()
+                    for (pDoc in parentDocs) {
+                        // Check single child
+                        val child = pDoc.get("child") as? Map<String, Any>
+                        val cStopId = child?.get("stop") as? String
+                        if (!cStopId.isNullOrEmpty()) {
+                            stopCounts[cStopId] = (stopCounts[cStopId] ?: 0) + 1
+                        }
+
+                        // Check children list
+                        val childrenList = pDoc.get("children") as? List<Map<String, Any>>
+                        childrenList?.forEach { c ->
+                            val sId = c["stop"] as? String
+                            if (!sId.isNullOrEmpty()) {
+                                stopCounts[sId] = (stopCounts[sId] ?: 0) + 1
+                            }
+                        }
+                    }
+
+                    pagedStops.forEach { stop ->
+                        stop.studentCount = stopCounts[stop.id] ?: 0
+                    }
+
+                    view?.findViewById<RecyclerView>(R.id.recyclerStops)?.adapter = StopAdapter(pagedStops,
                         onViewClick = { (requireActivity() as? AdminHome)?.showStopDetailInternal(it) },
                         onEditClick = { (requireActivity() as? AdminHome)?.editStopDetailInternal(it) },
-                        onArchiveClick = { archiveStop(it) }
+                        onArchiveClick = { stop ->
+                            (requireActivity() as? AdminHome)?.archiveStopInternal(stop) { fetchPage() }
+                        }
                     )
+                    updatePaginationUI()
                 }
-                updatePaginationUI()
             }
-    }
-
-    private fun archiveStop(stop: StopAdmin) {
-        db.collection("stops").document(stop.id).update("status", "archived").addOnSuccessListener { fetchPage() }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error fetching stops: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun setupPagination(view: View) {
@@ -120,20 +166,26 @@ class StopsFragment : Fragment() {
         view.findViewById<View>(R.id.btnPrevPage)?.setOnClickListener { handleJumpToPage(currentPage - 1) }
         view.findViewById<View>(R.id.btnNextPage)?.setOnClickListener { handleJumpToPage(currentPage + 1) }
         view.findViewById<View>(R.id.btnLastPage)?.setOnClickListener { 
-            handleJumpToPage(Math.ceil(totalCount.toDouble() / itemsPerPage).toInt())
+            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+            handleJumpToPage(totalPages)
         }
     }
 
     private fun handleJumpToPage(page: Int) {
-        val maxPage = Math.ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         currentPage = page.coerceIn(1, maxPage)
         fetchPage()
     }
 
     private fun updatePaginationUI() {
         val view = view ?: return
-        val maxPage = Math.ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
         view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $maxPage"
+        
+        view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
+        view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1
+        view.findViewById<View>(R.id.btnNextPage)?.isEnabled = currentPage < maxPage
+        view.findViewById<View>(R.id.btnLastPage)?.isEnabled = currentPage < maxPage
     }
 }

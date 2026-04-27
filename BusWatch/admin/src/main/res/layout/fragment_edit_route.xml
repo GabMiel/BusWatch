@@ -44,6 +44,7 @@
 
     <!-- Main Scrollable Content -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -60,6 +61,7 @@
 
             <!-- Sub Header -->
             <LinearLayout
+                android:id="@+id/layoutSubHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -73,13 +75,12 @@
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/ic_route"
-                    android:drawablePadding="10dp" />
+                    android:letterSpacing="0.02" />
             </LinearLayout>
 
             <!-- Route Name Row -->
             <LinearLayout
+                android:id="@+id/layoutRouteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -95,6 +96,7 @@
 
             <!-- Driver Selection Row -->
             <LinearLayout
+                android:id="@+id/layoutDriver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -118,6 +120,7 @@
 
             <!-- Bus Selection Row -->
             <LinearLayout
+                android:id="@+id/layoutBus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -139,8 +142,55 @@
                 </FrameLayout>
             </LinearLayout>
 
+            <!-- Morning Schedule -->
+            <LinearLayout
+                android:id="@+id/layoutMorningTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Morning Schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:id="@+id/tvMorningStart"
+                        android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:gravity="center" android:text="Start Time" android:textColor="#666666" android:textSize="13sp"
+                        android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+                    <TextView android:id="@+id/tvMorningEnd"
+                        android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:gravity="center" android:text="End Time" android:textColor="#666666" android:textSize="13sp"
+                        android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Afternoon Schedule -->
+            <LinearLayout
+                android:id="@+id/layoutAfternoonTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Afternoon Schedule" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <TextView android:id="@+id/tvAfternoonStart"
+                        android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:gravity="center" android:text="Start Time" android:textColor="#666666" android:textSize="13sp"
+                        android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+                    <TextView android:id="@+id/tvAfternoonEnd"
+                        android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:gravity="center" android:text="End Time" android:textColor="#666666" android:textSize="13sp"
+                        android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- Bus Capacity Display -->
             <LinearLayout
+                android:id="@+id/layoutCapacity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -157,6 +207,7 @@
 
             <!-- Conductor Selection Row (Optional) -->
             <LinearLayout
+                android:id="@+id/layoutConductor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -182,6 +233,7 @@
 
             <!-- Route Stops Map Selection -->
             <LinearLayout
+                android:id="@+id/layoutMapLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -189,10 +241,41 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@string/select_stops_for_route" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                 <FrameLayout
-                    android:layout_width="match_parent" android:layout_height="250dp"
+                    android:id="@+id/mapContainer"
+                    android:layout_width="match_parent" android:layout_height="300dp"
                     android:background="@drawable/rectangle_hollow">
                     <org.osmdroid.views.MapView android:id="@+id/mapRoutePicker"
                         android:layout_width="match_parent" android:layout_height="match_parent" />
+
+                    <!-- Eye icon (Maximize Button) -->
+                    <ImageButton
+                        android:id="@+id/btnMaximizeMap"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="12dp"
+                        android:background="@drawable/circle_shape"
+                        android:backgroundTint="#CCFFFFFF"
+                        android:src="@drawable/ic_eye"
+                        android:padding="8dp"
+                        android:elevation="6dp"
+                        app:tint="@color/black"
+                        android:contentDescription="Maximize Map" />
+
+                    <!-- Current Location Button (Locator) -->
+                    <ImageButton
+                        android:id="@+id/btnMyLocation"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="12dp"
+                        android:background="@drawable/circle_shape"
+                        android:backgroundTint="#CCFFFFFF"
+                        android:src="@drawable/ic_my_location"
+                        android:padding="10dp"
+                        android:elevation="6dp"
+                        app:tint="@color/black"
+                        android:contentDescription="My Location" />
                 </FrameLayout>
                 <TextView android:id="@+id/tvStopsCount"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -204,6 +287,7 @@
 
             <!-- Buttons Row -->
             <LinearLayout
+                android:id="@+id/layoutActions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">

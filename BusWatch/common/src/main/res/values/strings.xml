@@ -57,6 +57,8 @@
     <string name="show_details">Show details</string>
     <string name="view_details">Show details</string>
     <string name="message_goes_here">Message goes here</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
 
     <!-- Pagination & Navigation Icons -->
     <string name="first_page">«</string>
@@ -322,11 +324,11 @@
     <string name="full_name_label">Full Name</string>
     <string name="account_status">Account Status</string>
     <string name="notification_preference">Notification Preference</string>
-    <string name="bus_departure">Bus Departure</string>
+    <string name="bus_departure">Trip Started</string>
     <string name="bus_arrival">Bus Arrival</string>
     <string name="child_boarding">Child Boarding</string>
     <string name="delays">Delays</string>
-    <string name="when_the_bus_leaves_the_depot">When the bus leaves the depot</string>
+    <string name="when_the_bus_leaves_the_depot">When the driver starts the trip</string>
     <string name="when_the_bus_arrives_at_pickup_drop">When the bus arrives at home location</string>
     <string name="when_your_child_boards_the_bus">When your child boards the bus</string>
     <string name="when_there_are_route_delays">When there are route delays</string>
@@ -532,4 +534,6 @@
     <string name="_3_15_2020">3/15/2020</string>
     <string name="color_secondary_text">#FDFDFD</string>
     <string name="registration_caps">REGISTRATION</string>
+    <string name="buses">Buses</string>
+    <string name="routes">Routes</string>
 </resources>

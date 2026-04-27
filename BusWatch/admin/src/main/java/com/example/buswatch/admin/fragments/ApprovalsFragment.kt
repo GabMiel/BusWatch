@@ -14,11 +14,14 @@ import com.example.buswatch.admin.MapRequestAdapter
 import com.example.buswatch.admin.PendingUserAdapter
 import com.example.buswatch.admin.R
 import com.example.buswatch.admin.UserAdmin
+import com.example.buswatch.admin.StopAdmin
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ApprovalsFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
-    private var isRegistrationTab = true
+    private var currentTab = Tab.REGISTRATION
+
+    enum class Tab { REGISTRATION, MAP, STOPS }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_approvals, container, false)
@@ -31,16 +34,22 @@ class ApprovalsFragment : Fragment() {
     }
 
     private fun setupUI(view: View) {
+        view.findViewById<TextView>(R.id.tabRegistration)?.setOnClickListener {
+            currentTab = Tab.REGISTRATION
+            updateTabUI(view)
+            fetchPendingUsers()
+        }
+
         view.findViewById<TextView>(R.id.tabMapLocations)?.setOnClickListener {
-            isRegistrationTab = false
+            currentTab = Tab.MAP
             updateTabUI(view)
             fetchMapRequests()
         }
 
-        view.findViewById<TextView>(R.id.tabRegistration)?.setOnClickListener {
-            isRegistrationTab = true
+        view.findViewById<TextView>(R.id.tabStopApprovals)?.setOnClickListener {
+            currentTab = Tab.STOPS
             updateTabUI(view)
-            fetchPendingUsers()
+            fetchPendingStops()
         }
 
         view.findViewById<RecyclerView>(R.id.recyclerApprovals)?.layoutManager = LinearLayoutManager(requireContext())
@@ -49,22 +58,27 @@ class ApprovalsFragment : Fragment() {
     private fun updateTabUI(view: View) {
         val tabReg = view.findViewById<TextView>(R.id.tabRegistration)
         val tabMap = view.findViewById<TextView>(R.id.tabMapLocations)
+        val tabStops = view.findViewById<TextView>(R.id.tabStopApprovals)
         
-        if (isRegistrationTab) {
-            tabReg?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_active)
-            tabMap?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_inactive)
-        } else {
-            tabReg?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_inactive)
-            tabMap?.setBackgroundResource(com.example.buswatch.common.R.drawable.bg_tab_active)
-        }
+        val activeRes = com.example.buswatch.common.R.drawable.bg_tab_active
+        val inactiveRes = com.example.buswatch.common.R.drawable.bg_tab_inactive
+
+        tabReg?.setBackgroundResource(if (currentTab == Tab.REGISTRATION) activeRes else inactiveRes)
+        tabMap?.setBackgroundResource(if (currentTab == Tab.MAP) activeRes else inactiveRes)
+        tabStops?.setBackgroundResource(if (currentTab == Tab.STOPS) activeRes else inactiveRes)
     }
 
     private fun fetchData() {
-        if (isRegistrationTab) fetchPendingUsers() else fetchMapRequests()
+        when (currentTab) {
+            Tab.REGISTRATION -> fetchPendingUsers()
+            Tab.MAP -> fetchMapRequests()
+            Tab.STOPS -> fetchPendingStops()
+        }
     }
 
     private fun fetchPendingUsers() {
         db.collection("parents").whereEqualTo("status", "pending").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val pendingUsers = snapshots.map { doc ->
                 @Suppress("UNCHECKED_CAST")
                 val profile = doc.get("profile") as? Map<String, Any>
@@ -78,6 +92,7 @@ class ApprovalsFragment : Fragment() {
 
     private fun fetchMapRequests() {
         db.collection("map_requests").whereEqualTo("status", "pending").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val mapRequests = snapshots.map { doc ->
                 MapRequest(
                     id = doc.id,
@@ -97,5 +112,10 @@ class ApprovalsFragment : Fragment() {
                 (requireActivity() as? AdminHome)?.showMapApprovalDetail(request)
             }
         }
+    }
+
+    private fun fetchPendingStops() {
+        // Implementation for stop approvals fetch if needed, 
+        // for now just placeholder to avoid build error with missing adapter
     }
 }

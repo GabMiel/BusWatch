@@ -69,15 +69,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="ROUTE INFORMATION"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/ic_route"
-                    app:drawableTint="@color/black"
                     tools:ignore="HardcodedText" />
 
                 <!-- Route Name Row -->
@@ -129,17 +126,15 @@
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CAPACITY" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp" tools:ignore="SmallSp,HardcodedText" />
                         <TextView android:id="@+id/tvCapacityStats" android:layout_width="match_parent" android:layout_height="48dp" android:background="@drawable/rectangle_hollow_with_shadow" android:paddingHorizontal="12dp" android:textSize="14sp" android:gravity="center_vertical" android:textColor="@color/black" android:text="0 / 0 Students" tools:ignore="HardcodedText" />
+                        <ProgressBar
+                            android:id="@+id/progressCapacity"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="8dp"
+                            android:progressDrawable="@drawable/custom_progress_bar" />
                     </LinearLayout>
                 </LinearLayout>
-
-                <!-- Progress Bar -->
-                <ProgressBar
-                    android:id="@+id/progressCapacity"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    android:layout_marginTop="4dp"
-                    android:progressDrawable="@drawable/custom_progress_bar" />
 
             </LinearLayout>
 
@@ -156,15 +151,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="ROUTE PATH &amp; STOPS"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/ic_location"
-                    app:drawableTint="@color/black"
                     tools:ignore="HardcodedText" />
 
                 <FrameLayout
@@ -177,48 +169,6 @@
                         android:layout_height="match_parent" />
                 </FrameLayout>
 
-            </LinearLayout>
-
-            <!-- Buttons Row (BACK and EDIT) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <TextView
-                    android:id="@+id/btnBackRouteAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="BACK"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/rectangle_hollow_with_shadow"
-                    android:clickable="true"
-                    android:focusable="true"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/btnEditRouteAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="EDIT"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/bg_button_yellow_bordered"
-                    android:clickable="true"
-                    android:focusable="true"
-                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </LinearLayout>

@@ -98,7 +98,7 @@ class BusEditFragment : Fragment() {
         db.collection("buses").document(bus.id).get().addOnSuccessListener { doc ->
             if (doc == null || !doc.exists()) return@addOnSuccessListener
             etBusNumber.setText(doc.getString("busNumber") ?: "")
-            etCapacity.setText(doc.getString("capacity") ?: "")
+            etCapacity.setText(doc.getString("capacity")?.toString() ?: doc.get("capacity")?.toString() ?: "")
             etPlateNumber.setText(doc.getString("plateNumber") ?: "")
             
             val vehicleType = doc.getString("vehicleType") ?: "Select Type"
@@ -120,12 +120,12 @@ class BusEditFragment : Fragment() {
         }
 
         btnSaveBusChanges.setOnClickListener {
-            val busNumber = etBusNumber.text.toString().trim()
+            val busNumber = etBusNumber.text.toString().trim().uppercase()
             val capacityStr = etCapacity.text.toString().trim()
             val vehicleType = tvSelectedVehicleType.text.toString()
-            val plateNumber = etPlateNumber.text.toString().trim()
+            val plateNumber = etPlateNumber.text.toString().trim().uppercase()
 
-            if (busNumber.isEmpty() || capacityStr.isEmpty() || vehicleType == "Select Type" || plateNumber.isEmpty()) {
+            if (busNumber.isEmpty() || capacityStr.isEmpty() || vehicleType == "Select Type") {
                 Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -139,12 +139,12 @@ class BusEditFragment : Fragment() {
                 "busNumber" to busNumber,
                 "vehicleType" to vehicleType,
                 "capacity" to capacityStr,
-                "availableSeats" to capacityStr, // Update available seats too if capacity changed? usually yes for simplicity
+                "availableSeats" to capacityStr,
                 "plateNumber" to plateNumber
             )
 
             db.collection("buses").document(bus.id).update(updates).addOnSuccessListener {
-                Toast.makeText(requireContext(), "Bus updated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Update successfully", Toast.LENGTH_SHORT).show()
                 (requireActivity() as? AdminHome)?.replaceFragment(BusesFragment())
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed to update: ${it.message}", Toast.LENGTH_SHORT).show()

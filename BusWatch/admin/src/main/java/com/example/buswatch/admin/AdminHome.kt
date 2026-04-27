@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -11,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.buswatch.admin.fragments.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
@@ -83,6 +85,7 @@ class AdminHome : AppCompatActivity() {
     fun loadStops() = replaceFragment(StopsFragment())
     fun loadApprovals() = replaceFragment(ApprovalsFragment())
     fun loadArchive(tab: ArchiveTab) = replaceFragment(ArchiveFragment.newInstance(tab))
+    fun loadRouteMap() = replaceFragment(RouteMapFragment())
 
     // --- Detail & Edit Triggers ---
 
@@ -102,8 +105,8 @@ class AdminHome : AppCompatActivity() {
         replaceFragment(ParentEditFragment.newInstance(user))
     }
 
-    fun showDriverDetail(user: UserAdmin, onBack: () -> Unit) {
-        replaceFragment(DriverDetailFragment.newInstance(user, onBack))
+    fun showDriverDetail(user: UserAdmin, onBack: () -> Unit = {}) {
+        replaceFragment(DriverDetailFragment.newInstance(user))
     }
 
     fun editDriverDetail(user: UserAdmin) {
@@ -151,7 +154,7 @@ class AdminHome : AppCompatActivity() {
 
     // --- Action Methods ---
 
-    fun archiveUser(user: UserAdmin) {
+    fun archiveUser(user: UserAdmin, onComplete: (() -> Unit)? = null) {
         val collection = when(user.role) {
             "Parent" -> "parents"
             "Driver" -> "drivers"
@@ -159,28 +162,62 @@ class AdminHome : AppCompatActivity() {
             else -> "users"
         }
         db.collection(collection).document(user.id).update("status", "archived").addOnSuccessListener { 
-            supportFragmentManager.popBackStack()
+            Toast.makeText(this, "Archived successfully", Toast.LENGTH_SHORT).show()
+            onComplete?.invoke()
         }
     }
 
-    fun archiveBus(bus: BusAdmin) {
-        db.collection("buses").document(bus.id).update("status", "Archived").addOnSuccessListener { supportFragmentManager.popBackStack() }
+    fun archiveBus(bus: BusAdmin, onComplete: (() -> Unit)? = null) {
+        db.collection("buses").document(bus.id).update("status", "Archived").addOnSuccessListener { 
+            Toast.makeText(this, "Bus archived successfully", Toast.LENGTH_SHORT).show()
+            onComplete?.invoke()
+        }
     }
 
-    fun archiveRouteInternal(route: RouteAdmin) {
-        db.collection("routes").document(route.id).update("status", "Archived").addOnSuccessListener { supportFragmentManager.popBackStack() }
+    fun archiveRouteInternal(route: RouteAdmin, onComplete: (() -> Unit)? = null) {
+        db.collection("routes").document(route.id).update("status", "Archived").addOnSuccessListener { 
+            Toast.makeText(this, "Route archived successfully", Toast.LENGTH_SHORT).show()
+            onComplete?.invoke()
+        }
+    }
+
+    fun archiveStopInternal(stop: StopAdmin, onComplete: (() -> Unit)? = null) {
+        db.collection("stops").document(stop.id).update("status", "archived").addOnSuccessListener { 
+            Toast.makeText(this, "Stop archived successfully", Toast.LENGTH_SHORT).show()
+            onComplete?.invoke()
+        }
     }
 
     fun approveUserFromApprovalsInternal(user: UserAdmin) {
         db.collection("parents").document(user.id).update("status", "approved").addOnSuccessListener { 
+            sendApprovalNotification(user.id, true)
             supportFragmentManager.popBackStack()
         }
     }
 
     fun rejectUserFromApprovalsInternal(user: UserAdmin) {
         db.collection("parents").document(user.id).update("status", "rejected").addOnSuccessListener { 
+            sendApprovalNotification(user.id, false)
             supportFragmentManager.popBackStack()
         }
+    }
+
+    private fun sendApprovalNotification(userId: String, isApproved: Boolean) {
+        val title = if (isApproved) "Account Approved" else "Account Rejected"
+        val message = if (isApproved) 
+            "Congratulations! Your account has been approved. You can now use all features of BusWatch."
+        else 
+            "Unfortunately, your account application was rejected. Please contact the administrator for more details."
+            
+        val notifData = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "timestamp" to FieldValue.serverTimestamp(),
+            "isRead" to false,
+            "type" to "account_status"
+        )
+        
+        db.collection("parents").document(userId).collection("notifications").add(notifData)
     }
 
     fun restoreUserInternal(user: UserAdmin) = db.collection("parents").document(user.id).update("status", "approved")

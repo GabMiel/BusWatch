@@ -17,12 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 class DriverDetailFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var user: UserAdmin
-    private var onBack: (() -> Unit)? = null
 
     companion object {
-        fun newInstance(user: UserAdmin, onBack: () -> Unit) = DriverDetailFragment().apply {
+        fun newInstance(user: UserAdmin) = DriverDetailFragment().apply {
             this.user = user
-            this.onBack = onBack
         }
     }
 
@@ -32,18 +30,26 @@ class DriverDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<ImageButton>(R.id.btnBackDriverDetail)?.setOnClickListener { onBack?.invoke() }
+        
+        view.findViewById<ImageButton>(R.id.btnBackDriverDetail)?.setOnClickListener { 
+            (requireActivity() as? AdminHome)?.replaceFragment(DriversFragment())
+        }
+        
         loadData(view)
     }
 
     private fun loadData(view: View) {
         db.collection("drivers").document(user.id).get().addOnSuccessListener { doc ->
             if (doc == null || !doc.exists()) return@addOnSuccessListener
+            
             view.findViewById<TextView>(R.id.tvFirstName).text = doc.getString("firstName") ?: ""
+            view.findViewById<TextView>(R.id.tvMiddleName).text = doc.getString("middleName") ?: ""
             view.findViewById<TextView>(R.id.tvLastName).text = doc.getString("lastName") ?: ""
+            view.findViewById<TextView>(R.id.tvSuffix).text = doc.getString("suffix") ?: ""
             view.findViewById<TextView>(R.id.tvEmail).text = doc.getString("email") ?: ""
             view.findViewById<TextView>(R.id.tvPhone).text = doc.getString("phone") ?: ""
             view.findViewById<TextView>(R.id.tvLicenseNumber).text = doc.getString("licenseNumber") ?: ""
+            view.findViewById<TextView>(R.id.tvLanguage).text = doc.getString("preferredLanguage") ?: "English"
             
             val avatar = doc.getString("driverAvatar") ?: ""
             if (avatar.isNotEmpty()) {

@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:text="@string/adding_new_driver"
+                android:text="ADDING NEW DRIVER"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_close"
-                android:contentDescription="@string/close"
+                android:contentDescription="Close"
                 app:tint="@color/black" />
         </RelativeLayout>
 
@@ -49,16 +49,26 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="32dp">
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:focusable="true">
 
-            <ImageView
-                android:id="@+id/imgDriverPhoto"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:src="@drawable/ic_person_placeholder"
-                android:background="@drawable/bg_avatar_circle"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/photo" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="45dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/transparent">
+
+                <ImageView
+                    android:id="@+id/imgDriverPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_person_placeholder"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Photo" />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:layout_width="26dp"
@@ -285,47 +295,52 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:background="@drawable/rectangle_hollow_with_shadow"
                     android:paddingStart="12dp" android:paddingEnd="44dp" android:textSize="14sp"
-                    android:inputType="textPassword" android:hint="Minimum 8 characters" android:importantForAutofill="no"/>
+                    android:inputType="textPassword" android:hint="Min. 8 chars, 1 Upper, 1 Number" android:importantForAutofill="no"/>
                 <ImageButton android:id="@+id/btnViewPassword"
-                    android:layout_width="40dp" android:layout_height="40dp"
-                    android:layout_gravity="end|center_vertical" android:layout_marginEnd="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_eye_off" app:tint="#888888" android:contentDescription="@string/show_password"/>
+                    android:layout_width="40dp" android:layout_height="match_parent"
+                    android:layout_gravity="end" android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_eye_off" app:tint="#888888" android:contentDescription="Show password"/>
             </FrameLayout>
         </LinearLayout>
 
-        <!-- Action Buttons -->
+        <!-- Confirm Password Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
-
-            <Button
-                android:id="@+id/btnCancelAddDriver"
-                android:layout_width="0dp"
-                android:layout_height="54dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="#FFFFFF"
-                android:text="CANCEL"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                app:cornerRadius="8dp"
-                app:strokeColor="#000000"
-                app:strokeWidth="1dp" />
-
-            <Button
-                android:id="@+id/btnAddDriverSubmit"
-                android:layout_width="0dp"
-                android:layout_height="54dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="#FEBE1E"
-                android:text="SAVE DRIVER"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                app:cornerRadius="8dp" />
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:id="@+id/tvConfirmPasswordLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Confirm Password" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="48dp">
+                <EditText android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:paddingStart="12dp" android:paddingEnd="44dp" android:textSize="14sp"
+                    android:inputType="textPassword" android:hint="Repeat password" android:importantForAutofill="no"/>
+                <ImageButton android:id="@+id/btnViewConfirmPassword"
+                    android:layout_width="40dp" android:layout_height="match_parent"
+                    android:layout_gravity="end" android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_eye_off" app:tint="#888888" android:contentDescription="Show password"/>
+            </FrameLayout>
+            <TextView android:id="@+id/tvConfirmPasswordWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Passwords do not match" />
         </LinearLayout>
+
+        <!-- Action Button -->
+        <Button
+            android:id="@+id/btnAddDriverSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#FEBE1E"
+            android:text="SAVE DRIVER"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            app:cornerRadius="8dp" />
+
     </LinearLayout>
 </ScrollView>

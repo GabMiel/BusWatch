@@ -70,15 +70,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="CONDUCTOR INFORMATION"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/ic_person_add"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <!-- Profile Photo -->
                 <FrameLayout
@@ -133,8 +130,6 @@
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                             android:inputType="textPersonName" android:hint="e.g. Juan" android:importantForAutofill="no"/>
-                        <TextView android:id="@+id/tvFirstNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -149,8 +144,6 @@
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                             android:inputType="textPersonName" android:hint="Optional" android:importantForAutofill="no"/>
-                        <TextView android:id="@+id/tvMiddleNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -175,8 +168,6 @@
                             android:background="@drawable/rectangle_hollow_with_shadow"
                             android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                             android:inputType="textPersonName" android:hint="e.g. Dela Cruz" android:importantForAutofill="no"/>
-                        <TextView android:id="@+id/tvLastNameWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid characters" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -213,8 +204,6 @@
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                         android:inputType="textEmailAddress" android:hint="conductor@buswatch.com" android:importantForAutofill="no"/>
-                    <TextView android:id="@+id/tvEmailWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid email or duplicate email" />
                 </LinearLayout>
 
                 <!-- Phone & Language Row -->
@@ -248,8 +237,6 @@
                                 android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                                 android:inputType="phone" android:hint="9XX XXX XXXX" android:maxLength="12" android:importantForAutofill="no"/>
                         </LinearLayout>
-                        <TextView android:id="@+id/tvPhoneWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:textColor="#FF0000" android:textSize="10sp" android:visibility="gone" android:text="Invalid phone number" />
                     </LinearLayout>
 
                     <LinearLayout

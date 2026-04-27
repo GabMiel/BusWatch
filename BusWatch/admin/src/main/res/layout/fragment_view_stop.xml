@@ -69,15 +69,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
-                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/stop_information"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:drawableStartCompat="@drawable/bus_stop"
-                    app:drawableTint="@color/black" />
+                    android:letterSpacing="0.02" />
 
                 <!-- Stop Name Row -->
                 <LinearLayout
@@ -115,8 +112,9 @@
                         android:text="@string/placeholder_hyphen"/>
                 </LinearLayout>
 
-                <!-- Map View -->
+                <!-- Map View Area -->
                 <FrameLayout
+                    android:id="@+id/mapContainer"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:background="@drawable/rectangle_hollow">
@@ -173,46 +171,6 @@
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_stop_assigned_student"
                     tools:itemCount="2"/>
-            </LinearLayout>
-
-            <!-- Buttons Row (BACK and EDIT) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <TextView
-                    android:id="@+id/btnBackStopAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/back_caps"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/rectangle_hollow_with_shadow"
-                    android:clickable="true"
-                    android:focusable="true" />
-
-                <TextView
-                    android:id="@+id/btnEditStopAction"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/edit"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:letterSpacing="0.08"
-                    android:background="@drawable/bg_button_yellow_bordered"
-                    android:clickable="true"
-                    android:focusable="true" />
             </LinearLayout>
 
         </LinearLayout>
