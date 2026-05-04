@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -48,7 +49,6 @@ class ConductorsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchCount()
         fetchPage()
     }
 
@@ -91,49 +91,10 @@ class ConductorsFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Pagination Controls
-        view.findViewById<TextView>(R.id.btnFirstPage)?.setOnClickListener {
-            if (currentPage != 1) {
-                currentPage = 1
-                fetchPage()
-            }
-        }
-
-        view.findViewById<TextView>(R.id.btnPrevPage)?.setOnClickListener {
-            if (currentPage > 1) {
-                currentPage--
-                fetchPage()
-            }
-        }
-
-        view.findViewById<TextView>(R.id.btnNextPage)?.setOnClickListener {
-            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-            if (currentPage < totalPages) {
-                currentPage++
-                fetchPage()
-            }
-        }
-
-        view.findViewById<TextView>(R.id.btnLastPage)?.setOnClickListener {
-            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-            if (currentPage != totalPages && totalPages > 0) {
-                currentPage = totalPages
-                fetchPage()
-            }
-        }
-    }
-
-    private fun fetchCount() {
-        db.collection("conductors").whereEqualTo("status", "active")
-            .get()
-            .addOnSuccessListener { 
-                totalCount = it.size()
-                updatePaginationUI()
-            }
+        setupPagination(view)
     }
 
     private fun fetchPage() {
-        // Removed .orderBy() from Firestore query to avoid FAILED_PRECONDITION
         db.collection("conductors")
             .whereEqualTo("status", "active")
             .get()
@@ -150,7 +111,6 @@ class ConductorsFragment : Fragment() {
                     it.name.lowercase().contains(searchQuery)
                 }
 
-                // Perform in-memory sorting
                 val sortedConductors = if (sortDirection == Query.Direction.ASCENDING) {
                     allConductors.sortedBy { it.name.lowercase() }
                 } else {
@@ -170,13 +130,37 @@ class ConductorsFragment : Fragment() {
                 view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedConductors.toMutableList(), 
                     { (requireActivity() as? AdminHome)?.showConductorDetail(it) { fetchPage() } }, 
                     { (requireActivity() as? AdminHome)?.editConductorDetail(it) }, 
-                    { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) }
+                    { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) { fetchPage() } }
                 )
                 updatePaginationUI()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error fetching conductors: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun setupPagination(view: View) {
+        val etPage = view.findViewById<EditText>(R.id.etCurrentPage)
+        etPage?.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val input = v.text.toString().toIntOrNull() ?: 1
+                handleJumpToPage(input)
+                true
+            } else false
+        }
+        view.findViewById<View>(R.id.btnFirstPage)?.setOnClickListener { handleJumpToPage(1) }
+        view.findViewById<View>(R.id.btnPrevPage)?.setOnClickListener { handleJumpToPage(currentPage - 1) }
+        view.findViewById<View>(R.id.btnNextPage)?.setOnClickListener { handleJumpToPage(currentPage + 1) }
+        view.findViewById<View>(R.id.btnLastPage)?.setOnClickListener { 
+            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+            handleJumpToPage(totalPages)
+        }
+    }
+
+    private fun handleJumpToPage(page: Int) {
+        val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        currentPage = page.coerceIn(1, maxPage)
+        fetchPage()
     }
 
     private fun updatePaginationUI() {
@@ -186,9 +170,22 @@ class ConductorsFragment : Fragment() {
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
         view.findViewById<TextView>(R.id.tvTotalPages)?.text = getString(CommonR.string.page_of_format, totalPages)
         
-        view.findViewById<TextView>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
-        view.findViewById<TextView>(R.id.btnFirstPage)?.isEnabled = currentPage > 1
-        view.findViewById<TextView>(R.id.btnNextPage)?.isEnabled = currentPage < totalPages
-        view.findViewById<TextView>(R.id.btnLastPage)?.isEnabled = currentPage < totalPages
+        val btnPrev = view.findViewById<View>(R.id.btnPrevPage)
+        val btnFirst = view.findViewById<View>(R.id.btnFirstPage)
+        val btnNext = view.findViewById<View>(R.id.btnNextPage)
+        val btnLast = view.findViewById<View>(R.id.btnLastPage)
+
+        val canPrev = currentPage > 1
+        val canNext = currentPage < totalPages
+
+        btnPrev?.isEnabled = canPrev
+        btnFirst?.isEnabled = canPrev
+        btnNext?.isEnabled = canNext
+        btnLast?.isEnabled = canNext
+
+        btnPrev?.alpha = if (canPrev) 1.0f else 0.3f
+        btnFirst?.alpha = if (canPrev) 1.0f else 0.3f
+        btnNext?.alpha = if (canNext) 1.0f else 0.3f
+        btnLast?.alpha = if (canNext) 1.0f else 0.3f
     }
 }

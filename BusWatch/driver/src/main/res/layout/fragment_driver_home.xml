@@ -7,35 +7,53 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
 
-    <!-- 1. TOP HEADER (Simple Horizontal Flow) -->
-    <LinearLayout
+    <!-- 1. TOP HEADER -->
+    <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="@drawable/square_shape"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:paddingHorizontal="16dp">
 
-        <ImageView
-            android:id="@+id/header_logo"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:contentDescription="@string/logo"
-            android:src="@drawable/logo" />
-
-        <TextView
-            android:id="@+id/header_title"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/buswatch"
-            android:textColor="#040303"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <!-- 2. SCROLLABLE CONTENT (Takes up flexible middle space) -->
+            <ImageView
+                android:id="@+id/header_logo"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:contentDescription="@string/logo"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/buswatch"
+                android:textColor="#040303"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- SOS Button - Resized to match live tracking -->
+        <ImageButton
+            android:id="@+id/btnSOS"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sos"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/emergency" />
+    </RelativeLayout>
+
+    <!-- 2. SCROLLABLE CONTENT -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/main_scroller"
         android:layout_width="match_parent"
@@ -59,31 +77,14 @@
                 android:padding="16dp"
                 android:layout_marginBottom="20dp">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvGreeting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/tvGreeting"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/good_morning_driver"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvShiftTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="06:00 AM - 07:30 AM"
-                        android:textColor="@color/white"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:text="@string/good_morning_driver"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvCurrentTime"
@@ -95,51 +96,110 @@
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/students_for"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
-
-            <!-- Tabs -->
-            <LinearLayout
-                android:id="@+id/tabs_container"
+            <!-- Student List Header with Filter Icon -->
+            <RelativeLayout
+                android:id="@+id/layout_students_header"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_tab_container"
-                android:padding="2dp"
-                android:layout_marginBottom="14dp">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
                 <TextView
-                    android:id="@+id/tabMorning"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/morning"
+                    android:id="@+id/tvStudentsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/btnSortStudents"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/students_for"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/bg_tab_active"
-                    android:clickable="true"
-                    android:focusable="true"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tabAfternoon"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/afternoon"
-                    android:textColor="@color/gray_text"
-                    android:textSize="12sp"
-                    android:gravity="center"
-                    android:background="@drawable/bg_tab_inactive"
-                    android:clickable="true"
-                    android:focusable="true"/>
+                <ImageButton
+                    android:id="@+id/btnSortStudents"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_filter"
+                    android:contentDescription="@string/sort"
+                    app:tint="@color/black" />
+            </RelativeLayout>
+
+            <!-- Combined Tab Section (Morning/Afternoon) Styled like Admin Users -->
+            <LinearLayout
+                android:id="@+id/layout_tabs_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_tab_container"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/tabMorning"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/morning"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@drawable/bg_tab_active"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/tabAfternoon"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/afternoon"
+                        android:textColor="@color/gray_text"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_tab_inactive"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
+                <!-- Times Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/tvMorningTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#666666"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        tools:text="06:00 AM - 07:30 AM" />
+
+                    <TextView
+                        android:id="@+id/tvAfternoonTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#666666"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        tools:text="12:30 PM - 02:00 PM" />
+                </LinearLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -153,7 +213,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 3. ACTION BUTTON (Fixed above Nav) -->
+    <!-- 3. ACTION BUTTON -->
     <LinearLayout
         android:id="@+id/layoutStartTrip"
         android:layout_width="match_parent"
@@ -174,10 +234,11 @@
             android:gravity="center"
             android:background="@drawable/bg_start_trip"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:textAllCaps="true"/>
     </LinearLayout>
 
-    <!-- 4. BOTTOM NAVIGATION (Fixed at bottom) -->
+    <!-- 4. BOTTOM NAVIGATION -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

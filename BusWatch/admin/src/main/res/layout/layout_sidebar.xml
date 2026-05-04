@@ -65,7 +65,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -90,7 +91,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -115,7 +117,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -141,7 +144,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -167,7 +171,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -193,7 +198,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -218,7 +224,8 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:background="?attr/selectableItemBackground">
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -231,6 +238,32 @@
             android:text="@string/archive"
             android:textAllCaps="true"
             android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <!-- Corrected Emergency Alerts -->
+    <LinearLayout
+        android:id="@+id/navEmergencies"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/sidebar_item_selector">
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_sos"
+            android:contentDescription="@string/emergency" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/emergency_alerts_caps"
+            android:textColor="#D32F2F"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginStart="16dp" />
@@ -271,6 +304,7 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:textAllCaps="true"
             android:layout_marginStart="16dp" />
     </LinearLayout>
 

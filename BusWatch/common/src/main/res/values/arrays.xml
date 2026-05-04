@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="ride_options">
-        <item>Morning Trip</item>
-        <item>Afternoon Trip</item>
+        <item>Round Trip (Morning &amp; Afternoon)</item>
+        <item>Morning Only (Home to School)</item>
+        <item>Afternoon Only (School to Home)</item>
         <item>Not Riding</item>
     </string-array>
     <string-array name="grades_array">

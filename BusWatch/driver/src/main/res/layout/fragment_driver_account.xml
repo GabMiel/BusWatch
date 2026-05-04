@@ -43,7 +43,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Profile Information Card -->
+            <!-- Information Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,17 +52,19 @@
                 android:padding="24dp"
                 android:layout_marginBottom="24dp">
 
+                <!-- Row Title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:gravity="center_vertical"
-                    android:text="@string/profile_information"
+                    android:text="ACCOUNT INFORMATION"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.02" />
 
+                <!-- Profile Photo -->
                 <ImageView
                     android:id="@+id/imgDriverProfile"
                     android:layout_width="90dp"
@@ -74,6 +76,7 @@
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/profile_avatar" />
 
+                <!-- Name Details -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -88,7 +91,7 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/first_name" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="FIRST NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfileFirstName"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -103,7 +106,7 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/middle_name" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="MIDDLE NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfileMiddleName"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -127,7 +130,7 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/last_name" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="LAST NAME" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfileLastName"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -142,7 +145,7 @@
                         android:layout_weight="0.7"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/suffix" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="SUFFIX" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfileSuffix"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -157,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" android:layout_marginBottom="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/email_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        android:text="EMAIL ADDRESS" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                         tools:ignore="SmallSp" />
                     <TextView android:id="@+id/tvProfileEmail"
                         android:layout_width="match_parent" android:layout_height="48dp"
@@ -169,17 +172,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:baselineAligned="false">
+                    android:orientation="vertical" android:layout_marginBottom="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="LICENSE NUMBER" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                        tools:ignore="SmallSp" />
+                    <TextView android:id="@+id/tvProfileLicenseNumber"
+                        android:layout_width="match_parent" android:layout_height="48dp"
+                        android:background="@drawable/rectangle_hollow_with_shadow"
+                        android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                        android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:baselineAligned="false">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/phone_label" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="PHONE NUMBER" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfilePhone"
                             android:layout_width="match_parent" android:layout_height="48dp"
@@ -194,7 +209,7 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/preferred_language" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                            android:text="LANGUAGE" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                             tools:ignore="SmallSp" />
                         <TextView android:id="@+id/tvProfileLanguage"
                             android:layout_width="match_parent" android:layout_height="48dp"

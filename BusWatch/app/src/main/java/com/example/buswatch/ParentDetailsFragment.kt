@@ -99,10 +99,6 @@ class ParentDetailsFragment : Fragment() {
             showAddChildDialog()
         }
 
-        view.findViewById<ImageButton>(R.id.btnEmergencyEdit).setOnClickListener {
-            showEditEmergencyDialog()
-        }
-
         val btnConfirmDelete = view.findViewById<Button>(R.id.btnConfirmDeleteChildren)
         view.findViewById<ImageButton>(R.id.btnDeleteChild).setOnClickListener {
             if (childrenList.isEmpty()) {
@@ -714,100 +710,6 @@ class ParentDetailsFragment : Fragment() {
                         btnSave.isEnabled = true
                     }
             }
-        }
-        dialog.show()
-    }
-
-
-    private fun showEditEmergencyDialog() {
-        val uid = auth.currentUser?.uid ?: return
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_student_emergency, null)
-        val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)
-            .setView(dialogView)
-            .create()
-
-        val etParentFName = dialogView.findViewById<EditText>(R.id.etEditParentFirstName)
-        val etParentLName = dialogView.findViewById<EditText>(R.id.etEditParentLastName)
-        val etParentEmail = dialogView.findViewById<EditText>(R.id.etEditParentEmail)
-        val etParentPhone = dialogView.findViewById<EditText>(R.id.etEditParentPhone)
-
-        val etC1Name = dialogView.findViewById<EditText>(R.id.etEditContact1Name)
-        val etC1Rel = dialogView.findViewById<EditText>(R.id.etEditContact1Rel)
-        val etC1Email = dialogView.findViewById<EditText>(R.id.etEditContact1Email)
-        val etC1Phone = dialogView.findViewById<EditText>(R.id.etEditContact1Phone)
-
-        val etC2Name = dialogView.findViewById<EditText>(R.id.etEditContact2Name)
-        val etC2Rel = dialogView.findViewById<EditText>(R.id.etEditContact2Rel)
-        val etC2Email = dialogView.findViewById<EditText>(R.id.etEditContact2Email)
-        val etC2Phone = dialogView.findViewById<EditText>(R.id.etEditContact2Phone)
-
-        db.collection("parents").document(uid).get().addOnSuccessListener { document ->
-            if (!document.exists()) return@addOnSuccessListener
-
-            @Suppress("UNCHECKED_CAST")
-            val profile = document.get("profile") as? KMap<String, Any>
-            etParentFName.setText(profile?.get("firstName") as? String ?: "")
-            etParentLName.setText(profile?.get("lastName") as? String ?: "")
-            etParentEmail.setText(profile?.get("email") as? String ?: "")
-            etParentPhone.setText(profile?.get("phone") as? String ?: "")
-
-            @Suppress("UNCHECKED_CAST")
-            val contacts = document.get("emergencyContacts") as? List<KMap<String, Any>> ?: emptyList()
-            if (contacts.isNotEmpty()) {
-                etC1Name.setText(contacts[0]["name"] as? String ?: "")
-                etC1Rel.setText(contacts[0]["relationship"] as? String ?: "")
-                etC1Email.setText(contacts[0]["email"] as? String ?: "")
-                etC1Phone.setText(contacts[0]["phone"] as? String ?: "")
-            }
-            if (contacts.size > 1) {
-                etC2Name.setText(contacts[1]["name"] as? String ?: "")
-                etC2Rel.setText(contacts[1]["relationship"] as? String ?: "")
-                etC2Email.setText(contacts[1]["email"] as? String ?: "")
-                etC2Phone.setText(contacts[1]["phone"] as? String ?: "")
-            }
-        }
-
-        dialogView.findViewById<ImageButton>(R.id.btnDismissEditEmergency).setOnClickListener { dialog.dismiss() }
-        dialogView.findViewById<Button>(R.id.btnCancelEdit).setOnClickListener { dialog.dismiss() }
-
-        val btnSave = dialogView.findViewById<Button>(R.id.btnSaveEmergency)
-        btnSave.setOnClickListener {
-            val updatedContacts = mutableListOf<KMap<String, String>>()
-            if (etC1Name.text.isNotEmpty()) {
-                updatedContacts.add(mapOf(
-                    "name" to etC1Name.text.toString().trim(),
-                    "relationship" to etC1Rel.text.toString().trim(),
-                    "email" to etC1Email.text.toString().trim(),
-                    "phone" to etC1Phone.text.toString().trim()
-                ))
-            }
-            if (etC2Name.text.isNotEmpty()) {
-                updatedContacts.add(mapOf(
-                    "name" to etC2Name.text.toString().trim(),
-                    "relationship" to etC2Rel.text.toString().trim(),
-                    "email" to etC2Email.text.toString().trim(),
-                    "phone" to etC2Phone.text.toString().trim()
-                ))
-            }
-
-            val updates = mutableMapOf<String, Any>(
-                "emergencyContacts" to updatedContacts,
-                "profile.firstName" to etParentFName.text.toString().trim(),
-                "profile.lastName" to etParentLName.text.toString().trim(),
-                "profile.email" to etParentEmail.text.toString().trim(),
-                "profile.phone" to etParentPhone.text.toString().trim()
-            )
-
-            btnSave.isEnabled = false
-            db.collection("parents").document(uid).update(updates)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Emergency contacts updated", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Update failed: ${e.message}", Toast.LENGTH_SHORT).show()
-                    btnSave.isEnabled = true
-                }
         }
         dialog.show()
     }

@@ -34,7 +34,7 @@ class DriverDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         view.findViewById<ImageButton>(R.id.btnBackDriverDetail)?.setOnClickListener { 
-            onBack?.invoke() ?: (requireActivity() as? AdminHome)?.replaceFragment(DriversFragment())
+            (requireActivity() as? AdminHome)?.replaceFragment(DriversFragment())
         }
         
         loadData(view)

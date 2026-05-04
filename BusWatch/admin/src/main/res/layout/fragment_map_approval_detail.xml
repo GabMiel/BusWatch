@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="LOCATION CHANGE REQUEST"
+        android:text="@string/location_change_request_title"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -56,7 +56,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Requester Information Card (Redesigned) -->
+            <!-- Requester Information Card -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardRequesterInfo"
                 android:layout_width="match_parent"
@@ -112,28 +112,27 @@
                     app:layout_constraintStart_toStartOf="@id/tvStudentTag"
                     app:layout_constraintTop_toBottomOf="@id/tvStudentTag" />
 
+                <!-- Vertical Connector Line -->
                 <View
-                    android:id="@+id/dividerRequester"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="#F0F0F0"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgStudent" />
+                    android:id="@+id/avatarConnector"
+                    android:layout_width="2dp"
+                    android:layout_height="30dp"
+                    android:background="#E0E0E0"
+                    app:layout_constraintTop_toBottomOf="@id/imgStudent"
+                    app:layout_constraintStart_toStartOf="@id/imgStudent"
+                    app:layout_constraintEnd_toEndOf="@id/imgStudent" />
 
                 <!-- Parent Section -->
                 <ImageView
                     android:id="@+id/imgParent"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/bg_avatar_circle"
                     android:contentDescription="@string/profile_avatar"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_person_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dividerRequester" />
+                    app:layout_constraintTop_toBottomOf="@id/avatarConnector" />
 
                 <TextView
                     android:id="@+id/tvParentTag"

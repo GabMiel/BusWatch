@@ -19,6 +19,7 @@ import com.example.buswatch.admin.R
 import com.example.buswatch.admin.RouteAdmin
 import com.example.buswatch.admin.RouteAdapter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
 
@@ -29,6 +30,9 @@ class RoutingFragment : Fragment() {
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
     private var searchQuery = ""
+    private var routesListener: ListenerRegistration? = null
+    private var parentsListener: ListenerRegistration? = null
+    private val stopOccupancy = mutableMapOf<String, Int>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_routing, container, false)
@@ -37,7 +41,39 @@ class RoutingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchPage()
+        startParentsListener()
+    }
+
+    private fun startParentsListener() {
+        parentsListener?.remove()
+        parentsListener = db.collection("parents").addSnapshotListener { snapshots, e ->
+            if (e != null || snapshots == null) return@addSnapshotListener
+            stopOccupancy.clear()
+            for (pDoc in snapshots) {
+                // Check primary child
+                val child = pDoc.get("child") as? Map<String, Any>
+                val cStopId = child?.get("stop") as? String
+                if (!cStopId.isNullOrEmpty()) {
+                    stopOccupancy[cStopId] = (stopOccupancy[cStopId] ?: 0) + 1
+                }
+
+                // Check additional children
+                val childrenList = pDoc.get("children") as? List<Map<String, Any>>
+                childrenList?.forEach { c ->
+                    val sId = c["stop"] as? String
+                    if (!sId.isNullOrEmpty()) {
+                        stopOccupancy[sId] = (stopOccupancy[sId] ?: 0) + 1
+                    }
+                }
+            }
+            fetchPage()
+        }
+    }
+
+    override fun onDestroyView() {
+        routesListener?.remove()
+        parentsListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -75,21 +111,20 @@ class RoutingFragment : Fragment() {
     }
 
     private fun fetchPage() {
-        db.collection("routes")
+        routesListener?.remove()
+        routesListener = db.collection("routes")
             .whereEqualTo("status", "Active")
-            .get()
-            .addOnSuccessListener { snapshots ->
-                if (snapshots == null || snapshots.isEmpty) {
-                    view?.findViewById<RecyclerView>(R.id.recyclerRoutes)?.adapter = RouteAdapter(emptyList(), {}, {}, {})
-                    totalCount = 0
-                    updatePaginationUI()
-                    return@addOnSuccessListener
-                }
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) return@addSnapshotListener
                 
                 val rawRoutes = mutableListOf<RouteAdmin>()
-                var processedCount = 0
                 val totalDocs = snapshots.size()
+                if (totalDocs == 0) {
+                    finalizeFetch(emptyList())
+                    return@addSnapshotListener
+                }
 
+                var processedCount = 0
                 for (doc in snapshots) {
                     val routeId = doc.id
                     val routeName = doc.getString("routeName") ?: "N/A"
@@ -97,6 +132,14 @@ class RoutingFragment : Fragment() {
                     val driverId = doc.getString("driverId") ?: ""
                     val maxCapacity = doc.getLong("maxCapacity")?.toInt() ?: 40
                     val stopIds = doc.get("stopIds") as? List<String> ?: emptyList()
+                    
+                    val morningStartTime = doc.getString("morningStartTime") ?: ""
+                    val morningEndTime = doc.getString("morningEndTime") ?: ""
+                    val afternoonStartTime = doc.getString("afternoonStartTime") ?: ""
+                    val afternoonEndTime = doc.getString("afternoonEndTime") ?: ""
+
+                    // Calculate occupancy from pre-fetched stopOccupancy map
+                    val currentOccupancy = stopIds.sumOf { stopOccupancy[it] ?: 0 }
 
                     db.collection("buses").document(busId).get().addOnSuccessListener { busDoc ->
                         val actualBusNo = busDoc.getString("busNumber") ?: doc.getString("busNumber") ?: "N/A"
@@ -107,23 +150,28 @@ class RoutingFragment : Fragment() {
                                 doc.getString("driverName") ?: "N/A"
                             }
 
-                            if (stopIds.isEmpty()) {
-                                rawRoutes.add(RouteAdmin(routeId, routeName, actualBusNo, actualDriverName, 0, maxCapacity))
-                                processedCount++
-                                if (processedCount == totalDocs) finalizeFetch(rawRoutes)
-                            } else {
-                                db.collection("parents").whereIn("child.stop", stopIds).get().addOnSuccessListener { parentSnapshots ->
-                                    rawRoutes.add(RouteAdmin(routeId, routeName, actualBusNo, actualDriverName, parentSnapshots.size(), maxCapacity))
-                                    processedCount++
-                                    if (processedCount == totalDocs) finalizeFetch(rawRoutes)
-                                }.addOnFailureListener {
-                                    rawRoutes.add(RouteAdmin(routeId, routeName, actualBusNo, actualDriverName, 0, maxCapacity))
-                                    processedCount++
-                                    if (processedCount == totalDocs) finalizeFetch(rawRoutes)
-                                }
-                            }
+                            rawRoutes.add(RouteAdmin(
+                                routeId, routeName, actualBusNo, actualDriverName, 
+                                currentOccupancy, maxCapacity, "Active",
+                                morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime
+                            ))
+                            processedCount++
+                            if (processedCount == totalDocs) finalizeFetch(rawRoutes)
+                        }.addOnFailureListener {
+                            rawRoutes.add(RouteAdmin(
+                                routeId, routeName, actualBusNo, "N/A", 
+                                currentOccupancy, maxCapacity, "Active",
+                                morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime
+                            ))
+                            processedCount++
+                            if (processedCount == totalDocs) finalizeFetch(rawRoutes)
                         }
                     }.addOnFailureListener {
+                        rawRoutes.add(RouteAdmin(
+                            routeId, routeName, "N/A", "N/A", 
+                            currentOccupancy, maxCapacity, "Active",
+                            morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime
+                        ))
                         processedCount++
                         if (processedCount == totalDocs) finalizeFetch(rawRoutes)
                     }
@@ -156,7 +204,7 @@ class RoutingFragment : Fragment() {
         view?.findViewById<RecyclerView>(R.id.recyclerRoutes)?.adapter = RouteAdapter(routes,
             onViewClick = { (requireActivity() as? AdminHome)?.showRouteDetailInternal(it) },
             onEditClick = { (requireActivity() as? AdminHome)?.editRouteDetailInternal(it) },
-            onArchiveClick = { (requireActivity() as? AdminHome)?.archiveRouteInternal(it) { fetchPage() } })
+            onArchiveClick = { (requireActivity() as? AdminHome)?.archiveRouteInternal(it) { } })
     }
 
     private fun setupPagination(view: View) {
@@ -189,9 +237,22 @@ class RoutingFragment : Fragment() {
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
         view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $maxPage"
         
-        view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
-        view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1
-        view.findViewById<View>(R.id.btnNextPage)?.isEnabled = currentPage < maxPage
-        view.findViewById<View>(R.id.btnLastPage)?.isEnabled = currentPage < maxPage
+        val btnPrev = view.findViewById<View>(R.id.btnPrevPage)
+        val btnFirst = view.findViewById<View>(R.id.btnFirstPage)
+        val btnNext = view.findViewById<View>(R.id.btnNextPage)
+        val btnLast = view.findViewById<View>(R.id.btnLastPage)
+
+        val canPrev = currentPage > 1
+        val canNext = currentPage < maxPage
+
+        btnPrev?.isEnabled = canPrev
+        btnFirst?.isEnabled = canPrev
+        btnNext?.isEnabled = canNext
+        btnLast?.isEnabled = canNext
+
+        btnPrev?.alpha = if (canPrev) 1.0f else 0.3f
+        btnFirst?.alpha = if (canPrev) 1.0f else 0.3f
+        btnNext?.alpha = if (canNext) 1.0f else 0.3f
+        btnLast?.alpha = if (canNext) 1.0f else 0.3f
     }
 }

@@ -10,6 +10,9 @@ import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -203,14 +206,21 @@ class AddConductorDialog(
 
         dialogView.findViewById<FrameLayout>(R.id.btnLanguageDropdown)?.setOnClickListener {
             val languages = arrayOf(activity.getString(CommonR.string.english), "Filipino (Inactive)")
+            val adapter = object : ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, languages) {
+                override fun isEnabled(position: Int): Boolean = position == 0
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    val view = super.getView(position, convertView, parent)
+                    val tv = view.findViewById<TextView>(android.R.id.text1)
+                    if (position != 0) tv.setTextColor(Color.GRAY) else tv.setTextColor(Color.BLACK)
+                    return view
+                }
+            }
             AlertDialog.Builder(activity)
                 .setTitle(activity.getString(CommonR.string.select_language))
-                .setItems(languages) { _, which ->
+                .setAdapter(adapter) { _, which ->
                     if (which == 0) {
                         tvLanguage?.text = languages[0]
                         tvLanguage?.setTextColor(Color.BLACK)
-                    } else {
-                        Toast.makeText(activity, "Filipino is currently unavailable", Toast.LENGTH_SHORT).show()
                     }
                 }.show()
         }

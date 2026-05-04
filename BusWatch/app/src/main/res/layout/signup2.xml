@@ -78,7 +78,7 @@
             app:tint="#000000" />
 
         <TextView
-            android:id="@+id/textView173"
+            android:id="@+id/tvParentInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -90,6 +90,42 @@
             app:layout_constraintEnd_toEndOf="@+id/viewParent"
             app:layout_constraintStart_toStartOf="@+id/viewParent"
             app:layout_constraintTop_toBottomOf="@+id/viewParent" />
+
+        <View
+            android:id="@+id/viewChild"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="#FEBE1E"
+            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
+            app:layout_constraintStart_toEndOf="@+id/viewParent"
+            app:layout_constraintTop_toTopOf="@+id/viewParent" />
+
+        <ImageView
+            android:id="@+id/ivChildren"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@null"
+            android:src="@drawable/child"
+            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toTopOf="@+id/viewChild"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/tvChildInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/child_information_newline"
+            android:textColor="#FEBE1E"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/viewChild"
+            app:layout_constraintStart_toStartOf="@+id/viewChild"
+            app:layout_constraintTop_toBottomOf="@+id/viewChild" />
 
         <View
             android:id="@+id/viewEmergency"
@@ -115,7 +151,7 @@
             app:tint="#000000" />
 
         <TextView
-            android:id="@+id/textView175"
+            android:id="@+id/tvEmergencyInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -127,42 +163,6 @@
             app:layout_constraintEnd_toEndOf="@+id/viewEmergency"
             app:layout_constraintStart_toStartOf="@+id/viewEmergency"
             app:layout_constraintTop_toBottomOf="@+id/viewEmergency" />
-
-        <View
-            android:id="@+id/viewChild"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="#FEBE1E"
-            app:layout_constraintEnd_toStartOf="@+id/viewEmergency"
-            app:layout_constraintStart_toEndOf="@+id/viewParent"
-            app:layout_constraintTop_toTopOf="@+id/viewParent" />
-
-        <ImageView
-            android:id="@+id/ivChildren"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:contentDescription="@null"
-            android:src="@drawable/child"
-            app:layout_constraintBottom_toBottomOf="@+id/viewChild"
-            app:layout_constraintEnd_toEndOf="@+id/viewChild"
-            app:layout_constraintStart_toStartOf="@+id/viewChild"
-            app:layout_constraintTop_toTopOf="@+id/viewChild"
-            app:tint="#000000" />
-
-        <TextView
-            android:id="@+id/textView174"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="@string/child_information_newline"
-            android:textColor="#FEBE1E"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/viewChild"
-            app:layout_constraintStart_toStartOf="@+id/viewChild"
-            app:layout_constraintTop_toBottomOf="@+id/viewChild" />
 
         <!-- Connecting Lines -->
         <View
@@ -196,7 +196,7 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView174" />
+            app:layout_constraintTop_toBottomOf="@+id/tvChildInfo" />
 
         <TextView
             android:id="@+id/tvChildNumber"
@@ -210,7 +210,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount" />
 
-        <!-- Avatar Section (Optional) -->
+        <!-- Avatar Section -->
         <LinearLayout
             android:id="@+id/llLabelPhoto"
             android:layout_width="0dp"
@@ -228,6 +228,14 @@
                 android:textColor="#241E40"
                 android:textSize="12sp"
                 android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asterisk"
+                android:textColor="#FF0000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="2dp" />
         </LinearLayout>
 
         <FrameLayout
@@ -236,6 +244,8 @@
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_avatar_circle"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelPhoto">
 
@@ -277,7 +287,7 @@
             app:layout_constraintStart_toStartOf="@+id/btnSignup2AddPhoto"
             app:layout_constraintTop_toTopOf="@+id/btnSignup2AddPhoto" />
 
-        <!-- Name Fields -->
+        <!-- First Name -->
         <LinearLayout
             android:id="@+id/llLabel1"
             android:layout_width="0dp"
@@ -333,6 +343,7 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etChildFirstName" />
 
+        <!-- Last Name -->
         <LinearLayout
             android:id="@+id/llLabel2"
             android:layout_width="0dp"
@@ -388,6 +399,7 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/etChildLastName" />
 
+        <!-- Middle Name & Suffix -->
         <LinearLayout
             android:id="@+id/llLabelMiddle"
             android:layout_width="0dp"
@@ -723,7 +735,7 @@
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelHome" />
 
-        <!-- Map Section moved UP (Under Address) -->
+        <!-- Map Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clMapContainer"
             android:layout_width="0dp"
@@ -737,6 +749,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FAF6DB" />
+
             <ImageButton
                 android:id="@+id/btnSignup2MyLocation"
                 android:layout_width="40dp"
@@ -754,7 +767,7 @@
                 app:tint="#666666" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Medical Information Section moved DOWN (Under Map) -->
+        <!-- Medical Information Section -->
         <TextView
             android:id="@+id/tvMedicalInfoHeader"
             android:layout_width="0dp"
@@ -933,6 +946,8 @@
                 android:layout_weight="1"
                 android:text="@string/back_caps"
                 android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:backgroundTint="#FFFFFF"
                 app:cornerRadius="20dp"
                 app:strokeColor="#000000"
@@ -943,7 +958,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="@string/next"
+                android:text="@string/next_caps"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:backgroundTint="#FEBE1E"
                 app:cornerRadius="20dp" />
         </LinearLayout>

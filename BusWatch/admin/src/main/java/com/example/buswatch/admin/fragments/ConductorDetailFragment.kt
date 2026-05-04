@@ -38,7 +38,7 @@ class ConductorDetailFragment : Fragment() {
 
     private fun setupUI(view: View) {
         view.findViewById<ImageButton>(R.id.btnBackConductorDetail)?.setOnClickListener { 
-            onBack?.invoke() ?: (requireActivity() as? AdminHome)?.replaceFragment(ConductorsFragment())
+            (requireActivity() as? AdminHome)?.loadConductors()
         }
     }
 

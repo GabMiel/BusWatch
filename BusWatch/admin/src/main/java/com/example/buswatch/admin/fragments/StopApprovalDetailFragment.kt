@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,7 +12,9 @@ import com.bumptech.glide.Glide
 import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.R
 import com.example.buswatch.admin.StopRequest
+import com.example.buswatch.common.NotificationSender
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -56,17 +59,35 @@ class StopApprovalDetailFragment : Fragment() {
             if (doc.exists()) {
                 @Suppress("UNCHECKED_CAST")
                 val profile = doc.get("profile") as? Map<String, Any>
-                view.findViewById<TextView>(R.id.tvParentFullName).text = "${profile?.get("firstName")} ${profile?.get("lastName")}"
+                val fName = profile?.get("firstName") as? String ?: ""
+                val lName = profile?.get("lastName") as? String ?: ""
+                view.findViewById<TextView>(R.id.tvParentFullName).text = "$fName $lName"
                 view.findViewById<TextView>(R.id.tvParentPhone).text = profile?.get("phone") as? String
                 
-                val avatar = profile?.get("avatarUrl") as? String
-                if (!avatar.isNullOrEmpty()) {
-                    Glide.with(this).load(avatar).circleCrop().into(view.findViewById(R.id.imgParent))
+                val parentAvatar = profile?.get("parentAvatarUrl") as? String
+                val imgParent = view.findViewById<ImageView>(R.id.imgParent)
+                if (!parentAvatar.isNullOrEmpty() && imgParent != null) {
+                    Glide.with(this).load(parentAvatar).circleCrop().into(imgParent)
                 }
 
-                val childAvatar = (doc.get("child") as? Map<String, Any>)?.get("childAvatarUrl") as? String
-                if (!childAvatar.isNullOrEmpty()) {
-                    Glide.with(this).load(childAvatar).circleCrop().into(view.findViewById(R.id.imgStudent))
+                @Suppress("UNCHECKED_CAST")
+                val docChild = doc.get("child") as? Map<String, Any>
+                var studentAvatarUrl = docChild?.get("childAvatarUrl") as? String
+                
+                if (studentAvatarUrl.isNullOrEmpty()) {
+                    @Suppress("UNCHECKED_CAST")
+                    val children = doc.get("children") as? List<Map<String, Any>>
+                    val child = children?.find { 
+                        val cfName = it["firstName"] as? String ?: ""
+                        val clName = it["lastName"] as? String ?: ""
+                        "$cfName $clName" == request.studentName 
+                    }
+                    studentAvatarUrl = child?.get("childAvatarUrl") as? String
+                }
+
+                val imgStudent = view.findViewById<ImageView>(R.id.imgStudent)
+                if (!studentAvatarUrl.isNullOrEmpty() && imgStudent != null) {
+                    Glide.with(this).load(studentAvatarUrl).circleCrop().into(imgStudent)
                 }
             }
         }
@@ -95,30 +116,78 @@ class StopApprovalDetailFragment : Fragment() {
     }
 
     private fun approveRequest() {
-        val batch = db.batch()
-        
-        // 1. Update the student's stop in the parent document
-        val parentRef = db.collection("parents").document(request.parentId)
-        val updates = hashMapOf<String, Any>(
-            "child.stop" to request.proposedStopId,
-            "child.lastStopApproved" to Timestamp.now() // For 30-day lock
-        )
-        batch.update(parentRef, updates)
+        val parentId = request.parentId
+        val firstName = request.studentFirstName
+        val lastName = request.studentLastName
+        val proposedStopId = request.proposedStopId
 
-        // 2. Mark request as approved
-        val requestRef = db.collection("stop_requests").document(request.id)
-        batch.update(requestRef, "status", "approved")
+        db.collection("parents").document(parentId).get().addOnSuccessListener { doc ->
+            if (!doc.exists()) return@addOnSuccessListener
+            
+            val batch = db.batch()
+            val parentRef = db.collection("parents").document(parentId)
+            
+            @Suppress("UNCHECKED_CAST")
+            val docChild = doc.get("child") as? Map<String, Any>
+            if (docChild != null && docChild["firstName"] == firstName && docChild["lastName"] == lastName) {
+                batch.update(parentRef, "child.stop", proposedStopId)
+                batch.update(parentRef, "child.lastStopApproved", Timestamp.now())
+            } else {
+                @Suppress("UNCHECKED_CAST")
+                val childrenList = doc.get("children") as? List<Map<String, Any>>
+                val newList = childrenList?.map { c ->
+                    if (c["firstName"] == firstName && c["lastName"] == lastName) {
+                        val mutableChild = c.toMutableMap()
+                        mutableChild["stop"] = proposedStopId
+                        mutableChild["lastStopApproved"] = Timestamp.now()
+                        mutableChild
+                    } else c
+                }
+                if (newList != null) {
+                    batch.update(parentRef, "children", newList)
+                }
+            }
+            
+            // Mark request as approved
+            val requestRef = db.collection("stop_requests").document(request.id)
+            batch.update(requestRef, "status", "approved")
 
-        batch.commit().addOnSuccessListener {
-            Toast.makeText(requireContext(), "Pickup stop updated and locked for 30 days", Toast.LENGTH_SHORT).show()
-            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            batch.commit().addOnSuccessListener {
+                sendNotificationToParent(true)
+                Toast.makeText(requireContext(), "Pickup stop updated and locked for 30 days", Toast.LENGTH_SHORT).show()
+                (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to approve request", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun rejectRequest() {
         db.collection("stop_requests").document(request.id).update("status", "rejected").addOnSuccessListener {
+            sendNotificationToParent(false)
             Toast.makeText(requireContext(), "Request rejected", Toast.LENGTH_SHORT).show()
             (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
         }
+    }
+
+    private fun sendNotificationToParent(isApproved: Boolean) {
+        val type = "Bus Stop Update"
+        val statusText = if (isApproved) "APPROVED" else "REJECTED"
+        val title = "$type $statusText"
+        val message = if (isApproved) 
+            "Your request to update your child's bus stop has been approved."
+        else 
+            "Your request to update your child's bus stop has been rejected. Please contact support for more information."
+
+        val notifData = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "timestamp" to FieldValue.serverTimestamp(),
+            "isRead" to false,
+            "type" to "approval_status"
+        )
+        
+        db.collection("parents").document(request.parentId).collection("notifications").add(notifData)
+        NotificationSender.sendNotification(request.parentId, title, message)
     }
 }

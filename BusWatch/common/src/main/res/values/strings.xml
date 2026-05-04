@@ -3,20 +3,22 @@
     <!-- App General & Common UI Components -->
     <string name="app_name">BusWatch</string>
     <string name="buswatch">BusWatch</string>
+    <string name="buswatch_caps">BUSWATCH</string>
     <string name="buswatch_logo">BusWatch Logo</string>
     <string name="bus">Bus</string>
     <string name="watch">Watch</string>
     <string name="menu">Menu</string>
     <string name="todo">TODO</string>
     <string name="back">Back</string>
-    <string name="back_button">BACK</string>
+    <string name="back_button">Back</string>
     <string name="back_caps">BACK</string>
-    <string name="next">NEXT</string>
+    <string name="next">Next</string>
+    <string name="next_caps">NEXT</string>
     <string name="save">Save</string>
     <string name="save_caps">SAVE</string>
     <string name="save_changes_caps">SAVE CHANGES</string>
     <string name="cancel">@android:string/cancel</string>
-    <string name="cancel_caps">@android:string/cancel</string>
+    <string name="cancel_caps">CANCEL</string>
     <string name="confirm_caps">CONFIRM</string>
     <string name="continue_caps">CONTINUE</string>
     <string name="confirmation">Confirmation</string>
@@ -34,6 +36,7 @@
     <string name="search_hint">Search&#8230;</string>
     <string name="all">All</string>
     <string name="unread">Unread</string>
+    <string name="read">Read</string>
     <string name="edit">Edit</string>
     <string name="edit_pencil">✎ Edit</string>
     <string name="view">View</string>
@@ -42,12 +45,13 @@
     <string name="photo_required">* Photo Required</string>
     <string name="info">Info</string>
     <string name="delete">Delete</string>
+    <string name="delete_caps">DELETE</string>
     <string name="archive">Archive</string>
     <string name="restore">Restore</string>
     <string name="status">Status</string>
     <string name="active">Active</string>
     <string name="pending">Pending</string>
-    <string name="approved">APPROVED</string>
+    <string name="approved">Approved</string>
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
     <string name="reject_caps">REJECT</string>
@@ -59,6 +63,29 @@
     <string name="message_goes_here">Message goes here</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
+    <string name="help">Help</string>
+
+    <!-- SOS / Emergency -->
+    <string name="sos_alert_title">Send SOS Alert?</string>
+    <string name="sos_alert_message">This will notify the admin and share your current location.</string>
+    <string name="send_sos">SEND SOS</string>
+    <string name="sending_sos_alert">Sending SOS Alert...</string>
+    <string name="please_wait">Please wait.</string>
+    <string name="getting_location">Getting your\ncurrent location...</string>
+    <string name="sos_sent_success">Emergency alert sent successfully.</string>
+    <string name="sos_sent_failed">Failed to send emergency alert.</string>
+    <string name="active_emergencies">ACTIVE EMERGENCIES</string>
+    <string name="no_active_emergencies">No active emergencies</string>
+    <string name="resolve_emergency">RESOLVE</string>
+    <string name="emergency_alerts_caps">EMERGENCY ALERTS</string>
+    <string name="sos_alerts_caps">SOS ALERTS</string>
+
+    <!-- FAQ / Help Strings -->
+    <string name="ride_options_faq_title">Ride Options Guide</string>
+    <string name="round_trip_desc"><b>Round Trip:</b> Bus service both ways (Home to School and School to Home).</string>
+    <string name="morning_only_desc"><b>Morning Only:</b> Bus picks up at home. Parent picks up from school.</string>
+    <string name="afternoon_only_desc"><b>Afternoon Only:</b> Parent drops off at school. Bus brings child home.</string>
+    <string name="not_riding_desc"><b>Not Riding:</b> Temporary cancellation (e.g., vacation or private transport).</string>
 
     <!-- Pagination & Navigation Icons -->
     <string name="first_page">«</string>
@@ -128,6 +155,8 @@
     <string name="country_code_ph">+63</string>
     <string name="phone_hint">912 345 6789</string>
     <string name="enter_contact_full_name">Enter contact full name</string>
+    <string name="agree_to_terms_and_privacy">I agree to the Terms and Conditions and Privacy Policy</string>
+    <string name="please_agree_to_terms">Please agree to the Terms and Conditions and Privacy Policy to continue</string>
 
     <!-- Parent Home & Main Navigation -->
     <string name="home">Home</string>
@@ -152,6 +181,7 @@
     <!-- Student & Medical Details -->
     <string name="student">Student</string>
     <string name="student_details">Student Details</string>
+    <string name="parent_details_caps">PARENT DETAILS</string>
     <string name="student_name_label">Student Name</string>
     <string name="student_id">Student ID</string>
     <string name="student_id_se2024001"><![CDATA[Student ID: SE2024001]]></string>
@@ -161,7 +191,7 @@
     <string name="section_grade">Section</string>
     <string name="section_label">Section</string>
     <string name="class_label">Section</string>
-    <string name="grade_1a">GRADE 1A</string>
+    <string name="grade_1a">Grade 1A</string>
     <string name="_1a">1A</string>
     <string name="school">School</string>
     <string name="the_immaculate_mother_academy_inc">The Immaculate Mother Academy Inc.</string>
@@ -175,6 +205,7 @@
     <string name="age">Age</string>
     <string name="age_years_format">%1$s years old</string>
     <string name="_6_years_old">6 years old</string>
+    <string name="total_students_caps">TOTAL STUDENTS</string>
 
     <!-- Medical Details -->
     <string name="medical_details">Medical Details</string>
@@ -235,6 +266,7 @@
     <string name="add_child_button">ADD CHILD</string>
     <string name="add_another_child">+ Add Another Child</string>
     <string name="delete_child">Delete Child</string>
+    <string name="confirm_removal">Confirm Removal</string>
     <string name="child_information">Child Information</string>
     <string name="child_information_newline">Child\nInformation</string>
     <string name="child_1">Child 1</string>
@@ -265,6 +297,7 @@
 
     <!-- Bus & Driver Information -->
     <string name="bus_details">Bus Details</string>
+    <string name="bus_details_caps">BUS DETAILS</string>
     <string name="bus_information">Bus Information</string>
     <string name="bus_number">Bus Number</string>
     <string name="bus_001">BUS–001</string>
@@ -284,6 +317,8 @@
     <string name="dl123356">DL123456</string>
     <string name="dl123456">DL123456</string>
     <string name="vehicle_type">Vehicle Type</string>
+    <string name="conductor">Conductor</string>
+    <string name="schedule_information">Schedule Information</string>
 
     <!-- Driver App Feature Strings -->
     <string name="good_morning_driver">Good morning, Driver!</string>
@@ -291,8 +326,9 @@
     <string name="students_for">Students For:</string>
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
-    <string name="start_trip">Start Trip</string>
-    <string name="end_trip">End Trip</string>
+    <string name="start_trip">START TRIP</string>
+    <string name="end_trip">END TRIP</string>
+    <string name="exit_roster">EXIT ROSTER</string>
     <string name="eta_10_mins">ETA – 10 MINS</string>
     <string name="pick_up_student">Pick up student:</string>
     <string name="_50_meters_away">50 meters away</string>
@@ -300,18 +336,31 @@
     <string name="pick_up">PICK UP</string>
     <string name="drop_off">DROP OFF</string>
     <string name="stop">Stop:</string>
+    <string name="reset_orientation">Reset Orientation</string>
+    <string name="maximize_map">Maximize Map</string>
+    <string name="calculating">Calculating...</string>
 
     <!-- Notifications -->
     <string name="notifications">Notifications</string>
+    <string name="notifications_caps">NOTIFICATIONS</string>
     <string name="no_notifications_yet">No notifications yet</string>
     <string name="temporary_route_change">Temporary route change due to road construction on Main Street</string>
     <string name="bus_arriving_soon">Bus Arrival Soon</string>
     <string name="_13hrs_ago">13hrs Ago</string>
     <string name="no_notifications_icon">No Notifications Icon</string>
+    <string name="clear_all">Clear All</string>
+    <string name="select_all">Select All</string>
+    <string name="unselect_all">Unselect All</string>
+    <string name="mark_all_read">Mark all as read</string>
+    <string name="mark_all_read_confirm_msg">Are you sure you want to mark all notifications as read?</string>
+    <string name="selected_count_format">%1$d selected</string>
+    <string name="delete_notifications_title">Delete Notifications</string>
+    <string name="delete_notifications_confirm_msg">Are you sure you want to delete %1$d notifications? This action cannot be undone.</string>
 
     <!-- Parent Profile & Settings -->
     <string name="account">Account</string>
     <string name="settings">Settings</string>
+    <string name="settings_caps">SETTINGS</string>
     <string name="parent">Parent</string>
     <string name="primary">Parent</string>
     <string name="parent_details">Parent Details</string>
@@ -329,22 +378,82 @@
     <string name="child_boarding">Child Boarding</string>
     <string name="delays">Delays</string>
     <string name="when_the_bus_leaves_the_depot">When the driver starts the trip</string>
-    <string name="when_the_bus_arrives_at_pickup_drop">When the bus arrives at home location</string>
+    <string name="when_the_bus_arrives_at_pickup_drop">When the bus arrives at school or drops off at the stop</string>
     <string name="when_your_child_boards_the_bus">When your child boards the bus</string>
     <string name="when_there_are_route_delays">When there are route delays</string>
     <string name="security">Security</string>
     <string name="change_password">Change Password</string>
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
-    <string name="logout">LOGOUT</string>
+    <string name="logout">Logout</string>
     <string name="email_label">Email</string>
     <string name="phone_label">Phone</string>
     <string name="enter_current_password">Enter current password</string>
     <string name="enter_new_password">Enter new password</string>
 
+    <!-- About & Legal -->
+    <string name="about">About Us</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_content"><![CDATA[
+        <b>Terms and Conditions for BusWatch</b><br><br>
+        Welcome to BusWatch. By using this application, you agree to the following terms and conditions connected to our student transportation tracking system:<br><br>
+
+        <b>1. Real-Time Tracking</b><br>
+        BusWatch provides real-time GPS tracking of school buses. This data is provided for the safety and convenience of parents and guardians. You agree to use this information solely for tracking your child\'s commute.<br><br>
+
+        <b>2. User Responsibilities</b><br>
+        - You must provide accurate information during registration, including your home address and emergency contacts.<br>
+        - You are responsible for maintaining the confidentiality of your account credentials.<br>
+        - You agree to notify the school or transport administrator immediately of any changes to your child\'s transportation needs.<br><br>
+
+        <b>3. Safety and SOS Alerts</b><br>
+        The SOS alert feature is intended for emergency use only. When triggered by a driver, an immediate notification will be sent to administrators and the parents of students currently on board. Misuse of the SOS system may lead to account suspension.<br><br>
+
+        <b>4. Data Privacy</b><br>
+        Your data, including location and child profiles, is stored securely using Firebase and Cloudinary services. We only collect data necessary for the operation of the BusWatch system.<br><br>
+
+        <b>5. System Limitations</b><br>
+        While we strive for 100% accuracy, GPS tracking depends on network availability and satellite signals. BusWatch is not liable for minor delays or temporary signal losses.<br><br>
+
+        <b>6. Account Approval</b><br>
+        All parent accounts are subject to administrative approval to ensure student safety. Access to the system is granted only after verification.<br><br>
+
+        By continuing to use BusWatch, you acknowledge that you have read and understood these terms.<br><br>
+        <b>Last Updated:</b> May 2, 2026<br><br>
+    ]]></string>
+    <string name="privacy_content"><![CDATA[
+        <b>Privacy Policy for BusWatch</b><br><br>
+
+        Welcome to BusWatch. We are committed to protecting your personal information and your right to privacy.<br><br>
+
+        <b>1. Location Data:</b><br>
+        We collect the bus\'s real-time location and your child\'s boarding status to provide accurate tracking. Your home location is used to calculate estimated arrival times and stop proximity alerts. This data is essential for the core functionality of the safety tracking system.<br><br>
+
+        <b>2. Personal &amp; Medical Information:</b><br>
+        Names, phone numbers, and child profile details (including photos) are used for identification and emergency contact purposes. To ensure safety during transit, we collect optional medical information such as blood type, allergies, medications, and medical conditions. This sensitive data is only visible to authorized drivers and administrators assigned to your route.<br><br>
+
+        <b>3. Emergency SOS Alerts:</b><br>
+        When an SOS alert is triggered by a driver, the system captures the bus\'s exact coordinates and immediately notifies relevant parents and administrators. This emergency data is prioritized to ensure rapid response and child safety.<br><br>
+
+        <b>4. Security &amp; Storage:</b><br>
+        We use Firebase Authentication for secure logins and Firestore for encrypted data storage. Child photos are stored securely via Cloudinary. Access to sensitive data is restricted to authorized personnel based on secure role-based permissions.<br><br>
+
+        <b>5. Third-Party Services:</b><br>
+        BusWatch utilizes Google Play Services (Maps &amp; Location) and OsmDroid to provide mapping features. These services handle location data according to their respective privacy policies.<br><br>
+
+        <b>6. Contact Us:</b><br>
+        If you have questions about this policy, or if you wish to exercise your rights regarding your data, please contact our support team at:<br>
+        Email: <a href="mailto:buswatch@gmail.com">buswatch@gmail.com</a><br><br>
+        <b>Last Updated:</b> May 2, 2026<br><br>
+    ]]></string>
+    <string name="contact_us">Contact Us</string>
+    <string name="contact_email">buswatch@gmail.com</string>
+
     <!-- Location & Maps -->
     <string name="map_locations">Map Locations</string>
     <string name="my_location">My Location</string>
+    <string name="locate_bus">Locate Bus</string>
     <string name="no_address_set">No address set</string>
     <string name="pickup_address">Home Address</string>
     <string name="enter_pickup_address">Enter home address</string>
@@ -365,6 +474,8 @@
     <string name="current_pickup_location">CURRENT HOME LOCATION</string>
     <string name="proposed_new_location">PROPOSED NEW LOCATION</string>
     <string name="kingstown_2_subdivision_caloocan_city">Kingstown 2 Subdivision, Caloocan City</string>
+    <string name="confirm_pickup_request">Confirm Pickup Request</string>
+    <string name="confirm_pickup_request_message">Are you sure you want to request a pickup at this location? This will be sent to the driver for approval.</string>
 
     <!-- Admin Dashboard & Management -->
     <string name="dashboard">DASHBOARD</string>
@@ -403,6 +514,12 @@
     <string name="save_route_caps">SAVE ROUTE</string>
     <string name="assign_stop_caps">ASSIGN STOP</string>
     <string name="assign_stop">Assign Stop</string>
+    <string name="assign_pickup_stop">Assign Pickup Stop</string>
+    <string name="assign_pickup_stop_caps">ASSIGN PICKUP STOP</string>
+    <string name="change_pickup_stop">Change Pickup Stop</string>
+    <string name="change_pickup_stop_caps">CHANGE PICKUP STOP</string>
+    <string name="request_change_stop_caps">REQUEST CHANGE</string>
+    <string name="choose_new_stop_desc">Choose a new stop. This request will be sent to the admin for approval.</string>
     <string name="stop_not_assigned_format">Stop: %s</string>
     <string name="not_assigned_label">Not Assigned</string>
     <string name="choose_conductor_optional">Choose Conductor (Optional)</string>
@@ -466,6 +583,7 @@
     <string name="language_icon" />
     <string name="security_icon" />
     <string name="medical_icon" />
+    <string name="about_icon" />
     <string name="add_photo_icon" />
     <string name="child_icon" />
 

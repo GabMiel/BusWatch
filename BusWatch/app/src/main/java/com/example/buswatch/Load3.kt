@@ -1,6 +1,7 @@
 package com.example.buswatch
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -39,6 +40,13 @@ class Load3 : AppCompatActivity() {
     }
 
     private fun navigateToLogin() {
+        // Mark onboarding as complete
+        val sharedPref = getSharedPreferences("onboarding", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("isFirstRun", false)
+            apply()
+        }
+
         val intent = Intent(this, Login::class.java)
         startActivity(intent)
         finish()

@@ -55,7 +55,7 @@ class PaginationHelper(
     }
 
     private fun showSortDialog() {
-        val options = arrayOf("A-Z", "Z-A")
+        val options = arrayOf("Ascending (A-Z)", "Descending (Z-A)")
         AlertDialog.Builder(context)
             .setTitle("Sort by $entityName")
             .setItems(options) { _, which ->
@@ -106,5 +106,11 @@ class PaginationHelper(
         btnPrev?.isEnabled = canPrev
         btnNext?.isEnabled = canNext
         btnLast?.isEnabled = canNext
+
+        // Visual feedback for disabled state
+        btnFirst?.alpha = if (canPrev) 1.0f else 0.3f
+        btnPrev?.alpha = if (canPrev) 1.0f else 0.3f
+        btnNext?.alpha = if (canNext) 1.0f else 0.3f
+        btnLast?.alpha = if (canNext) 1.0f else 0.3f
     }
 }

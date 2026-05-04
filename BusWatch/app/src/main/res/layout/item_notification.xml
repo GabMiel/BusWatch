@@ -8,17 +8,29 @@
     android:background="@drawable/bg_details_card"
     android:padding="16dp">
 
+    <CheckBox
+        android:id="@+id/cbNotification"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/ivNotificationIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/circle_shape"
         android:backgroundTint="#FFF4CC"
+        android:contentDescription="@string/notification_icon"
         android:padding="8dp"
         android:src="@drawable/bell"
-        android:contentDescription="@string/notification_icon"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cbNotification"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="0dp"
         app:tint="#FEBE1E" />
 
     <TextView
@@ -26,35 +38,35 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        tools:text="@string/bus_arriving_soon"
         android:textColor="#000000"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/tvNotificationTime"
         app:layout_constraintStart_toEndOf="@id/ivNotificationIcon"
-        app:layout_constraintTop_toTopOf="@id/ivNotificationIcon" />
+        app:layout_constraintTop_toTopOf="@id/ivNotificationIcon"
+        tools:text="@string/bus_arriving_soon" />
 
     <TextView
         android:id="@+id/tvNotificationTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/_13hrs_ago"
         android:textColor="#666666"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvNotificationTitle" />
+        app:layout_constraintTop_toTopOf="@id/tvNotificationTitle"
+        tools:text="@string/_13hrs_ago" />
 
     <TextView
         android:id="@+id/tvNotificationMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        tools:text="@string/temporary_route_change"
         android:textColor="#333333"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvNotificationTitle"
-        app:layout_constraintTop_toBottomOf="@id/tvNotificationTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvNotificationTitle"
+        tools:text="@string/temporary_route_change" />
 
     <View
         android:id="@+id/unreadIndicator"

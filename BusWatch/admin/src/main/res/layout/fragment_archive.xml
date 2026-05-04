@@ -9,6 +9,7 @@
 
     <!-- Dark Header -->
     <TextView
+        android:id="@+id/tvArchiveHeader"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/dark_header"
@@ -24,6 +25,7 @@
 
     <!-- Tab Switcher -->
     <HorizontalScrollView
+        android:id="@+id/tabScrollView"
         android:layout_width="match_parent"
         android:layout_height="38dp"
         android:layout_marginStart="16dp"

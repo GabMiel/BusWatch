@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.example.buswatch"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -31,7 +31,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
     buildFeatures {
         compose = true
         viewBinding = true
@@ -43,12 +42,16 @@ dependencies {
     implementation(project(":driver"))
     implementation(project(":admin"))
 
+    // OneSignal
+    implementation(libs.onesignal)
+
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.messaging)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -64,6 +67,7 @@ dependencies {
     
     // OpenStreetMap
     implementation(libs.osmdroid.android)
+    implementation(libs.osmbonuspack)
     implementation(libs.androidx.preference)
 
     // Cloudinary

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.admin.*
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -29,6 +30,7 @@ class StopDetailFragment : Fragment() {
     private var onBack: (() -> Unit)? = null
     private val assignedStudents = mutableListOf<AssignedStudent>()
     private var isMaximized = false
+    private var parentsListener: ListenerRegistration? = null
 
     companion object {
         fun newInstance(stop: StopAdmin, onBack: () -> Unit) = StopDetailFragment().apply {
@@ -45,7 +47,12 @@ class StopDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
         loadMap(view)
-        fetchAssignedStudents(view)
+        startParentsListener(view)
+    }
+
+    override fun onDestroyView() {
+        parentsListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -59,6 +66,7 @@ class StopDetailFragment : Fragment() {
 
         // Maximize Map Logic
         val btnMaximize = view.findViewById<ImageButton>(R.id.btnMaximizeMap)
+        val btnRecenter = view.findViewById<ImageButton>(R.id.btnRecenterStop)
         val mapContainer = view.findViewById<FrameLayout>(R.id.mapContainer)
         val mapView = view.findViewById<MapView>(R.id.mapStopView)
         
@@ -77,12 +85,17 @@ class StopDetailFragment : Fragment() {
                 mapView.controller.animateTo(GeoPoint(stop.latitude, stop.longitude)) 
             }, 200)
         }
+
+        btnRecenter?.setOnClickListener {
+            mapView?.controller?.animateTo(GeoPoint(stop.latitude, stop.longitude))
+            mapView?.controller?.setZoom(18.0)
+        }
     }
 
-    private fun getScaledDrawable(drawable: Drawable?, sizeDp: Int): Drawable? {
+    private fun getScaledDrawable(drawable: Drawable?): Drawable? {
         if (drawable == null) return null
         val density = resources.displayMetrics.density
-        val size = (sizeDp * density).toInt()
+        val size = (36 * density).toInt()
         
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -104,27 +117,27 @@ class StopDetailFragment : Fragment() {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             
             val pinDrawable = ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_red)
-            marker.icon = getScaledDrawable(pinDrawable, 36)
+            marker.icon = getScaledDrawable(pinDrawable)
 
             mapView.overlays.add(marker)
             mapView.invalidate()
         }
     }
 
-    private fun fetchAssignedStudents(view: View) {
-        // Fetch all parents and manually filter to include children in the 'children' list
-        db.collection("parents").get().addOnSuccessListener { snapshots ->
-            if (!isAdded) return@addOnSuccessListener
+    private fun startParentsListener(view: View) {
+        parentsListener?.remove()
+        parentsListener = db.collection("parents").addSnapshotListener { snapshots, e ->
+            if (e != null || snapshots == null) return@addSnapshotListener
+            if (!isAdded) return@addSnapshotListener
+
             assignedStudents.clear()
             for (doc in snapshots) {
-                // Check 'child' object
                 @Suppress("UNCHECKED_CAST")
                 val child = doc.get("child") as? Map<String, Any>
                 if (child != null && child["stop"] == stop.id) {
                     addStudentFromMap(doc.id, child)
                 }
 
-                // Check 'children' list
                 @Suppress("UNCHECKED_CAST")
                 val childrenList = doc.get("children") as? List<Map<String, Any>>
                 childrenList?.forEach { c ->

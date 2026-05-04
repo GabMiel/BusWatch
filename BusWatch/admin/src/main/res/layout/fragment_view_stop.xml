@@ -44,9 +44,12 @@
 
     <!-- Main Scrollable Content -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollStopDetail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:scrollbars="none"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerBg">
 
@@ -118,10 +121,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:background="@drawable/rectangle_hollow">
-                    <org.osmdroid.views.MapView
-                        android:id="@+id/mapStopView"
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent">
+
+                        <org.osmdroid.views.MapView
+                            android:id="@+id/mapStopView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <!-- Eye Icon - Top Right -->
+                        <ImageButton
+                            android:id="@+id/btnMaximizeMap"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="12dp"
+                            android:background="@drawable/bg_circle_white"
+                            android:elevation="4dp"
+                            android:src="@drawable/ic_eye"
+                            app:tint="@color/black"
+                            android:contentDescription="@string/view" />
+
+                        <!-- Re-center Icon - Bottom Right -->
+                        <ImageButton
+                            android:id="@+id/btnRecenterStop"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="12dp"
+                            android:background="@drawable/bg_circle_white"
+                            android:elevation="4dp"
+                            android:src="@drawable/ic_my_location"
+                            app:tint="#2196F3"
+                            android:contentDescription="@string/my_location" />
+
+                    </RelativeLayout>
                 </FrameLayout>
 
             </LinearLayout>
@@ -141,8 +179,7 @@
                     android:layout_marginBottom="16dp">
                     <TextView
                         android:id="@+id/tvAssignedTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/assigned_students"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -152,8 +189,7 @@
 
                     <TextView
                         android:id="@+id/tvStopStudentCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="0 Students"
                         android:textColor="@color/gray_text"
                         android:textSize="12sp"

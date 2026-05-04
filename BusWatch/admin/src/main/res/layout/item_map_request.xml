@@ -16,13 +16,15 @@
         android:background="?attr/selectableItemBackground">
 
         <ImageView
+            android:id="@+id/imgAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_my_location"
             android:background="@drawable/bg_avatar_circle"
             android:padding="12dp"
             app:tint="@color/yellow_dark"
-            android:contentDescription="@string/map_locations"/>
+            android:contentDescription="@string/map_locations"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="0dp"

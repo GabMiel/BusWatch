@@ -1,7 +1,6 @@
 package com.example.buswatch
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +12,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +19,7 @@ import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import java.util.Calendar
 import java.util.Locale
 
@@ -31,10 +30,12 @@ class HomeFragment : Fragment() {
     private lateinit var tvNoStudents: TextView
     private lateinit var rvStudentsHome: RecyclerView
     private lateinit var btnPickUp: TextView
+    private lateinit var viewNotificationBadge: View
     
     private var parentStatus: String = "pending"
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var timeRunnable: Runnable
+    private var notificationListener: ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +47,7 @@ class HomeFragment : Fragment() {
         db = FirebaseFirestore.getInstance()
 
         val btnHomeNotification = view.findViewById<ImageButton>(R.id.btnHomeNotification)
+        viewNotificationBadge = view.findViewById(R.id.viewNotificationBadge)
         rvStudentsHome = view.findViewById(R.id.rvStudentsHome)
         progressBar = view.findViewById(R.id.progressBarHome)
         tvNoStudents = view.findViewById(R.id.tvNoStudents)
@@ -59,12 +61,13 @@ class HomeFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val greetingPrefix = when (hour) {
-            in 0..11 -> getString(CommonR.string.good_morning_driver).substringBefore(",")
+            in 0..11 -> "Good Morning"
             in 12..16 -> "Good Afternoon"
             else -> "Good Evening"
         }
 
         fetchUserData(greetingPrefix, tvGreeting)
+        setupNotificationBadge()
 
         btnPickUp.setOnClickListener {
             if (parentStatus.lowercase() == "approved") {
@@ -72,17 +75,14 @@ class HomeFragment : Fragment() {
                 if (adapter != null) {
                     val currentStudents = adapter.getStudents()
                     
-                    val missingStop = currentStudents.any { it.stop == "Not assigned" || it.stop.isEmpty() }
-                    
-                    if (missingStop) {
-                        Toast.makeText(requireContext(), "Please ensure all children have an assigned stop first.", Toast.LENGTH_LONG).show()
-                        return@setOnClickListener
-                    }
-
-                    // Build detailed confirmation message with categorization
                     val message = StringBuilder("Are you sure you want to proceed with the following ride options?\n\n")
                     
-                    val categories = listOf("Morning Trip", "Afternoon Trip", "Not Riding")
+                    val categories = listOf(
+                        "Round Trip (Morning & Afternoon)", 
+                        "Morning Only (Home to School)", 
+                        "Afternoon Only (School to Home)", 
+                        "Not Riding"
+                    )
                     categories.forEach { category ->
                         val matching = currentStudents.filter { it.rideOption == category }
                         if (matching.isNotEmpty()) {
@@ -92,15 +92,7 @@ class HomeFragment : Fragment() {
                         }
                     }
 
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Confirm Pickup Request")
-                        .setMessage(message.toString().trim())
-                        .setPositiveButton("Confirm") { _, _ ->
-                            val headingToStopText = getString(CommonR.string.status_heading_to_stop)
-                            updateAllChildrenStatus(headingToStopText)
-                        }
-                        .setNegativeButton("Cancel", null)
-                        .show()
+                    showCustomConfirmDialog(message.toString().trim())
                 }
             } else {
                 Toast.makeText(requireContext(), "Account pending approval", Toast.LENGTH_SHORT).show()
@@ -108,17 +100,48 @@ class HomeFragment : Fragment() {
         }
 
         btnHomeNotification.setOnClickListener {
-            val intent = Intent(requireContext(), Notification::class.java)
-            startActivity(intent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_OPEN, CommonR.anim.slide_in_bottom, CommonR.anim.stay)
-            } else {
-                @Suppress("DEPRECATION")
-                requireActivity().overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
-            }
+            (activity as? ParentMainActivity)?.switchToNotifications()
         }
 
         return view
+    }
+
+    private fun setupNotificationBadge() {
+        val userId = auth.currentUser?.uid ?: return
+        
+        notificationListener = db.collection("parents").document(userId)
+            .collection("notifications")
+            .whereEqualTo("isRead", false)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) return@addSnapshotListener
+                
+                if (snapshots.isEmpty) {
+                    viewNotificationBadge.visibility = View.GONE
+                } else {
+                    viewNotificationBadge.visibility = View.VISIBLE
+                }
+            }
+    }
+
+    private fun showCustomConfirmDialog(message: String) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_confirm_pickup_request, null)
+        val dialog = AlertDialog.Builder(requireContext(), CommonR.style.CustomDialog)
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<TextView>(R.id.tvDialogMessage).text = message
+        
+        dialogView.findViewById<View>(R.id.btnCancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialogView.findViewById<View>(R.id.btnConfirm).setOnClickListener {
+            val headingToStopText = getString(CommonR.string.status_heading_to_stop)
+            updateAllChildrenStatus(headingToStopText)
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun updateAllChildrenStatus(newStatus: String) {
@@ -177,6 +200,7 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacks(timeRunnable)
+        notificationListener?.remove()
     }
 
     private fun fetchUserData(greetingPrefix: String, tvGreeting: TextView) {
@@ -186,7 +210,7 @@ class HomeFragment : Fragment() {
         
         db.collection("parents").document(currentUser.uid).addSnapshotListener { document, _ ->
             if (!isAdded || document == null || !document.exists()) {
-                progressBar.visibility = View.GONE
+                if (isAdded) progressBar.visibility = View.GONE
                 return@addSnapshotListener
             }
             
@@ -203,80 +227,60 @@ class HomeFragment : Fragment() {
             db.collection("stops").get().addOnSuccessListener { stopsSnapshot ->
                 if (!isAdded) return@addOnSuccessListener
                 
-                val stopsMap = stopsSnapshot.documents.associate { (it.id) to (it.getString("name") ?: "Unknown") }
+                val stopsMap = snapshotsToStopsMap(stopsSnapshot.documents)
                 
-                db.collection("routes").get().addOnSuccessListener { routesSnapshot ->
-                    if (!isAdded) return@addOnSuccessListener
-                    progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
 
-                    val studentList = mutableListOf<StudentHome>()
+                val studentList = mutableListOf<StudentHome>()
+                val addedNames = mutableSetOf<String>()
 
-                    @Suppress("UNCHECKED_CAST")
-                    val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
-                    if (childMap != null) {
-                        studentList.add(mapToStudentHome("primary", childMap, stopsMap, routesSnapshot.documents))
-                    }
-
-                    @Suppress("UNCHECKED_CAST")
-                    val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
-                    childrenList?.forEachIndexed { index, map ->
-                        studentList.add(mapToStudentHome(index.toString(), map, stopsMap, routesSnapshot.documents))
-                    }
-
-                    setupRecyclerView(studentList)
+                @Suppress("UNCHECKED_CAST")
+                val childMap = document.get("child") as? kotlin.collections.Map<String, Any>
+                if (childMap != null) {
+                    val student = mapToStudentHome("primary", childMap, stopsMap)
+                    studentList.add(student)
+                    addedNames.add(student.name)
                 }
+
+                @Suppress("UNCHECKED_CAST")
+                val childrenList = document.get("children") as? List<kotlin.collections.Map<String, Any>>
+                childrenList?.forEachIndexed { index, map ->
+                    val student = mapToStudentHome(index.toString(), map, stopsMap)
+                    if (student.name !in addedNames) {
+                        studentList.add(student)
+                        addedNames.add(student.name)
+                    }
+                }
+                
+                setupRecyclerView(studentList)
             }
         }
+    }
+    
+    private fun snapshotsToStopsMap(docs: List<DocumentSnapshot>): kotlin.collections.Map<String, String> {
+        return docs.associate { it.id to (it.getString("name") ?: "Unknown") }
     }
 
     private fun mapToStudentHome(
         id: String, 
         map: kotlin.collections.Map<String, Any>, 
-        stopsMap: kotlin.collections.Map<String, String>,
-        routeDocs: List<DocumentSnapshot>
+        stopsMap: kotlin.collections.Map<String, String>
     ): StudentHome {
         val fName = map["firstName"] as? String ?: ""
         val lName = map["lastName"] as? String ?: ""
         
         val stopId = map["stop"] as? String ?: ""
-        val stopDisplay = stopsMap[stopId] ?: if (stopId.isNotEmpty()) stopId else "Not assigned"
+        val stopDisplay = stopsMap[stopId] ?: stopId.ifEmpty { "Not assigned" }
 
-        // Find Route Schedule
-        var scheduleStr = "Schedule: Not Set"
-        if (stopId.isNotEmpty()) {
-            val assignedRoute = routeDocs.find { doc ->
-                @Suppress("UNCHECKED_CAST")
-                val stops = doc.get("stopIds") as? List<String>
-                stops?.contains(stopId) == true
-            }
-            
-            if (assignedRoute != null) {
-                val ms = assignedRoute.getString("morningStartTime") ?: ""
-                val me = assignedRoute.getString("morningEndTime") ?: ""
-                val asStart = assignedRoute.getString("afternoonStartTime") ?: ""
-                val ae = assignedRoute.getString("afternoonEndTime") ?: ""
-                
-                if (ms.isNotEmpty() && me.isNotEmpty() && asStart.isNotEmpty() && ae.isNotEmpty()) {
-                    scheduleStr = "AM: $ms-$me | PM: $asStart-$ae"
-                } else if (ms.isNotEmpty() && me.isNotEmpty()) {
-                    scheduleStr = "AM: $ms-$me"
-                } else if (asStart.isNotEmpty() && ae.isNotEmpty()) {
-                    scheduleStr = "PM: $asStart-$ae"
-                }
-            }
-        }
-        
         return StudentHome(
             id = id,
             name = "$fName $lName".trim(),
             grade = map["grade"] as? String ?: getString(CommonR.string.placeholder_hyphen),
             school = map["school"] as? String ?: getString(CommonR.string.the_immaculate_mother_academy_inc),
             status = map["status"] as? String ?: getString(CommonR.string.status_at_home),
-            avatarResId = CommonR.drawable.user,
             avatarUrl = map["childAvatarUrl"] as? String ?: map["avatarUrl"] as? String,
             stop = stopDisplay,
-            rideOption = map["rideOption"] as? String ?: "Morning Trip",
-            schedule = scheduleStr
+            rideOption = (map["rideOption"] as? String)?.takeIf { it.isNotBlank() } ?: "Round Trip (Morning & Afternoon)"
         )
     }
 
@@ -289,23 +293,12 @@ class HomeFragment : Fragment() {
             tvNoStudents.visibility = View.GONE
             rvStudentsHome.visibility = View.VISIBLE
             btnPickUp.visibility = View.VISIBLE
+            
             rvStudentsHome.layoutManager = LinearLayoutManager(requireContext())
-            
-            val isTracking = students.any { 
-                it.status == getString(CommonR.string.status_heading_to_stop) || 
-                it.status == getString(CommonR.string.status_on_board) 
-            }
-            
-            rvStudentsHome.adapter = StudentHomeAdapter(students, isTracking) { student ->
-                val intent = Intent(requireContext(), com.example.buswatch.Map::class.java)
+            rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
+                val intent = Intent(requireContext(), StudentDetailsActivity::class.java)
                 intent.putExtra("childName", student.name)
                 startActivity(intent)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_OPEN, CommonR.anim.fade_in, CommonR.anim.fade_out)
-                } else {
-                    @Suppress("DEPRECATION")
-                    requireActivity().overridePendingTransition(CommonR.anim.fade_in, CommonR.anim.fade_out)
-                }
             }
         }
     }

@@ -30,7 +30,8 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#666666" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsvStudentFields"
@@ -41,7 +42,7 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/llStudentActions"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="500dp"
+        app:layout_constraintHeight_max="450dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEditStudentTitle">
 
@@ -62,8 +63,8 @@
 
                 <FrameLayout
                     android:id="@+id/viewAvatarBg"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/bg_avatar_circle">
 
@@ -79,8 +80,8 @@
 
                 <ImageButton
                     android:id="@+id/btnChangeAvatar"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_alignEnd="@id/viewAvatarBg"
                     android:layout_alignBottom="@id/viewAvatarBg"
                     android:background="@drawable/circle_shape"
@@ -106,14 +107,15 @@
             <EditText
                 android:id="@+id/etEditStudentId"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/student_id"
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- First Name -->
             <TextView
@@ -128,14 +130,15 @@
             <EditText
                 android:id="@+id/etEditFirstName"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/first_name"
                 android:inputType="textPersonName"
                 android:autofillHints="personGivenName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Last Name -->
             <TextView
@@ -150,14 +153,15 @@
             <EditText
                 android:id="@+id/etEditLastName"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/last_name"
                 android:inputType="textPersonName"
                 android:autofillHints="personFamilyName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Middle Name and Suffix Row -->
             <LinearLayout
@@ -182,14 +186,15 @@
                     <EditText
                         android:id="@+id/etEditMiddleName"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:hint="@string/middle_name"
                         android:inputType="textPersonName"
                         android:autofillHints="personMiddleName"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColorHint="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -207,7 +212,7 @@
                     <FrameLayout
                         android:id="@+id/btnEditStudentSuffix"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="45dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:clickable="true" android:focusable="true">
@@ -274,7 +279,7 @@
             <!-- Age, Section, Grade Inputs -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal">
 
@@ -288,7 +293,8 @@
                     android:inputType="number"
                     android:autofillHints="none"
                     android:paddingHorizontal="8dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColorHint="@color/gray_text" />
 
                 <EditText
                     android:id="@+id/etEditSection"
@@ -301,7 +307,8 @@
                     android:inputType="text"
                     android:autofillHints="none"
                     android:paddingHorizontal="8dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColorHint="@color/gray_text" />
 
                 <FrameLayout
                     android:id="@+id/btnEditGrade"
@@ -326,8 +333,8 @@
                         android:textSize="14sp" />
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="center_vertical|end"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="@null"
@@ -349,14 +356,15 @@
             <EditText
                 android:id="@+id/etEditSchool"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/school"
                 android:inputType="text"
                 android:autofillHints="none"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Home Address Section -->
             <LinearLayout
@@ -391,7 +399,7 @@
                 android:id="@+id/etEditAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
+                android:minHeight="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:gravity="center_vertical"
@@ -401,7 +409,8 @@
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="8dp"
                 android:textSize="14sp"
-                android:enabled="false" />
+                android:enabled="false"
+                android:textColorHint="@color/gray_text" />
 
             <!-- Pickup Stop Section -->
             <LinearLayout
@@ -437,7 +446,7 @@
                 android:id="@+id/tvEditAssignedStop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
+                android:minHeight="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:gravity="center_vertical"
@@ -448,36 +457,6 @@
                 android:textSize="14sp"
                 android:clickable="false"
                 android:focusable="false" />
-
-            <!-- Map Section -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clMapContainer"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="12dp">
-
-                <org.osmdroid.views.MapView
-                    android:id="@+id/mapEditHome"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/white" />
-
-                <ImageButton
-                    android:id="@+id/btnEditMyLocation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="12dp"
-                    android:background="@drawable/circle_shape"
-                    android:backgroundTint="#FFFFFF"
-                    android:elevation="4dp"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_my_location"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:tint="#000000"
-                    android:contentDescription="@string/my_location" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -500,7 +479,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:text="CANCEL"
+            android:text="@string/cancel_caps"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"

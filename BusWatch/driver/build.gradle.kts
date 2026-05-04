@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
     implementation(libs.gms.play.services.maps)
+    implementation(libs.play.services.location)
     implementation(libs.google.material)
     implementation(libs.glide)
 
@@ -55,6 +56,7 @@ dependencies {
     
     // OpenStreetMap
     implementation(libs.osmdroid.android)
+    implementation(libs.osmbonuspack)
     implementation(libs.androidx.preference)
 
     // Firebase

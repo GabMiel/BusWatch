@@ -772,17 +772,17 @@
                 app:tint="#888888" />
         </FrameLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignup1Next"
             android:layout_width="0dp"
             android:layout_height="54dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/soft_corner"
-            android:backgroundTint="#000000"
-            android:text="@string/next"
+            android:text="@string/next_caps"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:backgroundTint="#FEBE1E"
+            app:cornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/btnSignup1Language" />

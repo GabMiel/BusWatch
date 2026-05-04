@@ -52,46 +52,68 @@ class BusDetailFragment : Fragment() {
         val tvDPhone = view.findViewById<TextView>(R.id.tvDriverPhone)
         val imgDriver = view.findViewById<ImageView>(R.id.imgDriver)
 
+        // 1. Load Bus Details
         db.collection("buses").document(bus.id).get().addOnSuccessListener { doc ->
             if (doc == null || !doc.exists()) return@addOnSuccessListener
             
-            val busNum = doc.getString("busNumber") ?: "N/A"
-            val status = doc.getString("status") ?: "Active"
-            val capacity = doc.getString("capacity") ?: doc.getLong("capacity")?.toString() ?: "N/A"
-            val plate = doc.getString("plateNumber") ?: "N/A"
-            val type = doc.getString("vehicleType") ?: "N/A"
+            tvBusNum.text = doc.getString("busNumber") ?: "N/A"
+            tvStatus.text = doc.getString("status") ?: "Active"
+            tvCap.text = doc.get("capacity")?.toString() ?: "N/A"
+            tvPlate.text = doc.getString("plateNumber") ?: "N/A"
+            tvType.text = doc.getString("vehicleType") ?: "N/A"
             
-            tvBusNum.text = busNum
-            tvStatus.text = status
-            tvCap.text = capacity
-            tvPlate.text = plate
-            tvType.text = type
-            
-            val driverId = doc.getString("driverId")
-            if (driverId != null && driverId.isNotEmpty()) {
-                db.collection("drivers").document(driverId).get().addOnSuccessListener { dDoc ->
-                    if (dDoc.exists()) {
-                        val first = dDoc.getString("firstName") ?: ""
-                        val last = dDoc.getString("lastName") ?: ""
-                        tvDName.text = getString(CommonR.string.name_format, first, last)
-                        tvDPhone.text = dDoc.getString("phone") ?: getString(R.string.no_phone)
-                        
-                        val photoUrl = dDoc.getString("driverAvatar") ?: dDoc.getString("profilePhoto")
-                        if (!photoUrl.isNullOrEmpty() && imgDriver != null) {
-                            Glide.with(this).load(photoUrl)
-                                .placeholder(CommonR.drawable.ic_person_placeholder)
-                                .circleCrop()
-                                .into(imgDriver)
+            // 2. Find Assigned Driver via Routes
+            // In your system, the driver is linked to the bus through a Route.
+            db.collection("routes")
+                .whereEqualTo("busId", bus.id)
+                .whereEqualTo("status", "Active")
+                .limit(1)
+                .get()
+                .addOnSuccessListener { routeSnapshots ->
+                    if (!routeSnapshots.isEmpty) {
+                        val routeDoc = routeSnapshots.documents[0]
+                        val driverId = routeDoc.getString("driverId")
+                        if (!driverId.isNullOrEmpty()) {
+                            fetchDriverDetails(driverId, tvDName, tvDPhone, imgDriver)
+                        } else {
+                            showNoDriver(tvDName, tvDPhone)
                         }
                     } else {
-                        tvDName.text = getString(R.string.no_driver_assigned)
-                        tvDPhone.text = getString(CommonR.string.placeholder_hyphen)
+                        // Fallback: check if driverId is directly on the bus document
+                        val directDriverId = doc.getString("driverId")
+                        if (!directDriverId.isNullOrEmpty()) {
+                            fetchDriverDetails(directDriverId, tvDName, tvDPhone, imgDriver)
+                        } else {
+                            showNoDriver(tvDName, tvDPhone)
+                        }
                     }
                 }
+        }
+    }
+
+    private fun fetchDriverDetails(driverId: String, tvName: TextView, tvPhone: TextView, imgAvatar: ImageView?) {
+        db.collection("drivers").document(driverId).get().addOnSuccessListener { dDoc ->
+            if (dDoc.exists()) {
+                val first = dDoc.getString("firstName") ?: ""
+                val last = dDoc.getString("lastName") ?: ""
+                tvName.text = getString(CommonR.string.name_format, first, last)
+                tvPhone.text = dDoc.getString("phone") ?: "No phone listed"
+                
+                val photoUrl = dDoc.getString("driverAvatar") ?: dDoc.getString("profilePhoto")
+                if (!photoUrl.isNullOrEmpty() && imgAvatar != null) {
+                    Glide.with(this).load(photoUrl)
+                        .placeholder(CommonR.drawable.ic_person_placeholder)
+                        .circleCrop()
+                        .into(imgAvatar)
+                }
             } else {
-                tvDName.text = getString(R.string.no_driver_assigned)
-                tvDPhone.text = getString(CommonR.string.placeholder_hyphen)
+                showNoDriver(tvName, tvPhone)
             }
         }
+    }
+
+    private fun showNoDriver(tvName: TextView, tvPhone: TextView) {
+        tvName.text = getString(R.string.no_driver_assigned)
+        tvPhone.text = getString(CommonR.string.placeholder_hyphen)
     }
 }

@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.buswatch.admin.AdminHome
@@ -26,6 +27,9 @@ import com.example.buswatch.admin.R
 import com.example.buswatch.admin.RouteAdmin
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -50,7 +54,7 @@ class RouteEditFragment : Fragment() {
     private var afternoonStartTime: String = ""
     private var afternoonEndTime: String = ""
     
-    private var routePolyline: Polyline? = null
+    private var roadPolyline: Polyline? = null
     private val allMarkers = mutableMapOf<String, Marker>()
 
     companion object {
@@ -134,11 +138,6 @@ class RouteEditFragment : Fragment() {
             }
             false
         }
-
-        routePolyline = Polyline(mapRoutePicker)
-        routePolyline?.outlinePaint?.color = Color.parseColor("#4A90E2")
-        routePolyline?.outlinePaint?.strokeWidth = 8f
-        mapRoutePicker.overlays.add(routePolyline)
 
         setupAllStopsMarkers(mapRoutePicker, tvStopsCount)
 
@@ -226,11 +225,13 @@ class RouteEditFragment : Fragment() {
                 // Fetch Names for display
                 selectedDriverId?.let { id -> 
                     db.collection("drivers").document(id).get().addOnSuccessListener { 
+                        if (!isAdded) return@addOnSuccessListener
                         view.findViewById<TextView>(R.id.tvSelectedDriver).text = "${it.getString("firstName")} ${it.getString("lastName")}" 
                     } 
                 }
                 selectedBusId?.let { id -> 
                     db.collection("buses").document(id).get().addOnSuccessListener { 
+                        if (!isAdded) return@addOnSuccessListener
                         view.findViewById<TextView>(R.id.tvSelectedBus).text = it.getString("busNumber")
                         val busDocCapacity = (it.get("capacity") as? Number)?.toInt()
                         if (busDocCapacity != null) {
@@ -241,6 +242,7 @@ class RouteEditFragment : Fragment() {
                 }
                 selectedConductorId?.let { id -> 
                     db.collection("conductors").document(id).get().addOnSuccessListener { 
+                        if (!isAdded) return@addOnSuccessListener
                         view.findViewById<TextView>(R.id.tvSelectedConductor).text = "${it.getString("firstName")} ${it.getString("lastName")}" 
                     } 
                 }
@@ -253,6 +255,7 @@ class RouteEditFragment : Fragment() {
 
     private fun setupAllStopsMarkers(map: MapView, countTarget: TextView) {
         db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val unselectedIcon = getScaledDrawable(ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker), 36, 36)
             val selectedIcon = getScaledDrawable(ContextCompat.getDrawable(requireContext(), CommonR.drawable.ic_stop_marker_red), 48, 48)
 
@@ -273,6 +276,10 @@ class RouteEditFragment : Fragment() {
                         selectedStopIds.remove(stopId)
                         m.icon = unselectedIcon
                     } else {
+                        if (selectedStopIds.size >= 10) {
+                            Toast.makeText(requireContext(), "Maximum of 10 stops reached for demo", Toast.LENGTH_SHORT).show()
+                            return@setOnMarkerClickListener true
+                        }
                         selectedStopIds.add(stopId)
                         m.icon = selectedIcon
                     }
@@ -286,8 +293,44 @@ class RouteEditFragment : Fragment() {
     }
 
     private fun updateRouteLine(map: MapView, countTarget: TextView) {
-        val points = selectedStopIds.mapNotNull { allMarkers[it]?.position }
-        routePolyline?.setPoints(points)
+        val waypoints = ArrayList<GeoPoint>()
+        selectedStopIds.forEach { stopId ->
+            allMarkers[stopId]?.let { waypoints.add(it.position) }
+        }
+
+        if (waypoints.size < 2) {
+            roadPolyline?.let { map.overlays.remove(it) }
+            roadPolyline = null
+            map.invalidate()
+            countTarget.text = "Selected: ${selectedStopIds.size} stops"
+            return
+        }
+
+        Thread {
+            try {
+                if (!isAdded) return@Thread
+                val roadManager = OSRMRoadManager(requireContext(), "BusWatch/1.0")
+                val road = roadManager.getRoad(waypoints)
+                
+                if (road.mStatus == Road.STATUS_OK) {
+                    val newPolyline = RoadManager.buildRoadOverlay(road)
+                    newPolyline.outlinePaint.color = "#4A90E2".toColorInt()
+                    newPolyline.outlinePaint.strokeWidth = 10f
+
+                    activity?.runOnUiThread {
+                        if (isAdded) {
+                            roadPolyline?.let { map.overlays.remove(it) }
+                            roadPolyline = newPolyline
+                            map.overlays.add(0, roadPolyline)
+                            map.invalidate()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
+
         countTarget.text = "Selected: ${selectedStopIds.size} stops"
         
         // Refresh markers icons state
@@ -296,12 +339,11 @@ class RouteEditFragment : Fragment() {
         allMarkers.forEach { (id, marker) ->
             marker.icon = if (selectedStopIds.contains(id)) selectedIcon else unselectedIcon
         }
-        
-        map.invalidate()
     }
 
     private fun showDriverPicker(target: TextView) {
         db.collection("drivers").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val items = snapshots.map { "${it.getString("firstName")} ${it.getString("lastName")}" }.toTypedArray()
             val ids = snapshots.map { it.id }
             AlertDialog.Builder(requireContext()).setTitle("Select Driver").setItems(items) { _, which ->
@@ -313,6 +355,7 @@ class RouteEditFragment : Fragment() {
 
     private fun showBusPicker(target: TextView, capacityTarget: TextView) {
         db.collection("buses").whereEqualTo("status", "Active").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val items = snapshots.map { it.getString("busNumber") ?: "N/A" }.toTypedArray()
             val docs = snapshots.documents
             AlertDialog.Builder(requireContext()).setTitle("Select Bus").setItems(items) { _, which ->
@@ -327,6 +370,7 @@ class RouteEditFragment : Fragment() {
 
     private fun showConductorPicker(target: TextView) {
         db.collection("conductors").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
+            if (!isAdded) return@addOnSuccessListener
             val items = snapshots.map { "${it.getString("firstName")} ${it.getString("lastName")}" }.toTypedArray()
             val ids = snapshots.map { it.id }
             AlertDialog.Builder(requireContext()).setTitle("Select Conductor").setItems(items) { _, which ->

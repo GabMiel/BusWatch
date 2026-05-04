@@ -8,14 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buswatch.admin.*
+import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.io.Serializable
@@ -51,20 +54,14 @@ class ArchiveFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutRes = when (currentTab) {
-            AdminHome.ArchiveTab.PARENTS -> R.layout.fragment_archive
-            AdminHome.ArchiveTab.DRIVERS -> R.layout.fragment_driver_archive
-            AdminHome.ArchiveTab.CONDUCTORS -> R.layout.fragment_conductor_archive
-            AdminHome.ArchiveTab.BUS -> R.layout.fragment_bus_archive
-            AdminHome.ArchiveTab.STOPS -> R.layout.fragment_stop_archive
-            AdminHome.ArchiveTab.ROUTES -> R.layout.fragment_route_archive
-        }
-        return inflater.inflate(layoutRes, container, false)
+        // Use a single layout for all tabs to maintain HorizontalScrollView state
+        return inflater.inflate(R.layout.fragment_archive, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
+        updateTabUI()
         fetchData()
     }
 
@@ -130,7 +127,74 @@ class ArchiveFragment : Fragment() {
     }
 
     private fun switchTab(tab: AdminHome.ArchiveTab) {
-        (requireActivity() as? AdminHome)?.replaceFragment(newInstance(tab))
+        if (currentTab == tab) return
+        currentTab = tab
+        currentPage = 1
+        searchQuery = ""
+        view?.findViewById<EditText>(R.id.searchArchived)?.setText("")
+        updateTabUI()
+        fetchData()
+    }
+
+    private fun updateTabUI() {
+        val view = view ?: return
+        val tabs = listOf(
+            AdminHome.ArchiveTab.PARENTS to view.findViewById<TextView>(R.id.tabArchivedParents),
+            AdminHome.ArchiveTab.DRIVERS to view.findViewById<TextView>(R.id.tabArchivedDrivers),
+            AdminHome.ArchiveTab.CONDUCTORS to view.findViewById<TextView>(R.id.tabArchivedConductors),
+            AdminHome.ArchiveTab.BUS to view.findViewById<TextView>(R.id.tabArchivedBus),
+            AdminHome.ArchiveTab.STOPS to view.findViewById<TextView>(R.id.tabArchivedStops),
+            AdminHome.ArchiveTab.ROUTES to view.findViewById<TextView>(R.id.tabArchivedRoutes)
+        )
+
+        tabs.forEach { (tab, textView) ->
+            if (textView == null) return@forEach
+            if (tab == currentTab) {
+                textView.setBackgroundResource(CommonR.drawable.bg_tab_active)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), CommonR.color.black))
+                textView.setTypeface(null, android.graphics.Typeface.BOLD)
+
+                // Scroll to selected tab to make it "movable" and "sticky"
+                view.findViewById<HorizontalScrollView>(R.id.tabScrollView)?.post {
+                    val scrollX = textView.left - (view.findViewById<HorizontalScrollView>(R.id.tabScrollView).width / 2) + (textView.width / 2)
+                    view.findViewById<HorizontalScrollView>(R.id.tabScrollView).smoothScrollTo(scrollX, 0)
+                }
+            } else {
+                textView.setBackgroundResource(CommonR.drawable.bg_tab_inactive)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), CommonR.color.gray_text))
+                textView.setTypeface(null, android.graphics.Typeface.NORMAL)
+            }
+        }
+
+        // Update Header and Search Hint
+        val header = view.findViewById<TextView>(R.id.tvArchiveHeader)
+        val search = view.findViewById<EditText>(R.id.searchArchived)
+        when (currentTab) {
+            AdminHome.ArchiveTab.PARENTS -> {
+                header?.text = "ARCHIVED PARENTS"
+                search?.hint = "Search archived parents..."
+            }
+            AdminHome.ArchiveTab.DRIVERS -> {
+                header?.text = "ARCHIVED DRIVERS"
+                search?.hint = "Search archived drivers..."
+            }
+            AdminHome.ArchiveTab.CONDUCTORS -> {
+                header?.text = "ARCHIVED CONDUCTORS"
+                search?.hint = "Search archived conductors..."
+            }
+            AdminHome.ArchiveTab.BUS -> {
+                header?.text = "ARCHIVED BUSES"
+                search?.hint = "Search archived buses..."
+            }
+            AdminHome.ArchiveTab.STOPS -> {
+                header?.text = "ARCHIVED STOPS"
+                search?.hint = "Search archived stops..."
+            }
+            AdminHome.ArchiveTab.ROUTES -> {
+                header?.text = "ARCHIVED ROUTES"
+                search?.hint = "Search archived routes..."
+            }
+        }
     }
 
     private fun fetchData() {
@@ -268,7 +332,7 @@ class ArchiveFragment : Fragment() {
                     fetchData() 
                 } },
                 onDeleteClick = { stop -> showDeleteConfirmation { (requireActivity() as? AdminHome)?.deleteStopInternal(stop); fetchData() } },
-                onViewClick = { (requireActivity() as? AdminHome)?.showStopDetailInternal(it) { switchTab(AdminHome.ArchiveTab.STOPS) } }
+                onViewClick = { (requireActivity() as? AdminHome)?.showStopDetailInternal(it) { fetchData() } }
             )
             updatePaginationUI()
         }
@@ -276,8 +340,21 @@ class ArchiveFragment : Fragment() {
 
     private fun fetchRoutes() {
         db.collection("routes").whereEqualTo("status", "Archived").get().addOnSuccessListener { snapshots ->
-            val allItems = snapshots.map { doc -> RouteAdmin(doc.id, doc.getString("routeName") ?: "N/A", doc.getString("busNumber") ?: "N/A", doc.getString("driverName") ?: "N/A", doc.getLong("currentCapacity")?.toInt() ?: 0, doc.getLong("maxCapacity")?.toInt() ?: 0, "Archived") }
-                .filter { it.routeName.lowercase().contains(searchQuery) }
+            val allItems = snapshots.map { doc -> 
+                RouteAdmin(
+                    id = doc.id, 
+                    routeName = doc.getString("routeName") ?: "N/A", 
+                    busNumber = doc.getString("busNumber") ?: "N/A", 
+                    driverName = doc.getString("driverName") ?: "N/A", 
+                    currentCapacity = doc.getLong("currentCapacity")?.toInt() ?: 0, 
+                    maxCapacity = doc.getLong("maxCapacity")?.toInt() ?: 0, 
+                    status = "Archived",
+                    morningStartTime = doc.getString("morningStartTime") ?: "",
+                    morningEndTime = doc.getString("morningEndTime") ?: "",
+                    afternoonStartTime = doc.getString("afternoonStartTime") ?: "",
+                    afternoonEndTime = doc.getString("afternoonEndTime") ?: ""
+                ) 
+            }.filter { it.routeName.lowercase().contains(searchQuery) }
 
             val sorted = if (sortDirection == Query.Direction.ASCENDING) allItems.sortedBy { it.routeName.lowercase() } else allItems.sortedByDescending { it.routeName.lowercase() }
             totalCount = sorted.size
@@ -289,7 +366,7 @@ class ArchiveFragment : Fragment() {
                     fetchData() 
                 } },
                 onDeleteClick = { route -> showDeleteConfirmation { (requireActivity() as? AdminHome)?.deleteRouteInternal(route); fetchData() } },
-                onViewClick = { (requireActivity() as? AdminHome)?.showRouteDetailInternal(it) { switchTab(AdminHome.ArchiveTab.ROUTES) } }
+                onViewClick = { (requireActivity() as? AdminHome)?.showRouteDetailInternal(it) { fetchData() } }
             )
             updatePaginationUI()
         }

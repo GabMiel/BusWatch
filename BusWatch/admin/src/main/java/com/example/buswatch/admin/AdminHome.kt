@@ -1,6 +1,7 @@
 package com.example.buswatch.admin
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -11,6 +12,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.buswatch.admin.fragments.*
+import com.example.buswatch.common.NotificationSender
+import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +25,8 @@ class AdminHome : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var drawerLayout: DrawerLayout
+    
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,17 +45,51 @@ class AdminHome : AppCompatActivity() {
         
         if (savedInstanceState == null) {
             replaceFragment(DashboardFragment(), false)
+            updateNavSelection(R.id.navDashboard)
         }
     }
 
     private fun setupSidebarNavigation() {
-        findViewById<LinearLayout>(R.id.navDashboard)?.setOnClickListener { replaceFragment(DashboardFragment()); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navUsers)?.setOnClickListener { replaceFragment(UsersFragment()); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navApprovals)?.setOnClickListener { loadApprovals(); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navArchive)?.setOnClickListener { loadArchive(ArchiveTab.PARENTS); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navBus)?.setOnClickListener { replaceFragment(BusesFragment()); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navRouting)?.setOnClickListener { replaceFragment(RoutingFragment()); drawerLayout.closeDrawer(GravityCompat.START) }
-        findViewById<LinearLayout>(R.id.navStops)?.setOnClickListener { replaceFragment(StopsFragment()); drawerLayout.closeDrawer(GravityCompat.START) }
+        findViewById<LinearLayout>(R.id.navDashboard)?.setOnClickListener { 
+            updateNavSelection(R.id.navDashboard)
+            replaceFragment(DashboardFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navEmergencies)?.setOnClickListener { 
+            updateNavSelection(R.id.navEmergencies)
+            replaceFragment(EmergenciesFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navUsers)?.setOnClickListener { 
+            updateNavSelection(R.id.navUsers)
+            replaceFragment(UsersFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navApprovals)?.setOnClickListener { 
+            updateNavSelection(R.id.navApprovals)
+            loadApprovals()
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navArchive)?.setOnClickListener { 
+            updateNavSelection(R.id.navArchive)
+            loadArchive(ArchiveTab.PARENTS)
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navBus)?.setOnClickListener { 
+            updateNavSelection(R.id.navBus)
+            replaceFragment(BusesFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navRouting)?.setOnClickListener { 
+            updateNavSelection(R.id.navRouting)
+            replaceFragment(RoutingFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
+        findViewById<LinearLayout>(R.id.navStops)?.setOnClickListener { 
+            updateNavSelection(R.id.navStops)
+            replaceFragment(StopsFragment())
+            drawerLayout.closeDrawer(GravityCompat.START) 
+        }
         findViewById<LinearLayout>(R.id.navLogout)?.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, Class.forName("com.example.buswatch.Login"))
@@ -58,6 +97,39 @@ class AdminHome : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun updateNavSelection(selectedId: Int) {
+        val navItems = listOf(
+            R.id.navDashboard, R.id.navEmergencies, R.id.navUsers,
+            R.id.navApprovals, R.id.navArchive, R.id.navBus,
+            R.id.navRouting, R.id.navStops
+        )
+        navItems.forEach { id ->
+            findViewById<View>(id)?.isSelected = (id == selectedId)
+        }
+    }
+
+    fun playSOSAlarm() {
+        try {
+            if (mediaPlayer == null) {
+                mediaPlayer = MediaPlayer.create(this, CommonR.raw.sos_alarm)
+                mediaPlayer?.isLooping = true
+            }
+            if (mediaPlayer?.isPlaying == false) {
+                mediaPlayer?.start()
+            }
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    fun stopSOSAlarm() {
+        try {
+            mediaPlayer?.let {
+                if (it.isPlaying) it.stop()
+                it.release()
+            }
+            mediaPlayer = null
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
@@ -72,7 +144,7 @@ class AdminHome : AppCompatActivity() {
     // --- Navigation Helper Methods ---
 
     fun showSortOptions(title: String, onSelected: (Query.Direction) -> Unit) {
-        val options = arrayOf("A-Z", "Z-A")
+        val options = arrayOf("Ascending (A-Z)", "Descending (Z-A)")
         AlertDialog.Builder(this).setTitle("Sort $title").setItems(options) { _, which ->
             onSelected(if (which == 0) Query.Direction.ASCENDING else Query.Direction.DESCENDING)
         }.show()
@@ -143,6 +215,10 @@ class AdminHome : AppCompatActivity() {
     
     fun showMapApprovalDetail(request: MapRequest) {
         replaceFragment(MapApprovalDetailFragment.newInstance(request))
+    }
+
+    fun showStopApprovalDetail(request: StopRequest) {
+        replaceFragment(StopApprovalDetailFragment.newInstance(request))
     }
 
     fun showAddNewRouteDialogInternal() {
@@ -218,6 +294,7 @@ class AdminHome : AppCompatActivity() {
         )
         
         db.collection("parents").document(userId).collection("notifications").add(notifData)
+        NotificationSender.sendNotification(userId, title, message)
     }
 
     fun restoreUserInternal(user: UserAdmin) = db.collection("parents").document(user.id).update("status", "approved")
@@ -239,6 +316,11 @@ class AdminHome : AppCompatActivity() {
     fun deleteBusInternal(bus: BusAdmin) = db.collection("buses").document(bus.id).delete()
     fun deleteStopInternal(stop: StopAdmin) = db.collection("stops").document(stop.id).delete()
     fun deleteRouteInternal(route: RouteAdmin) = db.collection("routes").document(route.id).delete()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopSOSAlarm()
+    }
 
     enum class ArchiveTab { PARENTS, DRIVERS, CONDUCTORS, BUS, STOPS, ROUTES }
 }

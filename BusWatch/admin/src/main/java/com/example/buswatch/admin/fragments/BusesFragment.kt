@@ -133,9 +133,22 @@ class BusesFragment : Fragment() {
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
         view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $maxPage"
         
-        view.findViewById<View>(R.id.btnPrevPage)?.isEnabled = currentPage > 1
-        view.findViewById<View>(R.id.btnFirstPage)?.isEnabled = currentPage > 1
-        view.findViewById<View>(R.id.btnNextPage)?.isEnabled = currentPage < maxPage
-        view.findViewById<View>(R.id.btnLastPage)?.isEnabled = currentPage < maxPage
+        val btnPrev = view.findViewById<View>(R.id.btnPrevPage)
+        val btnFirst = view.findViewById<View>(R.id.btnFirstPage)
+        val btnNext = view.findViewById<View>(R.id.btnNextPage)
+        val btnLast = view.findViewById<View>(R.id.btnLastPage)
+
+        val canPrev = currentPage > 1
+        val canNext = currentPage < maxPage
+
+        btnPrev?.isEnabled = canPrev
+        btnFirst?.isEnabled = canPrev
+        btnNext?.isEnabled = canNext
+        btnLast?.isEnabled = canNext
+
+        btnPrev?.alpha = if (canPrev) 1.0f else 0.3f
+        btnFirst?.alpha = if (canPrev) 1.0f else 0.3f
+        btnNext?.alpha = if (canNext) 1.0f else 0.3f
+        btnLast?.alpha = if (canNext) 1.0f else 0.3f
     }
 }

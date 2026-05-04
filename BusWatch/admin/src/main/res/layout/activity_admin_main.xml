@@ -30,16 +30,17 @@
                 android:src="@drawable/ic_menu"
                 android:contentDescription="@string/menu" />
 
-            <!-- Logo — loaded in code so JPG works reliably -->
+            <!-- Logo — updated to match layout_sidebar.xml -->
             <ImageView
                 android:id="@+id/logoIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="4dp"
                 android:scaleType="fitCenter"
+                android:src="@drawable/logo"
                 android:contentDescription="@string/buswatch_logo" />
 
-            <!-- "Bus" BOLD black + "Watch" normal black -->
+            <!-- "Bus" + "Watch" styled to match layout_sidebar.xml -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,19 +52,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bus"
-                    android:textColor="#000000"
-                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed-medium" />
+                    android:letterSpacing="0.05" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/watch"
-                    android:textColor="#000000"
-                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed-medium" />
+                    android:letterSpacing="0.05" />
             </LinearLayout>
 
         </LinearLayout>

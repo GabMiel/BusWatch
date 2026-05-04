@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.buswatch.common.R as CommonR
+import com.onesignal.OneSignal
 
 class Login : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -45,6 +45,7 @@ class Login : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
 
         auth.currentUser?.let {
+            OneSignal.login(it.uid)
             checkUserRole(it.uid)
         }
 
@@ -64,17 +65,12 @@ class Login : AppCompatActivity() {
             var emailInput = emailEditText.text.toString().trim()
             var passwordInput = passwordEditText.text.toString().trim()
 
-            // Handle shortcuts for admin and driver
             if (emailInput.lowercase() == "admin") {
                 emailInput = ADMIN_EMAIL
-                if (passwordInput.lowercase() == "admin") {
-                    passwordInput = ADMIN_PASSWORD
-                }
+                if (passwordInput.lowercase() == "admin") passwordInput = ADMIN_PASSWORD
             } else if (emailInput.lowercase() == "driver") {
                 emailInput = DRIVER_EMAIL
-                if (passwordInput.lowercase() == "driver") {
-                    passwordInput = DRIVER_PASSWORD
-                }
+                if (passwordInput.lowercase() == "driver") passwordInput = DRIVER_PASSWORD
             }
 
             if (emailInput.isEmpty() || passwordInput.isEmpty()) {
@@ -104,16 +100,17 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
+                        OneSignal.login(uid)
                         checkUserRole(uid)
                     }
                 } else {
-                    // If this was an admin login attempt that failed, try to create the account automatically
                     if (email == ADMIN_EMAIL && pass == ADMIN_PASSWORD) {
                         auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD)
                             .addOnCompleteListener { createTask ->
                                 if (createTask.isSuccessful) {
                                     val uid = auth.currentUser?.uid
                                     if (uid != null) {
+                                        OneSignal.login(uid)
                                         createAdminFirestoreDoc(uid)
                                         navigateBasedOnRole("admin")
                                     }
@@ -138,71 +135,41 @@ class Login : AppCompatActivity() {
             "email" to ADMIN_EMAIL,
             "status" to "approved"
         )
-        // Ensure we use the 'admin' collection as requested
         db.collection("admin").document(uid).set(adminData)
-            .addOnSuccessListener {
-                Log.d("Login", "Admin document created successfully in 'admin' collection")
-            }
-            .addOnFailureListener { e ->
-                Log.e("Login", "Failed to create admin doc: ${e.message}")
-            }
     }
 
     private fun checkUserRole(uid: String) {
-        // Master admin bypass
         if (auth.currentUser?.email == ADMIN_EMAIL) {
-            createAdminFirestoreDoc(uid) 
+            createAdminFirestoreDoc(uid)
             navigateBasedOnRole("admin")
             return
         }
 
-        // Check 'admin' collection
-        db.collection("admin").document(uid).get()
-            .addOnSuccessListener { adminDoc ->
-                if (adminDoc != null && adminDoc.exists()) {
-                    navigateBasedOnRole("admin")
-                } else {
-                    db.collection("parents").document(uid).get()
-                        .addOnSuccessListener { parentDoc ->
-                            if (parentDoc != null && parentDoc.exists()) {
-                                val role = parentDoc.getString("role") ?: "parent"
-                                navigateBasedOnRole(role)
+        db.collection("admin").document(uid).get().addOnSuccessListener { adminDoc ->
+            if (adminDoc.exists()) {
+                navigateBasedOnRole("admin")
+            } else {
+                db.collection("parents").document(uid).get().addOnSuccessListener { parentDoc ->
+                    if (parentDoc.exists()) {
+                        navigateBasedOnRole(parentDoc.getString("role") ?: "parent")
+                    } else {
+                        db.collection("drivers").document(uid).get().addOnSuccessListener { driverDoc ->
+                            if (driverDoc.exists()) {
+                                navigateBasedOnRole("driver")
                             } else {
-                                db.collection("drivers").document(uid).get()
-                                    .addOnSuccessListener { driverDoc ->
-                                        if (driverDoc != null && driverDoc.exists()) {
-                                            navigateBasedOnRole("driver")
-                                        } else {
-                                            // Check conductors collection
-                                            db.collection("conductors").document(uid).get()
-                                                .addOnSuccessListener { conductorDoc ->
-                                                    if (conductorDoc != null && conductorDoc.exists()) {
-                                                        navigateBasedOnRole("conductor")
-                                                    } else {
-                                                        navigateBasedOnRole("parent")
-                                                    }
-                                                }
-                                                .addOnFailureListener {
-                                                    navigateBasedOnRole("parent")
-                                                }
-                                        }
+                                db.collection("conductors").document(uid).get().addOnSuccessListener { conductorDoc ->
+                                    if (conductorDoc.exists()) {
+                                        navigateBasedOnRole("conductor")
+                                    } else {
+                                        navigateBasedOnRole("parent")
                                     }
-                                    .addOnFailureListener {
-                                        Toast.makeText(this, "Error fetching driver role", Toast.LENGTH_SHORT).show()
-                                        resetLoginState()
-                                    }
+                                }
                             }
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error fetching parent role", Toast.LENGTH_SHORT).show()
-                            resetLoginState()
-                        }
+                    }
                 }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error fetching admin role", Toast.LENGTH_SHORT).show()
-                resetLoginState()
-            }
+        }.addOnFailureListener { resetLoginState() }
     }
 
     private fun resetLoginState() {
@@ -214,7 +181,6 @@ class Login : AppCompatActivity() {
         val intent = when (role?.lowercase()) {
             "admin" -> Intent(this, com.example.buswatch.admin.AdminHome::class.java)
             "driver", "conductor" -> Intent(this, com.example.buswatch.driver.DriverHome::class.java)
-            "parent" -> Intent(this, ParentMainActivity::class.java)
             else -> Intent(this, ParentMainActivity::class.java)
         }
         startActivity(intent)

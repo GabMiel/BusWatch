@@ -21,16 +21,13 @@ data class StudentHome(
     val grade: String,
     val school: String,
     val status: String,
-    val avatarResId: Int,
     val avatarUrl: String? = null,
     val stop: String = "---",
-    val rideOption: String = "Round Trip",
-    val schedule: String = "Schedule: Not Set"
+    val rideOption: String = "Round Trip"
 )
 
 class StudentHomeAdapter(
     private val students: List<StudentHome>,
-    @Suppress("unused") private val isTracking: Boolean,
     private val onItemClick: (StudentHome) -> Unit
 ) : RecyclerView.Adapter<StudentHomeAdapter.ViewHolder>() {
 
@@ -47,7 +44,6 @@ class StudentHomeAdapter(
         val spinner: Spinner = view.findViewById(R.id.spinnerRideOption)
         val card: View = view.findViewById(R.id.studentCard)
         val ivArrow: ImageView = view.findViewById(R.id.ivArrowIndicator)
-        val schedule: TextView = view.findViewById(R.id.tvBusSchedule)
     }
 
     fun getStudents(): List<StudentHome> = students
@@ -64,17 +60,17 @@ class StudentHomeAdapter(
         holder.school.text = student.school
         holder.stop.text = holder.itemView.context.getString(CommonR.string.stop_not_assigned_format, student.stop)
         holder.status.text = student.status
-        holder.schedule.text = student.schedule
         
+        val defaultAvatar = CommonR.drawable.user
         if (!student.avatarUrl.isNullOrEmpty()) {
             Glide.with(holder.avatar.context)
                 .load(student.avatarUrl)
-                .placeholder(student.avatarResId)
-                .error(student.avatarResId)
+                .placeholder(defaultAvatar)
+                .error(defaultAvatar)
                 .circleCrop()
                 .into(holder.avatar)
         } else {
-            holder.avatar.setImageResource(student.avatarResId)
+            holder.avatar.setImageResource(defaultAvatar)
         }
 
         val isActive = student.status == "Heading to Stop" || student.status == "On Board"

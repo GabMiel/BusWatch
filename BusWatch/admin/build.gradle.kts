@@ -55,6 +55,7 @@ dependencies {
 
     // OSM
     implementation(libs.osmdroid.android)
+    implementation(libs.osmbonuspack)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

@@ -83,18 +83,6 @@
             tools:text="Stop: Main Gate"
             android:textColor="#444444"
             android:textSize="11sp" />
-
-        <!-- Bus Schedule Info -->
-        <TextView
-            android:id="@+id/tvBusSchedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Schedule: Not Set"
-            android:textColor="@color/accent_blue"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            tools:ignore="SmallSp" />
     </LinearLayout>
 
     <!-- Options Section -->

@@ -6,52 +6,41 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Top Status Bar & Header -->
+    <!-- Header Section -->
     <View
-        android:id="@+id/statusBarBg"
+        android:id="@+id/headerBg"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="#FEBE1E"
+        android:layout_height="85dp"
+        android:background="#2D2D2D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/headerBg"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:background="#2D2D2D"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvHeaderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/headerBg"
+        android:layout_marginTop="16dp"
+        android:text="@string/parent_details"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/headerBg">
+        app:layout_constraintTop_toTopOf="@id/headerBg" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/parent_details"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvHeaderSub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/robert_wilson"
-            android:textColor="#AAAAAA"
-            android:textSize="12sp"
-            tools:text="Robert Wilson" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvHeaderSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:textColor="#FFFFFF"
+        android:alpha="0.8"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Robert Wilson" />
 
     <!-- Main Scrollable Content -->
     <androidx.core.widget.NestedScrollView
@@ -320,6 +309,23 @@
                     app:layout_constraintTop_toBottomOf="@id/icChildren"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_details_child" />
+
+                <Button
+                    android:id="@+id/btnConfirmDeleteChildren"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rectangle_shape"
+                    android:backgroundTint="#FF4D4D"
+                    android:text="@string/confirm_removal"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/rvDetailsChildren"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Emergency Contact Card -->
@@ -353,18 +359,6 @@
                     app:layout_constraintStart_toEndOf="@id/icEmergency"
                     app:layout_constraintTop_toTopOf="@id/icEmergency" />
 
-                <ImageButton
-                    android:id="@+id/btnEmergencyEdit"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/edit"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_edit"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#666666" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDetailsContacts"
                     android:layout_width="match_parent"
@@ -378,17 +372,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <Button
-        android:id="@+id/btnConfirmDeleteChildren"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:backgroundTint="#FF4444"
-        android:text="@string/delete"
-        android:textColor="#FFFFFF"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

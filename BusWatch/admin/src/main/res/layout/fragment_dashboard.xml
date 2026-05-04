@@ -41,6 +41,83 @@
                 android:padding="12dp"
                 android:layout_marginTop="8dp">
 
+                <!-- Emergency Alerts (Priority) -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardEmergencies"
+                    android:layout_width="0dp" android:layout_height="120dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="#D32F2F"
+                    app:cardElevation="6dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <TextView
+                            android:id="@+id/tvCountEmergencies"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/count_zero" android:textColor="@color/white"
+                            android:textSize="28sp" android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="SOS ALERTS" android:textColor="@color/white"
+                            android:textSize="10sp" android:layout_marginTop="4dp"
+                            android:fontFamily="sans-serif"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Pending Parents -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardPending"
+                    android:layout_width="0dp" android:layout_height="120dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/yellow_primary"
+                    app:cardElevation="3dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <TextView
+                            android:id="@+id/tvCountPending"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/count_zero" android:textColor="@color/black"
+                            android:textSize="28sp" android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/pending_parents_caps_2" android:textColor="@color/black"
+                            android:textSize="10sp" android:layout_marginTop="4dp"
+                            android:fontFamily="sans-serif"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Total Students -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp" android:layout_height="120dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/yellow_primary"
+                    app:cardElevation="3dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <TextView
+                            android:id="@+id/tvCountStudents"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="@string/count_zero" android:textColor="@color/black"
+                            android:textSize="28sp" android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="TOTAL STUDENTS" android:textColor="@color/black"
+                            android:textSize="10sp" android:layout_marginTop="4dp"
+                            android:fontFamily="sans-serif"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
                 <!-- Total Parents -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp" android:layout_height="120dp"
@@ -183,31 +260,6 @@
                             android:fontFamily="sans-serif-condensed"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="@string/total_routes_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Pending Parents -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountPending"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/pending_parents_caps_2" android:textColor="@color/black"
                             android:textSize="10sp" android:layout_marginTop="4dp"
                             android:fontFamily="sans-serif"
                             android:textAllCaps="true"

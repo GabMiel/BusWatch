@@ -9,11 +9,15 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.R
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -56,7 +60,7 @@ class RouteMapFragment : Fragment() {
         map.controller.setZoom(14.0)
         map.controller.setCenter(GeoPoint(14.5995, 120.9842))
 
-        val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.CYAN, Color.YELLOW)
+        val colors = listOf("#4A90E2", "#E24A4A", "#4AE24A", "#E24AE2", "#4AE2E2", "#E2E24A")
         var colorIdx = 0
         allMarkers.clear()
 
@@ -65,11 +69,11 @@ class RouteMapFragment : Fragment() {
                 val routeName = doc.getString("routeName") ?: "Unknown"
                 @Suppress("UNCHECKED_CAST")
                 val stopIds = doc.get("stopIds") as? List<String> ?: emptyList()
-                val routeColor = colors[colorIdx % colors.size]
+                val routeColor = colors[colorIdx % colors.size].toColorInt()
                 colorIdx++
 
                 if (stopIds.isNotEmpty()) {
-                    val routePoints = mutableListOf<GeoPoint>()
+                    val stopPointsMap = mutableMapOf<String, GeoPoint>()
                     var loadedCount = 0
                     for (stopId in stopIds) {
                         db.collection("stops").document(stopId).get().addOnSuccessListener { stopDoc ->
@@ -77,7 +81,7 @@ class RouteMapFragment : Fragment() {
                             val lng = stopDoc.getDouble("longitude")
                             if (lat != null && lng != null) {
                                 val p = GeoPoint(lat, lng)
-                                routePoints.add(p)
+                                stopPointsMap[stopId] = p
                                 
                                 val marker = Marker(map)
                                 marker.position = p
@@ -88,18 +92,48 @@ class RouteMapFragment : Fragment() {
                                 allMarkers.add(marker)
                             }
                             loadedCount++
-                            if (loadedCount == stopIds.size && routePoints.size > 1) {
-                                val line = Polyline(map)
-                                line.setPoints(routePoints)
-                                line.outlinePaint.color = routeColor
-                                line.outlinePaint.strokeWidth = 8f
-                                map.overlays.add(line)
-                                map.invalidate()
+                            if (loadedCount == stopIds.size) {
+                                val orderedPoints = stopIds.mapNotNull { stopPointsMap[it] }
+                                if (orderedPoints.size > 1) {
+                                    drawRoadOverlay(map, orderedPoints, routeColor)
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun drawRoadOverlay(map: MapView, points: List<GeoPoint>, color: Int) {
+        Thread {
+            try {
+                val roadManager = OSRMRoadManager(requireContext(), "BusWatch/1.0")
+                val road = roadManager.getRoad(ArrayList(points))
+                
+                if (road.mStatus == Road.STATUS_OK) {
+                    val roadOverlay = RoadManager.buildRoadOverlay(road)
+                    roadOverlay.outlinePaint.color = color
+                    roadOverlay.outlinePaint.strokeWidth = 10f
+                    
+                    activity?.runOnUiThread {
+                        map.overlays.add(0, roadOverlay) // Add behind markers
+                        map.invalidate()
+                    }
+                } else {
+                    // Fallback to simple polyline if routing fails
+                    activity?.runOnUiThread {
+                        val line = Polyline(map)
+                        line.setPoints(points)
+                        line.outlinePaint.color = color
+                        line.outlinePaint.strokeWidth = 10f
+                        map.overlays.add(0, line)
+                        map.invalidate()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 }

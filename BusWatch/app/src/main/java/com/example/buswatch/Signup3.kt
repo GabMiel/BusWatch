@@ -22,6 +22,7 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.onesignal.OneSignal
 
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -317,6 +318,7 @@ class Signup3 : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
+                        OneSignal.login(uid)
                         uploadImagesToCloudinary(uid, c1Name, c1Phone, c1Relation, c2Name, c2Phone, c2Relation)
                     }
                 } else {
@@ -467,13 +469,12 @@ class Signup3 : AppCompatActivity() {
         db.collection("parents").document(uid).set(userData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Registration Successful!", Toast.LENGTH_LONG).show()
-                // Use a generic way to find the main activity if ParentMainActivity is missing or use current package
                 try {
-                    val mainIntent = Intent(this, Class.forName("${packageName}.ParentMainActivity"))
+                    val mainIntent = Intent(this, ParentMainActivity::class.java)
                     mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(mainIntent)
                 } catch (e: Exception) {
-                    // Fallback or log
+                    startActivity(Intent(this, Login::class.java))
                 }
                 finish()
             }

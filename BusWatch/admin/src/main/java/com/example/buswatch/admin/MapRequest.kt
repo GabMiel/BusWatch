@@ -12,5 +12,6 @@ data class MapRequest(
     val pendingLat: Double = 0.0,
     val pendingLng: Double = 0.0,
     val docPath: String = "",
-    val status: String = "pending"
+    val status: String = "pending",
+    val parentAvatarUrl: String = ""
 )

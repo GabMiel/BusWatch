@@ -192,12 +192,12 @@
 
         <TextView
             android:id="@+id/btnFirstPage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:gravity="center"
             android:text="«"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
@@ -205,17 +205,17 @@
 
         <TextView
             android:id="@+id/btnPrevPage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:gravity="center"
             android:text="‹"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="4dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -259,12 +259,12 @@
 
         <TextView
             android:id="@+id/btnNextPage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:gravity="center"
             android:text="›"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
@@ -272,17 +272,17 @@
 
         <TextView
             android:id="@+id/btnLastPage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:gravity="center"
             android:text="»"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="4dp"/>
     </LinearLayout>
 
 </LinearLayout>

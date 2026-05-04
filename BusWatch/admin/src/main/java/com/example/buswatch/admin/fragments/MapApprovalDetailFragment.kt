@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,7 +12,9 @@ import com.bumptech.glide.Glide
 import com.example.buswatch.admin.AdminHome
 import com.example.buswatch.admin.MapRequest
 import com.example.buswatch.admin.R
+import com.example.buswatch.common.NotificationSender
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -59,10 +62,31 @@ class MapApprovalDetailFragment : Fragment() {
                 view.findViewById<TextView>(R.id.tvParentFullName)?.text = getString(com.example.buswatch.common.R.string.name_format, profile?.get("firstName"), profile?.get("lastName"))
                 view.findViewById<TextView>(R.id.tvParentPhone)?.text = profile?.get("phone") as? String
                 
-                val avatar = profile?.get("avatarUrl") as? String
-                val imgParent = view.findViewById<android.widget.ImageView>(R.id.imgParent)
-                if (!avatar.isNullOrEmpty() && imgParent != null) {
-                    Glide.with(this).load(avatar).circleCrop().into(imgParent)
+                val parentAvatar = profile?.get("parentAvatarUrl") as? String
+                val imgParent = view.findViewById<ImageView>(R.id.imgParent)
+                if (!parentAvatar.isNullOrEmpty() && imgParent != null) {
+                    Glide.with(this).load(parentAvatar).circleCrop().into(imgParent)
+                }
+
+                // Load Student Avatar - checking primary child or list
+                @Suppress("UNCHECKED_CAST")
+                val docChild = doc.get("child") as? Map<String, Any>
+                var studentAvatarUrl = docChild?.get("childAvatarUrl") as? String
+                
+                if (studentAvatarUrl.isNullOrEmpty()) {
+                    @Suppress("UNCHECKED_CAST")
+                    val children = doc.get("children") as? List<Map<String, Any>>
+                    val child = children?.find { 
+                        val fName = it["firstName"] as? String ?: ""
+                        val lName = it["lastName"] as? String ?: ""
+                        "$fName $lName" == request.studentName 
+                    }
+                    studentAvatarUrl = child?.get("childAvatarUrl") as? String
+                }
+
+                val imgStudent = view.findViewById<ImageView>(R.id.imgStudent)
+                if (!studentAvatarUrl.isNullOrEmpty() && imgStudent != null) {
+                    Glide.with(this).load(studentAvatarUrl).circleCrop().into(imgStudent)
                 }
             }
         }
@@ -94,31 +118,77 @@ class MapApprovalDetailFragment : Fragment() {
 
     private fun approveRequest() {
         val batch = db.batch()
-        
-        // 1. Update the student's location in the parent document
         val parentRef = db.collection("parents").document(request.parentId)
-        val updates = hashMapOf<String, Any>(
-            "child.address" to request.pendingAddress,
-            "child.latitude" to request.pendingLat,
-            "child.longitude" to request.pendingLng,
-            "child.lastHomeLocationApproved" to Timestamp.now() // For 30-day lock
-        )
-        batch.update(parentRef, updates)
+        
+        db.collection("parents").document(request.parentId).get().addOnSuccessListener { doc ->
+            @Suppress("UNCHECKED_CAST")
+            val docChild = doc.get("child") as? Map<String, Any>
+            val primaryName = "${docChild?.get("firstName")} ${docChild?.get("lastName")}"
+            
+            if (primaryName == request.studentName) {
+                val updates = hashMapOf<String, Any>(
+                    "child.address" to request.pendingAddress,
+                    "child.latitude" to request.pendingLat,
+                    "child.longitude" to request.pendingLng,
+                    "child.lastHomeLocationApproved" to Timestamp.now()
+                )
+                batch.update(parentRef, updates)
+            } else {
+                @Suppress("UNCHECKED_CAST")
+                val childrenList = doc.get("children") as? List<Map<String, Any>>
+                val newList = childrenList?.map { c ->
+                    val cName = "${c["firstName"]} ${c["lastName"]}"
+                    if (cName == request.studentName) {
+                        val mutableChild = c.toMutableMap()
+                        mutableChild["address"] = request.pendingAddress
+                        mutableChild["latitude"] = request.pendingLat
+                        mutableChild["longitude"] = request.pendingLng
+                        mutableChild["lastHomeLocationApproved"] = Timestamp.now()
+                        mutableChild
+                    } else c
+                }
+                if (newList != null) {
+                    batch.update(parentRef, "children", newList)
+                }
+            }
 
-        // 2. Mark request as approved
-        val requestRef = db.collection("map_requests").document(request.id)
-        batch.update(requestRef, "status", "approved")
+            val requestRef = db.collection("map_requests").document(request.id)
+            batch.update(requestRef, "status", "approved")
 
-        batch.commit().addOnSuccessListener {
-            Toast.makeText(requireContext(), "Home location updated and locked for 30 days", Toast.LENGTH_SHORT).show()
-            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            batch.commit().addOnSuccessListener {
+                sendNotificationToParent(true)
+                Toast.makeText(requireContext(), "Home location updated and locked for 30 days", Toast.LENGTH_SHORT).show()
+                (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            }
         }
     }
 
     private fun rejectRequest() {
         db.collection("map_requests").document(request.id).update("status", "rejected").addOnSuccessListener {
+            sendNotificationToParent(false)
             Toast.makeText(requireContext(), "Request rejected", Toast.LENGTH_SHORT).show()
             (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
         }
+    }
+
+    private fun sendNotificationToParent(isApproved: Boolean) {
+        val type = "Home Address Update"
+        val statusText = if (isApproved) "APPROVED" else "REJECTED"
+        val title = "$type $statusText"
+        val message = if (isApproved) 
+            "Your request to update your child's home address has been approved."
+        else 
+            "Your request to update your child's home address has been rejected. Please contact support for more information."
+
+        val notifData = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "timestamp" to FieldValue.serverTimestamp(),
+            "isRead" to false,
+            "type" to "approval_status"
+        )
+        
+        db.collection("parents").document(request.parentId).collection("notifications").add(notifData)
+        NotificationSender.sendNotification(request.parentId, title, message)
     }
 }

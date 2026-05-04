@@ -20,6 +20,9 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -41,6 +44,7 @@ class AddRouteDialog(
     private var isMaximized = false
     private var routePolyline: Polyline? = null
     private val allMarkers = mutableMapOf<String, Marker>()
+    private var roadPolyline: Polyline? = null
 
     private var morningStartTime: String = ""
     private var morningEndTime: String = ""
@@ -232,11 +236,6 @@ class AddRouteDialog(
         map.controller.setZoom(15.0)
         map.controller.setCenter(GeoPoint(14.7566, 121.0450)) // IMA Area
 
-        routePolyline = Polyline(map)
-        routePolyline?.outlinePaint?.color = "#4A90E2".toColorInt() // Modern Blue
-        routePolyline?.outlinePaint?.strokeWidth = 8f
-        map.overlays.add(routePolyline)
-
         db.collection("stops").whereEqualTo("status", "active").get().addOnSuccessListener { snapshots ->
             // Making icons larger and more distinguishable
             val unselectedIcon = getScaledDrawable(ContextCompat.getDrawable(context, CommonR.drawable.ic_stop_marker), 36, 36)
@@ -262,11 +261,17 @@ class AddRouteDialog(
                         m.icon = unselectedIcon
                         m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     } else {
+                        // Demo Limit: Max 10 stops
+                        if (selectedStopIds.size >= 10) {
+                            Toast.makeText(context, "Maximum of 10 stops reached for demo", Toast.LENGTH_SHORT).show()
+                            return@setOnMarkerClickListener true
+                        }
+
                         selectedStopIds.add(stopId)
                         m.icon = selectedIcon
                         m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     }
-                    updateRouteLine()
+                    updateRouteLine(map)
                     countTarget.text = context.getString(R.string.selected_stops_count, selectedStopIds.size)
                     map.invalidate()
                     true
@@ -277,11 +282,42 @@ class AddRouteDialog(
         }
     }
 
-    private fun updateRouteLine() {
-        val points = selectedStopIds.mapNotNull { stopId ->
-            allMarkers[stopId]?.position
+    private fun updateRouteLine(map: MapView) {
+        val waypoints = ArrayList<GeoPoint>()
+        selectedStopIds.forEach { stopId ->
+            allMarkers[stopId]?.let { waypoints.add(it.position) }
         }
-        routePolyline?.setPoints(points)
+
+        if (waypoints.size < 2) {
+            roadPolyline?.let { map.overlays.remove(it) }
+            roadPolyline = null
+            map.invalidate()
+            return
+        }
+
+        // Run routing in background thread
+        Thread {
+            try {
+                val roadManager = OSRMRoadManager(context, "BusWatch/1.0")
+                // Use the default OSRM server
+                val road = roadManager.getRoad(waypoints)
+                
+                if (road.mStatus == Road.STATUS_OK) {
+                    val newPolyline = RoadManager.buildRoadOverlay(road)
+                    newPolyline.outlinePaint.color = "#4A90E2".toColorInt()
+                    newPolyline.outlinePaint.strokeWidth = 10f
+
+                    (context as? android.app.Activity)?.runOnUiThread {
+                        roadPolyline?.let { map.overlays.remove(it) }
+                        roadPolyline = newPolyline
+                        map.overlays.add(0, roadPolyline) // Add at bottom
+                        map.invalidate()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     private fun saveRoute(name: String, dialog: AlertDialog) {

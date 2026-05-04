@@ -6,17 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <!-- Top Status Bar -->
-    <View
-        android:id="@+id/statusBarBg"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="#FEBE1E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Header Section -->
+    <!-- Header Section (Status bar removed) -->
     <View
         android:id="@+id/headerBackground"
         android:layout_width="0dp"
@@ -24,7 +14,7 @@
         android:background="#2D2D2D"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/statusBarBg" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView20"
@@ -33,7 +23,7 @@
         android:layout_marginStart="24dp"
         android:text="@string/settings"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/headerBackground"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,11 +91,13 @@
 
                 <TextView
                     android:id="@+id/textView35"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/when_the_bus_leaves_the_depot"
                     android:textColor="#666666"
                     android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/switchBusDeparture"
                     app:layout_constraintStart_toStartOf="@+id/textView24"
                     app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
@@ -119,6 +111,41 @@
                     app:layout_constraintTop_toTopOf="@+id/textView24"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
+                <!-- Bus Arrival -->
+                <TextView
+                    android:id="@+id/tvArrivalTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/bus_arrival"
+                    android:textColor="#000000"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView35" />
+
+                <TextView
+                    android:id="@+id/tvArrivalDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/when_the_bus_arrives_at_pickup_drop"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/switchBusArrival"
+                    app:layout_constraintStart_toStartOf="@+id/tvArrivalTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/tvArrivalTitle" />
+
+                <Switch
+                    android:id="@+id/switchBusArrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvArrivalDesc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvArrivalTitle"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
                 <!-- Child Boarding -->
                 <TextView
                     android:id="@+id/textView30"
@@ -130,15 +157,17 @@
                     android:textSize="13sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/textView24"
-                    app:layout_constraintTop_toBottomOf="@+id/textView35" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvArrivalDesc" />
 
                 <TextView
                     android:id="@+id/textView37"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/when_your_child_boards_the_bus"
                     android:textColor="#666666"
                     android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/switchChildBoarding"
                     app:layout_constraintStart_toStartOf="@+id/textView30"
                     app:layout_constraintTop_toBottomOf="@+id/textView30" />
 
@@ -293,8 +322,7 @@
                     android:autofillHints="password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView40"
-                    tools:ignore="RtlSymmetry" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView40" />
 
                 <TextView
                     android:id="@+id/textView41"
@@ -323,8 +351,170 @@
                     android:autofillHints="password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView41"
-                    tools:ignore="RtlSymmetry" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView41" />
+
+                <TextView
+                    android:id="@+id/tvConfirmPasswordLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/confirm_password"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword3" />
+
+                <EditText
+                    android:id="@+id/editTextTextPassword4"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/rectangle_hollow_with_shadow"
+                    android:ems="10"
+                    android:hint="@string/re_enter_password"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp"
+                    android:textColorHint="#888888"
+                    android:autofillHints="password"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvConfirmPasswordLabel" />
+
+                <Button
+                    android:id="@+id/btnChangePassword"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="#F2C94C"
+                    android:text="@string/change_password"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    app:cornerRadius="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword4" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- About Section -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/rectangle_shape"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/imageViewAbout"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/about_icon"
+                    android:src="@drawable/ic_info"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewAboutTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/about"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewAbout"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewAbout"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewAbout" />
+
+                <!-- Terms Row -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layoutTerms"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewAbout">
+
+                    <TextView
+                        android:id="@+id/tvTerms"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/terms_and_conditions"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/ivChevronTerms"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/ivChevronTerms"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/right_arrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="#888888" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/dividerAbout1"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#EEEEEE"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layoutTerms" />
+
+                <!-- Privacy Row -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layoutPrivacy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerAbout1">
+
+                    <TextView
+                        android:id="@+id/tvPrivacy"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy_policy"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/ivChevronPrivacy"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/ivChevronPrivacy"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/right_arrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="#888888" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

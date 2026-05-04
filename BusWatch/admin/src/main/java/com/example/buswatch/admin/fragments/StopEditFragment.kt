@@ -14,6 +14,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -59,6 +60,7 @@ class StopEditFragment : Fragment() {
         setupUI(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupUI(view: View) {
         view.findViewById<ImageButton>(R.id.btnBackEditStop)?.setOnClickListener { 
             (requireActivity() as? AdminHome)?.loadStops()
@@ -86,6 +88,15 @@ class StopEditFragment : Fragment() {
             mapView.setMultiTouchControls(true)
             mapView.controller.setZoom(18.0)
             mapView.controller.setCenter(currentPoint)
+
+            // Handle map touch to prevent parent (NestedScrollView) from intercepting scroll events
+            mapView.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> v.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_UP -> v.performClick()
+                }
+                false
+            }
             
             // Initialize Marker with scaled red pin
             selectionMarker = Marker(mapView).apply {

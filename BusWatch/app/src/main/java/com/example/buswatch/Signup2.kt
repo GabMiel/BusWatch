@@ -12,8 +12,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
-import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -90,7 +89,12 @@ class Signup2 : AppCompatActivity() {
     private val pickAvatarLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { 
             avatarUri = it
-            Glide.with(this).load(it).circleCrop().into(ivAvatar)
+            Glide.with(this)
+                .load(it)
+                .circleCrop()
+                .placeholder(CommonR.drawable.ic_person_placeholder)
+                .error(CommonR.drawable.ic_person_placeholder)
+                .into(ivAvatar)
         }
     }
 
@@ -109,6 +113,7 @@ class Signup2 : AppCompatActivity() {
         }
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -152,6 +157,7 @@ class Signup2 : AppCompatActivity() {
         etChildConditions = findViewById(R.id.etChildConditions)
 
         val btnAddPhoto = findViewById<Button>(R.id.btnSignup2AddPhoto)
+        val avatarContainer = findViewById<FrameLayout>(R.id.view46)
         val backButton = findViewById<Button>(R.id.btnSignup2Back)
         val nextButton = findViewById<Button>(R.id.btnSignup2Next)
         val btnAddChild = findViewById<Button>(R.id.btnSignup2AddChild)
@@ -164,6 +170,15 @@ class Signup2 : AppCompatActivity() {
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
+        }
+
+        // Fix ScrollView interception
+        mapView.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> v.parent.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            false
         }
 
         setupNameWatcher(etChildFirstName, tvFirstNameWarning)
@@ -263,6 +278,7 @@ class Signup2 : AppCompatActivity() {
         loadCurrentChildData()
 
         btnAddPhoto.setOnClickListener { pickAvatarLauncher.launch("image/*") }
+        avatarContainer.setOnClickListener { pickAvatarLauncher.launch("image/*") }
 
         backButton.setOnClickListener { goBack() }
 
@@ -298,7 +314,7 @@ class Signup2 : AppCompatActivity() {
                     putExtra("childAddress", primaryChild["address"] as String)
                     
                     val uriString = primaryChild["childAvatarUri"] as? String
-                    putExtra("childAvatarUri", uriString?.toUri())
+                    putExtra("childAvatarUri", if (!uriString.isNullOrEmpty()) uriString.toUri() else null)
                     
                     putExtra("childLatitude", primaryChild["latitude"] as? Double ?: 0.0)
                     putExtra("childLongitude", primaryChild["longitude"] as? Double ?: 0.0)
@@ -451,6 +467,7 @@ class Signup2 : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        saveCurrentChildToList()
         super.onSaveInstanceState(outState)
         outState.putInt("currentIndex", currentChildIndex)
         outState.putSerializable("childrenList", childrenList)
@@ -548,11 +565,16 @@ class Signup2 : AppCompatActivity() {
             etHomeAddress.setText(child["address"] as? String ?: "")
             
             val uriString = child["childAvatarUri"] as? String
-            avatarUri = uriString?.toUri()
+            avatarUri = if (!uriString.isNullOrEmpty()) uriString.toUri() else null
             if (avatarUri != null) {
-                Glide.with(this).load(avatarUri).circleCrop().into(ivAvatar)
+                Glide.with(this)
+                    .load(avatarUri)
+                    .circleCrop()
+                    .placeholder(CommonR.drawable.ic_person_placeholder)
+                    .error(CommonR.drawable.ic_person_placeholder)
+                    .into(ivAvatar)
             } else {
-                ivAvatar.setImageResource(CommonR.drawable.child)
+                ivAvatar.setImageResource(CommonR.drawable.ic_person_placeholder)
             }
 
             selectedLatitude = child["latitude"] as? Double
@@ -607,7 +629,7 @@ class Signup2 : AppCompatActivity() {
         tvSelectedGrade.setTextColor(ContextCompat.getColor(this, CommonR.color.accessible_gray_text))
         etChildSchool.text.clear()
         etHomeAddress.text.clear()
-        ivAvatar.setImageResource(CommonR.drawable.child)
+        ivAvatar.setImageResource(CommonR.drawable.ic_person_placeholder)
         avatarUri = null
         removeMarker()
         

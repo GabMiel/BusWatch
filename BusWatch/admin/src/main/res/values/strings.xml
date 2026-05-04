@@ -19,6 +19,7 @@
     <string name="add_student">+ ADD</string>
     <string name="approvals">APPROVALS</string>
     <string name="registration">REGISTRATION</string>
+    <string name="location_tab">LOCATION</string>
     <string name="map">MAP</string>
     <string name="stops">STOPS</string>
     <string name="student_avatar">Student Avatar</string>
@@ -46,7 +47,7 @@
     <string name="save_changes">SAVE CHANGES</string>
     <string name="no_driver_assigned">No Driver Assigned</string>
     <string name="no_phone">No Phone</string>
-    <string name="parent_details">PARENT DETAILS</string>
+    <string name="parent_details">Parent Details</string>
     <string name="first_name_label">FIRST NAME</string>
     <string name="middle_name_label">MIDDLE NAME</string>
     <string name="last_name_label">LAST NAME</string>
@@ -63,4 +64,7 @@
     <string name="language_label">LANGUAGE</string>
     <string name="conductor_details">CONDUCTOR DETAILS</string>
     <string name="conductor_information">CONDUCTOR INFORMATION</string>
+    <string name="emergency_alerts_caps">EMERGENCY ALERTS</string>
+    <string name="location_change_request_title">Location Change Request</string>
+    <string name="stop_change_request_title">Stop Change Request</string>
 </resources>

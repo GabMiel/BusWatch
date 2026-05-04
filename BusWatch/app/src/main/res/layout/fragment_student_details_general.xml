@@ -72,12 +72,22 @@
                     tools:text="Justin Wilson" />
 
                 <TextView
+                    android:id="@+id/tvHeaderGradeSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#4A90E2"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:text="Grade 1 - Section A" />
+
+                <TextView
                     android:id="@+id/tvStudentId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/placeholder_hyphen"
+                    android:layout_marginTop="2dp"
                     android:textColor="#666666"
-                    android:textSize="12sp" />
+                    android:textSize="11sp"
+                    tools:text="Student ID: SE2024001" />
 
             </LinearLayout>
 
@@ -216,10 +226,11 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_button_yellow"
-                android:text="SET PICKUP STOP"
+                android:text="@string/assign_pickup_stop_caps"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:textSize="13sp"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/mapStopLocation" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
