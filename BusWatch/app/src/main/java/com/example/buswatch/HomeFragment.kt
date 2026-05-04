@@ -296,7 +296,12 @@ class HomeFragment : Fragment() {
             
             rvStudentsHome.layoutManager = LinearLayoutManager(requireContext())
             rvStudentsHome.adapter = StudentHomeAdapter(students) { student ->
-                val intent = Intent(requireContext(), StudentDetailsActivity::class.java)
+                val isActive = student.status == "Heading to Stop" || student.status == "On Board"
+                val intent = if (isActive) {
+                    Intent(requireContext(), Map::class.java)
+                } else {
+                    Intent(requireContext(), StudentDetailsActivity::class.java)
+                }
                 intent.putExtra("childName", student.name)
                 startActivity(intent)
             }

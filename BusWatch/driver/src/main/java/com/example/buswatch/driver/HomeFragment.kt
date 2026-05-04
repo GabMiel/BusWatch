@@ -1,6 +1,8 @@
 package com.example.buswatch.driver
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -114,6 +116,16 @@ class HomeFragment : Fragment() {
             .into(imgPhoto)
 
         dialogView.findViewById<View>(R.id.btnClose).setOnClickListener { dialog.dismiss() }
+        
+        dialogView.findViewById<View>(R.id.btnCallEmergency).setOnClickListener {
+            val phone = student.emergencyPhone
+            if (phone.isNotEmpty()) {
+                val intent = Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:$phone")
+                }
+                startActivity(intent)
+            }
+        }
         
         dialog.show()
     }

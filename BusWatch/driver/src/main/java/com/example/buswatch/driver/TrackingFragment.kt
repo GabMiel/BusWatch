@@ -18,8 +18,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.applyCanvas
-import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
@@ -128,7 +126,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
             if (role == "Conductor") {
                 b.mapContainer.visibility = View.GONE
                 b.btnMaximizeMap.visibility = View.GONE
-                b.btnEndTrip.setText(CommonR.string.exit_roster)
+                b.btnEndTrip.text = "EXIT ROSTER"
                 b.headerContainer.visibility = View.VISIBLE
                 b.bannerNextStop.visibility = View.GONE
                 b.tvRouteInfo.visibility = View.GONE
@@ -136,7 +134,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                 b.rosterHandle.visibility = View.GONE
                 b.rosterHeaderBar.visibility = View.VISIBLE
                 b.conductorTopSpacer.visibility = View.VISIBLE
-                b.layoutBottomInfo.setBackgroundColor("#F5F5F5".toColorInt())
+                b.layoutBottomInfo.setBackgroundColor(android.graphics.Color.parseColor("#F5F5F5"))
                 
                 val bottomParams = b.layoutBottomInfo.layoutParams as android.widget.LinearLayout.LayoutParams
                 bottomParams.height = 0
@@ -148,7 +146,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                 recyclerParams.weight = 1f
                 b.recyclerPickup.layoutParams = recyclerParams
                 
-                b.root.setBackgroundColor("#F5F5F5".toColorInt())
+                b.root.setBackgroundColor(android.graphics.Color.parseColor("#F5F5F5"))
             } else {
                 b.mapContainer.visibility = View.VISIBLE
                 b.btnMaximizeMap.visibility = View.VISIBLE
@@ -248,7 +246,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
         stopIdsList.clear()
         stopIdsList.addAll(displayStopIds)
         
-        binding.tvNextStopName.setText(CommonR.string.calculating)
+        binding.tvNextStopName.text = "Calculating..."
 
         for ((index, sid) in displayStopIds.withIndex()) {
             db.collection("stops").document(sid).get().addOnSuccessListener { sDoc ->
@@ -388,7 +386,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
         // Ensure nextStop is updated in Firestore
         viewModel.assignedRoute.value?.busId?.let { busId ->
             val nextStopId = binding.tvNextStopName.tag?.toString()
-            if (!nextStopId.isNullOrEmpty() && nextStopId != getString(CommonR.string.calculating)) {
+            if (!nextStopId.isNullOrEmpty() && nextStopId != "Calculating...") {
                 db.collection("buses").document(busId).update("nextStop", nextStopId)
             }
         }
@@ -535,12 +533,10 @@ class TrackingFragment : Fragment(), SensorEventListener {
         val density = resources.displayMetrics.density
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
-        
-        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        bitmap.applyCanvas {
-            drawable.setBounds(0, 0, width, height)
-            drawable.draw(this)
-        }
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, width, height)
+        drawable.draw(canvas)
         return bitmap.toDrawable(resources)
     }
 

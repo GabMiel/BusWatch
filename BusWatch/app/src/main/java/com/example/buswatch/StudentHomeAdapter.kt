@@ -73,20 +73,20 @@ class StudentHomeAdapter(
             holder.avatar.setImageResource(defaultAvatar)
         }
 
-        val isActive = student.status == "Heading to Stop" || student.status == "On Board"
+        // Always set the click listener so parents can view details or map
+        holder.card.setOnClickListener { onItemClick(student) }
+        holder.card.isClickable = true
+        holder.card.isEnabled = true
+
+        val status = student.status.lowercase()
+        val isActive = status == "heading to stop" || status == "on board" || status == "heading home"
         
         if (isActive) {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_light_green)
-            holder.card.setOnClickListener { onItemClick(student) }
-            holder.card.isClickable = true
-            holder.card.isEnabled = true
             holder.ivArrow.visibility = View.VISIBLE
             holder.spinner.visibility = View.GONE
         } else {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_black_border)
-            holder.card.setOnClickListener(null)
-            holder.card.isClickable = false
-            holder.card.isEnabled = false
             holder.ivArrow.visibility = View.GONE
             holder.spinner.visibility = View.VISIBLE
         }

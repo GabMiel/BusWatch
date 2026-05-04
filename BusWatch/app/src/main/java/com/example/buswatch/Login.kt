@@ -121,7 +121,7 @@ class Login : AppCompatActivity() {
                             }
                     } else {
                         resetLoginState()
-                        Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
