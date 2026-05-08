@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_details_card"
@@ -8,12 +9,14 @@
 
     <TextView
         android:id="@+id/tvEditStudentTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
         android:text="@string/student_details"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,10 +41,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fillViewport="true"
+        android:overScrollMode="never"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/llStudentActions"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="450dp"
+        app:layout_constraintHeight_max="500dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEditStudentTitle">
 
@@ -51,38 +55,31 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- Student Picture (Style matching signup2) -->
+            <!-- Student Picture -->
             <RelativeLayout
                 android:id="@+id/rlEditStudentAvatar"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
-                    android:id="@+id/viewAvatarBg"
+                <ImageView
+                    android:id="@+id/imgEditStudentAvatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/bg_avatar_circle">
+                    android:background="@drawable/bg_avatar_circle"
+                    android:contentDescription="@string/avatar"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user" />
 
-                    <ImageView
-                        android:id="@+id/imgEditStudentAvatar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/avatar"
-                        android:padding="2dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/user" />
-                </FrameLayout>
-
-                <ImageButton
-                    android:id="@+id/btnChangeAvatar"
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_alignEnd="@id/viewAvatarBg"
-                    android:layout_alignBottom="@id/viewAvatarBg"
+                    android:layout_alignEnd="@id/imgEditStudentAvatar"
+                    android:layout_alignBottom="@id/imgEditStudentAvatar"
                     android:background="@drawable/circle_shape"
                     android:backgroundTint="#FEBE1E"
                     android:elevation="4dp"
@@ -90,14 +87,36 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/photo_camera"
                     app:tint="#000000"
-                    android:contentDescription="@string/edit"
-                    android:clickable="false" />
+                    tools:ignore="ContentDescription" />
             </RelativeLayout>
+
+            <!-- Student ID -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/student_id"
+                android:textColor="#241E40"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etEditStudentId"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:hint="@string/student_id"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:paddingHorizontal="12dp"
+                android:textColorHint="@color/gray_text"
+                android:textSize="14sp" />
 
             <!-- First Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="@string/first_name"
                 android:textColor="#241E40"
                 android:textSize="12sp"
@@ -106,38 +125,38 @@
             <EditText
                 android:id="@+id/etEditFirstName"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/enter_child_s_first_name"
+                android:importantForAutofill="no"
                 android:inputType="textPersonName"
-                android:autofillHints="personGivenName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                android:textColorHint="@color/gray_text"
+                android:textSize="14sp" />
 
             <!-- Last Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="@string/last_name"
                 android:textColor="#241E40"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etEditLastName"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:hint="@string/enter_child_s_last_name"
+                android:importantForAutofill="no"
                 android:inputType="textPersonName"
-                android:autofillHints="personFamilyName"
                 android:paddingHorizontal="12dp"
-                android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                android:textColorHint="@color/gray_text"
+                android:textSize="14sp" />
 
             <!-- Middle Name and Suffix Row -->
             <LinearLayout
@@ -152,6 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -159,18 +179,19 @@
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <EditText
                         android:id="@+id/etEditMiddleName"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:hint="@string/enter_child_s_middle"
+                        android:importantForAutofill="no"
                         android:inputType="textPersonName"
-                        android:autofillHints="personMiddleName"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/gray_text"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -178,6 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -185,10 +207,11 @@
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <FrameLayout
                         android:id="@+id/btnEditStudentSuffix"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:clickable="true"
@@ -200,9 +223,9 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="12dp"
-                            android:text="@string/suffix"
                             android:textColor="#888888"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:text="Jr." />
 
                         <ImageView
                             android:layout_width="20dp"
@@ -229,6 +252,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -236,26 +260,28 @@
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <EditText
                         android:id="@+id/etEditDob"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:hint="@string/age"
+                        android:importantForAutofill="no"
                         android:inputType="number"
-                        android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/gray_text"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="12dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -263,22 +289,39 @@
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
-                    <EditText
-                        android:id="@+id/etEditGrade"
+
+                    <FrameLayout
+                        android:id="@+id/btnEditGrade"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/enter_child_s_class_grade"
-                        android:inputType="text"
-                        android:autofillHints="none"
-                        android:paddingHorizontal="12dp"
-                        android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/tvEditSelectedGrade"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="12dp"
+                            android:textColor="#888888"
+                            android:textSize="14sp"
+                            tools:text="Grade 1" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="@string/grade"
+                            android:src="@drawable/ic_chevron_down"
+                            app:tint="#888888" />
+                    </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Class and School -->
+            <!-- Section and School -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -291,33 +334,36 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/class_label"
+                        android:text="@string/section_label"
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <EditText
-                        android:id="@+id/etEditClass"
+                        android:id="@+id/etEditSection"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:hint="@string/grade"
+                        android:hint="@string/section_label"
+                        android:importantForAutofill="no"
                         android:inputType="text"
-                        android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/gray_text"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
                     android:layout_marginStart="12dp"
+                    android:layout_weight="1.5"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -325,44 +371,116 @@
                         android:textColor="#241E40"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <EditText
                         android:id="@+id/etEditSchool"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/rectangle_hollow_with_shadow"
                         android:hint="@string/the_immaculate_mother_academy"
+                        android:importantForAutofill="no"
                         android:inputType="text"
-                        android:autofillHints="none"
                         android:paddingHorizontal="12dp"
-                        android:textSize="14sp"
-                        android:textColorHint="@color/gray_text" />
+                        android:textColorHint="@color/gray_text"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Address -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Home Address -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/home_address"
-                android:textColor="#241E40"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/etEditAddress"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/home_address"
+                    android:textColor="#241E40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRequestAddressEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/change_home_address"
+                    android:textAllCaps="false"
+                    android:textColor="#000000"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FEBE1E"
+                    app:cornerRadius="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEditAddress"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rectangle_hollow_with_shadow"
-                android:gravity="top"
-                android:hint="@string/kingstown_2_subdivision_caloocan_city"
-                android:inputType="textMultiLine"
-                android:autofillHints="postalAddress"
-                android:padding="12dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingHorizontal="12dp"
+                android:textColor="#888888"
                 android:textSize="14sp"
-                android:textColorHint="@color/gray_text" />
+                tools:text="123 Main St, Caloocan City" />
+
+            <!-- Selected Stop -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/selected_stop_caps"
+                    android:textColor="#241E40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditChangeStop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/change_stop_location"
+                    android:textAllCaps="false"
+                    android:textColor="#000000"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FEBE1E"
+                    app:cornerRadius="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEditAssignedStop"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingHorizontal="12dp"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                tools:text="Stop Name" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -371,9 +489,9 @@
         android:id="@+id/llStudentActions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
         android:baselineAligned="false"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -383,14 +501,14 @@
             android:id="@+id/btnCancelEdit"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:layout_marginEnd="6dp"
             android:text="@string/cancel_caps"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             app:backgroundTint="#FFFFFF"
-            app:cornerRadius="20dp"
+            app:cornerRadius="25dp"
             app:strokeColor="#000000"
             app:strokeWidth="1dp" />
 
@@ -398,14 +516,14 @@
             android:id="@+id/btnSaveStudent"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:layout_marginStart="6dp"
             android:text="@string/save_caps"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
             app:backgroundTint="#FEBE1E"
-            app:cornerRadius="20dp" />
+            app:cornerRadius="25dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

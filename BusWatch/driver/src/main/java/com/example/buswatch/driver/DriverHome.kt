@@ -3,12 +3,12 @@ package com.example.buswatch.driver
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
@@ -21,6 +21,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.example.buswatch.common.R as CommonR
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +47,7 @@ class DriverHome : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            // Permission granted
+            startLocationUpdates()
         }
     }
 
@@ -54,16 +56,17 @@ class DriverHome : AppCompatActivity() {
         
         val ctx = applicationContext
         val config = Configuration.getInstance()
-        config.userAgentValue = ctx.packageName
+        // Ensure consistent User Agent for OSM
+        config.userAgentValue = "${ctx.packageName} (BusWatch Android App; support@buswatch.com)"
         config.osmdroidBasePath = File(ctx.filesDir, "osmdroid")
         config.osmdroidTileCache = File(ctx.filesDir, "osmdroid/tiles")
         config.load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx))
 
         setContentView(R.layout.activity_driver_home)
         
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // Use application context to avoid potential leaks and some context-related SecurityExceptions
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
         
-        // Ensure OneSignal is linked to the current user
         auth.currentUser?.uid?.let { uid ->
             OneSignal.login(uid)
         }
@@ -72,6 +75,16 @@ class DriverHome : AppCompatActivity() {
         loadHome()
         startLocationUpdates()
         checkNotificationPermission()
+        setupSharedObservers()
+    }
+
+    private fun setupSharedObservers() {
+        viewModel.toastMessage.observe(this) { message ->
+            message?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                viewModel.clearToast()
+            }
+        }
     }
 
     private fun checkNotificationPermission() {
@@ -112,7 +125,7 @@ class DriverHome : AppCompatActivity() {
     }
 
     fun showSOSConfirmation() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_sos_confirmation, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_sos_confirmation, findViewById(android.R.id.content), false)
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
             .create()
@@ -126,7 +139,7 @@ class DriverHome : AppCompatActivity() {
     }
 
     private fun showSOSSendingState(dialog: AlertDialog) {
-        val sendingView = layoutInflater.inflate(R.layout.dialog_sos_sending, null)
+        val sendingView = layoutInflater.inflate(R.layout.dialog_sos_sending, findViewById(android.R.id.content), false)
         dialog.setContentView(sendingView)
         
         val pulseView = sendingView.findViewById<View>(R.id.pulseView)
@@ -193,13 +206,31 @@ class DriverHome : AppCompatActivity() {
     }
 
     private fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001)
+        val permissions = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1001)
             return
+        }
+
+        // Verify Play Services
+        val availability = GoogleApiAvailability.getInstance()
+        val result = availability.isGooglePlayServicesAvailable(this)
+        if (result != ConnectionResult.SUCCESS) {
+            if (availability.isUserResolvableError(result)) {
+                availability.getErrorDialog(this, result, 9000)?.show()
+            } else {
+                Log.e("DriverHome", "Google Play Services not available")
+            }
+            // Continue anyway, it might work or we might see more specific logs
         }
 
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
             .setMinUpdateIntervalMillis(1000)
+            .setWaitForAccurateLocation(false)
             .build()
 
         locationCallback = object : LocationCallback() {
@@ -207,6 +238,7 @@ class DriverHome : AppCompatActivity() {
                 val loc = locationResult.lastLocation ?: return
                 val bearing = if (loc.hasBearing() && loc.speed > 0.5f) loc.bearing else 0f
                 
+                Log.d("DriverHome", "Location Update: ${loc.latitude}, ${loc.longitude}")
                 viewModel.setLocation(GeoPoint(loc.latitude, loc.longitude), bearing)
                 
                 val uid = auth.currentUser?.uid ?: return
@@ -223,8 +255,18 @@ class DriverHome : AppCompatActivity() {
                     db.collection("buses").document(busId).update(locationData)
                 }
             }
+
+            override fun onLocationAvailability(availability: LocationAvailability) {
+                Log.d("DriverHome", "Location Availability: ${availability.isLocationAvailable}")
+            }
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback!!, Looper.getMainLooper())
+
+        try {
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback!!, Looper.getMainLooper())
+        } catch (e: SecurityException) {
+            Log.e("DriverHome", "SecurityException requesting location: ${e.message}")
+            Toast.makeText(this, "Location permission error", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroy() {
@@ -234,8 +276,12 @@ class DriverHome : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1001 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdates()
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                startLocationUpdates()
+            } else {
+                Toast.makeText(this, "Precise location is required for tracking", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }

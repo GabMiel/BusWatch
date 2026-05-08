@@ -254,12 +254,12 @@ class ConfirmPickupLocationDialogFragment : DialogFragment() {
 
     private fun showConfirmationPopup(newAddress: String) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Confirmation")
-            .setMessage("Are you sure you want to change home address?")
-            .setPositiveButton("CONFIRM") { _, _ ->
+            .setTitle(CommonR.string.confirmation)
+            .setMessage(CommonR.string.confirm_change_address_title)
+            .setPositiveButton(CommonR.string.confirm_caps) { _, _ ->
                 submitRequest(newAddress)
             }
-            .setNegativeButton("CANCEL", null)
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 

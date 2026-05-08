@@ -43,7 +43,7 @@
     <string name="plus_sign">+</string>
     <string name="choose_conductor_optional">Choose Conductor (Optional)</string>
     <string name="select_conductor">Select Conductor</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">@android:string/cancel</string>
     <string name="save_changes">SAVE CHANGES</string>
     <string name="no_driver_assigned">No Driver Assigned</string>
     <string name="no_phone">No Phone</string>
@@ -67,4 +67,7 @@
     <string name="emergency_alerts_caps">EMERGENCY ALERTS</string>
     <string name="location_change_request_title">Location Change Request</string>
     <string name="stop_change_request_title">Stop Change Request</string>
+    <string name="pending_parents_caps_2">PARENT REQUESTS</string>
+    <string name="pending_locations_caps">ADDRESS REQUESTS</string>
+    <string name="pending_stops_caps">STOP REQUESTS</string>
 </resources>

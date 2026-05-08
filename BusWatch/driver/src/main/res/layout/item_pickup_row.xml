@@ -3,11 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pickupRowContainer"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="wrap_content"
+    android:minHeight="56dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/bg_student_row">
 
@@ -43,6 +46,15 @@
             android:textColor="@color/gray_text"
             android:textSize="11sp"
             tools:text="150 meters away"/>
+
+        <TextView
+            android:id="@+id/tvStopLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_text"
+            android:textSize="11sp"
+            android:textStyle="italic"
+            tools:text="Stop: Central Park"/>
     </LinearLayout>
 
     <TextView

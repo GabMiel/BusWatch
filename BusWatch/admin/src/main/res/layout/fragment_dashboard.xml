@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -28,248 +27,294 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <!-- Dashboard Grid -->
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:columnCount="2"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
 
-            <!-- 2xN Grid -->
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:padding="12dp"
-                android:layout_marginTop="8dp">
+            <!-- SOS Alerts (Red - High Priority) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardEmergencies"
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/dashboard_sos"
+                app:cardElevation="6dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountEmergencies"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/white"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/sos_alerts_caps" android:textColor="@color/white"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Emergency Alerts (Priority) -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardEmergencies"
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="#D32F2F"
-                    app:cardElevation="6dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountEmergencies"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/white"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="SOS ALERTS" android:textColor="@color/white"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Pending Parents (Orange - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardPending"
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/dashboard_pending"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountPending"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/pending_parents_caps_2" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Pending Parents -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardPending"
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountPending"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/pending_parents_caps_2" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Pending Locations (Orange - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardPendingMaps"
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/dashboard_pending"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountPendingMaps"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/pending_locations_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Students -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountStudents"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="TOTAL STUDENTS" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Pending Stops (Orange - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardPendingStops"
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/dashboard_pending"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountPendingStops"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/pending_stops_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Parents -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountParents"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_parents_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Students (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountStudents"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_students_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Drivers -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountDrivers"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_drivers_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Parents (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountParents"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_parents_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Conductors -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountConductors"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_conductors_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Drivers (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountDrivers"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_drivers_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Bus -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountBuses"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_bus_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textStyle="bold"
-                            android:textAllCaps="true"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Conductors (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountConductors"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_conductors_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Stops -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountStops"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_stops_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Bus (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountBuses"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_bus_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Total Routes -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp" android:layout_height="120dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="14dp"
-                    app:cardBackgroundColor="@color/yellow_primary"
-                    app:cardElevation="3dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <TextView
-                            android:id="@+id/tvCountRoutes"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/count_zero" android:textColor="@color/black"
-                            android:textSize="28sp" android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/total_routes_caps" android:textColor="@color/black"
-                            android:textSize="10sp" android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:textAllCaps="true"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+            <!-- Total Stops (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountStops"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_stops_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            </GridLayout>
-        </LinearLayout>
+            <!-- Total Routes (Yellow - Black Text) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp" android:layout_height="120dp"
+                android:layout_columnWeight="1" android:layout_margin="8dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/yellow_primary"
+                app:cardElevation="3dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                    <TextView
+                        android:id="@+id/tvCountRoutes"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/count_zero" android:textColor="@color/black"
+                        android:textSize="28sp" android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/total_routes_caps" android:textColor="@color/black"
+                        android:textSize="11sp" android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
     </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

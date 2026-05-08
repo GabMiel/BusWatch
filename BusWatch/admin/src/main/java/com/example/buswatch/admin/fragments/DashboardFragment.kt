@@ -28,7 +28,15 @@ class DashboardFragment : Fragment() {
         }
         
         view.findViewById<View>(R.id.cardPending)?.setOnClickListener {
-            (activity as? AdminHome)?.loadApprovals()
+            (activity as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.REGISTRATION))
+        }
+
+        view.findViewById<View>(R.id.cardPendingMaps)?.setOnClickListener {
+            (activity as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.MAP))
+        }
+
+        view.findViewById<View>(R.id.cardPendingStops)?.setOnClickListener {
+            (activity as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.STOPS))
         }
         
         loadStats(view)
@@ -113,11 +121,20 @@ class DashboardFragment : Fragment() {
         db.collection("parents").whereEqualTo("status", "pending").get().addOnSuccessListener { s -> 
             view.findViewById<TextView>(R.id.tvCountPending)?.text = s.size().toString() 
         }
+
+        // Pending Maps
+        db.collection("map_requests").whereEqualTo("status", "pending").addSnapshotListener { s, _ ->
+            view.findViewById<TextView>(R.id.tvCountPendingMaps)?.text = (s?.size() ?: 0).toString()
+        }
+
+        // Pending Stops
+        db.collection("stop_requests").whereEqualTo("status", "pending").addSnapshotListener { s, _ ->
+            view.findViewById<TextView>(R.id.tvCountPendingStops)?.text = (s?.size() ?: 0).toString()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         emergencyListener?.remove()
-        // Alarm is NO LONGER stopped here, so it continues when navigating to EmergenciesFragment
     }
 }

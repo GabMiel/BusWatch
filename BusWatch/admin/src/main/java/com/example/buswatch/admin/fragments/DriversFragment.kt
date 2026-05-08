@@ -23,6 +23,7 @@ import com.example.buswatch.admin.R
 import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
 
@@ -33,6 +34,8 @@ class DriversFragment : Fragment() {
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
     private var searchQuery = ""
+    private var driversListener: ListenerRegistration? = null
+    private var allDriversList = mutableListOf<UserAdmin>()
     
     private var currentAddDriverDialog: AddDriverDialog? = null
 
@@ -49,7 +52,36 @@ class DriversFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchPage()
+        startListener()
+    }
+
+    private fun startListener() {
+        driversListener?.remove()
+        driversListener = db.collection("drivers")
+            .whereEqualTo("status", "active")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) {
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Error fetching drivers: ${e?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    return@addSnapshotListener
+                }
+                allDriversList = snapshots.map { doc ->
+                    UserAdmin(
+                        doc.id, 
+                        "${doc.getString("firstName")} ${doc.getString("lastName")}", 
+                        "Driver", 
+                        status = "active",
+                        avatarUrl = doc.getString("driverAvatar") ?: ""
+                    )
+                }.toMutableList()
+                updateList()
+            }
+    }
+
+    override fun onDestroyView() {
+        driversListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -69,7 +101,7 @@ class DriversFragment : Fragment() {
                 requireActivity() as AppCompatActivity, 
                 db, 
                 pickImageLauncher
-            ) { fetchPage() }
+            ) { /* listener handles refresh */ }
             currentAddDriverDialog?.show()
         }
 
@@ -77,7 +109,7 @@ class DriversFragment : Fragment() {
             (requireActivity() as? AdminHome)?.showSortOptions("drivers") { dir ->
                 sortDirection = dir
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
         }
 
@@ -87,7 +119,7 @@ class DriversFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s?.toString()?.lowercase() ?: ""
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -95,51 +127,33 @@ class DriversFragment : Fragment() {
         setupPagination(view)
     }
 
-    private fun fetchPage() {
-        db.collection("drivers")
-            .whereEqualTo("status", "active")
-            .get()
-            .addOnSuccessListener { snapshots ->
-                val allDrivers = snapshots.map { doc ->
-                    UserAdmin(
-                        doc.id, 
-                        "${doc.getString("firstName")} ${doc.getString("lastName")}", 
-                        "Driver", 
-                        status = "active",
-                        avatarUrl = doc.getString("driverAvatar") ?: ""
-                    )
-                }.filter { 
-                    it.name.lowercase().contains(searchQuery)
-                }
+    private fun updateList() {
+        val filteredDrivers = allDriversList.filter { 
+            it.name.lowercase().contains(searchQuery)
+        }
 
-                val sortedDrivers = if (sortDirection == Query.Direction.ASCENDING) {
-                    allDrivers.sortedBy { it.name.lowercase() }
-                } else {
-                    allDrivers.sortedByDescending { it.name.lowercase() }
-                }
-                
-                totalCount = sortedDrivers.size
-                val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-                if (currentPage > totalPages) currentPage = totalPages
-                if (currentPage < 1) currentPage = 1
-                
-                val start = (currentPage - 1) * itemsPerPage
-                val end = minOf(start + itemsPerPage, totalCount)
-                
-                val pagedDrivers = if (start < totalCount) sortedDrivers.subList(start, end) else emptyList()
+        val sortedDrivers = if (sortDirection == Query.Direction.ASCENDING) {
+            filteredDrivers.sortedBy { it.name.lowercase() }
+        } else {
+            filteredDrivers.sortedByDescending { it.name.lowercase() }
+        }
+        
+        totalCount = sortedDrivers.size
+        val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        if (currentPage > totalPages) currentPage = totalPages
+        if (currentPage < 1) currentPage = 1
+        
+        val start = (currentPage - 1) * itemsPerPage
+        val end = minOf(start + itemsPerPage, totalCount)
+        
+        val pagedDrivers = if (start < totalCount) sortedDrivers.subList(start, end) else emptyList()
 
-                view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = DriverAdapter(pagedDrivers.toMutableList(), 
-                    { (requireActivity() as? AdminHome)?.showDriverDetail(it) { fetchPage() } }, 
-                    { (requireActivity() as? AdminHome)?.editDriverDetail(it) }, 
-                    { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) { fetchPage() } }
-                )
-                updatePaginationUI()
-            }
-            .addOnFailureListener { e ->
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Error fetching drivers: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+        view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = DriverAdapter(pagedDrivers.toMutableList(), 
+            { (requireActivity() as? AdminHome)?.showDriverDetail(it) { startListener() } }, 
+            { (requireActivity() as? AdminHome)?.editDriverDetail(it) }, 
+            { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) { /* handled by listener */ } }
+        )
+        updatePaginationUI()
     }
 
     private fun setupPagination(view: View) {
@@ -163,7 +177,7 @@ class DriversFragment : Fragment() {
     private fun handleJumpToPage(page: Int) {
         val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         currentPage = page.coerceIn(1, maxPage)
-        fetchPage()
+        updateList()
     }
 
     private fun updatePaginationUI() {

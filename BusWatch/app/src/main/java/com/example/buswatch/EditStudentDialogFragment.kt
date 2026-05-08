@@ -20,7 +20,6 @@ import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import org.osmdroid.views.MapView
 
 class EditStudentDialogFragment : DialogFragment() {
 
@@ -56,7 +55,7 @@ class EditStudentDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, CommonR.style.CustomDialog)
-        viewModel = ViewModelProvider(requireActivity()).get(StudentViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[StudentViewModel::class.java]
         childName = arguments?.getString("childName")
         parentStatus = arguments?.getString("parentStatus") ?: "pending"
     }
@@ -78,7 +77,8 @@ class EditStudentDialogFragment : DialogFragment() {
         val etAge = view.findViewById<EditText>(R.id.etEditDob)
         val etSection = view.findViewById<EditText>(R.id.etEditSection)
         val etSchool = view.findViewById<EditText>(R.id.etEditSchool)
-        val etAddress = view.findViewById<EditText>(R.id.etEditAddress)
+        val tvAddress = view.findViewById<TextView>(R.id.tvEditAddress)
+        val tvAssignedStop = view.findViewById<TextView>(R.id.tvEditAssignedStop)
         
         val tvSelectedSuffix = view.findViewById<TextView>(R.id.tvEditStudentSelectedSuffix)
         var selectedSuffix = ""
@@ -98,7 +98,14 @@ class EditStudentDialogFragment : DialogFragment() {
             etAge.setText(child["age"]?.toString() ?: "")
             etSection.setText(child["class"] as? String ?: child["section"] as? String ?: "")
             etSchool.setText(child["school"] as? String ?: "")
-            etAddress.setText(child["address"] as? String ?: "")
+            
+            // Set initial address from child data, then sync with parent collection
+            tvAddress.text = child["address"] as? String ?: ""
+            db.collection("parents").document(uid).get().addOnSuccessListener { pDoc ->
+                if (isAdded) {
+                    pDoc.getString("address")?.let { if (it.isNotEmpty()) tvAddress.text = it }
+                }
+            }
             
             selectedSuffix = child["suffix"] as? String ?: ""
             tvSelectedSuffix.text = selectedSuffix.ifEmpty { getString(CommonR.string.suffix) }
@@ -112,9 +119,9 @@ class EditStudentDialogFragment : DialogFragment() {
             val stopId = child["stop"] as? String ?: ""
             if (stopId.isNotEmpty()) {
                 db.collection("stops").document(stopId).get().addOnSuccessListener { sDoc ->
-                    if (isAdded) view.findViewById<TextView>(R.id.tvEditAssignedStop).text = sDoc.getString("name") ?: stopId
+                    if (isAdded) tvAssignedStop.text = sDoc.getString("name") ?: stopId
                 }
-                btnChangeStop.setText(CommonR.string.request_change_stop_caps)
+                btnChangeStop.setText(CommonR.string.change_stop_location)
             } else {
                 btnChangeStop.setText(CommonR.string.assign_stop_caps)
             }
@@ -126,7 +133,7 @@ class EditStudentDialogFragment : DialogFragment() {
         view.findViewById<Button>(R.id.btnRequestAddressEdit).setOnClickListener {
             ConfirmPickupLocationDialogFragment.newInstance(
                 childName,
-                etAddress.text.toString(),
+                tvAddress.text.toString(),
                 currentLat,
                 currentLng
             ).show(parentFragmentManager, "confirm_pickup_location")
@@ -177,7 +184,7 @@ class EditStudentDialogFragment : DialogFragment() {
                 "age" to etAge.text.toString().trim(),
                 "class" to etSection.text.toString().trim(),
                 "school" to etSchool.text.toString().trim(),
-                "address" to etAddress.text.toString().trim(),
+                "address" to tvAddress.text.toString().trim(),
                 "grade" to selectedGrade
             )
             viewModel.updateStudentGeneral(uid, childName, updatedData, tempAvatarUri)

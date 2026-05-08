@@ -2,16 +2,15 @@ package com.example.buswatch.driver
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +26,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     
     private val viewModel: DriverViewModel by activityViewModels()
+    private var studentAdapter: StudentAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDriverHomeBinding.inflate(inflater, container, false)
@@ -36,8 +36,31 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         setupObservers()
         setupClickListeners()
+    }
+
+    private fun setupRecyclerView() {
+        binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
+        studentAdapter = StudentAdapter(
+            students = emptyList(),
+            currentTab = viewModel.currentTab.value ?: "Morning",
+            onPickUpClick = { student -> 
+                viewModel.updateStudentStatus(student.id, "On Board")
+                viewModel.sendStudentBoardingNotification(student.id, student.name)
+            },
+            onDropOffClick = { student -> 
+                val tab = viewModel.currentTab.value ?: "Morning"
+                val status = if (tab == "Morning") "At School" else "At Home"
+                viewModel.updateStudentStatus(student.id, status)
+                viewModel.sendStudentArrivalNotification(student.id, student.name, status)
+            },
+            onStudentClick = { student ->
+                showStudentMedicalInfo(student)
+            }
+        )
+        binding.recyclerStudents.adapter = studentAdapter
     }
 
     private fun setupObservers() {
@@ -64,30 +87,9 @@ class HomeFragment : Fragment() {
 
         viewModel.students.observe(viewLifecycleOwner) { students ->
             val tab = viewModel.currentTab.value ?: "Morning"
-            binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerStudents.adapter = StudentAdapter(students, tab,
-                onPickUpClick = { student -> 
-                    viewModel.updateStudentStatus(student.id, "On Board")
-                    viewModel.sendStudentBoardingNotification(student.id, student.name)
-                },
-                onDropOffClick = { student -> 
-                    val status = if (tab == "Morning") "At School" else "At Home"
-                    viewModel.updateStudentStatus(student.id, status)
-                    viewModel.sendStudentArrivalNotification(student.id, student.name, status)
-                },
-                onStudentClick = { student ->
-                    showStudentMedicalInfo(student)
-                }
-            )
+            studentAdapter?.updateStudents(students, tab)
         }
         
-        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            message?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-                viewModel.clearToast()
-            }
-        }
-
         viewModel.currentTab.observe(viewLifecycleOwner) { tab ->
             updateTabUI(tab == "Morning")
         }
@@ -121,7 +123,7 @@ class HomeFragment : Fragment() {
             val phone = student.emergencyPhone
             if (phone.isNotEmpty()) {
                 val intent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:$phone")
+                    data = "tel:$phone".toUri()
                 }
                 startActivity(intent)
             }
@@ -135,7 +137,6 @@ class HomeFragment : Fragment() {
         binding.tabAfternoon.setOnClickListener { viewModel.setCurrentTab("Afternoon") }
         
         binding.btnStartTrip.setOnClickListener {
-            // Both Drivers and Conductors should trigger the notification when starting
             viewModel.sendTripStartNotification()
             (activity as? DriverHome)?.loadLiveTracking()
         }

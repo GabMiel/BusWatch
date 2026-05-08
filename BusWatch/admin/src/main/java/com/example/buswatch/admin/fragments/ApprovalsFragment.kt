@@ -19,12 +19,33 @@ import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.admin.StopRequest
 import com.example.buswatch.admin.StopRequestAdapter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 
 class ApprovalsFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private var currentTab = Tab.REGISTRATION
+    private var listenerRegistration: ListenerRegistration? = null
 
     enum class Tab { REGISTRATION, MAP, STOPS }
+
+    companion object {
+        private const val ARG_START_TAB = "start_tab"
+
+        fun newInstance(startTab: Tab): ApprovalsFragment {
+            val fragment = ApprovalsFragment()
+            val args = Bundle()
+            args.putString(ARG_START_TAB, startTab.name)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString(ARG_START_TAB)?.let {
+            currentTab = Tab.valueOf(it)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_approvals, container, false)
@@ -96,75 +117,95 @@ class ApprovalsFragment : Fragment() {
     }
 
     private fun fetchPendingUsers() {
-        db.collection("parents").whereEqualTo("status", "pending").get().addOnSuccessListener { snapshots ->
-            if (!isAdded) return@addOnSuccessListener
-            val pendingUsers = snapshots.map { doc ->
-                @Suppress("UNCHECKED_CAST")
-                val profile = doc.get("profile") as? Map<String, Any>
-                UserAdmin(
-                    id = doc.id,
-                    name = "${profile?.get("firstName")} ${profile?.get("lastName")}",
-                    role = "Parent",
-                    status = "pending",
-                    avatarUrl = profile?.get("parentAvatarUrl") as? String ?: ""
-                )
-            }.toMutableList()
-            view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = PendingUserAdapter(pendingUsers) { user ->
-                (requireActivity() as? AdminHome)?.showParentApprovalDetail(user)
+        listenerRegistration?.remove()
+        listenerRegistration = db.collection("parents").whereEqualTo("status", "pending")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) return@addSnapshotListener
+                if (!isAdded) return@addSnapshotListener
+                
+                val pendingUsers = snapshots.map { doc ->
+                    @Suppress("UNCHECKED_CAST")
+                    val profile = doc.get("profile") as? Map<String, Any>
+                    UserAdmin(
+                        id = doc.id,
+                        name = "${profile?.get("firstName")} ${profile?.get("lastName")}",
+                        role = "Parent",
+                        status = "pending",
+                        avatarUrl = profile?.get("parentAvatarUrl") as? String ?: ""
+                    )
+                }.toMutableList()
+                
+                view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = PendingUserAdapter(pendingUsers) { user ->
+                    (requireActivity() as? AdminHome)?.showParentApprovalDetail(user)
+                }
             }
-        }
     }
 
     private fun fetchMapRequests() {
-        db.collection("map_requests").whereEqualTo("status", "pending").get().addOnSuccessListener { snapshots ->
-            if (!isAdded) return@addOnSuccessListener
-            val mapRequests = snapshots.map { doc ->
-                MapRequest(
-                    id = doc.id,
-                    studentName = doc.getString("studentName") ?: "N/A",
-                    parentId = doc.getString("parentId") ?: "",
-                    studentId = doc.getString("studentId"),
-                    currentAddress = doc.getString("currentAddress") ?: "N/A",
-                    pendingAddress = doc.getString("pendingAddress") ?: "N/A",
-                    currentLat = doc.getDouble("currentLat") ?: 0.0,
-                    currentLng = doc.getDouble("currentLng") ?: 0.0,
-                    pendingLat = doc.getDouble("pendingLat") ?: 0.0,
-                    pendingLng = doc.getDouble("pendingLng") ?: 0.0,
-                    docPath = doc.getString("docPath") ?: "",
-                    parentAvatarUrl = "" // Will be handled in detail view or joined if needed
-                )
-            }.toMutableList()
-            view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = MapRequestAdapter(mapRequests) { request, _ ->
-                (requireActivity() as? AdminHome)?.showMapApprovalDetail(request)
+        listenerRegistration?.remove()
+        listenerRegistration = db.collection("map_requests").whereEqualTo("status", "pending")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) return@addSnapshotListener
+                if (!isAdded) return@addSnapshotListener
+                
+                val mapRequests = snapshots.map { doc ->
+                    MapRequest(
+                        id = doc.id,
+                        studentName = doc.getString("studentName") ?: "N/A",
+                        parentId = doc.getString("parentId") ?: "",
+                        studentId = doc.getString("studentId"),
+                        currentAddress = doc.getString("currentAddress") ?: "N/A",
+                        pendingAddress = doc.getString("pendingAddress") ?: "N/A",
+                        currentLat = doc.getDouble("currentLat") ?: 0.0,
+                        currentLng = doc.getDouble("currentLng") ?: 0.0,
+                        pendingLat = doc.getDouble("pendingLat") ?: 0.0,
+                        pendingLng = doc.getDouble("pendingLng") ?: 0.0,
+                        docPath = doc.getString("docPath") ?: "",
+                        parentAvatarUrl = "" 
+                    )
+                }.toMutableList()
+                
+                view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = MapRequestAdapter(mapRequests) { request, _ ->
+                    (requireActivity() as? AdminHome)?.showMapApprovalDetail(request)
+                }
             }
-        }
     }
 
     private fun fetchPendingStops() {
-        db.collection("stop_requests").whereEqualTo("status", "pending").get().addOnSuccessListener { snapshots ->
-            if (!isAdded) return@addOnSuccessListener
-            val stopRequests = snapshots.map { doc ->
-                StopRequest(
-                    id = doc.id,
-                    parentId = doc.getString("parentId") ?: "",
-                    studentName = doc.getString("studentName") ?: "N/A",
-                    studentFirstName = doc.getString("studentFirstName") ?: "",
-                    studentLastName = doc.getString("studentLastName") ?: "",
-                    currentStopId = doc.getString("currentStopId") ?: "",
-                    currentStopName = doc.getString("currentStopName") ?: "N/A",
-                    currentStopLat = doc.getDouble("currentStopLat") ?: 0.0,
-                    currentStopLng = doc.getDouble("currentStopLng") ?: 0.0,
-                    proposedStopId = doc.getString("proposedStopId") ?: "",
-                    proposedStopName = doc.getString("proposedStopName") ?: "N/A",
-                    proposedStopLat = doc.getDouble("proposedStopLat") ?: 0.0,
-                    proposedStopLng = doc.getDouble("proposedStopLng") ?: 0.0,
-                    status = doc.getString("status") ?: "pending",
-                    parentAvatarUrl = ""
-                )
-            }.toMutableList()
-            view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = StopRequestAdapter(stopRequests) { request, _ ->
-                (requireActivity() as? AdminHome)?.showStopApprovalDetail(request)
+        listenerRegistration?.remove()
+        listenerRegistration = db.collection("stop_requests").whereEqualTo("status", "pending")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) return@addSnapshotListener
+                if (!isAdded) return@addSnapshotListener
+                
+                val stopRequests = snapshots.map { doc ->
+                    StopRequest(
+                        id = doc.id,
+                        parentId = doc.getString("parentId") ?: "",
+                        studentName = doc.getString("studentName") ?: "N/A",
+                        studentFirstName = doc.getString("studentFirstName") ?: "",
+                        studentLastName = doc.getString("studentLastName") ?: "",
+                        currentStopId = doc.getString("currentStopId") ?: "",
+                        currentStopName = doc.getString("currentStopName") ?: "N/A",
+                        currentStopLat = doc.getDouble("currentStopLat") ?: 0.0,
+                        currentStopLng = doc.getDouble("currentStopLng") ?: 0.0,
+                        proposedStopId = doc.getString("proposedStopId") ?: "",
+                        proposedStopName = doc.getString("proposedStopName") ?: "N/A",
+                        proposedStopLat = doc.getDouble("proposedStopLat") ?: 0.0,
+                        proposedStopLng = doc.getDouble("proposedStopLng") ?: 0.0,
+                        status = doc.getString("status") ?: "pending",
+                        parentAvatarUrl = ""
+                    )
+                }.toMutableList()
+                
+                view?.findViewById<RecyclerView>(R.id.recyclerApprovals)?.adapter = StopRequestAdapter(stopRequests) { request, _ ->
+                    (requireActivity() as? AdminHome)?.showStopApprovalDetail(request)
+                }
             }
-        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        listenerRegistration?.remove()
     }
 }

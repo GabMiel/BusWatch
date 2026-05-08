@@ -45,4 +45,9 @@
     <color name="accessible_gray_text">#757575</color>
     <color name="accessible_yellow_text">#856404</color>
     <color name="accessible_hint_gray">#616161</color>
+
+    <!-- Dashboard Colors -->
+    <color name="dashboard_pending">#FFB74D</color>
+    <color name="dashboard_total">#FEBE1E</color>
+    <color name="dashboard_sos">#D32F2F</color>
 </resources>

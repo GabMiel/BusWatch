@@ -2,9 +2,7 @@ package com.example.buswatch
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MotionEvent
@@ -15,9 +13,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
-import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
@@ -26,14 +26,12 @@ import com.google.firebase.firestore.ListenerRegistration
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
-import java.io.File
 import java.util.ArrayList
 import java.util.Locale
 
@@ -55,24 +53,21 @@ class Map : AppCompatActivity() {
 
     private var locationButtonMode = 1 // 1: North Up (Follow), 0: Manual
     private var lastKnownBusLocation: GeoPoint? = null
+    
+    private var lastRoadRequestTime: Long = 0
+    private val MIN_ROAD_REQUEST_INTERVAL = 15000L // 15 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val ctx = applicationContext
-        val config = Configuration.getInstance()
-        config.userAgentValue = ctx.packageName
-        config.osmdroidBasePath = File(ctx.filesDir, "osmdroid")
-        config.osmdroidTileCache = File(ctx.filesDir, "osmdroid/tiles")
-        config.load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx))
-
+        // Config is now handled in BusWatchApp
         setContentView(R.layout.map)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         childName = intent.getStringExtra("childName")
 
-        findViewById<TextView>(R.id.tvChildName)?.text = childName ?: "Student"
+        findViewById<TextView>(R.id.tvChildName)?.text = childName ?: getString(CommonR.string.student)
 
         map = findViewById(R.id.mapView)
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -122,7 +117,6 @@ class Map : AppCompatActivity() {
 
     private fun setupLocatorButton() {
         val btnMyLocation = findViewById<ImageButton>(R.id.btnMyLocation)
-        // Changed from ic_compass to ic_my_location as requested
         btnMyLocation?.setImageResource(CommonR.drawable.ic_my_location)
         btnMyLocation?.setColorFilter("#4A90E2".toColorInt())
 
@@ -138,7 +132,6 @@ class Map : AppCompatActivity() {
     private fun enterMode1() {
         locationButtonMode = 1
         val btnMyLocation = findViewById<ImageButton>(R.id.btnMyLocation)
-        // Consistent icon for re-centering
         btnMyLocation?.setImageResource(CommonR.drawable.ic_my_location)
         btnMyLocation?.setColorFilter("#4A90E2".toColorInt())
         
@@ -211,7 +204,6 @@ class Map : AppCompatActivity() {
                     val rDriverId = routeDoc.getString("driverId")
                     val rConductorId = routeDoc.getString("conductorId")
                     
-                    // Fetch initial staff info from route document immediately
                     if (!rDriverId.isNullOrEmpty()) {
                         fetchStaffInfo(rDriverId, "drivers")
                     } else if (!rConductorId.isNullOrEmpty()) {
@@ -255,25 +247,35 @@ class Map : AppCompatActivity() {
                     stopPoints.addAll(ordered)
                     
                     val nextStopTv = findViewById<TextView>(R.id.tvNextStopName)
-                    if (nextStopTv != null && (nextStopTv.text == "Calculating..." || nextStopTv.text == "") && stopIds.isNotEmpty()) {
+                    if (nextStopTv != null && (nextStopTv.text == getString(CommonR.string.calculating) || nextStopTv.text == "") && stopIds.isNotEmpty()) {
                         db.collection("stops").document(stopIds[0]).get().addOnSuccessListener { sDoc ->
-                             if (nextStopTv.text == "Calculating..." || nextStopTv.text == "") {
+                             if (nextStopTv.text == getString(CommonR.string.calculating) || nextStopTv.text == "") {
                                  nextStopTv.text = sDoc.getString("name") ?: "Next Stop"
                              }
                         }
                     }
 
-                    updateRouteWithBusLocation()
+                    updateRouteWithBusLocation(force = true)
                     map.invalidate()
                 }
             }
         }
     }
 
-    private fun updateRouteWithBusLocation() {
+    private fun updateRouteWithBusLocation(force: Boolean = false) {
         val busLoc = lastKnownBusLocation ?: return
         if (stopPoints.isEmpty()) return
         
+        val currentTime = System.currentTimeMillis()
+        if (!force && currentTime - lastRoadRequestTime < MIN_ROAD_REQUEST_INTERVAL) {
+            // Draw simple line as placeholder or just skip if we already have an overlay
+            if (roadOverlay == null) {
+                drawSimplePolyline(mutableListOf(busLoc).apply { addAll(stopPoints) })
+            }
+            return
+        }
+        
+        lastRoadRequestTime = currentTime
         val points = mutableListOf<GeoPoint>()
         points.add(busLoc)
         points.addAll(stopPoints)
@@ -283,10 +285,23 @@ class Map : AppCompatActivity() {
         }
     }
 
+    private fun drawSimplePolyline(points: List<GeoPoint>) {
+        val line = Polyline(map)
+        line.setPoints(points)
+        line.outlinePaint.color = "#4A90E2".toColorInt()
+        line.outlinePaint.strokeWidth = 10f
+        
+        roadOverlay?.let { map.overlays.remove(it) }
+        roadOverlay = line
+        map.overlays.add(0, roadOverlay)
+        map.invalidate()
+    }
+
     private fun drawRoadOverlay(points: List<GeoPoint>) {
         Thread {
             try {
-                val roadManager = OSRMRoadManager(this, "BusWatch/1.0")
+                // Use a consistent User-Agent for OSRM as well
+                val roadManager = OSRMRoadManager(this, packageName)
                 val road = roadManager.getRoad(ArrayList(points))
                 
                 if (road.mStatus == Road.STATUS_OK) {
@@ -307,20 +322,11 @@ class Map : AppCompatActivity() {
                         map.invalidate()
                     }
                 } else {
-                    runOnUiThread {
-                        val line = Polyline(map)
-                        line.setPoints(points)
-                        line.outlinePaint.color = "#4A90E2".toColorInt()
-                        line.outlinePaint.strokeWidth = 10f
-                        
-                        roadOverlay?.let { map.overlays.remove(it) }
-                        roadOverlay = line
-                        map.overlays.add(0, roadOverlay)
-                        map.invalidate()
-                    }
+                    runOnUiThread { drawSimplePolyline(points) }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                runOnUiThread { drawSimplePolyline(points) }
             }
         }.start()
     }
@@ -342,10 +348,9 @@ class Map : AppCompatActivity() {
                 val busConductorId = doc.getString("conductorId")
                 val busNo = doc.getString("busNumber") ?: "---"
                 
-                findViewById<TextView>(R.id.tvRouteInfo)?.text = "$routeName \u2022 $busNo"
-                findViewById<TextView>(R.id.tvBusStatus)?.text = "Bus Driver \u2022 $busNo"
+                findViewById<TextView>(R.id.tvRouteInfo)?.text = getString(CommonR.string.greeting_format, routeName, busNo)
+                findViewById<TextView>(R.id.tvBusStatus)?.text = getString(CommonR.string.bus_driver_bus_001).replace("BUS–001", busNo)
                 
-                // Prioritize IDs from bus document, fallback to route document IDs
                 val finalDriverId = if (!busDriverId.isNullOrEmpty()) busDriverId else routeDriverId ?: ""
                 val finalConductorId = if (!busConductorId.isNullOrEmpty()) busConductorId else routeConductorId ?: ""
                 
@@ -369,7 +374,7 @@ class Map : AppCompatActivity() {
                 }
 
                 val nextStopRaw = doc.getString("nextStop") ?: ""
-                if (nextStopRaw.isNotEmpty() && nextStopRaw != "Calculating...") {
+                if (nextStopRaw.isNotEmpty() && nextStopRaw != getString(CommonR.string.calculating)) {
                     if (nextStopRaw.length >= 15 && !nextStopRaw.contains(" ")) {
                         db.collection("stops").document(nextStopRaw).get().addOnSuccessListener { sDoc ->
                             val stopName = sDoc.getString("name") ?: nextStopRaw
@@ -385,7 +390,8 @@ class Map : AppCompatActivity() {
                 val etaRaw = doc.getString("eta") ?: ""
                 if (etaRaw.isNotEmpty()) {
                     val etaDisplay = if (etaRaw.contains("MIN")) etaRaw else "$etaRaw MINS"
-                    findViewById<TextView>(R.id.tvETA)?.text = "ETA - $etaDisplay"
+                    val etaFormatted = "ETA - $etaDisplay"
+                    findViewById<TextView>(R.id.tvETA)?.text = etaFormatted
                 }
                 
                 map.invalidate()
@@ -443,11 +449,12 @@ class Map : AppCompatActivity() {
         val density = resources.displayMetrics.density
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return BitmapDrawable(resources, bitmap)
+        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        bitmap.applyCanvas {
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(this)
+        }
+        return bitmap.toDrawable(resources)
     }
 
     override fun onResume() { 

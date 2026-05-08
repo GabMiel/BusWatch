@@ -1,42 +1,61 @@
 package com.example.buswatch
 
 import android.app.Application
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
+import android.util.Log
+import androidx.preference.PreferenceManager
 import com.cloudinary.android.MediaManager
+import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.auth.FirebaseAuth
 import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.osmdroid.config.Configuration
+import java.io.File
 
 class BusWatchApp : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        // Cloudinary Initialization
-        val config = mapOf(
+        // 1. Initialize Google Play Services Provider (Fixes Broker errors)
+        try {
+            ProviderInstaller.installIfNeeded(this)
+        } catch (e: Exception) {
+            Log.e("BusWatchApp", "Google Play Services Provider installation failed: ${e.message}")
+        }
+
+        // 2. Osmdroid Initialization
+        val config = Configuration.getInstance()
+        config.userAgentValue = "BusWatch/1.0 (${packageName}; support@buswatch.com)"
+        
+        val osmdroidDir = File(filesDir, "osmdroid")
+        if (!osmdroidDir.exists()) osmdroidDir.mkdirs()
+        config.osmdroidBasePath = osmdroidDir
+        config.osmdroidTileCache = File(osmdroidDir, "tiles")
+        
+        config.load(this, PreferenceManager.getDefaultSharedPreferences(this))
+
+        // 3. Cloudinary Initialization
+        val cloudinaryConfig = mapOf(
             "cloud_name" to "djtqqmjsp",
             "api_key" to "414199764998612",
             "api_secret" to "6zbS91G0UDbk0IOOYP90nI-q4sY"
         )
-        MediaManager.init(this, config)
+        MediaManager.init(this, cloudinaryConfig)
 
-        // OneSignal Logging
+        // 4. OneSignal Initialization
         OneSignal.Debug.logLevel = LogLevel.VERBOSE
-
-        // OneSignal Initialization
         OneSignal.initWithContext(this, "7dff4619-d475-4e8b-9a8e-31f2e7f40c19")
 
-        // Link current user if already logged in
         FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
             OneSignal.login(uid)
         }
 
-        // Request notification permission
         CoroutineScope(Dispatchers.IO).launch {
             OneSignal.Notifications.requestPermission(true)
         }
@@ -55,10 +74,9 @@ class BusWatchApp : Application() {
                 enableVibration(true)
                 setShowBadge(true)
                 setBypassDnd(true)
-                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }

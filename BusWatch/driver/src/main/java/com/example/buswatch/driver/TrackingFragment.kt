@@ -3,7 +3,6 @@ package com.example.buswatch.driver
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -18,6 +17,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
@@ -54,7 +55,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
     private val stopIdsList = mutableListOf<String>()
 
     private var isMapMaximized = false
-    private var locationButtonMode = 1 // 1: North Up, 2: Navigation Follow, 0: Manual
+    private var locationButtonMode = 1 // 1: North Up (Compass), 2: Navigation Follow (My Location), 0: Manual (Recenter)
     private var lastActiveFollowMode = 1 // Remembers if user preferred Mode 1 or 2
     
     private var sensorManager: SensorManager? = null
@@ -63,6 +64,9 @@ class TrackingFragment : Fragment(), SensorEventListener {
     private var isFirstSensorReading = true
 
     private var studentAdapter: StudentAdapter? = null
+    
+    private var lastRoadRequestTime: Long = 0
+    private val MIN_ROAD_REQUEST_INTERVAL = 15000L // 15 seconds throttling
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLiveTrackingBinding.inflate(inflater, container, false)
@@ -126,7 +130,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
             if (role == "Conductor") {
                 b.mapContainer.visibility = View.GONE
                 b.btnMaximizeMap.visibility = View.GONE
-                b.btnEndTrip.text = "EXIT ROSTER"
+                b.btnEndTrip.text = getString(CommonR.string.exit_roster)
                 b.headerContainer.visibility = View.VISIBLE
                 b.bannerNextStop.visibility = View.GONE
                 b.tvRouteInfo.visibility = View.GONE
@@ -134,7 +138,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                 b.rosterHandle.visibility = View.GONE
                 b.rosterHeaderBar.visibility = View.VISIBLE
                 b.conductorTopSpacer.visibility = View.VISIBLE
-                b.layoutBottomInfo.setBackgroundColor(android.graphics.Color.parseColor("#F5F5F5"))
+                b.layoutBottomInfo.setBackgroundColor("#F5F5F5".toColorInt())
                 
                 val bottomParams = b.layoutBottomInfo.layoutParams as android.widget.LinearLayout.LayoutParams
                 bottomParams.height = 0
@@ -146,7 +150,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                 recyclerParams.weight = 1f
                 b.recyclerPickup.layoutParams = recyclerParams
                 
-                b.root.setBackgroundColor(android.graphics.Color.parseColor("#F5F5F5"))
+                b.root.setBackgroundColor("#F5F5F5".toColorInt())
             } else {
                 b.mapContainer.visibility = View.VISIBLE
                 b.btnMaximizeMap.visibility = View.VISIBLE
@@ -165,7 +169,8 @@ class TrackingFragment : Fragment(), SensorEventListener {
             }
         }
 
-        binding.btnMyLocation.setImageResource(CommonR.drawable.ic_my_location)
+        // Initialize with Mode 1 icon (Compass)
+        binding.btnMyLocation.setImageResource(CommonR.drawable.ic_compass)
         binding.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
 
         binding.btnMyLocation.setOnClickListener {
@@ -209,6 +214,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                     if (locationButtonMode != 0) {
                         lastActiveFollowMode = locationButtonMode
                         locationButtonMode = 0
+                        // Mode 0: Re-centering icon (Black) - using ic_my_location as requested
                         _binding?.btnMyLocation?.setColorFilter(android.graphics.Color.BLACK)
                         _binding?.btnMyLocation?.setImageResource(CommonR.drawable.ic_my_location)
                         unregisterSensors()
@@ -246,7 +252,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
         stopIdsList.clear()
         stopIdsList.addAll(displayStopIds)
         
-        binding.tvNextStopName.text = "Calculating..."
+        binding.tvNextStopName.text = getString(CommonR.string.calculating)
 
         for ((index, sid) in displayStopIds.withIndex()) {
             db.collection("stops").document(sid).get().addOnSuccessListener { sDoc ->
@@ -282,7 +288,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                     stopPoints.clear()
                     stopPoints.addAll(displayStopIds.mapNotNull { stopPointsMap[it] })
                     mv.invalidate()
-                    viewModel.lastKnownLocation.value?.let { updateRouteWithCurrentLocation(it) }
+                    viewModel.lastKnownLocation.value?.let { updateRouteWithCurrentLocation(it, force = true) }
                 }
             }
         }
@@ -372,9 +378,19 @@ class TrackingFragment : Fragment(), SensorEventListener {
         }
     }
 
-    private fun updateRouteWithCurrentLocation(currentLoc: GeoPoint) {
+    private fun updateRouteWithCurrentLocation(currentLoc: GeoPoint, force: Boolean = false) {
         if (stopPoints.isEmpty()) return
         
+        val currentTime = System.currentTimeMillis()
+        if (!force && currentTime - lastRoadRequestTime < MIN_ROAD_REQUEST_INTERVAL) {
+            // Use simple line if we don't have an overlay yet
+            if (roadOverlay == null && map != null) {
+                drawSimplePolyline(map!!, mutableListOf(currentLoc).apply { addAll(stopPoints) })
+            }
+            return
+        }
+        
+        lastRoadRequestTime = currentTime
         val points = mutableListOf<GeoPoint>()
         points.add(currentLoc)
         points.addAll(stopPoints)
@@ -386,17 +402,30 @@ class TrackingFragment : Fragment(), SensorEventListener {
         // Ensure nextStop is updated in Firestore
         viewModel.assignedRoute.value?.busId?.let { busId ->
             val nextStopId = binding.tvNextStopName.tag?.toString()
-            if (!nextStopId.isNullOrEmpty() && nextStopId != "Calculating...") {
+            if (!nextStopId.isNullOrEmpty() && nextStopId != getString(CommonR.string.calculating)) {
                 db.collection("buses").document(busId).update("nextStop", nextStopId)
             }
         }
+    }
+
+    private fun drawSimplePolyline(mapView: MapView, points: List<GeoPoint>) {
+        val line = Polyline(mapView)
+        line.setPoints(points)
+        line.outlinePaint.color = "#4A90E2".toColorInt()
+        line.outlinePaint.strokeWidth = 12f
+        
+        roadOverlay?.let { mapView.overlays.remove(it) }
+        roadOverlay = line
+        mapView.overlays.add(0, roadOverlay)
+        mapView.invalidate()
     }
 
     private fun drawRoadOverlay(mapView: MapView, points: List<GeoPoint>) {
         val appContext = context?.applicationContext ?: return
         Thread {
             try {
-                val roadManager = OSRMRoadManager(appContext, "BusWatch/1.0")
+                // Use package name for user agent
+                val roadManager = OSRMRoadManager(appContext, appContext.packageName)
                 val road = roadManager.getRoad(ArrayList(points))
                 
                 if (road.mStatus == Road.STATUS_OK) {
@@ -427,8 +456,13 @@ class TrackingFragment : Fragment(), SensorEventListener {
                         
                         mapView.invalidate()
                     }
+                } else {
+                    activity?.runOnUiThread { drawSimplePolyline(mapView, points) }
                 }
-            } catch (e: Exception) { e.printStackTrace() }
+            } catch (e: Exception) { 
+                e.printStackTrace() 
+                activity?.runOnUiThread { drawSimplePolyline(mapView, points) }
+            }
         }.start()
     }
 
@@ -436,8 +470,9 @@ class TrackingFragment : Fragment(), SensorEventListener {
         val b = _binding ?: return
         locationButtonMode = 1
         lastActiveFollowMode = 1
+        // Mode 1: Compass icon
         b.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
-        b.btnMyLocation.setImageResource(CommonR.drawable.ic_my_location)
+        b.btnMyLocation.setImageResource(CommonR.drawable.ic_compass)
         updateDriverIcon()
         viewModel.lastKnownLocation.value?.let { gp ->
             map?.controller?.animateTo(gp)
@@ -454,6 +489,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
         locationButtonMode = 2
         lastActiveFollowMode = 2
         isFirstSensorReading = true 
+        // Mode 2: My Location icon
         b.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
         b.btnMyLocation.setImageResource(CommonR.drawable.ic_my_location)
         updateDriverIcon()
@@ -533,10 +569,11 @@ class TrackingFragment : Fragment(), SensorEventListener {
         val density = resources.displayMetrics.density
         val width = (widthDp * density).toInt()
         val height = (heightDp * density).toInt()
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, width, height)
-        drawable.draw(canvas)
+        val bitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        bitmap.applyCanvas {
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(this)
+        }
         return bitmap.toDrawable(resources)
     }
 

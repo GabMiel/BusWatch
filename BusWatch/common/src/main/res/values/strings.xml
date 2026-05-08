@@ -18,7 +18,7 @@
     <string name="save_caps">SAVE</string>
     <string name="save_changes_caps">SAVE CHANGES</string>
     <string name="cancel">@android:string/cancel</string>
-    <string name="cancel_caps">CANCEL</string>
+    <string name="cancel_caps">@android:string/cancel</string>
     <string name="confirm_caps">CONFIRM</string>
     <string name="continue_caps">CONTINUE</string>
     <string name="confirmation">Confirmation</string>
@@ -69,9 +69,9 @@
     <string name="sos_alert_title">Send SOS Alert?</string>
     <string name="sos_alert_message">This will notify the admin and share your current location.</string>
     <string name="send_sos">SEND SOS</string>
-    <string name="sending_sos_alert">Sending SOS Alert...</string>
+    <string name="sending_sos_alert">Sending SOS Alert&#8230;</string>
     <string name="please_wait">Please wait.</string>
-    <string name="getting_location">Getting your\ncurrent location...</string>
+    <string name="getting_location">Getting your\ncurrent location&#8230;</string>
     <string name="sos_sent_success">Emergency alert sent successfully.</string>
     <string name="sos_sent_failed">Failed to send emergency alert.</string>
     <string name="active_emergencies">ACTIVE EMERGENCIES</string>
@@ -286,6 +286,7 @@
     <string name="enter_child_s_school">Enter child’s school</string>
     <string name="enter_child_s_section">Enter child’s section</string>
     <string name="enter_child_s_section_grade">Enter child’s section</string>
+    <string name="enter_child_s_class_grade">Enter child’s grade</string>
     <string name="select_grade">Select Grade</string>
     <string name="add_photo">Add Photo</string>
     <string name="upload_photo">Upload Photo</string>
@@ -336,9 +337,10 @@
     <string name="pick_up">PICK UP</string>
     <string name="drop_off">DROP OFF</string>
     <string name="stop">Stop:</string>
+    <string name="stop_format">Stop: %1$s</string>
     <string name="reset_orientation">Reset Orientation</string>
     <string name="maximize_map">Maximize Map</string>
-    <string name="calculating">Calculating...</string>
+    <string name="calculating">Calculating&#8230;</string>
 
     <!-- Notifications -->
     <string name="notifications">Notifications</string>
@@ -459,6 +461,7 @@
     <string name="enter_pickup_address">Enter home address</string>
     <string name="enter_home_address">Enter home address</string>
     <string name="change_pickup_location">Change Home Location</string>
+    <string name="change_home_address">Change Home Address</string>
     <string name="request_edit">Request Edit</string>
     <string name="request_edit_permission">Request edit permission</string>
     <string name="pin_location_instruction">Make sure the pin is placed at the exact home location</string>
@@ -518,6 +521,7 @@
     <string name="assign_pickup_stop_caps">ASSIGN PICKUP STOP</string>
     <string name="change_pickup_stop">Change Pickup Stop</string>
     <string name="change_pickup_stop_caps">CHANGE PICKUP STOP</string>
+    <string name="change_stop_location">Change Stop Location</string>
     <string name="request_change_stop_caps">REQUEST CHANGE</string>
     <string name="choose_new_stop_desc">Choose a new stop. This request will be sent to the admin for approval.</string>
     <string name="stop_not_assigned_format">Stop: %s</string>
@@ -526,8 +530,16 @@
     <string name="select_conductor">Select Conductor</string>
     <string name="seats_format">%1$d Seats</string>
     <string name="choose_nearest_stop">Choose the nearest stop for your child. This will finalize their pickup point.</string>
-    <string name="selected_stop_caps">SELECTED STOP</string>
+    <string name="selected_stop_caps">Selected Stop</string>
     <string name="tap_marker_on_map">Tap a marker on the map</string>
+    <string name="home_location_not_set">Home location not set</string>
+    <string name="select_stop_from_map">Select a stop from map</string>
+    <string name="student_data_not_found">Student data not found</string>
+    <string name="assign_stop_confirm_message">Do you want to assign \'%1$s\' as the pickup stop?</string>
+    <string name="change_stop_confirm_message">Are you sure you want to request a change to \'%1$s\'? This requires admin approval.</string>
+    <string name="stop_assigned_successfully">Pickup stop assigned successfully</string>
+    <string name="failed_to_assign_stop">Failed to assign stop</string>
+    <string name="stop_change_request_submitted">Change request submitted for admin approval</string>
 
     <!-- Live Trip & Roster -->
     <string name="live_trip_format">LIVE TRIP: %s</string>

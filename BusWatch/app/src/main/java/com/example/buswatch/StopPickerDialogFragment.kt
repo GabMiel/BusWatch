@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buswatch.common.R as CommonR
@@ -115,7 +116,7 @@ class StopPickerDialogFragment : DialogFragment() {
             val circle = Polygon(mapView)
             circle.points = Polygon.pointsAsCircle(hp, 2000.0)
             circle.fillPaint.color = Color.argb(30, 0, 122, 255)
-            circle.outlinePaint.color = Color.parseColor("#007AFF")
+            circle.outlinePaint.color = "#007AFF".toColorInt()
             circle.outlinePaint.strokeWidth = 2f
             mapView.overlays.add(0, circle)
         }
@@ -166,7 +167,7 @@ class StopPickerDialogFragment : DialogFragment() {
                 mapView.controller.animateTo(it)
                 mapView.controller.setZoom(17.0)
             } ?: run {
-                Toast.makeText(requireContext(), "Home location not set", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), CommonR.string.home_location_not_set, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -174,7 +175,7 @@ class StopPickerDialogFragment : DialogFragment() {
         view.findViewById<Button>(R.id.btnConfirmStop).setOnClickListener {
             if (selectedStopId != null && selectedStopName != null) {
                 showConfirmationPopup()
-            } else Toast.makeText(requireContext(), "Select a stop from map", Toast.LENGTH_SHORT).show()
+            } else Toast.makeText(requireContext(), CommonR.string.select_stop_from_map, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -208,23 +209,23 @@ class StopPickerDialogFragment : DialogFragment() {
         val isFirstTime = currentStopId.isNullOrEmpty()
         
         val message = if (isFirstTime) {
-            "Do you want to assign '$selectedStopName' as the pickup stop?"
+            getString(CommonR.string.assign_stop_confirm_message, selectedStopName)
         } else {
-            "Are you sure you want to request a change to '$selectedStopName'? This requires admin approval."
+            getString(CommonR.string.change_stop_confirm_message, selectedStopName)
         }
         
         AlertDialog.Builder(requireContext())
-            .setTitle("Confirm Selection")
+            .setTitle(CommonR.string.confirmation)
             .setMessage(message)
-            .setPositiveButton("CONFIRM") { _, _ -> submitStopRequest() }
-            .setNegativeButton("CANCEL", null)
+            .setPositiveButton(CommonR.string.confirm_caps) { _, _ -> submitStopRequest() }
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
     private fun submitStopRequest() {
         val uid = auth.currentUser?.uid ?: return
         val studentData = viewModel.studentData.value ?: run {
-            Toast.makeText(requireContext(), "Student data not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), CommonR.string.student_data_not_found, Toast.LENGTH_SHORT).show()
             return
         }
         val currentStopId = studentData["stop"] as? String ?: ""
@@ -271,11 +272,11 @@ class StopPickerDialogFragment : DialogFragment() {
             }
             
             batch.commit().addOnSuccessListener {
-                Toast.makeText(requireContext(), "Pickup stop assigned successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), CommonR.string.stop_assigned_successfully, Toast.LENGTH_SHORT).show()
                 viewModel.loadStudentAndParentData(childName)
                 dismiss()
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to assign stop", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), CommonR.string.failed_to_assign_stop, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -302,10 +303,10 @@ class StopPickerDialogFragment : DialogFragment() {
         )
 
         db.collection("stop_requests").add(request).addOnSuccessListener {
-            Toast.makeText(requireContext(), "Change request submitted for admin approval", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), CommonR.string.stop_change_request_submitted, Toast.LENGTH_SHORT).show()
             dismiss()
         }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Failed to submit request", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), CommonR.string.failed_to_submit_request, Toast.LENGTH_SHORT).show()
         }
     }
 }

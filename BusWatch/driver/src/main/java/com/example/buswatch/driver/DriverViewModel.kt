@@ -48,16 +48,15 @@ class DriverViewModel : ViewModel() {
     val lastBearing: LiveData<Float> = _lastBearing
 
     private val _sortMode = MutableLiveData("Name") 
-    val sortMode: LiveData<String> = _sortMode
     
     private val _isSortAscending = MutableLiveData(true)
-    val isSortAscending: LiveData<Boolean> = _isSortAscending
 
     private val _toastMessage = MutableLiveData<String?>()
     val toastMessage: LiveData<String?> = _toastMessage
 
     private var studentListener: ListenerRegistration? = null
     val stopCoords = mutableMapOf<String, GeoPoint>()
+    val stopNames = mutableMapOf<String, String>()
 
     fun setCurrentTab(tab: String) {
         _currentTab.value = tab
@@ -152,12 +151,26 @@ class DriverViewModel : ViewModel() {
     }
 
     private fun fetchStopDetails(sIds: List<String>) {
+        var loaded = 0
         for (sid in sIds) {
             db.collection("stops").document(sid).get().addOnSuccessListener { doc ->
                 val lat = doc.getDouble("latitude")
                 val lng = doc.getDouble("longitude")
+                val name = doc.getString("name") ?: "Unknown Stop"
                 if (lat != null && lng != null) {
                     stopCoords[sid] = GeoPoint(lat, lng)
+                    stopNames[sid] = name
+                }
+                loaded++
+                if (loaded == sIds.size) {
+                    // Update current students list with stop names if they were missing
+                    val currentList = _students.value ?: emptyList()
+                    val updated = currentList.map { student ->
+                        if (student.stopName.isEmpty() || student.stopName == "Loading...") {
+                            student.copy(stopName = stopNames[student.stopId] ?: "Unknown Stop")
+                        } else student
+                    }
+                    _students.value = updated
                 }
             }
         }
@@ -216,6 +229,7 @@ class DriverViewModel : ViewModel() {
             map["childAvatarUrl"] as? String ?: "", 
             map["rideOption"] as? String ?: "Round Trip", 
             stopId,
+            stopName = stopNames[stopId] ?: "Loading...",
             bloodType = map["bloodType"] as? String ?: "N/A",
             allergies = map["allergies"] as? String ?: "None",
             medications = map["medications"] as? String ?: "None",
@@ -268,6 +282,14 @@ class DriverViewModel : ViewModel() {
     }
 
     fun updateStudentStatus(parentId: String, newStatus: String) {
+        // Immediate local update for "instant" reflection
+        val currentList = _students.value?.toMutableList() ?: mutableListOf()
+        val index = currentList.indexOfFirst { it.id == parentId }
+        if (index != -1) {
+            currentList[index] = currentList[index].copy(status = newStatus)
+            _students.value = currentList
+        }
+
         val actualId = parentId.split("_")[0]
         db.collection("parents").document(actualId).get().addOnSuccessListener { doc ->
             @Suppress("UNCHECKED_CAST")
@@ -318,10 +340,11 @@ class DriverViewModel : ViewModel() {
             _toastMessage.value = "Error: No active route found for your account."
             return
         }
-        
+
         val stopIds = route.stopIds
         if (stopIds.isEmpty()) return
         
+        // Notifications are sent in background, immediate feedback is handled in the UI click listener
         val chunks = stopIds.chunked(30)
         for (chunk in chunks) {
             db.collection("parents")
@@ -329,11 +352,11 @@ class DriverViewModel : ViewModel() {
                 .get()
                 .addOnSuccessListener { snapshots ->
                     if (snapshots.isEmpty) return@addOnSuccessListener
-                    
+
                     val parentIds = snapshots.map { it.id }
                     val title = "Bus Trip Started"
                     val message = "The bus for ${route.name} has started its trip. Be ready at your stop!"
-                    
+
                     parentIds.forEach { pid ->
                         val notifData = hashMapOf(
                             "title" to title, "message" to message, "timestamp" to FieldValue.serverTimestamp(),
@@ -342,11 +365,9 @@ class DriverViewModel : ViewModel() {
                         db.collection("parents").document(pid).collection("notifications").add(notifData)
                     }
                     NotificationSender.sendNotification(parentIds, title, message)
-                    _toastMessage.value = "Trip Start Notifications Sent!"
                 }
                 .addOnFailureListener { e ->
                     Log.e("DriverVM", "Failed to notify parents: ${e.message}")
-                    _toastMessage.value = "Notification error: ${e.message}"
                 }
         }
     }
@@ -363,7 +384,7 @@ class DriverViewModel : ViewModel() {
                     val parentIds = snapshots.map { it.id }
                     val title = "⚠️ EMERGENCY: SOS Alert"
                     val message = "An SOS alert has been triggered for Bus ${route.busNumber ?: route.name}. Open the app for live location."
-                    
+
                     parentIds.forEach { pid ->
                         val notifData = hashMapOf(
                             "title" to title, "message" to message, "timestamp" to FieldValue.serverTimestamp(),

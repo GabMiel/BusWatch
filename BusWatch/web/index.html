@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusWatch | Official Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FEBE1E;
+            --dark: #2D2D2D;
+            --cream: #FFF3D4;
+            --white: #FFFFFF;
+            --text: #1A1A1A;
+            --gray: #888888;
+            --light-bg: #f9f9f9;
+            --sos-red: #FF0000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--white); color: var(--text); line-height: 1.6; scroll-behavior: smooth; }
+
+        /* Navbar */
+        nav { background: var(--dark); padding: 15px 8%; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .logo { display: flex; align-items: center; gap: 12px; color: var(--primary); font-weight: 700; font-size: 1.6rem; text-decoration: none; }
+        /* Style to simulate logo_with_bg.xml (Yellow background) */
+        .logo img, .footer-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: var(--primary);
+            padding: 4px;
+            border: none;
+        }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero */
+        .hero { padding: 220px 8% 150px; background: linear-gradient(135deg, var(--primary) 0%, #FFD54F 100%); text-align: center; clip-path: polygon(0 0, 100% 0, 100% 88%, 0% 100%); position: relative; }
+        .hero h1 { font-size: 3.8rem; font-weight: 800; color: var(--dark); margin-bottom: 20px; line-height: 1.1; }
+        .hero p { font-size: 1.3rem; color: #444; max-width: 800px; margin: 0 auto 40px; }
+        .hero-bus { position: absolute; bottom: 10%; right: 5%; width: 250px; opacity: 0.15; pointer-events: none; }
+
+        .btn { background: var(--dark); color: var(--primary); padding: 20px 50px; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 15px; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.15); font-size: 1.1rem; border: none; }
+        .btn:hover { transform: translateY(-5px); background: #000; box-shadow: 0 15px 35px rgba(0,0,0,0.25); }
+
+        /* Features */
+        .container { padding: 100px 8%; text-align: center; }
+        .section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 60px; color: var(--dark); text-transform: uppercase; letter-spacing: -1px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .feature-card { padding: 50px 35px; border-radius: 35px; background: var(--cream); border: 1px solid rgba(0,0,0,0.03); transition: 0.3s; }
+        .feature-card:hover { transform: translateY(-10px); background: white; box-shadow: 0 25px 50px rgba(0,0,0,0.06); }
+        .feature-icon-wrapper { width: 80px; height: 80px; margin: 0 auto 25px; background: var(--primary); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+        .feature-icon-wrapper img { width: 50px; height: 50px; object-fit: contain; }
+        .feature-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; }
+
+        /* SOS Custom Style */
+        .sos-icon { color: var(--sos-red); font-size: 3rem; margin-bottom: 20px; }
+
+        /* Download Section */
+        .download-section { background: var(--dark); color: white; padding: 100px 8%; text-align: center; border-radius: 60px; margin: 0 4% 80px; }
+        .download-section h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+        .download-section p { margin-bottom: 40px; opacity: 0.8; }
+
+        /* Team Section */
+        .team-section { padding: 100px 8%; text-align: center; background: var(--light-bg); border-radius: 60px; margin: 0 2% 80px; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .team-card { background: white; padding: 40px 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.4s; }
+        .team-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .team-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 40px;
+            object-fit: cover;
+            margin-bottom: 25px;
+            border: 5px solid var(--primary);
+            background: #eee;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        .team-card h3 { font-size: 1.2rem; font-weight: 800; color: var(--dark); line-height: 1.3; }
+        .team-card p { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; }
+
+        /* Footer */
+        footer { padding: 80px 8% 40px; text-align: center; background: var(--dark); color: #666; font-size: 0.95rem; }
+        .footer-logo { color: var(--primary); font-size: 1.6rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
+
+        @media (max-width: 850px) {
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">
+            <!-- Using bus.png with CSS background to mimic logo_with_bg -->
+            <img src="bus.png" alt="BusWatch Logo">
+            BUSWATCH
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#download">Download</a>
+            <a href="#team">Our Team</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <img src="bus.png" class="hero-bus" alt="Bus">
+        <h1>Behind every bus is a family waiting.<br>We help them stay connected.</h1>
+        <p>Real-time tracking that brings the school bus to your screen. Stay connected to your child's journey and enjoy the peace of mind you deserve.</p>
+        <a href="https://drive.google.com/drive/u/1/folders/1QW3xYYXzwntdA9I8Kp3-rTCnKzMgE--i" target="_blank" class="btn">
+            <i class="fab fa-android"></i>
+            Download for Android
+        </a>
+    </header>
+
+    <section class="container" id="features">
+        <h2 class="section-title">Features for Parents</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper"><img src="map3.png" alt="Map"></div>
+                <h3>Interactive Map</h3>
+                <p>Monitor your child's bus live.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper"><img src="bell.png" alt="Arrivals"></div>
+                <h3>Arrival Estimates</h3>
+                <p>Never miss a stop. View estimated arrival times (ETA) for your bus stop.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper"><img src="child.png" alt="Status"></div>
+                <h3>Boarding Status</h3>
+                <p>Get instant updates when your child boards or deboards the bus. Monitor status changes in real-time for both morning and afternoon routes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper"><img src="bus.png" alt="Safety"></div>
+                <h3>Trip Monitoring</h3>
+                <p>Ensuring safety beyond tracking. Administrators have instant access to student medical profiles and emergency contacts during active trips.</p>
+            </div>
+            <div class="feature-card">
+                <div class="sos-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L1 21H23L12 2Z" fill="#FF0000"/>
+                        <path d="M11 8H13V14H11V8ZM11 16H13V18H11V16Z" fill="white"/>
+                    </svg>
+                </div>
+                <h3>SOS Alerts</h3>
+                <p>A secure platform where drivers / conductors can send instant SOS signals to school administrators during critical incidents for rapid response.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper"><img src="bus.png" style="background: white; padding: 5px; border-radius: 8px;" alt="Verified"></div>
+                <h3>Verified Network</h3>
+                <p>Only verified parents, drivers, and conductors can access the system, ensuring student data is kept private and secure.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="download-section" id="download">
+        <h2>Start Tracking Today</h2>
+        <p>Download the official BusWatch Android application and ensure your child's safety during their commute.</p>
+        <a href="https://drive.google.com/drive/u/1/folders/1QW3xYYXzwntdA9I8Kp3-rTCnKzMgE--i" target="_blank" class="btn">
+            <i class="fab fa-android"></i>
+            Download for Android
+        </a>
+    </section>
+
+    <section class="team-section" id="team">
+        <h2 class="section-title">Our Development Team</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="verdan.jpg" class="team-img" alt="Roland Carl A. Verdan">
+                <h3>Verdan, Roland Carl A.</h3>
+                <p>Project Manager</p>
+            </div>
+            <div class="team-card">
+                <img src="baluyot.jpg" class="team-img" alt="Joyce Ann J. Baluyot">
+                <h3>Baluyot, Joyce Ann J.</h3>
+                <p>Front End Developer</p>
+            </div>
+            <div class="team-card">
+                <img src="cantones.jpg" class="team-img" alt="Jessie James F. Cantones">
+                <h3>Cantones, Jessie James F.</h3>
+                <p>Back End Developer</p>
+            </div>
+            <div class="team-card">
+                <img src="cristobal.jpg" class="team-img" alt="Emilita D. Cristobal">
+                <h3>Cristobal, Emilita D.</h3>
+                <p>UI/UX Designer</p>
+            </div>
+            <div class="team-card">
+                <img src="miel.jpg" class="team-img" alt="Gabriel Roncake O. Miel">
+                <h3>Miel, Gabriel Roncake O.</h3>
+                <p>Back End Developer</p>
+            </div>
+            <div class="team-card">
+                <img src="petre.jpg" class="team-img" alt="Yancee Exequiel G. Petre">
+                <h3>Petre, Yancee Exequiel G.</h3>
+                <p>Documentation</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <a href="#" class="footer-logo">
+            <!-- Swapped logo_buswatch.jpg for bus.png with the bg style -->
+            <img src="bus.png" alt="BusWatch Logo">
+            BUSWATCH
+        </a>
+        <p>&copy; 2024 BusWatch Systems. All rights reserved.</p>
+        <p style="margin-top: 15px; opacity: 0.4;">Built with Firebase Cloud & Android Kotlin SDK</p>
+    </footer>
+
+    <script>
+        // Automatically handle broken team images with a fallback avatar
+        document.querySelectorAll('.team-img').forEach(img => {
+            img.addEventListener('error', function() {
+                const name = this.alt.replace(/\s+/g, '+');
+                this.src = `https://ui-avatars.com/api/?name=${name}&background=FEBE1E&color=2D2D2D&size=200`;
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>

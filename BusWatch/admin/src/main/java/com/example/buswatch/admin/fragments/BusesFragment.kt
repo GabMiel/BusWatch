@@ -20,6 +20,7 @@ import com.example.buswatch.admin.BusAdmin
 import com.example.buswatch.admin.BusAdapter
 import com.example.buswatch.admin.R
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
 
@@ -30,6 +31,8 @@ class BusesFragment : Fragment() {
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
     private var searchQuery = ""
+    private var busesListener: ListenerRegistration? = null
+    private var allBusesList = mutableListOf<BusAdmin>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_bus, container, false)
@@ -38,7 +41,29 @@ class BusesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchBuses()
+        startListener()
+    }
+
+    private fun startListener() {
+        busesListener?.remove()
+        busesListener = db.collection("buses")
+            .whereEqualTo("status", "Active")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) {
+                    val errorMsg = e?.message ?: "Unknown error"
+                    context?.let { Toast.makeText(it, "Error: $errorMsg", Toast.LENGTH_SHORT).show() }
+                    return@addSnapshotListener
+                }
+                allBusesList = snapshots.map { 
+                    BusAdmin(it.id, it.getString("busNumber") ?: "N/A", it.getString("status") ?: "Active") 
+                }.toMutableList()
+                updateList()
+            }
+    }
+
+    override fun onDestroyView() {
+        busesListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -46,14 +71,14 @@ class BusesFragment : Fragment() {
         rv?.layoutManager = LinearLayoutManager(requireContext())
 
         view.findViewById<TextView>(R.id.btnAddNewBus)?.setOnClickListener {
-            AddBusDialog(requireActivity(), db) { fetchBuses() }.show()
+            AddBusDialog(requireActivity(), db) { /* snapshot listener handles refresh */ }.show()
         }
 
         view.findViewById<ImageButton>(R.id.btnSort)?.setOnClickListener {
             (requireActivity() as? AdminHome)?.showSortOptions("buses") { dir ->
                 sortDirection = dir
                 currentPage = 1
-                fetchBuses()
+                updateList()
             }
         }
 
@@ -63,7 +88,7 @@ class BusesFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s?.toString()?.lowercase() ?: ""
                 currentPage = 1
-                fetchBuses()
+                updateList()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -71,36 +96,32 @@ class BusesFragment : Fragment() {
         setupPagination(view)
     }
 
-    private fun fetchBuses() {
-        db.collection("buses").whereEqualTo("status", "Active").get().addOnSuccessListener { snapshots ->
-            val allBuses = snapshots.map { 
-                BusAdmin(it.id, it.getString("busNumber") ?: "N/A", it.getString("status") ?: "Active") 
-            }.filter { 
-                it.busNumber.lowercase().contains(searchQuery)
-            }
-
-            val sortedBuses = if (sortDirection == Query.Direction.ASCENDING) {
-                allBuses.sortedBy { it.busNumber.lowercase() }
-            } else {
-                allBuses.sortedByDescending { it.busNumber.lowercase() }
-            }
-
-            totalCount = sortedBuses.size
-            val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-            if (currentPage > totalPages) currentPage = totalPages
-            if (currentPage < 1) currentPage = 1
-
-            val start = (currentPage - 1) * itemsPerPage
-            val end = minOf(start + itemsPerPage, totalCount)
-            val pagedBuses = if (start < totalCount) sortedBuses.subList(start, end) else emptyList()
-
-            view?.findViewById<RecyclerView>(R.id.recyclerBuses)?.adapter = BusAdapter(pagedBuses,
-                onViewClick = { (requireActivity() as? AdminHome)?.showBusDetail(it) },
-                onEditClick = { (requireActivity() as? AdminHome)?.editBusDetail(it) },
-                onArchiveClick = { (requireActivity() as? AdminHome)?.archiveBus(it) { fetchBuses() } }
-            )
-            updatePaginationUI()
+    private fun updateList() {
+        val filteredBuses = allBusesList.filter { 
+            it.busNumber.lowercase().contains(searchQuery)
         }
+
+        val sortedBuses = if (sortDirection == Query.Direction.ASCENDING) {
+            filteredBuses.sortedBy { it.busNumber.lowercase() }
+        } else {
+            filteredBuses.sortedByDescending { it.busNumber.lowercase() }
+        }
+
+        totalCount = sortedBuses.size
+        val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        if (currentPage > totalPages) currentPage = totalPages
+        if (currentPage < 1) currentPage = 1
+
+        val start = (currentPage - 1) * itemsPerPage
+        val end = minOf(start + itemsPerPage, totalCount)
+        val pagedBuses = if (start < totalCount) sortedBuses.subList(start, end) else emptyList()
+
+        view?.findViewById<RecyclerView>(R.id.recyclerBuses)?.adapter = BusAdapter(pagedBuses,
+            onViewClick = { (requireActivity() as? AdminHome)?.showBusDetail(it) },
+            onEditClick = { (requireActivity() as? AdminHome)?.editBusDetail(it) },
+            onArchiveClick = { (requireActivity() as? AdminHome)?.archiveBus(it) }
+        )
+        updatePaginationUI()
     }
 
     private fun setupPagination(view: View) {
@@ -124,14 +145,15 @@ class BusesFragment : Fragment() {
     private fun handleJumpToPage(page: Int) {
         val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         currentPage = page.coerceIn(1, maxPage)
-        fetchBuses()
+        updateList()
     }
 
     private fun updatePaginationUI() {
         val view = view ?: return
         val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         view.findViewById<EditText>(R.id.etCurrentPage)?.setText(currentPage.toString())
-        view.findViewById<TextView>(R.id.tvTotalPages)?.text = " of $maxPage"
+        val totalPagesText = " of $maxPage"
+        view.findViewById<TextView>(R.id.tvTotalPages)?.text = totalPagesText
         
         val btnPrev = view.findViewById<View>(R.id.btnPrevPage)
         val btnFirst = view.findViewById<View>(R.id.btnFirstPage)

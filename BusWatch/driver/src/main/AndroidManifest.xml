@@ -7,9 +7,22 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <queries>
+        <package android:name="com.google.android.gms" />
+        <intent>
+            <action android:name="com.google.android.gms.plus.action.QUICK_LOOKUP" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
+
+        <!-- Add your Google Maps API Key here if using Play Services Maps -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA6PsugsTOOrHG9dm79AyCS41ckOiSy0s0" />
+
         <activity
             android:name=".DriverHome"
             android:exported="false" />

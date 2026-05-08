@@ -8,6 +8,16 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <queries>
+        <package android:name="com.google.android.gms" />
+        <intent>
+            <action android:name="com.google.android.gms.plus.action.QUICK_LOOKUP" />
+        </intent>
+        <intent>
+            <action android:name="com.google.android.gms.location.settings.GOOGLE_LOCATION_SETTINGS" />
+        </intent>
+    </queries>
+
     <application
         android:name=".BusWatchApp"
         android:allowBackup="true"
@@ -18,7 +28,18 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BusWatch"
-        tools:replace="android:label,android:theme,android:allowBackup">
+        android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
+        tools:replace="android:label,android:theme,android:allowBackup"
+        tools:targetApi="33">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA6PsugsTOOrHG9dm79AyCS41ckOiSy0s0" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

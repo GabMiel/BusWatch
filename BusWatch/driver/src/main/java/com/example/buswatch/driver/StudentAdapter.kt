@@ -22,6 +22,7 @@ class StudentAdapter(
     class StudentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(if (view.id == R.id.studentRowContainer) R.id.tvStudentName else R.id.tvPickupName)
         val grade: TextView = view.findViewById(R.id.tvStudentGrade)
+        val stop: TextView? = view.findViewById(R.id.tvStopLocation)
         val photo: ImageView? = view.findViewById(if (view.id == R.id.studentRowContainer) R.id.imgStudentAvatar else R.id.imgPickupStudent)
         val btnAction: TextView? = view.findViewById(R.id.btnPickUp)
         val isPickupList: Boolean = view.id != R.id.studentRowContainer
@@ -41,6 +42,11 @@ class StudentAdapter(
             holder.grade.text = String.format(Locale.getDefault(), "%d meters away", student.distanceMeters)
         } else {
             holder.grade.text = student.grade
+        }
+
+        holder.stop?.let { 
+            it.text = it.context.getString(CommonR.string.stop_format, student.stopName)
+            it.visibility = if (holder.isPickupList) View.VISIBLE else View.GONE
         }
 
         holder.photo?.let { img ->
@@ -69,10 +75,12 @@ class StudentAdapter(
             holder.itemView.setBackgroundResource(CommonR.drawable.bg_student_row_active)
             holder.name.alpha = 1.0f
             holder.grade.alpha = 1.0f
+            holder.stop?.alpha = 1.0f
         } else {
             holder.itemView.setBackgroundResource(CommonR.drawable.bg_student_row)
             holder.name.alpha = 0.5f
             holder.grade.alpha = 0.5f
+            holder.stop?.alpha = 0.5f
         }
 
         holder.itemView.setOnClickListener {
@@ -129,8 +137,6 @@ class StudentAdapter(
                 return oldStudents[oldItemPosition].id == newStudents[newItemPosition].id
             }
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                // If the tab changed, we treat contents as changed because the UI 
-                // depends on the tab (alpha, button visibility).
                 return oldTab == tab && oldStudents[oldItemPosition] == newStudents[newItemPosition]
             }
         })

@@ -20,6 +20,7 @@ import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.admin.UserAdapter
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
 
@@ -30,6 +31,8 @@ class UsersFragment : Fragment() {
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
     private var searchQuery = ""
+    private var usersListener: ListenerRegistration? = null
+    private var allUsersList = mutableListOf<UserAdmin>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_users, container, false)
@@ -38,7 +41,33 @@ class UsersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchPage()
+        startListener()
+    }
+
+    private fun startListener() {
+        usersListener?.remove()
+        usersListener = db.collection("parents")
+            .whereEqualTo("status", "approved")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) {
+                    context?.let { Toast.makeText(it, "Error: ${e?.message}", Toast.LENGTH_SHORT).show() }
+                    return@addSnapshotListener
+                }
+                allUsersList = snapshots.map { doc ->
+                    @Suppress("UNCHECKED_CAST")
+                    val profile = doc.get("profile") as? Map<String, Any>
+                    val firstName = profile?.get("firstName") as? String ?: ""
+                    val lastName = profile?.get("lastName") as? String ?: ""
+                    val avatarUrl = profile?.get("parentAvatarUrl") as? String ?: doc.getString("avatarUrl") ?: ""
+                    UserAdmin(doc.id, "$firstName $lastName", "Parent", status = "approved", avatarUrl = avatarUrl)
+                }.toMutableList()
+                updateList()
+            }
+    }
+
+    override fun onDestroyView() {
+        usersListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -57,7 +86,7 @@ class UsersFragment : Fragment() {
             (requireActivity() as? AdminHome)?.showSortOptions("parents") { dir ->
                 sortDirection = dir
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
         }
 
@@ -67,7 +96,7 @@ class UsersFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s?.toString()?.lowercase() ?: ""
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -75,49 +104,35 @@ class UsersFragment : Fragment() {
         setupPagination(view)
     }
 
-    private fun fetchPage() {
-        db.collection("parents").whereEqualTo("status", "approved")
-            .get()
-            .addOnSuccessListener { snapshots ->
-                val allUsers = snapshots.map { doc ->
-                    @Suppress("UNCHECKED_CAST")
-                    val profile = doc.get("profile") as? Map<String, Any>
-                    val firstName = profile?.get("firstName") as? String ?: ""
-                    val lastName = profile?.get("lastName") as? String ?: ""
-                    val avatarUrl = profile?.get("parentAvatarUrl") as? String ?: doc.getString("avatarUrl") ?: ""
-                    UserAdmin(doc.id, "$firstName $lastName", "Parent", status = "approved", avatarUrl = avatarUrl)
-                }.filter { 
-                    it.name.lowercase().contains(searchQuery)
-                }
-                
-                val sortedUsers = if (sortDirection == Query.Direction.ASCENDING) {
-                    allUsers.sortedBy { it.name.lowercase() }
-                } else {
-                    allUsers.sortedByDescending { it.name.lowercase() }
-                }
-                
-                totalCount = sortedUsers.size
-                val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-                if (currentPage > totalPages) currentPage = totalPages
-                if (currentPage < 1) currentPage = 1
-                
-                val start = (currentPage - 1) * itemsPerPage
-                val end = minOf(start + itemsPerPage, totalCount)
-                
-                val pagedUsers = if (start < totalCount) sortedUsers.subList(start, end) else emptyList()
+    private fun updateList() {
+        val filteredUsers = allUsersList.filter { 
+            it.name.lowercase().contains(searchQuery)
+        }
+        
+        val sortedUsers = if (sortDirection == Query.Direction.ASCENDING) {
+            filteredUsers.sortedBy { it.name.lowercase() }
+        } else {
+            filteredUsers.sortedByDescending { it.name.lowercase() }
+        }
+        
+        totalCount = sortedUsers.size
+        val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        if (currentPage > totalPages) currentPage = totalPages
+        if (currentPage < 1) currentPage = 1
+        
+        val start = (currentPage - 1) * itemsPerPage
+        val end = minOf(start + itemsPerPage, totalCount)
+        
+        val pagedUsers = if (start < totalCount) sortedUsers.subList(start, end) else emptyList()
 
-                view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedUsers.toMutableList(), 
-                    { (requireActivity() as? AdminHome)?.showParentDetail(it) { fetchPage() } }, 
-                    { (requireActivity() as? AdminHome)?.editParentDetail(it) }, 
-                    { user, _ -> 
-                        (requireActivity() as? AdminHome)?.archiveUser(user) { fetchPage() } 
-                    }
-                )
-                updatePaginationUI()
+        view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedUsers.toMutableList(), 
+            { (requireActivity() as? AdminHome)?.showParentDetail(it) { startListener() } }, 
+            { (requireActivity() as? AdminHome)?.editParentDetail(it) }, 
+            { user, _ -> 
+                (requireActivity() as? AdminHome)?.archiveUser(user) { /* startListener will handle it */ } 
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error fetching users: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        )
+        updatePaginationUI()
     }
 
     private fun setupPagination(view: View) {
@@ -141,7 +156,7 @@ class UsersFragment : Fragment() {
     private fun handleJumpToPage(page: Int) {
         val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         currentPage = page.coerceIn(1, maxPage)
-        fetchPage()
+        updateList()
     }
 
     private fun updatePaginationUI() {

@@ -23,6 +23,7 @@ import com.example.buswatch.admin.UserAdapter
 import com.example.buswatch.admin.UserAdmin
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlin.math.ceil
 
@@ -33,6 +34,8 @@ class ConductorsFragment : Fragment() {
     private var totalCount = 0
     private var sortDirection = Query.Direction.ASCENDING
     private var searchQuery = ""
+    private var conductorsListener: ListenerRegistration? = null
+    private var allConductorsList = mutableListOf<UserAdmin>()
     
     private var currentAddConductorDialog: AddConductorDialog? = null
 
@@ -49,7 +52,34 @@ class ConductorsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
-        fetchPage()
+        startListener()
+    }
+
+    private fun startListener() {
+        conductorsListener?.remove()
+        conductorsListener = db.collection("conductors")
+            .whereEqualTo("status", "active")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) {
+                    context?.let { Toast.makeText(it, "Error fetching conductors: ${e?.message}", Toast.LENGTH_SHORT).show() }
+                    return@addSnapshotListener
+                }
+                allConductorsList = snapshots.map { doc ->
+                    UserAdmin(
+                        doc.id, 
+                        "${doc.getString("firstName")} ${doc.getString("lastName")}", 
+                        "Conductor", 
+                        status = "active",
+                        avatarUrl = doc.getString("conductorAvatar") ?: ""
+                    )
+                }.toMutableList()
+                updateList()
+            }
+    }
+
+    override fun onDestroyView() {
+        conductorsListener?.remove()
+        super.onDestroyView()
     }
 
     private fun setupUI(view: View) {
@@ -67,7 +97,7 @@ class ConductorsFragment : Fragment() {
         view.findViewById<TextView>(R.id.btnAddNewConductor)?.setOnClickListener {
             val activity = requireActivity() as? AppCompatActivity
             if (activity != null) {
-                currentAddConductorDialog = AddConductorDialog(activity, db, pickImageLauncher) { fetchPage() }
+                currentAddConductorDialog = AddConductorDialog(activity, db, pickImageLauncher) { /* listener handles refresh */ }
                 currentAddConductorDialog?.show()
             }
         }
@@ -76,7 +106,7 @@ class ConductorsFragment : Fragment() {
             (requireActivity() as? AdminHome)?.showSortOptions("conductors") { dir ->
                 sortDirection = dir
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
         }
 
@@ -86,7 +116,7 @@ class ConductorsFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchQuery = s?.toString()?.lowercase() ?: ""
                 currentPage = 1
-                fetchPage()
+                updateList()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -94,49 +124,33 @@ class ConductorsFragment : Fragment() {
         setupPagination(view)
     }
 
-    private fun fetchPage() {
-        db.collection("conductors")
-            .whereEqualTo("status", "active")
-            .get()
-            .addOnSuccessListener { snapshots ->
-                val allConductors = snapshots.map { doc ->
-                    UserAdmin(
-                        doc.id, 
-                        "${doc.getString("firstName")} ${doc.getString("lastName")}", 
-                        "Conductor", 
-                        status = "active",
-                        avatarUrl = doc.getString("conductorAvatar") ?: ""
-                    )
-                }.filter { 
-                    it.name.lowercase().contains(searchQuery)
-                }
+    private fun updateList() {
+        val filteredConductors = allConductorsList.filter { 
+            it.name.lowercase().contains(searchQuery)
+        }
 
-                val sortedConductors = if (sortDirection == Query.Direction.ASCENDING) {
-                    allConductors.sortedBy { it.name.lowercase() }
-                } else {
-                    allConductors.sortedByDescending { it.name.lowercase() }
-                }
-                
-                totalCount = sortedConductors.size
-                val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
-                if (currentPage > totalPages) currentPage = totalPages
-                if (currentPage < 1) currentPage = 1
-                
-                val start = (currentPage - 1) * itemsPerPage
-                val end = minOf(start + itemsPerPage, totalCount)
-                
-                val pagedConductors = if (start < totalCount) sortedConductors.subList(start, end) else emptyList()
+        val sortedConductors = if (sortDirection == Query.Direction.ASCENDING) {
+            filteredConductors.sortedBy { it.name.lowercase() }
+        } else {
+            filteredConductors.sortedByDescending { it.name.lowercase() }
+        }
+        
+        totalCount = sortedConductors.size
+        val totalPages = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
+        if (currentPage > totalPages) currentPage = totalPages
+        if (currentPage < 1) currentPage = 1
+        
+        val start = (currentPage - 1) * itemsPerPage
+        val end = minOf(start + itemsPerPage, totalCount)
+        
+        val pagedConductors = if (start < totalCount) sortedConductors.subList(start, end) else emptyList()
 
-                view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedConductors.toMutableList(), 
-                    { (requireActivity() as? AdminHome)?.showConductorDetail(it) { fetchPage() } }, 
-                    { (requireActivity() as? AdminHome)?.editConductorDetail(it) }, 
-                    { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) { fetchPage() } }
-                )
-                updatePaginationUI()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error fetching conductors: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        view?.findViewById<RecyclerView>(R.id.recyclerUsers)?.adapter = UserAdapter(pagedConductors.toMutableList(), 
+            { (requireActivity() as? AdminHome)?.showConductorDetail(it) { startListener() } }, 
+            { (requireActivity() as? AdminHome)?.editConductorDetail(it) }, 
+            { user, _ -> (requireActivity() as? AdminHome)?.archiveUser(user) { /* handled by listener */ } }
+        )
+        updatePaginationUI()
     }
 
     private fun setupPagination(view: View) {
@@ -160,7 +174,7 @@ class ConductorsFragment : Fragment() {
     private fun handleJumpToPage(page: Int) {
         val maxPage = ceil(totalCount.toDouble() / itemsPerPage).toInt().coerceAtLeast(1)
         currentPage = page.coerceIn(1, maxPage)
-        fetchPage()
+        updateList()
     }
 
     private fun updatePaginationUI() {

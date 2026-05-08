@@ -8,6 +8,7 @@ data class Student(
     val photoUrl: String = "",
     val rideOption: String = "Round Trip",
     val stopId: String = "",
+    var stopName: String = "",
     var distanceMeters: Int? = null,
     val bloodType: String = "N/A",
     val allergies: String = "None",
