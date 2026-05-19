@@ -70,4 +70,9 @@
     <string name="pending_parents_caps_2">PARENT REQUESTS</string>
     <string name="pending_locations_caps">ADDRESS REQUESTS</string>
     <string name="pending_stops_caps">STOP REQUESTS</string>
+
+    <string name="required_mark"> *</string>
+    <string name="bus_capacity_label">Bus Capacity</string>
+    <string name="select_stops_for_route">Select Stops for Route</string>
+    <string name="full_name_format">%1$s %2$s</string>
 </resources>

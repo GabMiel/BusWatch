@@ -92,7 +92,7 @@ class AdminHome : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START) 
         }
         findViewById<LinearLayout>(R.id.navLogout)?.setOnClickListener {
-            val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
+            val prefs = getSharedPreferences("BusWatchPrefs", MODE_PRIVATE)
             val isDemo = prefs.getBoolean("is_demo", false)
             
             auth.signOut()

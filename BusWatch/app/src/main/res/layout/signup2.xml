@@ -849,10 +849,10 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:textSize="14sp"
+            android:autofillHints="none"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
-            app:layout_constraintTop_toBottomOf="@+id/llLabelAllergies"
-            android:autofillHints="none" />
+            app:layout_constraintTop_toBottomOf="@+id/llLabelAllergies" />
 
         <TextView
             android:id="@+id/llLabelMedications"
@@ -878,6 +878,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:textSize="14sp"
+            android:autofillHints="none"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelMedications" />
@@ -906,6 +907,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:textSize="14sp"
+            android:autofillHints="none"
             app:layout_constraintEnd_toEndOf="@+id/glEnd"
             app:layout_constraintStart_toStartOf="@+id/glStart"
             app:layout_constraintTop_toBottomOf="@+id/llLabelConditions"

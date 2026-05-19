@@ -90,7 +90,7 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/route_name" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                        android:text="@string/required_mark" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
                 </LinearLayout>
                 <EditText android:id="@+id/etRouteName"
                     android:layout_width="match_parent" android:layout_height="48dp"
@@ -110,7 +110,7 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/choose_driver" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                        android:text="@string/required_mark" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/btnDriverDropdown"
@@ -138,7 +138,7 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/choose_bus" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                        android:text="@string/required_mark" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/btnBusDropdown"
@@ -213,7 +213,7 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Bus Capacity" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                    android:text="@string/bus_capacity_label" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                 <TextView android:id="@+id/tvBusCapacity"
                     android:layout_width="match_parent" android:layout_height="48dp"
                     android:background="@drawable/rectangle_hollow_with_shadow"
@@ -252,9 +252,9 @@
                 android:layout_marginBottom="32dp">
                 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Select Stops for Route" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
+                        android:text="@string/select_stops_for_route" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text=" *" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
+                        android:text="@string/required_mark" android:textColor="#FF0000" android:textSize="12sp" android:textStyle="bold"/>
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/mapContainer"
@@ -280,8 +280,7 @@
                     <!-- Current Location Button (Locator) -->
                     <ImageButton
                         android:id="@+id/btnMyLocation"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="40dp" android:layout_height="40dp"
                         android:layout_gravity="bottom|end"
                         android:layout_margin="12dp"
                         android:background="@drawable/circle_shape"
