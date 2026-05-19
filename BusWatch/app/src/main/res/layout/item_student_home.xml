@@ -142,6 +142,6 @@
         app:tint="#888888"
         android:visibility="gone"
         tools:visibility="visible"
-        android:contentDescription="Go to tracking" />
+        android:contentDescription="@string/go_to_tracking" />
 
 </RelativeLayout>

@@ -21,7 +21,7 @@
         <!-- Add your Google Maps API Key here if using Play Services Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA6PsugsTOOrHG9dm79AyCS41ckOiSy0s0" />
+            android:value="${MAPS_API_KEY}" />
 
         <activity
             android:name=".DriverHome"

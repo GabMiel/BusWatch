@@ -12,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.buswatch.common.R as CommonR
@@ -112,8 +113,8 @@ class Login : AppCompatActivity() {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
                         // Mark as NOT a demo session
-                        val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
-                        prefs.edit().putBoolean("is_demo", false).apply()
+                        val prefs = getSharedPreferences("BusWatchPrefs", MODE_PRIVATE)
+                        prefs.edit { putBoolean("is_demo", false) }
                         
                         OneSignal.login(uid)
                         checkUserRole(uid)
@@ -126,8 +127,8 @@ class Login : AppCompatActivity() {
                                     val uid = auth.currentUser?.uid
                                     if (uid != null) {
                                         // Mark as NOT a demo session
-                                        val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
-                                        prefs.edit().putBoolean("is_demo", false).apply()
+                                        val prefs = getSharedPreferences("BusWatchPrefs", MODE_PRIVATE)
+                                        prefs.edit { putBoolean("is_demo", false) }
 
                                         OneSignal.login(uid)
                                         createAdminFirestoreDoc(uid)

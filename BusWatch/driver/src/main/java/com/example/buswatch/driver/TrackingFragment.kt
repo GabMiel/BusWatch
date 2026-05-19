@@ -3,12 +3,14 @@ package com.example.buswatch.driver
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -164,7 +166,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
             
             b.layoutBottomInfo.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
             b.bannerNextStop.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
-            b.root.setBackgroundColor(android.graphics.Color.WHITE)
+            b.root.setBackgroundColor(Color.WHITE)
 
             // Reset layout params to default split view (map + roster) in case role changed
             val bottomParams = b.layoutBottomInfo.layoutParams as android.widget.LinearLayout.LayoutParams
@@ -232,7 +234,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                     if (locationButtonMode != 0) {
                         lastActiveFollowMode = locationButtonMode
                         locationButtonMode = 0
-                        _binding?.btnMyLocation?.setColorFilter(android.graphics.Color.BLACK)
+                        _binding?.btnMyLocation?.setColorFilter(Color.BLACK)
                         _binding?.btnMyLocation?.setImageResource(CommonR.drawable.ic_my_location)
                         unregisterSensors()
                     }
@@ -382,12 +384,25 @@ class TrackingFragment : Fragment(), SensorEventListener {
         Thread {
             try {
                 val geocoder = Geocoder(safeContext, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(gp.latitude, gp.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val address = addresses[0]
-                    val streetName = address.thoroughfare ?: address.getAddressLine(0)?.split(",")?.firstOrNull() ?: "Unknown Street"
-                    activity?.runOnUiThread {
-                        _binding?.tvCurrentStreet?.text = streetName
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(gp.latitude, gp.longitude, 1) { addresses ->
+                        if (!addresses.isNullOrEmpty()) {
+                            val address = addresses[0]
+                            val streetName = address.thoroughfare ?: address.getAddressLine(0)?.split(",")?.firstOrNull() ?: "Unknown Street"
+                            activity?.runOnUiThread {
+                                _binding?.tvCurrentStreet?.text = streetName
+                            }
+                        }
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(gp.latitude, gp.longitude, 1)
+                    if (!addresses.isNullOrEmpty()) {
+                        val address = addresses[0]
+                        val streetName = address.thoroughfare ?: address.getAddressLine(0)?.split(",")?.firstOrNull() ?: "Unknown Street"
+                        activity?.runOnUiThread {
+                            _binding?.tvCurrentStreet?.text = streetName
+                        }
                     }
                 }
             } catch (e: Exception) {

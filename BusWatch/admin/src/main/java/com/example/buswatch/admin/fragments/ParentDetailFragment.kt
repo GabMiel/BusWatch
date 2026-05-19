@@ -113,7 +113,7 @@ class ParentDetailFragment : Fragment() {
         
         val firstName = childData["firstName"] as? String ?: ""
         val lastName = childData["lastName"] as? String ?: ""
-        childView.findViewById<TextView>(R.id.tvChildHeaderName).text = "$firstName $lastName".trim()
+        childView.findViewById<TextView>(R.id.tvChildHeaderName).text = getString(R.string.full_name_format, firstName, lastName).trim()
         
         childView.findViewById<TextView>(R.id.tvChildFirstName).text = firstName
         childView.findViewById<TextView>(R.id.tvChildMiddleName).text = childData["middleName"] as? String ?: ""
@@ -154,15 +154,15 @@ class ParentDetailFragment : Fragment() {
         val chevron = childView.findViewById<ImageView>(R.id.ivChildChevron)
         
         // Show content by default
-        content.visibility = View.VISIBLE
+        content.isVisible = true
         chevron.rotation = 0f
         
         childView.findViewById<View>(R.id.btnToggleChildInfo).setOnClickListener {
-            if (content.visibility == View.VISIBLE) {
-                content.visibility = View.GONE
+            if (content.isVisible) {
+                content.isVisible = false
                 chevron.rotation = -90f
             } else {
-                content.visibility = View.VISIBLE
+                content.isVisible = true
                 chevron.rotation = 0f
             }
         }

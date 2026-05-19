@@ -30,5 +30,5 @@ secrets.properties
 # OS files
 Thumbs.db
 
-# Firebase/Google Services (Optional - uncomment if you want to keep them private)
-# google-services.json
+# Firebase/Google Services
+google-services.json

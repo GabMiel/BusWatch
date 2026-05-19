@@ -186,7 +186,7 @@ class DriverHome : AppCompatActivity() {
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -238,21 +238,6 @@ class DriverHome : AppCompatActivity() {
             .replace(R.id.fragment_container, SettingsFragment())
             .addToBackStack(null)
             .commit()
-    }
-
-    fun loadNotifications() {
-        currentTabTag = "NOTIFICATION"
-        // We'll create a DriverNotificationFragment shortly
-        // For now, let's use a placeholder if it doesn't exist
-        try {
-            val fragment = Class.forName("com.example.buswatch.driver.NotificationFragment").newInstance() as Fragment
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Notification feature coming soon", Toast.LENGTH_SHORT).show()
-        }
     }
 
     fun showSOSConfirmation() {
@@ -329,9 +314,9 @@ class DriverHome : AppCompatActivity() {
                     Toast.makeText(this, getString(CommonR.string.sos_sent_success), Toast.LENGTH_LONG).show()
                     viewModel.sendSOSNotification()
                 }
-                .addOnFailureListener { e ->
+                .addOnFailureListener { _ ->
                     dialog.dismiss()
-                    Toast.makeText(this, "Failed to send SOS: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Failed to send SOS", Toast.LENGTH_LONG).show()
                 }
         }, 2000)
     }

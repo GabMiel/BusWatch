@@ -342,14 +342,16 @@ class DriverViewModel : ViewModel() {
             
             val updates = mutableMapOf<String, Any>()
             if (studentId == actualId) {
-                val childData = doc.get("child") as? Map<*, *>
+                @Suppress("UNCHECKED_CAST")
+                val childData = doc.get("child") as? Map<String, Any>
                 if (childData != null) {
                     val updatedChild = childData.toMutableMap()
                     updatedChild["status"] = newStatus
                     updates["child"] = updatedChild
                 }
             } else {
-                val children = doc.get("children") as? List<Map<*, *>>
+                @Suppress("UNCHECKED_CAST")
+                val children = doc.get("children") as? List<Map<String, Any>>
                 if (children != null) {
                     val updatedChildren = children.mapIndexed { index, map ->
                         if ("${actualId}_$index" == studentId) {
@@ -407,9 +409,6 @@ class DriverViewModel : ViewModel() {
         val route = _assignedRoute.value
         val actualId = parentId.split("_")[0]
         val title = "Child Boarded"
-        val busInfo = getFormattedBusName(route?.busNumber, "the bus").let { 
-            if (it == "the bus") it else it.lowercase() 
-        }
         // Ensuring it looks natural: "Child has boarded Bus 1" or "Child has boarded the bus"
         val message = "$studentName has successfully boarded ${getFormattedBusName(route?.busNumber, "the bus")}."
         val notifData = hashMapOf(
@@ -444,11 +443,15 @@ class DriverViewModel : ViewModel() {
                 val parentIdsToNotify = mutableSetOf<String>()
                 for (doc in snapshots) {
                     val data = doc.data
-                    val stopId = (data["child"] as? Map<*, *>)?.get("stop") as? String
+                    
+                    @Suppress("UNCHECKED_CAST")
+                    val childMap = data["child"] as? Map<String, Any>
+                    val stopId = childMap?.get("stop") as? String
                     if (stopId in route.stopIds) {
                         parentIdsToNotify.add(doc.id)
                     } else {
-                        val children = data["children"] as? List<Map<*, *>>
+                        @Suppress("UNCHECKED_CAST")
+                        val children = data["children"] as? List<Map<String, Any>>
                         if (children?.any { it["stop"] in route.stopIds } == true) {
                             parentIdsToNotify.add(doc.id)
                         }
@@ -477,8 +480,13 @@ class DriverViewModel : ViewModel() {
             .addOnSuccessListener { snapshots ->
                 val parentIds = snapshots.filter { doc ->
                     val data = doc.data
-                    val stopId = (data["child"] as? Map<*, *>)?.get("stop") as? String
-                    val children = data["children"] as? List<Map<*, *>>
+                    
+                    @Suppress("UNCHECKED_CAST")
+                    val childMap = data["child"] as? Map<String, Any>
+                    val stopId = childMap?.get("stop") as? String
+                    
+                    @Suppress("UNCHECKED_CAST")
+                    val children = data["children"] as? List<Map<String, Any>>
                     stopId in route.stopIds || children?.any { it["stop"] in route.stopIds } == true
                 }.map { it.id }
 

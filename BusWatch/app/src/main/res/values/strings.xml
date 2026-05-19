@@ -12,4 +12,22 @@
     <string name="demo_account_delete_error">Demo accounts cannot be deleted.</string>
     <string name="delete_account_ready">Agreement accepted. You can now proceed.</string>
     <string name="cancel_caps">CANCEL</string>
+    <string name="go_to_tracking">Go to tracking</string>
+
+    <string name="child_profiles_removed">The selected child profiles have been removed</string>
+    <string name="child_photo_optional">Child Photo (Optional)</string>
+    <string name="updating_profile">Updating profile&#8230;</string>
+    <string name="profile_updated_success">Profile updated successfully</string>
+    <string name="update_failed_prefix">Update failed: %1$s</string>
+    <string name="uploading_parent_photo">Uploading parent photo&#8230;</string>
+    <string name="uploading_child_photo">Uploading child photo&#8230;</string>
+    <string name="child_added_success">Child profile added successfully!</string>
+    <string name="database_error_prefix">Database Error: %1$s</string>
+    <string name="fill_required_fields">Please fill in all required fields (*)</string>
+    <string name="upload_failed_prefix">Upload failed: %1$s</string>
+    <string name="removal_cancelled_no_selection">Removal cancelled: No children were selected</string>
+    <string name="action_restricted">Action Restricted</string>
+    <string name="keep_one_child_msg">At least one child must remain linked to your account. If you wish to replace this child, please add the new one first before removing the current one.</string>
+    <string name="confirm_removal">Confirm Removal</string>
+    <string name="confirm_removal_msg">Are you sure you want to remove the following children from your profile: %1$s?</string>
 </resources>
