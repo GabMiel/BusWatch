@@ -218,7 +218,7 @@ class StopPickerDialogFragment : DialogFragment() {
             .setTitle(CommonR.string.confirmation)
             .setMessage(message)
             .setPositiveButton(CommonR.string.confirm_caps) { _, _ -> submitStopRequest() }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(CommonR.string.cancel_caps, null)
             .show()
     }
 
@@ -272,41 +272,70 @@ class StopPickerDialogFragment : DialogFragment() {
             }
             
             batch.commit().addOnSuccessListener {
-                Toast.makeText(requireContext(), CommonR.string.stop_assigned_successfully, Toast.LENGTH_SHORT).show()
-                viewModel.loadStudentAndParentData(childName)
-                dismiss()
+                if (isAdded) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(CommonR.string.location_request_success_title)
+                        .setMessage(CommonR.string.stop_assigned_successfully)
+                        .setPositiveButton(CommonR.string.okay_caps) { _, _ ->
+                            viewModel.loadStudentAndParentData(childName)
+                            dismiss()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), CommonR.string.failed_to_assign_stop, Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), CommonR.string.failed_to_assign_stop, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
     private fun saveRequestToFirestore(uid: String, cId: String, cName: String, cLat: Double, cLng: Double, studentData: kotlin.collections.Map<String, Any>) {
-        val firstName = studentData["firstName"] as? String ?: ""
-        val lastName = studentData["lastName"] as? String ?: ""
+        db.collection("parents").document(uid).get().addOnSuccessListener { parentDoc ->
+            @Suppress("UNCHECKED_CAST")
+            val profile = parentDoc.get("profile") as? kotlin.collections.Map<String, Any>
+            val parentAvatarUrl = profile?.get("parentAvatarUrl") as? String ?: ""
+            
+            val firstName = studentData["firstName"] as? String ?: ""
+            val lastName = studentData["lastName"] as? String ?: ""
+            val studentId = studentData["studentId"] as? String ?: ""
 
-        val request = hashMapOf(
-            "parentId" to uid,
-            "studentName" to "$firstName $lastName",
-            "studentFirstName" to firstName,
-            "studentLastName" to lastName,
-            "currentStopId" to cId,
-            "currentStopName" to cName,
-            "currentStopLat" to cLat,
-            "currentStopLng" to cLng,
-            "proposedStopId" to selectedStopId,
-            "proposedStopName" to selectedStopName,
-            "proposedStopLat" to (selectedStopPoint?.latitude ?: 0.0),
-            "proposedStopLng" to (selectedStopPoint?.longitude ?: 0.0),
-            "status" to "pending",
-            "timestamp" to com.google.firebase.Timestamp.now()
-        )
+            val request = hashMapOf(
+                "parentId" to uid,
+                "studentId" to studentId,
+                "studentName" to "$firstName $lastName",
+                "studentFirstName" to firstName,
+                "studentLastName" to lastName,
+                "currentStopId" to cId,
+                "currentStopName" to cName,
+                "currentStopLat" to cLat,
+                "currentStopLng" to cLng,
+                "proposedStopId" to selectedStopId,
+                "proposedStopName" to selectedStopName,
+                "proposedStopLat" to (selectedStopPoint?.latitude ?: 0.0),
+                "proposedStopLng" to (selectedStopPoint?.longitude ?: 0.0),
+                "status" to "pending",
+                "parentAvatarUrl" to parentAvatarUrl,
+                "timestamp" to com.google.firebase.Timestamp.now()
+            )
 
-        db.collection("stop_requests").add(request).addOnSuccessListener {
-            Toast.makeText(requireContext(), CommonR.string.stop_change_request_submitted, Toast.LENGTH_SHORT).show()
-            dismiss()
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), CommonR.string.failed_to_submit_request, Toast.LENGTH_SHORT).show()
+            db.collection("stop_requests").add(request).addOnSuccessListener {
+                if (isAdded) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(CommonR.string.location_request_success_title)
+                        .setMessage(CommonR.string.stop_request_success_message)
+                        .setPositiveButton(CommonR.string.okay_caps) { _, _ ->
+                            dismiss()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
+            }.addOnFailureListener {
+                if (isAdded) {
+                    Toast.makeText(requireContext(), CommonR.string.failed_to_submit_request, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

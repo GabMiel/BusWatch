@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.buswatch.common.R as CommonR
 import com.onesignal.OneSignal
+import com.google.android.material.materialswitch.MaterialSwitch
 
 class Login : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -42,11 +44,20 @@ class Login : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.btnLoginLogin)
         val signupButton = findViewById<Button>(R.id.btnLoginSignup)
         val forgotPasswordButton = findViewById<Button>(R.id.btnLoginForgotPassword)
+        val swDemoMode = findViewById<MaterialSwitch>(R.id.swDemoMode)
         progressBar = findViewById(R.id.progressBar)
 
         auth.currentUser?.let {
             OneSignal.login(it.uid)
             checkUserRole(it.uid)
+        }
+
+        swDemoMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                startActivity(Intent(this, DemoLogin::class.java))
+                // Reset switch state so it's off if user comes back
+                swDemoMode.isChecked = false
+            }
         }
 
         viewPasswordButton.setOnClickListener {
@@ -100,6 +111,10 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid
                     if (uid != null) {
+                        // Mark as NOT a demo session
+                        val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
+                        prefs.edit().putBoolean("is_demo", false).apply()
+                        
                         OneSignal.login(uid)
                         checkUserRole(uid)
                     }
@@ -110,6 +125,10 @@ class Login : AppCompatActivity() {
                                 if (createTask.isSuccessful) {
                                     val uid = auth.currentUser?.uid
                                     if (uid != null) {
+                                        // Mark as NOT a demo session
+                                        val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
+                                        prefs.edit().putBoolean("is_demo", false).apply()
+
                                         OneSignal.login(uid)
                                         createAdminFirestoreDoc(uid)
                                         navigateBasedOnRole("admin")
@@ -147,19 +166,35 @@ class Login : AppCompatActivity() {
 
         db.collection("admin").document(uid).get().addOnSuccessListener { adminDoc ->
             if (adminDoc.exists()) {
-                navigateBasedOnRole("admin")
+                if (adminDoc.getString("status")?.lowercase() == "archived") {
+                    handleArchivedUser()
+                } else {
+                    navigateBasedOnRole("admin")
+                }
             } else {
                 db.collection("parents").document(uid).get().addOnSuccessListener { parentDoc ->
                     if (parentDoc.exists()) {
-                        navigateBasedOnRole(parentDoc.getString("role") ?: "parent")
+                        if (parentDoc.getString("status")?.lowercase() == "archived") {
+                            handleArchivedUser()
+                        } else {
+                            navigateBasedOnRole(parentDoc.getString("role") ?: "parent")
+                        }
                     } else {
                         db.collection("drivers").document(uid).get().addOnSuccessListener { driverDoc ->
                             if (driverDoc.exists()) {
-                                navigateBasedOnRole("driver")
+                                if (driverDoc.getString("status")?.lowercase() == "archived") {
+                                    handleArchivedUser()
+                                } else {
+                                    navigateBasedOnRole("driver")
+                                }
                             } else {
                                 db.collection("conductors").document(uid).get().addOnSuccessListener { conductorDoc ->
                                     if (conductorDoc.exists()) {
-                                        navigateBasedOnRole("conductor")
+                                        if (conductorDoc.getString("status")?.lowercase() == "archived") {
+                                            handleArchivedUser()
+                                        } else {
+                                            navigateBasedOnRole("conductor")
+                                        }
                                     } else {
                                         navigateBasedOnRole("parent")
                                     }
@@ -170,6 +205,12 @@ class Login : AppCompatActivity() {
                 }
             }
         }.addOnFailureListener { resetLoginState() }
+    }
+
+    private fun handleArchivedUser() {
+        auth.signOut()
+        resetLoginState()
+        Toast.makeText(this, "Your account has been deactivated. Please contact the administrator.", Toast.LENGTH_LONG).show()
     }
 
     private fun resetLoginState() {

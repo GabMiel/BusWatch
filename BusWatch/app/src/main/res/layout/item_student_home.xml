@@ -103,15 +103,31 @@
             android:textColor="@color/black"
             android:textSize="11sp" />
 
-        <Spinner
-            android:id="@+id/spinnerRideOption"
-            android:layout_width="158dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/spinner_border"
-            android:paddingEnd="24dp"
-            android:spinnerMode="dropdown"
-            tools:ignore="RtlSymmetry" />
+        <FrameLayout
+            android:layout_width="170dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp">
+
+            <Spinner
+                android:id="@+id/spinnerRideOption"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/spinner_border"
+                android:paddingEnd="24dp"
+                android:spinnerMode="dropdown"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tvRideOptionValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Round Trip"
+                android:gravity="center_vertical" />
+        </FrameLayout>
     </LinearLayout>
 
     <!-- Right Arrow Indicator -->

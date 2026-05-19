@@ -46,4 +46,9 @@
         <item>Singapore (+65)</item>
         <item>Ireland (+353)</item>
     </string-array>
+    <string-array name="demo_roles">
+        <item>Parent</item>
+        <item>Driver</item>
+        <item>Conductor</item>
+    </string-array>
 </resources>

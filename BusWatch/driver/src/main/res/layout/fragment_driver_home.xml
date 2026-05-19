@@ -39,18 +39,23 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- SOS Button - Resized to match live tracking -->
-        <ImageButton
-            android:id="@+id/btnSOS"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_sos"
-            android:scaleType="fitCenter"
-            android:padding="4dp"
-            android:contentDescription="@string/emergency" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnSOS"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_sos"
+                android:scaleType="fitCenter"
+                android:padding="4dp"
+                android:contentDescription="@string/emergency" />
+        </LinearLayout>
     </RelativeLayout>
 
     <!-- 2. SCROLLABLE CONTENT -->
@@ -81,7 +86,7 @@
                     android:id="@+id/tvGreeting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/good_morning_driver"
+                    tools:text="Good Morning, Driver!"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -90,13 +95,13 @@
                     android:id="@+id/tvCurrentTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/_9_41_am"
+                    tools:text="09:41 AM"
                     android:textColor="@color/text_white_secondary"
                     android:textSize="12sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <!-- Student List Header with Filter Icon -->
+            <!-- Student List Header -->
             <RelativeLayout
                 android:id="@+id/layout_students_header"
                 android:layout_width="match_parent"
@@ -128,7 +133,7 @@
                     app:tint="@color/black" />
             </RelativeLayout>
 
-            <!-- Combined Tab Section (Morning/Afternoon) Styled like Admin Users -->
+            <!-- Tab Section -->
             <LinearLayout
                 android:id="@+id/layout_tabs_section"
                 android:layout_width="match_parent"

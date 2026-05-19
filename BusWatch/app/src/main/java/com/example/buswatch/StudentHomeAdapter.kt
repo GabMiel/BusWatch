@@ -1,5 +1,6 @@
 package com.example.buswatch
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +9,13 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 import kotlin.collections.Map as KMap
 
 data class StudentHome(
@@ -23,7 +26,7 @@ data class StudentHome(
     val status: String,
     val avatarUrl: String? = null,
     val stop: String = "---",
-    val rideOption: String = "Round Trip"
+    val rideOption: String = "Round Trip (Morning & Afternoon)"
 )
 
 class StudentHomeAdapter(
@@ -42,6 +45,7 @@ class StudentHomeAdapter(
         val status: TextView = view.findViewById(R.id.tvStudentStatus)
         val avatar: ImageView = view.findViewById(R.id.imgStudent)
         val spinner: Spinner = view.findViewById(R.id.spinnerRideOption)
+        val rideOptionValue: TextView = view.findViewById(R.id.tvRideOptionValue)
         val card: View = view.findViewById(R.id.studentCard)
         val ivArrow: ImageView = view.findViewById(R.id.ivArrowIndicator)
     }
@@ -73,22 +77,35 @@ class StudentHomeAdapter(
             holder.avatar.setImageResource(defaultAvatar)
         }
 
-        // Always set the click listener so parents can view details or map
-        holder.card.setOnClickListener { onItemClick(student) }
-        holder.card.isClickable = true
-        holder.card.isEnabled = true
+        val statusStr = student.status.lowercase()
+        
+        // Simplified Active (Green) status logic: Green during any transit phase.
+        // Removed session-based time checks to ensure consistency and fix "Morning Only" issues.
+        val isActive = student.rideOption != "Not Riding" && 
+                       statusStr in listOf("heading to stop", "on board", "heading home")
 
-        val status = student.status.lowercase()
-        val isActive = status == "heading to stop" || status == "on board" || status == "heading home"
+        holder.rideOptionValue.text = student.rideOption
         
         if (isActive) {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_light_green)
             holder.ivArrow.visibility = View.VISIBLE
             holder.spinner.visibility = View.GONE
+            holder.rideOptionValue.visibility = View.VISIBLE
+            
+            // Only clickable if active (green)
+            holder.card.setOnClickListener { onItemClick(student) }
+            holder.card.isClickable = true
+            holder.card.alpha = 1.0f
         } else {
             holder.card.setBackgroundResource(CommonR.drawable.bg_card_black_border)
             holder.ivArrow.visibility = View.GONE
             holder.spinner.visibility = View.VISIBLE
+            holder.rideOptionValue.visibility = View.GONE
+            
+            // Disable clicks for non-active cards
+            holder.card.setOnClickListener(null)
+            holder.card.isClickable = false
+            holder.card.alpha = if (student.rideOption == "Not Riding") 0.6f else 1.0f
         }
 
         val options = holder.itemView.context.resources.getStringArray(CommonR.array.ride_options)
@@ -107,19 +124,25 @@ class StudentHomeAdapter(
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 val selectedOption = options[pos]
                 if (selectedOption != student.rideOption) {
-                    updateRideOptionInFirebase(student, selectedOption)
+                    updateRideOptionInFirebase(holder.itemView, student, selectedOption)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun updateRideOptionInFirebase(student: StudentHome, option: String) {
+    private fun updateRideOptionInFirebase(view: View, student: StudentHome, option: String) {
         val uid = auth.currentUser?.uid ?: return
         val docRef = db.collection("parents").document(uid)
 
+        val failureListener = { e: Exception ->
+            Log.e("StudentHomeAdapter", "Update failed: ${e.message}")
+            Toast.makeText(view.context, "Failed to update ride option. Please check your connection or permissions.", Toast.LENGTH_SHORT).show()
+        }
+
         if (student.id == "primary") {
             docRef.update("child.rideOption", option)
+                .addOnFailureListener(failureListener)
         } else {
             val index = student.id.toIntOrNull() ?: return
             docRef.get().addOnSuccessListener { document ->
@@ -131,8 +154,9 @@ class StudentHomeAdapter(
                     updatedChild["rideOption"] = option
                     newList[index] = updatedChild
                     docRef.update("children", newList)
+                        .addOnFailureListener(failureListener)
                 }
-            }
+            }.addOnFailureListener(failureListener)
         }
     }
 

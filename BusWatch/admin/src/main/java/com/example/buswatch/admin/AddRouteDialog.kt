@@ -53,7 +53,7 @@ class AddRouteDialog(
 
     fun show() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_route, null)
-        val dialog = AlertDialog.Builder(context).setView(dialogView).create()
+        val dialog = AlertDialog.Builder(context, CommonR.style.CustomDialog).setView(dialogView).create()
 
         val etRouteName = dialogView.findViewById<EditText>(R.id.etRouteName)
         val tvSelectedDriver = dialogView.findViewById<TextView>(R.id.tvSelectedDriver)
@@ -152,7 +152,7 @@ class AddRouteDialog(
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        TimePickerDialog(context, { _, h, m ->
+        TimePickerDialog(context, CommonR.style.TimePickerBlack, { _, h, m ->
             val amPm = if (h < 12) "AM" else "PM"
             val hourFormatted = if (h % 12 == 0) 12 else h % 12
             val timeString = String.format(Locale.getDefault(), "%02d:%02d %s", hourFormatted, m, amPm)
@@ -323,6 +323,12 @@ class AddRouteDialog(
     private fun saveRoute(name: String, dialog: AlertDialog) {
         if (name.isEmpty() || selectedDriverId == null || selectedBusId == null || selectedStopIds.isEmpty()) {
             Toast.makeText(context, "Please fill all required fields and select stops", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validation: Afternoon schedule should not use AM
+        if (afternoonStartTime.contains("AM", ignoreCase = true) || afternoonEndTime.contains("AM", ignoreCase = true)) {
+            Toast.makeText(context, "Afternoon schedule cannot use AM times", Toast.LENGTH_SHORT).show()
             return
         }
 

@@ -197,7 +197,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginBottom="24dp">
+            android:orientation="vertical" android:layout_marginBottom="16dp">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="HOME ADDRESS" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
                 tools:ignore="SmallSp,HardcodedText" />
@@ -206,6 +206,20 @@
                 android:background="@drawable/rectangle_hollow_with_shadow"
                 android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
                 android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/placeholder_hyphen"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="24dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="PICKUP STOP" android:textColor="@color/gray_text" android:textSize="10sp" android:textStyle="bold" android:layout_marginBottom="4dp"
+                tools:ignore="SmallSp,HardcodedText" />
+            <TextView android:id="@+id/tvChildStop"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:background="@drawable/rectangle_hollow_with_shadow"
+                android:paddingStart="12dp" android:paddingEnd="12dp" android:textSize="14sp"
+                android:gravity="center_vertical" android:textColor="@color/black" android:text="@string/not_assigned_label"/>
         </LinearLayout>
 
         <!-- Medical Information Section -->

@@ -261,11 +261,18 @@ class ParentDetailsFragment : Fragment() {
         val csuffix = map["suffix"] as? String ?: ""
         val age = map["age"]?.toString() ?: ""
 
+        val rideOption = (map["rideOption"] as? String)?.takeIf { it.isNotBlank() } ?: "Round Trip (Morning & Afternoon)"
+        val status = if (rideOption == "Not Riding") {
+            getString(CommonR.string.status_at_home)
+        } else {
+            map["status"] as? String ?: getString(CommonR.string.status_at_home)
+        }
+
         return ChildDetail(
             name = "$cfName $clName".trim(),
             grade = map["grade"] as? String ?: "",
             school = map["school"] as? String ?: "The Immaculate Mother Academy Inc.",
-            status = map["status"] as? String ?: "AT HOME",
+            status = status,
             avatarUrl = map["childAvatarUrl"] as? String ?: "",
             firstName = cfName,
             lastName = clName,
@@ -315,8 +322,8 @@ class ParentDetailsFragment : Fragment() {
             val grades = arrayOf("Nursery", "Kinder", "Prep", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6")
             AlertDialog.Builder(requireContext())
                 .setTitle("Select Grade")
-                .setItems(grades) { _, pos ->
-                    selectedGrade = grades[pos]
+                .setItems(grades) { _, person ->
+                    selectedGrade = grades[person]
                     tvGrade.text = selectedGrade
                     tvGrade.setTextColor(Color.BLACK)
                 }
@@ -330,8 +337,8 @@ class ParentDetailsFragment : Fragment() {
             val bloodTypes = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown")
             AlertDialog.Builder(requireContext())
                 .setTitle("Select Blood Type")
-                .setItems(bloodTypes) { _, pos ->
-                    selectedBloodType = bloodTypes[pos]
+                .setItems(bloodTypes) { _, person ->
+                    selectedBloodType = bloodTypes[person]
                     tvBloodType.text = selectedBloodType
                     tvBloodType.setTextColor(Color.BLACK)
                 }
@@ -660,10 +667,10 @@ class ParentDetailsFragment : Fragment() {
             val suffixes = arrayOf("None", "Jr.", "Sr.", "II", "III", "IV", "V")
             AlertDialog.Builder(requireContext())
                 .setTitle("Select Suffix")
-                .setItems(suffixes) { _, pos ->
-                    selectedSuffix = if (pos == 0) "" else suffixes[pos]
-                    tvSelectedSuffix.text = if (pos == 0) getString(CommonR.string.suffix) else suffixes[pos]
-                    tvSelectedSuffix.setTextColor(if (pos == 0) "#888888".toColorInt() else Color.BLACK)
+                .setItems(suffixes) { _, person ->
+                    selectedSuffix = if (person == 0) "" else suffixes[person]
+                    tvSelectedSuffix.text = if (person == 0) getString(CommonR.string.suffix) else suffixes[person]
+                    tvSelectedSuffix.setTextColor(if (person == 0) "#888888".toColorInt() else Color.BLACK)
                 }
                 .show()
         }

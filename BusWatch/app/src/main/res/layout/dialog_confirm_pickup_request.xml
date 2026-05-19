@@ -38,7 +38,7 @@
             android:gravity="start"
             android:textAlignment="viewStart"
             android:lineSpacingExtra="4dp"
-            tools:text="Are you sure you want to request a pickup at this location? This will be sent to the driver for approval." />
+            tools:text="Are you sure you want to request a change to this pickup location? This requires admin approval." />
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout

@@ -259,30 +259,51 @@ class ConfirmPickupLocationDialogFragment : DialogFragment() {
             .setPositiveButton(CommonR.string.confirm_caps) { _, _ ->
                 submitRequest(newAddress)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(CommonR.string.cancel_caps, null)
             .show()
     }
 
     private fun submitRequest(newAddress: String) {
         val uid = auth.currentUser?.uid ?: return
-        val request = hashMapOf(
-            "parentId" to uid,
-            "studentName" to (childName ?: ""),
-            "currentAddress" to currentAddress,
-            "currentLat" to currentLat,
-            "currentLng" to currentLng,
-            "pendingAddress" to newAddress,
-            "pendingLat" to selectedLat,
-            "pendingLng" to selectedLng,
-            "status" to "pending",
-            "timestamp" to com.google.firebase.Timestamp.now()
-        )
         
-        db.collection("map_requests").add(request).addOnSuccessListener {
-            Toast.makeText(requireContext(), "Request submitted for approval", Toast.LENGTH_LONG).show()
-            dismiss()
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Failed to submit request", Toast.LENGTH_SHORT).show()
+        db.collection("parents").document(uid).get().addOnSuccessListener { parentDoc ->
+            @Suppress("UNCHECKED_CAST")
+            val profile = parentDoc.get("profile") as? kotlin.collections.Map<String, Any>
+            val parentAvatarUrl = profile?.get("parentAvatarUrl") as? String ?: ""
+            
+            val studentId = viewModel.studentData.value?.get("studentId") as? String ?: ""
+
+            val request = hashMapOf(
+                "parentId" to uid,
+                "studentId" to studentId,
+                "studentName" to (childName ?: ""),
+                "currentAddress" to currentAddress,
+                "currentLat" to currentLat,
+                "currentLng" to currentLng,
+                "pendingAddress" to newAddress,
+                "pendingLat" to selectedLat,
+                "pendingLng" to selectedLng,
+                "status" to "pending",
+                "parentAvatarUrl" to parentAvatarUrl,
+                "timestamp" to com.google.firebase.Timestamp.now()
+            )
+            
+            db.collection("map_requests").add(request).addOnSuccessListener {
+                if (isAdded) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(CommonR.string.location_request_success_title)
+                        .setMessage(CommonR.string.location_request_success_message)
+                        .setPositiveButton(CommonR.string.okay_caps) { _, _ ->
+                            dismiss()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
+            }.addOnFailureListener {
+                if (isAdded) {
+                    Toast.makeText(requireContext(), CommonR.string.failed_to_submit_request, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

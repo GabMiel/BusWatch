@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.buswatch.common.R as CommonR
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -89,6 +90,11 @@ class EditStudentDialogFragment : DialogFragment() {
         var currentLng = 0.0
         
         val btnChangeStop = view.findViewById<Button>(R.id.btnEditChangeStop)
+        val btnCancel = view.findViewById<Button>(R.id.btnCancelEdit)
+        val btnSave = view.findViewById<Button>(R.id.btnSaveStudent)
+
+        btnCancel.setText(CommonR.string.cancel_caps)
+        btnSave.setText(CommonR.string.save_caps)
 
         viewModel.studentData.value?.let { child ->
             etStudentId.setText(child["studentId"] as? String ?: "")
@@ -131,13 +137,44 @@ class EditStudentDialogFragment : DialogFragment() {
         }
 
         view.findViewById<Button>(R.id.btnRequestAddressEdit).setOnClickListener {
-            ConfirmPickupLocationDialogFragment.newInstance(
-                childName,
-                tvAddress.text.toString(),
-                currentLat,
-                currentLng
-            ).show(parentFragmentManager, "confirm_pickup_location")
-            dismiss()
+            val child = viewModel.studentData.value
+            val lastApproved = child?.get("lastHomeLocationApproved") as? Timestamp
+            val studentId = child?.get("studentId") as? String ?: ""
+            
+            if (lastApproved != null) {
+                val diff = System.currentTimeMillis() - lastApproved.toDate().time
+                val thirtyDays = 30L * 24 * 60 * 60 * 1000
+                if (diff < thirtyDays) {
+                    val remaining = ((thirtyDays - diff) / (24 * 60 * 60 * 1000)).toInt() + 1
+                    Toast.makeText(requireContext(), "Address locked for $remaining more days.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            val query = if (studentId.isNotEmpty()) {
+                db.collection("map_requests")
+                    .whereEqualTo("studentId", studentId)
+            } else {
+                db.collection("map_requests")
+                    .whereEqualTo("parentId", uid)
+                    .whereEqualTo("studentName", childName ?: "")
+            }
+
+            query.whereEqualTo("status", "pending")
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (!snapshots.isEmpty) {
+                        Toast.makeText(requireContext(), "A request is already pending approval.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        ConfirmPickupLocationDialogFragment.newInstance(
+                            childName,
+                            tvAddress.text.toString(),
+                            currentLat,
+                            currentLng
+                        ).show(parentFragmentManager, "confirm_pickup_location")
+                        dismiss()
+                    }
+                }
         }
 
         view.findViewById<FrameLayout>(R.id.btnEditStudentSuffix).setOnClickListener {
@@ -159,10 +196,40 @@ class EditStudentDialogFragment : DialogFragment() {
         btnChangeStop.setOnClickListener {
             if (parentStatus.lowercase() == "approved") {
                 val childData = viewModel.studentData.value
-                val homeLat = childData?.get("latitude") as? Double ?: 0.0
-                val homeLng = childData?.get("longitude") as? Double ?: 0.0
-                StopPickerDialogFragment.newInstance(homeLat, homeLng, childName).show(parentFragmentManager, "stop_picker")
-                dismiss()
+                val lastStopApproved = childData?.get("lastStopApproved") as? Timestamp
+                val studentId = childData?.get("studentId") as? String ?: ""
+
+                if (lastStopApproved != null) {
+                    val diff = System.currentTimeMillis() - lastStopApproved.toDate().time
+                    val thirtyDays = 30L * 24 * 60 * 60 * 1000
+                    if (diff < thirtyDays) {
+                        val remaining = ((thirtyDays - diff) / (24 * 60 * 60 * 1000)).toInt() + 1
+                        Toast.makeText(requireContext(), "Stop change locked for $remaining more days.", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                }
+
+                val query = if (studentId.isNotEmpty()) {
+                    db.collection("stop_requests")
+                        .whereEqualTo("studentId", studentId)
+                } else {
+                    db.collection("stop_requests")
+                        .whereEqualTo("parentId", uid)
+                        .whereEqualTo("studentName", childName ?: "")
+                }
+
+                query.whereEqualTo("status", "pending")
+                    .get()
+                    .addOnSuccessListener { snapshots ->
+                        if (!snapshots.isEmpty) {
+                            Toast.makeText(requireContext(), "A stop change request is already pending.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val homeLat = childData?.get("latitude") as? Double ?: 0.0
+                            val homeLng = childData?.get("longitude") as? Double ?: 0.0
+                            StopPickerDialogFragment.newInstance(homeLat, homeLng, childName).show(parentFragmentManager, "stop_picker")
+                            dismiss()
+                        }
+                    }
             } else {
                 Toast.makeText(requireContext(), "Restricted until approved", Toast.LENGTH_SHORT).show()
             }
@@ -170,9 +237,8 @@ class EditStudentDialogFragment : DialogFragment() {
 
         view.findViewById<View>(R.id.rlEditStudentAvatar).setOnClickListener { pickAvatarLauncher.launch("image/*") }
         view.findViewById<ImageButton>(R.id.btnDismissEditGeneral).setOnClickListener { dismiss() }
-        view.findViewById<Button>(R.id.btnCancelEdit).setOnClickListener { dismiss() }
+        btnCancel.setOnClickListener { dismiss() }
         
-        val btnSave = view.findViewById<Button>(R.id.btnSaveStudent)
         btnSave.setOnClickListener {
             btnSave.isEnabled = false
             val updatedData = mutableMapOf<String, Any>(

@@ -183,7 +183,7 @@ class RouteEditFragment : Fragment() {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        TimePickerDialog(requireContext(), { _, h, m ->
+        TimePickerDialog(requireContext(), CommonR.style.TimePickerBlack, { _, h, m ->
             val amPm = if (h < 12) "AM" else "PM"
             val hourFormatted = if (h % 12 == 0) 12 else h % 12
             val timeString = String.format(Locale.getDefault(), "%02d:%02d %s", hourFormatted, m, amPm)
@@ -395,6 +395,12 @@ class RouteEditFragment : Fragment() {
     private fun saveRouteChanges(name: String) {
         if (name.isEmpty() || selectedDriverId == null || selectedBusId == null || selectedStopIds.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all fields and select stops", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validation: Afternoon schedule should not use AM
+        if (afternoonStartTime.contains("AM", ignoreCase = true) || afternoonEndTime.contains("AM", ignoreCase = true)) {
+            Toast.makeText(requireContext(), "Afternoon schedule cannot use AM times", Toast.LENGTH_SHORT).show()
             return
         }
 

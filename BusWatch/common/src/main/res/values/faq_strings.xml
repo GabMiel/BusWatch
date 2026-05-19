@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="faq_category_tracking">General Tracking</string>
+    <string name="faq_category_notifications">Notifications &amp; Settings</string>
+    <string name="faq_category_account">Account &amp; Profile</string>
+    <string name="faq_category_safety">Security &amp; Safety</string>
+    <string name="faq_category_support">Support &amp; Feedback</string>
+</resources>

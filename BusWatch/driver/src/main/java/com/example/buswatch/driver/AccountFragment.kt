@@ -38,6 +38,9 @@ class AccountFragment : Fragment() {
         val role = viewModel.userRole.value ?: "Driver"
         val collection = if (role == "Driver") "drivers" else "conductors"
         
+        // Hide license number for conductors
+        binding.layoutLicenseNumber.visibility = if (role == "Driver") View.VISIBLE else View.GONE
+        
         db.collection(collection).document(uid).get().addOnSuccessListener { doc ->
             if (doc.exists()) {
                 binding.tvProfileFirstName.text = doc.getString("firstName") ?: "-"

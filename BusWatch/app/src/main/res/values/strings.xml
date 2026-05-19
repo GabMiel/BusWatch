@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_warning">Permanently Delete Account</string>
+    <string name="delete_account_confirmation_msg">This action is irreversible. Please wait %1$d seconds and type DELETE below to confirm.</string>
+    <string name="type_delete_to_confirm">Type DELETE to confirm</string>
+    <string name="account_deleted_success">Your account has been deleted. Redirecting...</string>
+    <string name="delete_account_agreement_title">Account Deletion Agreement</string>
+    <string name="delete_account_agreement_msg">By proceeding, you agree that your account and all associated data will be permanently removed. This action is irreversible.\n\nPlease wait %1$d seconds to continue.</string>
+    <string name="delete_account_final_title">Final Confirmation</string>
+    <string name="delete_account_final_msg">Please type \'DELETE\' below to confirm your decision.</string>
+    <string name="demo_account_delete_error">Demo accounts cannot be deleted.</string>
+    <string name="delete_account_ready">Agreement accepted. You can now proceed.</string>
+    <string name="cancel_caps">CANCEL</string>
+</resources>

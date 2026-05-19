@@ -287,7 +287,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="09123456789"
-                            android:textColor="@color/yellow_primary"
+                            android:textColor="#000000"
                             android:textSize="13sp"
                             android:textStyle="bold" />
 
@@ -296,7 +296,7 @@
                             android:layout_height="16dp"
                             android:layout_marginStart="8dp"
                             android:src="@drawable/telephone"
-                            app:tint="@color/yellow_primary" />
+                            app:tint="#000000" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

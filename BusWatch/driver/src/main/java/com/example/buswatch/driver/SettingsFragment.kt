@@ -1,5 +1,6 @@
 package com.example.buswatch.driver
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,12 +28,21 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupBottomNav()
-        setupAboutSection()
+        setupSupportSection()
         
         binding.btnLogout.setOnClickListener {
+            val prefs = requireContext().getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
+            val isDemo = prefs.getBoolean("is_demo", false)
+            
             auth.signOut()
+            
             try {
-                val intent = Intent(requireContext(), Class.forName("com.example.buswatch.Login"))
+                val targetClass = if (isDemo) {
+                    Class.forName("com.example.buswatch.DemoLogin")
+                } else {
+                    Class.forName("com.example.buswatch.Login")
+                }
+                val intent = Intent(requireContext(), targetClass)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 requireActivity().finish()
@@ -42,7 +52,21 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun setupAboutSection() {
+    private fun setupSupportSection() {
+        binding.layoutFAQ.setOnClickListener {
+            try {
+                val faqFragmentClass = Class.forName("com.example.buswatch.FAQFragment")
+                val faqFragment = faqFragmentClass.getDeclaredConstructor().newInstance() as Fragment
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.fragment_container, faqFragment)
+                    .addToBackStack(null)
+                    .commit()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         binding.layoutTerms.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)

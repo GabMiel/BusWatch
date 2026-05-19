@@ -52,6 +52,7 @@
         <activity android:name=".Load2" />
         <activity android:name=".Load3" />
         <activity android:name=".Login" />
+        <activity android:name=".DemoLogin" />
         <activity android:name=".Signup1" />
         <activity android:name=".Signup2" />
         <activity android:name=".Signup3" />

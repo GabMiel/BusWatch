@@ -18,11 +18,12 @@
     <string name="save_caps">SAVE</string>
     <string name="save_changes_caps">SAVE CHANGES</string>
     <string name="cancel">@android:string/cancel</string>
-    <string name="cancel_caps">@android:string/cancel</string>
+    <string name="cancel_caps">CANCEL</string>
     <string name="confirm_caps">CONFIRM</string>
     <string name="continue_caps">CONTINUE</string>
     <string name="confirmation">Confirmation</string>
     <string name="okay">Okay</string>
+    <string name="okay_caps">OKAY</string>
     <string name="close">Close</string>
     <string name="plus">+</string>
     <string name="asterisk">*</string>
@@ -86,6 +87,98 @@
     <string name="morning_only_desc"><b>Morning Only:</b> Bus picks up at home. Parent picks up from school.</string>
     <string name="afternoon_only_desc"><b>Afternoon Only:</b> Parent drops off at school. Bus brings child home.</string>
     <string name="not_riding_desc"><b>Not Riding:</b> Temporary cancellation (e.g., vacation or private transport).</string>
+    <string name="frequently_asked_questions">Frequently Asked Questions</string>
+
+    <!-- Detailed FAQs for Dropdown -->
+    <string name="faq_q1">How do I track my child\'s bus in real-time?</string>
+    <string name="faq_a1">Navigate to the Home screen and tap on your child\'s profile. If the bus is currently on a trip, a map will appear showing the bus\'s live location and its estimated time of arrival at your stop.</string>
+
+    <string name="faq_q2">Why am I not receiving push notifications?</string>
+    <string name="faq_a2">Please check that notifications are enabled in your phone settings for the BusWatch app. Also, ensure that the specific alerts you want are enabled in the \"Notification Preference\" section of the Settings screen.</string>
+
+    <string name="faq_q3">How do I change my home or pickup location?</string>
+    <string name="faq_a3">You can request an address change through the Student Details page. Tap \"Request Edit\" on the address field. Note that changes require admin approval and may take up to 30 days to re-enable after a successful update.</string>
+
+    <string name="faq_q4">What should I do if the bus is late?</string>
+    <string name="faq_a4">The app provides real-time tracking so you can see exactly where the bus is. If there is a major delay, the driver or admin will send a notification. You can monitor the live ETA on the map.</string>
+
+    <string name="faq_q5">Is my child\'s data secure?</string>
+    <string name="faq_a5">Yes, your data is stored securely using Firebase. Only authorized personnel, such as administrators and the specific driver assigned to your child\'s route, can access necessary information.</string>
+
+    <string name="faq_q6">How do I contact support?</string>
+    <string name="faq_a6">For any technical issues or inquiries, please email us at buswatch@gmail.com. We aim to respond to all queries within 24 hours.</string>
+
+    <string name="faq_q7">How do I add another child to my account?</string>
+    <string name="faq_a7">In the side menu or Home screen, tap \"Add Child\" and fill out the enrollment form. You will need to provide school details and upload a photo for identification.</string>
+
+    <string name="faq_q8">What is the SOS button for?</string>
+    <string name="faq_a8">The SOS feature is for emergency use only. When a driver triggers an SOS, it immediately notifies administrators and parents of children currently on board with the bus\'s coordinates.</string>
+
+    <string name="faq_q9">How is the ETA calculated?</string>
+    <string name="faq_a9">The ETA is calculated based on the bus\'s current GPS speed, the remaining distance to your stop, and average traffic conditions along the route.</string>
+
+    <string name="faq_q10">Can I update my own profile photo?</string>
+    <string name="faq_a10">Yes, you can update your profile information and photo in the \"Parent Details\" section accessible from the side menu.</string>
+
+    <string name="faq_q11">What happens if my child misses the bus?</string>
+    <string name="faq_a11">If your child misses the bus, yes they will need to go to another transportation, and the driver or conductor will mark them as not riding.</string>
+
+    <string name="faq_q12">Can I choose or switch my bus driver?</string>
+    <string name="faq_a12">No, because the admin decide who will be your driver. If you want to switch driver, please contact the admin at buswatch@gmail.com.</string>
+
+    <string name="faq_q13">Does the app work without internet?</string>
+    <string name="faq_a13">No, real-time tracking and notifications require a stable internet connection (Mobile Data or Wi-Fi) to receive updates from our servers.</string>
+
+    <string name="faq_q14">Why is the bus icon not moving on the map?</string>
+    <string name="faq_a14">If the icon is stationary, the bus might be stopped at a traffic light, a designated stop, or there may be a temporary GPS signal loss. If it persists, check for delay notifications.</string>
+
+    <string name="faq_q15">How do I reset my password?</string>
+    <string name="faq_a15">You can change your password while logged in via Settings -> Security. If you forgot your password, use the \"Forgot Password\" link on the login screen.</string>
+
+    <string name="faq_q16">Who manages the bus routes?</string>
+    <string name="faq_a16">Routes are managed by the school transportation administrators. They assign drivers and buses to specific routes and stops based on student enrollment.</string>
+
+    <string name="faq_q17">Is there a cost to use the app?</string>
+    <string name="faq_a17">The app is provided as a service by your school or transportation provider. Check with them to see if any fees are included in your transportation package.</string>
+
+    <string name="faq_q18">Can I use the app on multiple devices?</string>
+    <string name="faq_a18">Yes, you can log in with your account on multiple smartphones. Your settings and child profiles will stay synced.</string>
+
+    <string name="faq_q19">What should I do if the app crashes?</string>
+    <string name="faq_a19">If the app crashes, try clearing the cache in your phone settings or reinstalling the app. Since this is a school project and not yet on the Play Store, ensure you have the latest version from our Google Drive link.</string>
+
+    <string name="faq_q20">How do I delete my account?</string>
+    <string name="faq_a20">To delete your account and remove all personal data, go to Settings -> Security and tap \"Delete Account\". You will need to wait for a 10-second confirmation timer and type DELETE to proceed.</string>
+
+    <string name="faq_q21">What if my child leaves an item on the bus?</string>
+    <string name="faq_a21">If your child leaves something behind, please contact the bus driver or the school transport office immediately via the support email or phone number provided.</string>
+
+    <string name="faq_q22">How do I change the app language?</string>
+    <string name="faq_a22">Go to Settings -> General and tap on \"Preferred Language\". Currently, we support English, with more languages coming soon.</string>
+
+    <string name="faq_q23">Can I see my child\'s boarding history?</string>
+    <string name="faq_a23">Currently, the app focuses on real-time tracking. We are working on a \"History\" feature that will allow you to see past boarding and arrival times in a future update.</string>
+
+    <string name="faq_q24">How do I log out of the app?</string>
+    <string name="faq_a24">You can log out by scrolling to the bottom of the Settings screen and tapping the \"LOGOUT\" button.</string>
+
+    <string name="faq_q25">How do I know if the bus is near my stop?</string>
+    <string name="faq_a25">Enable the \"Bus Near Stop\" notification in Settings. The app will send you an alert when the bus is within a specific radius of your designated pickup or drop-off point.</string>
+
+    <string name="faq_q26">Can both parents track the same child?</string>
+    <string name="faq_a26">Yes, both parents can log in using the same account credentials or separate accounts linked to the same student profile (if enabled by your school).</string>
+
+    <string name="faq_q27">What happens during school holidays or breaks?</string>
+    <string name="faq_a27">Bus tracking is only active during scheduled school days. During holidays, the map will show no active trips, and notifications will be paused.</string>
+
+    <string name="faq_q28">How do I update my child\'s grade or section?</string>
+    <string name="faq_a28">You can update these details in the Student profile section. Some changes may require administrative review before appearing in the app.</string>
+
+    <string name="faq_q29">Does the app use a lot of battery?</string>
+    <string name="faq_a29">The app is optimized for low power consumption. It only uses GPS and high data frequency while you are actively tracking a bus on the map.</string>
+
+    <string name="faq_q30">Is the bus location updated every second?</string>
+    <string name="faq_a30">The location is typically updated every 5 to 10 seconds to balance real-time accuracy with battery and data efficiency.</string>
 
     <!-- Pagination & Navigation Icons -->
     <string name="first_page">«</string>
@@ -108,6 +201,9 @@
     <!-- Authentication: Login -->
     <string name="sign_in">Sign In</string>
     <string name="login">Login</string>
+    <string name="demo_mode">Demo Mode</string>
+    <string name="demo_login">Demo Login</string>
+    <string name="select_role">Select Role</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="enter_email">Enter Email</string>
@@ -160,10 +256,10 @@
 
     <!-- Parent Home & Main Navigation -->
     <string name="home">Home</string>
-    <string name="good_morning">Good morning</string>
-    <string name="good_afternoon">Good afternoon</string>
-    <string name="good_evening">Good evening</string>
-    <string name="good_morning_robert">Good morning, Robert!</string>
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="good_morning_robert">Good Morning, Robert!</string>
     <string name="greeting_format">%1$s, %2$s!</string>
     <string name="my_children">My Children</string>
     <string name="live_tracking">Live Tracking</string>
@@ -322,8 +418,8 @@
     <string name="schedule_information">Schedule Information</string>
 
     <!-- Driver App Feature Strings -->
-    <string name="good_morning_driver">Good morning, Driver!</string>
-    <string name="good_afternoon_driver">Good afternoon, Driver!</string>
+    <string name="good_morning_driver">Good Morning, Driver!</string>
+    <string name="good_afternoon_driver">Good Afternoon, Driver!</string>
     <string name="students_for">Students For:</string>
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
@@ -336,6 +432,7 @@
     <string name="ride_option">Ride Option:</string>
     <string name="pick_up">PICK UP</string>
     <string name="drop_off">DROP OFF</string>
+    <string name="drop_all">DROP ALL</string>
     <string name="stop">Stop:</string>
     <string name="stop_format">Stop: %1$s</string>
     <string name="reset_orientation">Reset Orientation</string>
@@ -348,6 +445,9 @@
     <string name="no_notifications_yet">No notifications yet</string>
     <string name="temporary_route_change">Temporary route change due to road construction on Main Street</string>
     <string name="bus_arriving_soon">Bus Arrival Soon</string>
+    <string name="bus_near_stop">Bus Near Stop</string>
+    <string name="when_the_bus_is_near_the_stop">When the bus is near the student\'s stop</string>
+    <string name="bus_near_stop_message">The bus is approaching your stop. Please be ready!</string>
     <string name="_13hrs_ago">13hrs Ago</string>
     <string name="no_notifications_icon">No Notifications Icon</string>
     <string name="clear_all">Clear All</string>
@@ -393,8 +493,15 @@
     <string name="enter_current_password">Enter current password</string>
     <string name="enter_new_password">Enter new password</string>
 
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_warning">Permanently Delete Account</string>
+    <string name="delete_account_confirmation_msg">This action is irreversible. Please wait %1$d seconds and type DELETE below to confirm.</string>
+    <string name="type_delete_to_confirm">Type DELETE to confirm</string>
+    <string name="account_deleted_success">Your account has been deleted. Redirecting...</string>
+
     <!-- About & Legal -->
     <string name="about">About Us</string>
+    <string name="support">Support</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_content"><![CDATA[
@@ -449,7 +556,6 @@
         Email: <a href="mailto:buswatch@gmail.com">buswatch@gmail.com</a><br><br>
         <b>Last Updated:</b> May 2, 2026<br><br>
     ]]></string>
-    <string name="contact_us">Contact Us</string>
     <string name="contact_email">buswatch@gmail.com</string>
 
     <!-- Location & Maps -->
@@ -470,7 +576,8 @@
     <string name="address_change_request_message">Changing your home location will require admin approval before it takes effect. Requests are typically processed during the weekly schedule update.</string>
     <string name="pickup_location_change">Home Location Change</string>
     <string name="location_request_success_title">Success</string>
-    <string name="location_request_success_message">Your request has been successfully submitted! Please wait for admin approval. Home location changes are typically processed during the weekly schedule update.</string>
+    <string name="location_request_success_message">Your request has been successfully submitted! Please note that it will take 30 days before you can change your Home Address again. The admin reviews requests on a weekly basis, so it might take a long time for approval.</string>
+    <string name="stop_request_success_message">Your request has been successfully submitted! Please note that it will take 30 days before you can change your Pickup Stop again. The admin reviews requests on a weekly basis, so it might take a long time for approval.</string>
     <string name="pending_approval_message">Your home location change is pending admin approval</string>
     <string name="pending_change_request">Pending Home Address Change Request</string>
     <string name="proposed_pickup_address">Proposed Home Address</string>
@@ -478,7 +585,7 @@
     <string name="proposed_new_location">PROPOSED NEW LOCATION</string>
     <string name="kingstown_2_subdivision_caloocan_city">Kingstown 2 Subdivision, Caloocan City</string>
     <string name="confirm_pickup_request">Confirm Pickup Request</string>
-    <string name="confirm_pickup_request_message">Are you sure you want to request a pickup at this location? This will be sent to the driver for approval.</string>
+    <string name="confirm_pickup_request_message">Are you sure you want to request a change to this pickup location? This requires admin approval.</string>
 
     <!-- Admin Dashboard & Management -->
     <string name="dashboard">DASHBOARD</string>
@@ -643,6 +750,7 @@
     <string name="capacity_format">Capacity: %1$d/%2$d</string>
     <string name="min_format">Min: %1$d</string>
     <string name="max_format">Max: %1$d</string>
+    <string name="route_bus_info_format">%1$s • %2$s</string>
     <string name="mike_johnson">Mike Johnson</string>
     <string name="robert_wilson">Robert Wilson</string>
     <string name="justin_wilson">Justin Wilson</string>

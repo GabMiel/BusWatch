@@ -3,6 +3,10 @@ package com.example.buswatch.driver
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -13,12 +17,15 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.buswatch.common.R as CommonR
 import com.google.android.gms.common.ConnectionResult
@@ -26,8 +33,10 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import androidx.preference.PreferenceManager
@@ -42,6 +51,8 @@ class DriverHome : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationCallback: LocationCallback? = null
+    private var notificationListener: ListenerRegistration? = null
+    private var currentTabTag: String = "HOME"
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -56,7 +67,6 @@ class DriverHome : AppCompatActivity() {
         
         val ctx = applicationContext
         val config = Configuration.getInstance()
-        // Ensure consistent User Agent for OSM
         config.userAgentValue = "${ctx.packageName} (BusWatch Android App; support@buswatch.com)"
         config.osmdroidBasePath = File(ctx.filesDir, "osmdroid")
         config.osmdroidTileCache = File(ctx.filesDir, "osmdroid/tiles")
@@ -64,7 +74,6 @@ class DriverHome : AppCompatActivity() {
 
         setContentView(R.layout.activity_driver_home)
         
-        // Use application context to avoid potential leaks and some context-related SecurityExceptions
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
         
         auth.currentUser?.uid?.let { uid ->
@@ -72,10 +81,35 @@ class DriverHome : AppCompatActivity() {
         }
 
         viewModel.fetchUserInfo()
-        loadHome()
+        
+        // Initial fragment load
+        val tab = viewModel.currentTab.value ?: "Morning"
+        if (tab == "Morning") loadHome() else loadAfternoon()
+        
         startLocationUpdates()
         checkNotificationPermission()
         setupSharedObservers()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (currentTabTag != "HOME") {
+                    loadHome()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        startNotificationListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopNotificationListener()
     }
 
     private fun setupSharedObservers() {
@@ -95,14 +129,94 @@ class DriverHome : AppCompatActivity() {
         }
     }
 
+    private fun startNotificationListener() {
+        val uid = auth.currentUser?.uid ?: return
+        val role = viewModel.userRole.value ?: "drivers"
+        val collection = if (role == "Driver") "drivers" else "conductors"
+        
+        var isInitialSnapshot = true
+        stopNotificationListener()
+
+        notificationListener = db.collection(collection).document(uid)
+            .collection("notifications")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null || snapshots == null) {
+                    isInitialSnapshot = false
+                    return@addSnapshotListener
+                }
+                
+                for (dc in snapshots.documentChanges) {
+                    if (dc.type == DocumentChange.Type.ADDED) {
+                        if (!isInitialSnapshot) {
+                            val doc = dc.document
+                            if (currentTabTag != "NOTIFICATION") {
+                                val title = doc.getString("title") ?: "BusWatch Update"
+                                val message = doc.getString("message") ?: ""
+                                showSystemNotification(title, message)
+                            }
+                        }
+                    }
+                }
+                isInitialSnapshot = false
+            }
+    }
+
+    private fun stopNotificationListener() {
+        notificationListener?.remove()
+        notificationListener = null
+    }
+
+    private fun showSystemNotification(title: String, message: String) {
+        val intent = Intent(this, DriverHome::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, System.currentTimeMillis().toInt(), intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(this, "BUSWATCH_NOTIF")
+            .setSmallIcon(CommonR.drawable.logo)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
+            }
+        } else {
+            notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
+        }
+    }
+
     fun loadHome() {
+        currentTabTag = "HOME"
+        viewModel.setCurrentTab("Morning")
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, HomeFragment())
             .commit()
     }
 
+    fun loadAfternoon() {
+        currentTabTag = "HOME"
+        viewModel.setCurrentTab("Afternoon")
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, AfternoonFragment())
+            .commit()
+    }
+
     fun loadLiveTracking() {
+        currentTabTag = "TRACKING"
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
             .replace(R.id.fragment_container, TrackingFragment())
@@ -111,6 +225,7 @@ class DriverHome : AppCompatActivity() {
     }
 
     fun loadAccount() {
+        currentTabTag = "ACCOUNT"
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, AccountFragment())
             .addToBackStack(null)
@@ -118,10 +233,26 @@ class DriverHome : AppCompatActivity() {
     }
 
     fun loadSettings() {
+        currentTabTag = "SETTINGS"
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, SettingsFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    fun loadNotifications() {
+        currentTabTag = "NOTIFICATION"
+        // We'll create a DriverNotificationFragment shortly
+        // For now, let's use a placeholder if it doesn't exist
+        try {
+            val fragment = Class.forName("com.example.buswatch.driver.NotificationFragment").newInstance() as Fragment
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Notification feature coming soon", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun showSOSConfirmation() {
@@ -216,16 +347,12 @@ class DriverHome : AppCompatActivity() {
             return
         }
 
-        // Verify Play Services
         val availability = GoogleApiAvailability.getInstance()
         val result = availability.isGooglePlayServicesAvailable(this)
         if (result != ConnectionResult.SUCCESS) {
             if (availability.isUserResolvableError(result)) {
                 availability.getErrorDialog(this, result, 9000)?.show()
-            } else {
-                Log.e("DriverHome", "Google Play Services not available")
             }
-            // Continue anyway, it might work or we might see more specific logs
         }
 
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
@@ -238,7 +365,6 @@ class DriverHome : AppCompatActivity() {
                 val loc = locationResult.lastLocation ?: return
                 val bearing = if (loc.hasBearing() && loc.speed > 0.5f) loc.bearing else 0f
                 
-                Log.d("DriverHome", "Location Update: ${loc.latitude}, ${loc.longitude}")
                 viewModel.setLocation(GeoPoint(loc.latitude, loc.longitude), bearing)
                 
                 val uid = auth.currentUser?.uid ?: return
@@ -248,16 +374,13 @@ class DriverHome : AppCompatActivity() {
                     "lastUpdated" to FieldValue.serverTimestamp()
                 )
                 
-                val collection = if (viewModel.userRole.value == "Driver") "drivers" else "conductors"
+                val role = viewModel.userRole.value ?: "Driver"
+                val collection = if (role == "Driver") "drivers" else "conductors"
                 db.collection(collection).document(uid).update(locationData)
                 
                 viewModel.assignedRoute.value?.busId?.let { busId ->
                     db.collection("buses").document(busId).update(locationData)
                 }
-            }
-
-            override fun onLocationAvailability(availability: LocationAvailability) {
-                Log.d("DriverHome", "Location Availability: ${availability.isLocationAvailable}")
             }
         }
 
@@ -265,13 +388,13 @@ class DriverHome : AppCompatActivity() {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback!!, Looper.getMainLooper())
         } catch (e: SecurityException) {
             Log.e("DriverHome", "SecurityException requesting location: ${e.message}")
-            Toast.makeText(this, "Location permission error", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         locationCallback?.let { fusedLocationClient.removeLocationUpdates(it) }
+        stopNotificationListener()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

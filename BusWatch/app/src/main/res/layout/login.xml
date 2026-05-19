@@ -5,6 +5,34 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <!-- Demo Toggle -->
+    <LinearLayout
+        android:id="@+id/llDemoToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Demo"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swDemoMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:thumbTint="#FEBE1E" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/llLoginForm"
         android:layout_width="match_parent"

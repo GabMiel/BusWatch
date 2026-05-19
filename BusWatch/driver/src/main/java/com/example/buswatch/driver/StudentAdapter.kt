@@ -14,22 +14,48 @@ import java.util.Locale
 class StudentAdapter(
     private var students: List<Student>,
     private var currentTab: String = "Morning",
+    private val isPickupLayout: Boolean = false,
     private val onPickUpClick: (Student) -> Unit,
     private val onDropOffClick: (Student) -> Unit,
     private val onStudentClick: (Student) -> Unit
 ) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
+    companion object {
+        private const val TYPE_STUDENT_ROW = 0
+        private const val TYPE_PICKUP_ROW = 1
+    }
+
     class StudentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(if (view.id == R.id.studentRowContainer) R.id.tvStudentName else R.id.tvPickupName)
+        val name: TextView = view.findViewById<TextView>(R.id.tvPickupName) ?: view.findViewById(R.id.tvStudentName)
         val grade: TextView = view.findViewById(R.id.tvStudentGrade)
         val stop: TextView? = view.findViewById(R.id.tvStopLocation)
-        val photo: ImageView? = view.findViewById(if (view.id == R.id.studentRowContainer) R.id.imgStudentAvatar else R.id.imgPickupStudent)
+        val photo: ImageView? = view.findViewById<ImageView>(R.id.imgPickupStudent) ?: view.findViewById(R.id.imgStudentAvatar)
         val btnAction: TextView? = view.findViewById(R.id.btnPickUp)
-        val isPickupList: Boolean = view.id != R.id.studentRowContainer
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (isPickupLayout) return TYPE_PICKUP_ROW
+        return TYPE_STUDENT_ROW
+    }
+
+    /**
+     * Requirement update:
+     * - Active (Green) -> Students currently in transit (Heading to stop, On board, or Heading home, Riding).
+     * - Inactive (Orange) -> Students who are idle (At Home, At School) or finished their trip.
+     */
+    private fun isStudentActive(student: Student): Boolean {
+        if (!isStudentEligible(student)) return false
+        val status = student.status.lowercase().trim()
+        
+        return when (currentTab) {
+            "Morning" -> status in listOf("heading to stop", "on board")
+            "Afternoon" -> status in listOf("heading home", "riding")
+            else -> false
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
-        val layout = if (parent.id == R.id.recyclerPickup) R.layout.item_pickup_row else R.layout.item_student_row
+        val layout = if (isPickupLayout) R.layout.item_pickup_row else R.layout.item_student_row
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return StudentViewHolder(view)
     }
@@ -37,16 +63,19 @@ class StudentAdapter(
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
         val student = students[position]
         holder.name.text = student.name
-        
-        if (student.distanceMeters != null && holder.isPickupList) {
-            holder.grade.text = String.format(Locale.getDefault(), "%d meters away", student.distanceMeters)
-        } else {
-            holder.grade.text = student.grade
-        }
+
+        val active = isStudentActive(student)
+        val eligible = isStudentEligible(student)
+        val status = student.status.lowercase().trim()
+
+        val distanceSuffix = if (student.distanceMeters != null) {
+            " • ${student.distanceMeters}m away"
+        } else ""
+        holder.grade.text = "${student.grade}$distanceSuffix"
 
         holder.stop?.let { 
             it.text = it.context.getString(CommonR.string.stop_format, student.stopName)
-            it.visibility = if (holder.isPickupList) View.VISIBLE else View.GONE
+            it.visibility = View.VISIBLE
         }
 
         holder.photo?.let { img ->
@@ -57,67 +86,69 @@ class StudentAdapter(
                 .into(img)
         }
 
-        val eligibleForTab = when (currentTab) {
-            "Morning" -> student.rideOption.contains("Morning") || student.rideOption.contains("Round Trip")
-            "Afternoon" -> student.rideOption.contains("Afternoon") || student.rideOption.contains("Round Trip")
-            else -> student.rideOption != "Not Riding"
-        }
-
-        val isFinished = when (currentTab) {
-            "Morning" -> student.status == "At School"
-            "Afternoon" -> student.status == "At Home"
-            else -> false
-        }
-
-        val isActive = eligibleForTab && !isFinished
-
-        if (isActive) {
+        // Apply background: Active in transit = Green, Idle/Arrived = Orange
+        if (active) {
             holder.itemView.setBackgroundResource(CommonR.drawable.bg_student_row_active)
-            holder.name.alpha = 1.0f
-            holder.grade.alpha = 1.0f
-            holder.stop?.alpha = 1.0f
         } else {
             holder.itemView.setBackgroundResource(CommonR.drawable.bg_student_row)
-            holder.name.alpha = 0.5f
-            holder.grade.alpha = 0.5f
-            holder.stop?.alpha = 0.5f
         }
 
-        holder.itemView.setOnClickListener {
-            onStudentClick(student)
-        }
+        holder.itemView.alpha = 1.0f
+        holder.itemView.setOnClickListener { onStudentClick(student) }
+        holder.itemView.isClickable = true
 
         holder.btnAction?.let { btn ->
-            if (!isActive || !holder.isPickupList) {
+            // Update: Only show action button if the student is ELIGIBLE, ACTIVE, and NOT YET ARRIVED.
+            if (!isPickupLayout || !eligible || !active) {
                 btn.visibility = View.GONE
             } else {
-                when (student.status) {
-                    "Heading to Stop", "At Home" -> { 
-                        btn.visibility = View.VISIBLE
-                        btn.text = btn.context.getString(CommonR.string.pick_up)
-                        btn.setBackgroundResource(CommonR.drawable.bg_pickup_btn)
-                        btn.setOnClickListener { onPickUpClick(student) }
-                    }
-                    "On Board", "At School" -> { 
-                        if (currentTab == "Afternoon" && student.status == "At School") {
-                            btn.visibility = View.VISIBLE
-                            btn.text = btn.context.getString(CommonR.string.pick_up)
-                            btn.setBackgroundResource(CommonR.drawable.bg_pickup_btn)
-                            btn.setOnClickListener { onPickUpClick(student) }
-                        } else if (student.status == "On Board") {
-                            btn.visibility = View.VISIBLE
-                            btn.text = btn.context.getString(CommonR.string.drop_off)
-                            btn.setBackgroundResource(CommonR.drawable.bg_dropoff_btn)
-                            btn.setOnClickListener { onDropOffClick(student) }
-                        } else {
-                            btn.visibility = View.GONE
+                when (currentTab) {
+                    "Morning" -> {
+                        when (status) {
+                            "heading to stop" -> {
+                                btn.visibility = View.VISIBLE
+                                btn.text = btn.context.getString(CommonR.string.pick_up)
+                                btn.setBackgroundResource(CommonR.drawable.bg_pickup_btn)
+                                btn.setOnClickListener { onPickUpClick(student) }
+                            }
+                            "on board" -> {
+                                btn.visibility = View.VISIBLE
+                                btn.text = btn.context.getString(CommonR.string.drop_off)
+                                btn.setBackgroundResource(CommonR.drawable.bg_dropoff_btn)
+                                btn.setOnClickListener { onDropOffClick(student) }
+                            }
+                            else -> btn.visibility = View.GONE
                         }
                     }
-                    else -> {
-                        btn.visibility = View.GONE
+                    "Afternoon" -> {
+                        when (status) {
+                            "heading home" -> {
+                                btn.visibility = View.VISIBLE
+                                btn.text = btn.context.getString(CommonR.string.pick_up)
+                                btn.setBackgroundResource(CommonR.drawable.bg_pickup_btn)
+                                btn.setOnClickListener { onPickUpClick(student) }
+                            }
+                            "riding" -> {
+                                btn.visibility = View.VISIBLE
+                                btn.text = btn.context.getString(CommonR.string.drop_off)
+                                btn.setBackgroundResource(CommonR.drawable.bg_dropoff_btn)
+                                btn.setOnClickListener { onDropOffClick(student) }
+                            }
+                            else -> btn.visibility = View.GONE
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    private fun isStudentEligible(student: Student): Boolean {
+        val ride = student.rideOption.lowercase()
+        if (ride.contains("not riding")) return false
+        return when (currentTab) {
+            "Morning" -> ride.contains("morning") || ride.contains("round trip")
+            "Afternoon" -> ride.contains("afternoon") || ride.contains("round trip")
+            else -> false
         }
     }
 
@@ -126,7 +157,6 @@ class StudentAdapter(
     fun updateStudents(newStudents: List<Student>, tab: String) {
         val oldStudents = this.students
         val oldTab = this.currentTab
-        
         this.students = newStudents
         this.currentTab = tab
 

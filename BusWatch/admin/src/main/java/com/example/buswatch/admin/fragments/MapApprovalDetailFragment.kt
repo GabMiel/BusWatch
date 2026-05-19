@@ -43,7 +43,7 @@ class MapApprovalDetailFragment : Fragment() {
 
     private fun setupUI(view: View) {
         view.findViewById<View>(R.id.btnBackMapDetail)?.setOnClickListener {
-            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.MAP))
         }
 
         view.findViewById<View>(R.id.btnApproveMap)?.setOnClickListener { approveRequest() }
@@ -158,7 +158,7 @@ class MapApprovalDetailFragment : Fragment() {
             batch.commit().addOnSuccessListener {
                 sendNotificationToParent(true)
                 Toast.makeText(requireContext(), "Home location updated and locked for 30 days", Toast.LENGTH_SHORT).show()
-                (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+                (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.MAP))
             }
         }
     }
@@ -167,7 +167,7 @@ class MapApprovalDetailFragment : Fragment() {
         db.collection("map_requests").document(request.id).update("status", "rejected").addOnSuccessListener {
             sendNotificationToParent(false)
             Toast.makeText(requireContext(), "Request rejected", Toast.LENGTH_SHORT).show()
-            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment())
+            (requireActivity() as? AdminHome)?.replaceFragment(ApprovalsFragment.newInstance(ApprovalsFragment.Tab.MAP))
         }
     }
 

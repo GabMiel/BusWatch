@@ -45,9 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Archived"
-                android:textColor="@color/gray_text"
-                android:textSize="12sp"
-                android:layout_marginTop="1dp"/>
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/bg_button_yellow"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="1dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"/>
         </LinearLayout>
 
         <!-- Restore -->

@@ -8,6 +8,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.applyCanvas
@@ -55,8 +57,8 @@ class TrackingFragment : Fragment(), SensorEventListener {
     private val stopIdsList = mutableListOf<String>()
 
     private var isMapMaximized = false
-    private var locationButtonMode = 1 // 1: North Up (Compass), 2: Navigation Follow (My Location), 0: Manual (Recenter)
-    private var lastActiveFollowMode = 1 // Remembers if user preferred Mode 1 or 2
+    private var locationButtonMode = 1
+    private var lastActiveFollowMode = 1
     
     private var sensorManager: SensorManager? = null
     private var rotationSensor: Sensor? = null
@@ -66,7 +68,10 @@ class TrackingFragment : Fragment(), SensorEventListener {
     private var studentAdapter: StudentAdapter? = null
     
     private var lastRoadRequestTime: Long = 0
-    private val MIN_ROAD_REQUEST_INTERVAL = 15000L // 15 seconds throttling
+    private val MIN_ROAD_REQUEST_INTERVAL = 15000L
+    
+    private var lastStreetRequestTime: Long = 0
+    private val STREET_REQUEST_INTERVAL = 10000L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLiveTrackingBinding.inflate(inflater, container, false)
@@ -86,20 +91,28 @@ class TrackingFragment : Fragment(), SensorEventListener {
 
     private fun setupRecyclerView() {
         val safeContext = context ?: return
+        
         binding.recyclerPickup.layoutManager = LinearLayoutManager(safeContext)
         
         studentAdapter = StudentAdapter(
             students = emptyList(),
             currentTab = viewModel.currentTab.value ?: "Morning",
+            isPickupLayout = true, 
             onPickUpClick = { student -> 
-                viewModel.updateStudentStatus(student.id, "On Board")
-                viewModel.sendStudentBoardingNotification(student.id, student.name)
+                val tab = viewModel.currentTab.value ?: "Morning"
+                
+                // Directly transition to the "on bus" state
+                if (tab == "Morning") {
+                    viewModel.updateStudentStatus(student.id, "On Board")
+                    viewModel.sendStudentBoardingNotification(student.id, student.name)
+                } else {
+                    // Afternoon: Picking up from School (was "Heading Home") -> Now "Riding"
+                    viewModel.updateStudentStatus(student.id, "Riding")
+                    viewModel.sendStudentBoardingNotification(student.id, student.name)
+                }
             },
             onDropOffClick = { student -> 
-                val tab = viewModel.currentTab.value ?: "Morning"
-                val status = if (tab == "Morning") "At School" else "At Home"
-                viewModel.updateStudentStatus(student.id, status)
-                viewModel.sendStudentArrivalNotification(student.id, student.name, status)
+                viewModel.dropOffStudent(student)
             },
             onStudentClick = { student ->
                 showStudentMedicalInfo(student)
@@ -113,8 +126,20 @@ class TrackingFragment : Fragment(), SensorEventListener {
         binding.btnSOS.setOnClickListener { (activity as? DriverHome)?.showSOSConfirmation() }
         binding.btnEndTrip.setOnClickListener { 
             if (isAdded) {
-                (activity as? DriverHome)?.loadHome()
+                val tab = viewModel.currentTab.value ?: "Morning"
+                if (tab == "Morning") (activity as? DriverHome)?.loadHome() else (activity as? DriverHome)?.loadAfternoon()
             }
+        }
+
+        binding.btnDropAll.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext(), CommonR.style.Theme_BusWatch_Dialog_Rounded)
+                .setTitle("Drop All Students")
+                .setMessage("Are you sure you want to mark all students currently on board as dropped off?")
+                .setPositiveButton("Confirm") { _, _ ->
+                    viewModel.dropAllStudents()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
         
         binding.btnMaximizeMap.setOnClickListener {
@@ -127,49 +152,40 @@ class TrackingFragment : Fragment(), SensorEventListener {
             
             b.headerContainer.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
             
+            // Unified layout for both Driver and Conductor roles
+            b.mapContainer.visibility = View.VISIBLE
+            b.btnMaximizeMap.visibility = View.VISIBLE
+            b.bannerNextStop.visibility = View.VISIBLE
+            b.tvRouteInfo.visibility = View.VISIBLE
+            b.tvETA.visibility = View.VISIBLE
+            b.rosterHandle.visibility = View.VISIBLE
+            b.rosterHeaderBar.visibility = View.VISIBLE
+            b.conductorTopSpacer.visibility = View.GONE
+            
+            b.layoutBottomInfo.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
+            b.bannerNextStop.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
+            b.root.setBackgroundColor(android.graphics.Color.WHITE)
+
+            // Reset layout params to default split view (map + roster) in case role changed
+            val bottomParams = b.layoutBottomInfo.layoutParams as android.widget.LinearLayout.LayoutParams
+            bottomParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            bottomParams.weight = 0f
+            b.layoutBottomInfo.layoutParams = bottomParams
+            
+            val recyclerParams = b.recyclerPickup.layoutParams as android.widget.LinearLayout.LayoutParams
+            recyclerParams.height = (180 * resources.displayMetrics.density).toInt()
+            recyclerParams.weight = 0f
+            b.recyclerPickup.layoutParams = recyclerParams
+            
             if (role == "Conductor") {
-                b.mapContainer.visibility = View.GONE
-                b.btnMaximizeMap.visibility = View.GONE
                 b.btnEndTrip.text = getString(CommonR.string.exit_roster)
-                b.headerContainer.visibility = View.VISIBLE
-                b.bannerNextStop.visibility = View.GONE
-                b.tvRouteInfo.visibility = View.GONE
-                b.tvETA.visibility = View.GONE
-                b.rosterHandle.visibility = View.GONE
-                b.rosterHeaderBar.visibility = View.VISIBLE
-                b.conductorTopSpacer.visibility = View.VISIBLE
-                b.layoutBottomInfo.setBackgroundColor("#F5F5F5".toColorInt())
-                
-                val bottomParams = b.layoutBottomInfo.layoutParams as android.widget.LinearLayout.LayoutParams
-                bottomParams.height = 0
-                bottomParams.weight = 1f
-                b.layoutBottomInfo.layoutParams = bottomParams
-                
-                val recyclerParams = b.recyclerPickup.layoutParams as android.widget.LinearLayout.LayoutParams
-                recyclerParams.height = 0
-                recyclerParams.weight = 1f
-                b.recyclerPickup.layoutParams = recyclerParams
-                
-                b.root.setBackgroundColor("#F5F5F5".toColorInt())
             } else {
-                b.mapContainer.visibility = View.VISIBLE
-                b.btnMaximizeMap.visibility = View.VISIBLE
-                b.bannerNextStop.visibility = View.VISIBLE
-                b.tvRouteInfo.visibility = View.VISIBLE
-                b.tvETA.visibility = View.VISIBLE
-                b.rosterHandle.visibility = View.VISIBLE
-                b.rosterHeaderBar.visibility = View.VISIBLE
-                b.conductorTopSpacer.visibility = View.GONE
                 b.btnEndTrip.text = getString(CommonR.string.end_trip)
-                b.layoutBottomInfo.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
-                b.bannerNextStop.setBackgroundColor(ContextCompat.getColor(context, CommonR.color.yellow_primary))
-                b.root.setBackgroundColor(android.graphics.Color.WHITE)
-                
-                setupMap()
             }
+            
+            setupMap()
         }
 
-        // Initialize with Mode 1 icon (Compass)
         binding.btnMyLocation.setImageResource(CommonR.drawable.ic_compass)
         binding.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
 
@@ -200,6 +216,8 @@ class TrackingFragment : Fragment(), SensorEventListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
+        if (map != null) return // Already initialized
+        
         val b = _binding ?: return
         map = b.mapView
         map?.let { mv ->
@@ -214,7 +232,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
                     if (locationButtonMode != 0) {
                         lastActiveFollowMode = locationButtonMode
                         locationButtonMode = 0
-                        // Mode 0: Re-centering icon (Black) - using ic_my_location as requested
                         _binding?.btnMyLocation?.setColorFilter(android.graphics.Color.BLACK)
                         _binding?.btnMyLocation?.setImageResource(CommonR.drawable.ic_my_location)
                         unregisterSensors()
@@ -236,6 +253,12 @@ class TrackingFragment : Fragment(), SensorEventListener {
 
     private fun loadStops() {
         if (!isAdded) return
+        val mv = map ?: return
+        
+        // Remove existing stop markers before reloading to prevent duplication
+        allMarkers.values.forEach { mv.overlays.remove(it) }
+        allMarkers.clear()
+        
         val route = viewModel.assignedRoute.value ?: return
         val stopIds = route.stopIds
         if (stopIds.isEmpty()) return
@@ -257,27 +280,26 @@ class TrackingFragment : Fragment(), SensorEventListener {
         for ((index, sid) in displayStopIds.withIndex()) {
             db.collection("stops").document(sid).get().addOnSuccessListener { sDoc ->
                 if (!isAdded || _binding == null) return@addOnSuccessListener
-                val mv = map ?: return@addOnSuccessListener
+                val currentMv = map ?: return@addOnSuccessListener
                 
                 val lat = sDoc.getDouble("latitude")
                 val lng = sDoc.getDouble("longitude")
                 if (lat != null && lng != null) {
                     val p = GeoPoint(lat, lng)
                     stopPointsMap[sid] = p
-                    val marker = Marker(mv)
+                    val marker = Marker(currentMv)
                     marker.position = p
                     marker.title = sDoc.getString("name")
                     marker.icon = if (index == 0) nextStopIcon else stopIcon
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                    mv.overlays.add(marker)
+                    currentMv.overlays.add(marker)
                     allMarkers[sid] = marker
                     
                     if (index == 0) {
                         val stopName = sDoc.getString("name") ?: "Next Stop"
                         binding.tvNextStopName.text = stopName
                         binding.tvNextStopName.tag = sid 
-                        
-                        // Push initial next stop to Firestore immediately
+
                         viewModel.assignedRoute.value?.busId?.let { busId ->
                             db.collection("buses").document(busId).update("nextStop", sid)
                         }
@@ -287,7 +309,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                 if (loaded == displayStopIds.size) {
                     stopPoints.clear()
                     stopPoints.addAll(displayStopIds.mapNotNull { stopPointsMap[it] })
-                    mv.invalidate()
+                    currentMv.invalidate()
                     viewModel.lastKnownLocation.value?.let { updateRouteWithCurrentLocation(it, force = true) }
                 }
             }
@@ -310,15 +332,19 @@ class TrackingFragment : Fragment(), SensorEventListener {
             studentAdapter?.updateStudents(students, tab)
             
             val totalExpected = students.count { s ->
+                val ride = s.rideOption.lowercase()
                 when (tab) {
-                    "Morning" -> s.rideOption.contains("Morning") || s.rideOption.contains("Round Trip")
-                    "Afternoon" -> s.rideOption.contains("Afternoon") || s.rideOption.contains("Round Trip")
-                    else -> s.rideOption != "Not Riding"
+                    "Morning" -> ride.contains("morning") || ride.contains("round trip")
+                    "Afternoon" -> ride.contains("afternoon") || ride.contains("round trip")
+                    else -> !ride.contains("not riding")
                 }
             }
-            val onBoardCount = students.count { it.status == "On Board" }
+            val onBoardCount = students.count { it.status == "On Board" || it.status == "Riding" }
             b.tvBoardingCount.text = getString(CommonR.string.on_board_format, onBoardCount, totalExpected)
             b.tvRosterTitle.text = String.format(Locale.getDefault(), "STUDENT ROSTER (%d / %d)", totalExpected, students.size)
+            
+            // Show "Drop All" button only if there are students on board
+            b.btnDropAll.visibility = if (onBoardCount > 0) View.VISIBLE else View.GONE
         }
 
         viewModel.lastKnownLocation.observe(viewLifecycleOwner) { gp ->
@@ -329,6 +355,7 @@ class TrackingFragment : Fragment(), SensorEventListener {
                     updateMapCamera(it)
                 }
                 updateRouteWithCurrentLocation(it)
+                updateCurrentStreetName(it)
                 map?.invalidate()
             }
         }
@@ -337,6 +364,36 @@ class TrackingFragment : Fragment(), SensorEventListener {
             driverMarker?.rotation = 0f
             map?.invalidate()
         }
+
+        viewModel.toastMessage.observe(viewLifecycleOwner) { msg ->
+            if (msg != null) {
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                viewModel.clearToast()
+            }
+        }
+    }
+
+    private fun updateCurrentStreetName(gp: GeoPoint) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastStreetRequestTime < STREET_REQUEST_INTERVAL) return
+        lastStreetRequestTime = currentTime
+
+        val safeContext = context ?: return
+        Thread {
+            try {
+                val geocoder = Geocoder(safeContext, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(gp.latitude, gp.longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    val streetName = address.thoroughfare ?: address.getAddressLine(0)?.split(",")?.firstOrNull() ?: "Unknown Street"
+                    activity?.runOnUiThread {
+                        _binding?.tvCurrentStreet?.text = streetName
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
     private fun showStudentMedicalInfo(student: Student) {
@@ -383,7 +440,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
         
         val currentTime = System.currentTimeMillis()
         if (!force && currentTime - lastRoadRequestTime < MIN_ROAD_REQUEST_INTERVAL) {
-            // Use simple line if we don't have an overlay yet
             if (roadOverlay == null && map != null) {
                 drawSimplePolyline(map!!, mutableListOf(currentLoc).apply { addAll(stopPoints) })
             }
@@ -399,7 +455,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
             drawRoadOverlay(map!!, points)
         }
         
-        // Ensure nextStop is updated in Firestore
         viewModel.assignedRoute.value?.busId?.let { busId ->
             val nextStopId = binding.tvNextStopName.tag?.toString()
             if (!nextStopId.isNullOrEmpty() && nextStopId != getString(CommonR.string.calculating)) {
@@ -424,7 +479,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
         val appContext = context?.applicationContext ?: return
         Thread {
             try {
-                // Use package name for user agent
                 val roadManager = OSRMRoadManager(appContext, appContext.packageName)
                 val road = roadManager.getRoad(ArrayList(points))
                 
@@ -470,7 +524,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
         val b = _binding ?: return
         locationButtonMode = 1
         lastActiveFollowMode = 1
-        // Mode 1: Compass icon
         b.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
         b.btnMyLocation.setImageResource(CommonR.drawable.ic_compass)
         updateDriverIcon()
@@ -489,7 +542,6 @@ class TrackingFragment : Fragment(), SensorEventListener {
         locationButtonMode = 2
         lastActiveFollowMode = 2
         isFirstSensorReading = true 
-        // Mode 2: My Location icon
         b.btnMyLocation.setColorFilter("#4A90E2".toColorInt())
         b.btnMyLocation.setImageResource(CommonR.drawable.ic_my_location)
         updateDriverIcon()

@@ -264,7 +264,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- About Section -->
+            <!-- Support Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardAbout"
                 android:layout_width="0dp"
@@ -292,7 +292,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="@string/about"
+                    android:text="@string/support"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -300,9 +300,9 @@
                     app:layout_constraintStart_toEndOf="@+id/ivAboutIcon"
                     app:layout_constraintTop_toTopOf="@+id/ivAboutIcon" />
 
-                <!-- Terms Row -->
+                <!-- FAQ Row -->
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layoutTerms"
+                    android:id="@+id/layoutFAQ"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -313,6 +313,52 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivAboutIcon">
+
+                    <TextView
+                        android:id="@+id/tvFAQ"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/frequently_asked_questions"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/ivChevronFAQ"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/ivChevronFAQ"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/right_arrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="#888888" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/dividerFAQ"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#EEEEEE"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layoutFAQ" />
+
+                <!-- Terms Row -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layoutTerms"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerFAQ">
 
                     <TextView
                         android:id="@+id/tvTerms"

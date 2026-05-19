@@ -2,12 +2,16 @@ package com.example.buswatch.driver
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -28,6 +32,14 @@ class HomeFragment : Fragment() {
     private val viewModel: DriverViewModel by activityViewModels()
     private var studentAdapter: StudentAdapter? = null
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val timeRunnable = object : Runnable {
+        override fun run() {
+            updateGreeting(viewModel.userName.value ?: "Driver")
+            handler.postDelayed(this, 60000)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDriverHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -36,25 +48,28 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setCurrentTab("Morning")
+
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
+        updateTabUI()
+
+        handler.post(timeRunnable)
     }
 
     private fun setupRecyclerView() {
         binding.recyclerStudents.layoutManager = LinearLayoutManager(requireContext())
         studentAdapter = StudentAdapter(
             students = emptyList(),
-            currentTab = viewModel.currentTab.value ?: "Morning",
+            currentTab = "Morning",
+            isPickupLayout = false, 
             onPickUpClick = { student -> 
+                // Direct 1-click boarding for Morning session
                 viewModel.updateStudentStatus(student.id, "On Board")
-                viewModel.sendStudentBoardingNotification(student.id, student.name)
             },
             onDropOffClick = { student -> 
-                val tab = viewModel.currentTab.value ?: "Morning"
-                val status = if (tab == "Morning") "At School" else "At Home"
-                viewModel.updateStudentStatus(student.id, status)
-                viewModel.sendStudentArrivalNotification(student.id, student.name, status)
+                viewModel.dropOffStudent(student)
             },
             onStudentClick = { student ->
                 showStudentMedicalInfo(student)
@@ -80,18 +95,17 @@ class HomeFragment : Fragment() {
 
         viewModel.userRole.observe(viewLifecycleOwner) { role ->
             binding.btnStartTrip.text = if (role == "Conductor") "OPEN STUDENT ROSTER" else getString(CommonR.string.start_trip)
-            binding.headerContainer.visibility = View.VISIBLE
-            binding.greetingBox.visibility = View.VISIBLE
-            binding.bottomNav.visibility = View.VISIBLE
         }
 
         viewModel.students.observe(viewLifecycleOwner) { students ->
-            val tab = viewModel.currentTab.value ?: "Morning"
-            studentAdapter?.updateStudents(students, tab)
+            studentAdapter?.updateStudents(students, "Morning")
         }
-        
-        viewModel.currentTab.observe(viewLifecycleOwner) { tab ->
-            updateTabUI(tab == "Morning")
+
+        viewModel.toastMessage.observe(viewLifecycleOwner) { msg ->
+            if (msg != null) {
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                viewModel.clearToast()
+            }
         }
     }
 
@@ -133,11 +147,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        binding.tabMorning.setOnClickListener { viewModel.setCurrentTab("Morning") }
-        binding.tabAfternoon.setOnClickListener { viewModel.setCurrentTab("Afternoon") }
+        binding.tabAfternoon.setOnClickListener { (activity as? DriverHome)?.loadAfternoon() }
         
         binding.btnStartTrip.setOnClickListener {
-            viewModel.sendTripStartNotification()
+            viewModel.startTrip()
             (activity as? DriverHome)?.loadLiveTracking()
         }
 
@@ -146,6 +159,19 @@ class HomeFragment : Fragment() {
         binding.containerNavSettings.setOnClickListener { (activity as? DriverHome)?.loadSettings() }
         binding.btnSOS.setOnClickListener { (activity as? DriverHome)?.showSOSConfirmation() }
         binding.btnSortStudents.setOnClickListener { showSortPopup(it) }
+
+        // Secret Reset Function: Long press Logo to reset all student statuses
+        binding.headerLogo.setOnLongClickListener {
+            MaterialAlertDialogBuilder(requireContext(), CommonR.style.Theme_BusWatch_Dialog_Rounded)
+                .setTitle("Secret Reset")
+                .setMessage("Reset all student statuses to 'At Home'?")
+                .setPositiveButton("Reset") { _, _ ->
+                    viewModel.resetAllStatuses()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+            true
+        }
     }
 
     private fun showSortPopup(view: View) {
@@ -181,26 +207,30 @@ class HomeFragment : Fragment() {
         binding.tvCurrentTime.text = String.format(Locale.getDefault(), "%d:%02d %s", if (hour % 12 == 0) 12 else hour % 12, minute, amPm)
     }
 
-    private fun updateTabUI(isMorning: Boolean) {
+    private fun updateTabUI() {
         val context = context ?: return
-        if (isMorning) {
-            binding.tabMorning.setBackgroundResource(CommonR.drawable.bg_tab_active)
-            binding.tabMorning.setTextColor(Color.BLACK)
-            binding.tabAfternoon.setBackgroundResource(CommonR.drawable.bg_tab_inactive)
-            binding.tabAfternoon.setTextColor(ContextCompat.getColor(context, CommonR.color.gray_text))
-            binding.tvGreeting.text = getString(CommonR.string.good_morning_driver)
-        } else {
-            binding.tabMorning.setBackgroundResource(CommonR.drawable.bg_tab_inactive)
-            binding.tabMorning.setTextColor(ContextCompat.getColor(context, CommonR.color.gray_text))
-            binding.tabAfternoon.setBackgroundResource(CommonR.drawable.bg_tab_active)
-            binding.tabAfternoon.setTextColor(Color.BLACK)
-            binding.tvGreeting.text = getString(CommonR.string.good_afternoon_driver)
-        }
-        viewModel.userName.value?.let { updateGreeting(it) }
+        binding.tabMorning.setBackgroundResource(CommonR.drawable.bg_tab_active)
+        binding.tabMorning.setTextColor(Color.BLACK)
+        binding.tabAfternoon.setBackgroundResource(CommonR.drawable.bg_tab_inactive)
+        binding.tabAfternoon.setTextColor(ContextCompat.getColor(context, CommonR.color.gray_text))
+
+        highlightScheduleMorning()
+    }
+
+    private fun highlightScheduleMorning() {
+        val context = context ?: return
+        binding.tvMorningTime.setTextColor(Color.BLACK)
+        binding.tvMorningTime.setTypeface(null, Typeface.BOLD)
+        binding.tvMorningTime.setBackgroundResource(0)
+        
+        binding.tvAfternoonTime.setTextColor(ContextCompat.getColor(context, CommonR.color.gray_text))
+        binding.tvAfternoonTime.setTypeface(null, Typeface.NORMAL)
+        binding.tvAfternoonTime.setBackgroundResource(0)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        handler.removeCallbacks(timeRunnable)
         _binding = null
     }
 }

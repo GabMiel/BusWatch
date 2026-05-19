@@ -263,7 +263,7 @@
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Action Buttons -->
+            <!-- Action Buttons (Reject and Approve) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -273,9 +273,10 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRejectStop"
-                    android:layout_width="130dp"
-                    android:layout_height="54dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/reject_caps"
                     android:textColor="@color/white"
                     android:textSize="14sp"
@@ -285,8 +286,10 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnApproveStop"
-                    android:layout_width="130dp"
-                    android:layout_height="54dp"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     android:text="@string/approve_caps"
                     android:textColor="@color/white"
                     android:textSize="14sp"

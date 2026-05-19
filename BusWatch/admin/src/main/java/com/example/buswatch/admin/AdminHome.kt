@@ -1,5 +1,6 @@
 package com.example.buswatch.admin
 
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -91,11 +92,24 @@ class AdminHome : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START) 
         }
         findViewById<LinearLayout>(R.id.navLogout)?.setOnClickListener {
+            val prefs = getSharedPreferences("BusWatchPrefs", Context.MODE_PRIVATE)
+            val isDemo = prefs.getBoolean("is_demo", false)
+            
             auth.signOut()
-            val intent = Intent(this, Class.forName("com.example.buswatch.Login"))
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+            
+            try {
+                val targetClass = if (isDemo) {
+                    Class.forName("com.example.buswatch.DemoLogin")
+                } else {
+                    Class.forName("com.example.buswatch.Login")
+                }
+                val intent = Intent(this, targetClass)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

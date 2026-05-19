@@ -161,7 +161,7 @@ class ApprovalsFragment : Fragment() {
                         pendingLat = doc.getDouble("pendingLat") ?: 0.0,
                         pendingLng = doc.getDouble("pendingLng") ?: 0.0,
                         docPath = doc.getString("docPath") ?: "",
-                        parentAvatarUrl = "" 
+                        parentAvatarUrl = doc.getString("parentAvatarUrl") ?: ""
                     )
                 }.toMutableList()
                 
@@ -194,7 +194,7 @@ class ApprovalsFragment : Fragment() {
                         proposedStopLat = doc.getDouble("proposedStopLat") ?: 0.0,
                         proposedStopLng = doc.getDouble("proposedStopLng") ?: 0.0,
                         status = doc.getString("status") ?: "pending",
-                        parentAvatarUrl = ""
+                        parentAvatarUrl = doc.getString("parentAvatarUrl") ?: ""
                     )
                 }.toMutableList()
                 

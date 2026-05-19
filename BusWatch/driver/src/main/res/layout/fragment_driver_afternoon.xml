@@ -39,7 +39,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- SOS Button - Resized to match live tracking -->
         <ImageButton
             android:id="@+id/btnSOS"
             android:layout_width="44dp"
@@ -81,7 +80,7 @@
                     android:id="@+id/tvGreeting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/good_afternoon_driver"
+                    tools:text="Good Afternoon, Driver!"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -90,13 +89,13 @@
                     android:id="@+id/tvCurrentTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/_9_41_am"
+                    tools:text="01:41 PM"
                     android:textColor="@color/text_white_secondary"
                     android:textSize="12sp"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <!-- Student List Header with Filter Icon -->
+            <!-- Student List Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +126,7 @@
                     app:tint="@color/black" />
             </RelativeLayout>
 
-            <!-- Combined Tab Section (Morning/Afternoon) Styled like Admin Users -->
+            <!-- Tab Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

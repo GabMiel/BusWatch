@@ -124,6 +124,19 @@ class ParentDetailFragment : Fragment() {
         childView.findViewById<TextView>(R.id.tvChildSchool).text = childData["school"] as? String ?: ""
         childView.findViewById<TextView>(R.id.tvChildAddress).text = (childData["address"] ?: childData["homeAddress"]) as? String ?: ""
         
+        // Fetch and display stop name
+        val stopId = childData["stop"] as? String ?: ""
+        val tvStop = childView.findViewById<TextView>(R.id.tvChildStop)
+        if (stopId.isNotEmpty()) {
+            db.collection("stops").document(stopId).get().addOnSuccessListener { sDoc ->
+                if (isAdded && sDoc.exists()) {
+                    tvStop.text = sDoc.getString("name") ?: getString(CommonR.string.not_assigned_label)
+                }
+            }
+        } else {
+            tvStop.text = getString(CommonR.string.not_assigned_label)
+        }
+
         childView.findViewById<TextView>(R.id.tvChildBloodType).text = childData["bloodType"] as? String ?: "---"
         childView.findViewById<TextView>(R.id.tvChildAllergies).text = childData["allergies"] as? String ?: "None"
         childView.findViewById<TextView>(R.id.tvChildConditions).text = (childData["medicalConditions"] ?: childData["conditions"]) as? String ?: "None"

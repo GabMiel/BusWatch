@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.applyCanvas
@@ -23,6 +24,7 @@ import com.example.buswatch.common.R as CommonR
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.FieldValue
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.Road
 import org.osmdroid.bonuspack.routing.RoadManager
@@ -32,6 +34,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
+import com.example.buswatch.common.NotificationSender
 import java.util.ArrayList
 import java.util.Locale
 
@@ -51,16 +54,19 @@ class Map : AppCompatActivity() {
     private val stopPoints = mutableListOf<GeoPoint>()
     private var routeName: String = "Route"
 
-    private var locationButtonMode = 1 // 1: North Up (Follow), 0: Manual
+    private var locationButtonMode = 1 
     private var lastKnownBusLocation: GeoPoint? = null
     
     private var lastRoadRequestTime: Long = 0
-    private val MIN_ROAD_REQUEST_INTERVAL = 15000L // 15 seconds
+    private val MIN_ROAD_REQUEST_INTERVAL = 15000L 
+
+    private var studentStopId: String? = null
+    private var studentStopLocation: GeoPoint? = null
+    private var hasShownProximityAlert = false
+    private var isNearStopNotifEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Config is now handled in BusWatchApp
         setContentView(R.layout.map)
 
         auth = FirebaseAuth.getInstance()
@@ -83,6 +89,7 @@ class Map : AppCompatActivity() {
         setupMaximizeButton()
         setupLocatorButton()
         fetchInitialData()
+        loadNotificationPreferences()
 
         findViewById<ImageButton>(R.id.btnMapBack)?.setOnClickListener {
             finish()
@@ -96,6 +103,17 @@ class Map : AppCompatActivity() {
             startActivity(intent)
             @Suppress("DEPRECATION")
             overridePendingTransition(CommonR.anim.slide_in_bottom, CommonR.anim.stay)
+        }
+    }
+
+    private fun loadNotificationPreferences() {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("parents").document(uid).get().addOnSuccessListener { doc ->
+            if (doc.exists()) {
+                @Suppress("UNCHECKED_CAST")
+                val prefs = doc.get("notificationPreferences") as? kotlin.collections.Map<String, Any>
+                isNearStopNotifEnabled = (prefs?.get("busNearStop") as? Boolean) ?: true
+            }
         }
     }
 
@@ -180,6 +198,7 @@ class Map : AppCompatActivity() {
 
             targetChild?.let { child ->
                 val stopId = child["stop"] as? String
+                studentStopId = stopId
                 if (!stopId.isNullOrEmpty()) {
                     fetchRouteForStop(stopId)
                 }
@@ -239,6 +258,10 @@ class Map : AppCompatActivity() {
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     map.overlays.add(marker)
                     allMarkers[sid] = marker
+
+                    if (sid == studentStopId) {
+                        studentStopLocation = p
+                    }
                 }
                 loaded++
                 if (loaded == stopIds.size) {
@@ -268,7 +291,6 @@ class Map : AppCompatActivity() {
         
         val currentTime = System.currentTimeMillis()
         if (!force && currentTime - lastRoadRequestTime < MIN_ROAD_REQUEST_INTERVAL) {
-            // Draw simple line as placeholder or just skip if we already have an overlay
             if (roadOverlay == null) {
                 drawSimplePolyline(mutableListOf(busLoc).apply { addAll(stopPoints) })
             }
@@ -283,6 +305,39 @@ class Map : AppCompatActivity() {
         if (points.size >= 2) {
             drawRoadOverlay(points)
         }
+
+        checkProximity(busLoc)
+    }
+
+    private fun checkProximity(busLoc: GeoPoint) {
+        if (!isNearStopNotifEnabled || hasShownProximityAlert) return
+        
+        studentStopLocation?.let { stopLoc ->
+            val distance = busLoc.distanceToAsDouble(stopLoc)
+            if (distance < 500) { // 500 meters threshold
+                hasShownProximityAlert = true
+                sendNearStopNotification()
+            }
+        }
+    }
+
+    private fun sendNearStopNotification() {
+        val uid = auth.currentUser?.uid ?: return
+        val title = getString(CommonR.string.bus_near_stop)
+        val message = getString(CommonR.string.bus_near_stop_message)
+        
+        val notifData = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "timestamp" to FieldValue.serverTimestamp(),
+            "isRead" to false,
+            "type" to "bus_near_stop"
+        )
+        
+        db.collection("parents").document(uid).collection("notifications").add(notifData)
+            .addOnSuccessListener {
+                NotificationSender.sendNotification(uid, title, message)
+            }
     }
 
     private fun drawSimplePolyline(points: List<GeoPoint>) {
@@ -300,7 +355,6 @@ class Map : AppCompatActivity() {
     private fun drawRoadOverlay(points: List<GeoPoint>) {
         Thread {
             try {
-                // Use a consistent User-Agent for OSRM as well
                 val roadManager = OSRMRoadManager(this, packageName)
                 val road = roadManager.getRoad(ArrayList(points))
                 
@@ -348,7 +402,7 @@ class Map : AppCompatActivity() {
                 val busConductorId = doc.getString("conductorId")
                 val busNo = doc.getString("busNumber") ?: "---"
                 
-                findViewById<TextView>(R.id.tvRouteInfo)?.text = getString(CommonR.string.greeting_format, routeName, busNo)
+                findViewById<TextView>(R.id.tvRouteInfo)?.text = getString(CommonR.string.route_bus_info_format, routeName, busNo)
                 findViewById<TextView>(R.id.tvBusStatus)?.text = getString(CommonR.string.bus_driver_bus_001).replace("BUS–001", busNo)
                 
                 val finalDriverId = if (!busDriverId.isNullOrEmpty()) busDriverId else routeDriverId ?: ""

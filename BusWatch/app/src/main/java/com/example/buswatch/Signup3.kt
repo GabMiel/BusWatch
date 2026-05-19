@@ -5,10 +5,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
+import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -16,13 +22,17 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.onesignal.OneSignal
+import com.example.buswatch.common.R as CommonR
 
 class Signup3 : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -41,6 +51,9 @@ class Signup3 : AppCompatActivity() {
     private lateinit var etContact2Name: EditText
     private lateinit var etEmergencyPhone2: EditText
     private lateinit var etContact2Relation: EditText
+    private lateinit var cbTerms: CheckBox
+    private lateinit var tvTermsLinks: TextView
+    private lateinit var fragmentContainer: FrameLayout
     
     private lateinit var tvCountryCode1: TextView
     private lateinit var tvCountryCode2: TextView
@@ -62,6 +75,9 @@ class Signup3 : AppCompatActivity() {
         etContact2Name = findViewById(R.id.editTextText20)
         etEmergencyPhone2 = findViewById(R.id.etEmergencyPhone2)
         etContact2Relation = findViewById(R.id.editTextText21)
+        cbTerms = findViewById(R.id.cbTerms)
+        tvTermsLinks = findViewById(R.id.tvTermsLinks)
+        fragmentContainer = findViewById(R.id.signupFragmentContainer)
         
         tvCountryCode1 = findViewById(R.id.tvSignup3EmergencyCountryCode1)
         tvCountryCode2 = findViewById(R.id.tvSignup3EmergencyCountryCode2)
@@ -75,8 +91,8 @@ class Signup3 : AppCompatActivity() {
         setupNameWatcher(etContact1Name, tvContact1NameWarning)
         setupNameWatcher(etContact2Name, tvContact2NameWarning)
 
-        etContact1Name.filters = arrayOf(InputFilter.LengthFilter(50))
-        etContact2Name.filters = arrayOf(InputFilter.LengthFilter(50))
+        etContact1Name.filters = arrayOf(android.text.InputFilter.LengthFilter(50))
+        etContact2Name.filters = arrayOf(android.text.InputFilter.LengthFilter(50))
         
         selectedCountryCode1 = intent.getStringExtra("c1Code") ?: "+63"
         selectedCountryCode2 = intent.getStringExtra("c2Code") ?: "+63"
@@ -90,6 +106,7 @@ class Signup3 : AppCompatActivity() {
         updateEmergencyPhoneFilter2()
 
         setupEmergencyPhoneFormatting()
+        setupTermsAndPrivacyLinks()
 
         etContact1Name.setText(intent.getStringExtra("c1Name") ?: "")
         etEmergencyPhone1.setText(intent.getStringExtra("c1Phone") ?: "")
@@ -131,8 +148,18 @@ class Signup3 : AppCompatActivity() {
         backButton.setOnClickListener { goBack() }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() { goBack() }
+            override fun handleOnBackPressed() {
+                if (fragmentContainer.isVisible) {
+                    closeLegalFragment()
+                } else {
+                    goBack()
+                }
+            }
         })
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            fragmentContainer.isVisible = supportFragmentManager.backStackEntryCount > 0
+        }
 
         registerButton.setOnClickListener {
             val contact1Name = etContact1Name.text.toString().trim()
@@ -161,6 +188,11 @@ class Signup3 : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!cbTerms.isChecked) {
+                Toast.makeText(this, getString(CommonR.string.please_agree_to_terms), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             registerButton.isEnabled = false
             
             val fullPhone1 = "$selectedCountryCode1 $contact1PhoneRaw"
@@ -173,6 +205,62 @@ class Signup3 : AppCompatActivity() {
                 etContact2Relation.text.toString().trim()
             )
         }
+    }
+
+    private fun setupTermsAndPrivacyLinks() {
+        val fullText = getString(CommonR.string.agree_to_terms_and_privacy)
+        val termsText = getString(CommonR.string.terms_and_conditions)
+        val privacyText = getString(CommonR.string.privacy_policy)
+        
+        val spannable = SpannableString(fullText)
+        val blueColor = ContextCompat.getColor(this, CommonR.color.accent_blue)
+        
+        val termsStart = fullText.indexOf(termsText)
+        if (termsStart != -1) {
+            spannable.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    showLegalFragment(TermsConditionsFragment())
+                }
+                override fun updateDrawState(ds: android.text.TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.color = blueColor
+                    ds.isUnderlineText = true
+                }
+            }, termsStart, termsStart + termsText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        
+        val privacyStart = fullText.indexOf(privacyText)
+        if (privacyStart != -1) {
+            spannable.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    showLegalFragment(PrivacyPolicyFragment())
+                }
+                override fun updateDrawState(ds: android.text.TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.color = blueColor
+                    ds.isUnderlineText = true
+                }
+            }, privacyStart, privacyStart + privacyText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        
+        tvTermsLinks.text = spannable
+        tvTermsLinks.movementMethod = LinkMovementMethod.getInstance()
+        
+        findViewById<View>(R.id.llTermsBox).setOnClickListener {
+            cbTerms.isChecked = !cbTerms.isChecked
+        }
+    }
+
+    private fun showLegalFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.signupFragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun closeLegalFragment() {
+        supportFragmentManager.popBackStack()
     }
 
     private fun getPhoneLengthForCode(code: String): Int {
@@ -278,7 +366,7 @@ class Signup3 : AppCompatActivity() {
             "+44", "+65" -> 1
             else -> 0
         }
-        etEmergencyPhone1.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits1 + spaces))
+        etEmergencyPhone1.filters = arrayOf(android.text.InputFilter.LengthFilter(maxPhoneDigits1 + spaces))
     }
 
     private fun updateEmergencyPhoneFilter2() {
@@ -287,7 +375,7 @@ class Signup3 : AppCompatActivity() {
             "+44", "+65" -> 1
             else -> 0
         }
-        etEmergencyPhone2.filters = arrayOf(InputFilter.LengthFilter(maxPhoneDigits2 + spaces))
+        etEmergencyPhone2.filters = arrayOf(android.text.InputFilter.LengthFilter(maxPhoneDigits2 + spaces))
     }
 
     private fun goBack() {

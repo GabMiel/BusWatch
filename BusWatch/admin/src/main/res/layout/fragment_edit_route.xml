@@ -168,12 +168,14 @@
                     <TextView android:id="@+id/tvMorningStart"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center_vertical|start" android:paddingHorizontal="12dp"
+                        android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
                     <TextView android:id="@+id/tvMorningEnd"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center_vertical|start" android:paddingHorizontal="12dp"
+                        android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
                 </LinearLayout>
             </LinearLayout>
@@ -191,12 +193,14 @@
                     <TextView android:id="@+id/tvAfternoonStart"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center_vertical|start" android:paddingHorizontal="12dp"
+                        android:text="@string/start_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
                     <TextView android:id="@+id/tvAfternoonEnd"
                         android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
                         android:background="@drawable/rectangle_hollow_with_shadow"
-                        android:gravity="center" android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
+                        android:gravity="center_vertical|start" android:paddingHorizontal="12dp"
+                        android:text="@string/end_time" android:textColor="#666666" android:textSize="13sp"
                         android:layout_marginStart="4dp" android:clickable="true" android:focusable="true"/>
                 </LinearLayout>
             </LinearLayout>
@@ -222,8 +226,7 @@
             <LinearLayout
                 android:id="@+id/layoutConductor"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical" android:layout_marginBottom="16dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@string/choose_conductor_optional" android:textColor="#444444" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp" />
                 <FrameLayout
@@ -244,8 +247,7 @@
             <!-- Route Stops Map Selection -->
             <LinearLayout
                 android:id="@+id/layoutMapLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginBottom="32dp">
                 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
@@ -264,8 +266,7 @@
                     <!-- Eye icon (Maximize Button) -->
                     <ImageButton
                         android:id="@+id/btnMaximizeMap"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="40dp" android:layout_height="40dp"
                         android:layout_gravity="top|end"
                         android:layout_margin="12dp"
                         android:background="@drawable/circle_shape"
@@ -311,7 +312,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/cancel" android:textColor="#000000" android:textSize="16sp"
+                    android:text="@string/cancel_caps" android:textColor="#000000" android:textSize="16sp"
                     android:textStyle="bold" android:gravity="center" android:letterSpacing="0.08"
                     android:background="@drawable/rectangle_hollow_with_shadow" android:clickable="true"
                     android:focusable="true" />
