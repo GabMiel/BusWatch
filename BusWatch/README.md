@@ -78,8 +78,6 @@ The project is hosted and available for easy access:
 
 *The driver's view features turn-by-turn tracking, a manageable student roster, and an emergency SOS button for instant alerts.*
 
-> **Note:** If the images above are not appearing, please ensure that you have uploaded the `screenshots` folder to your GitHub repository and that the file names match exactly (e.g., `driver.jpeg`).
-
 ## 👥 Development Team
 
 - **Roland Carl A. Verdan** - Project Manager
