@@ -1,6 +1,6 @@
 # BusWatch 🚌
 
-**BusWatch** is a school project developed during our 3rd year of college for the subject **Application Development and Emerging Technologies**. It is a comprehensive real-time school bus tracking system designed to provide peace of mind to parents and ensure the safety of students during their daily commute.
+**BusWatch** is a school project developed at **Quezon City University** during our 3rd year of college for the subject **Application Development and Emerging Technologies**. It is a comprehensive real-time school bus tracking system designed to provide peace of mind to parents and ensure the safety of students during their daily commute.
 
 The project consists of a multi-module Android application catering to parents, drivers, and administrators, along with an official landing page.
 
