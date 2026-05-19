@@ -63,16 +63,22 @@ The project is hosted and available for easy access:
 ## 📸 Screenshots
 
 ### Parent Interface
+
 | Home Dashboard | Live Map View |
 | :---: | :---: |
 | ![Parent Home](screenshots/parent_home.jpeg) | ![Parent Map](screenshots/parent_map.jpeg) |
-| *The home screen provides parents with a quick overview of their child's status and recent updates.* | *The real-time map allows parents to track the school bus location live as it moves through its route.* |
+
+*The home screen provides parents with a quick overview of their child's status and recent updates. The real-time map allows parents to track the school bus location live as it moves through its route.*
 
 ### Driver Interface
+
 | Live Tracking & Roster |
 | :---: |
 | ![Driver Tracking](screenshots/driver.jpeg) |
-| *The driver's view features turn-by-turn tracking, a manageable student roster, and an emergency SOS button for instant alerts.* |
+
+*The driver's view features turn-by-turn tracking, a manageable student roster, and an emergency SOS button for instant alerts.*
+
+> **Note:** If the images above are not appearing, please ensure that you have uploaded the `screenshots` folder to your GitHub repository and that the file names match exactly (e.g., `driver.jpeg`).
 
 ## 👥 Development Team
 
