@@ -37,7 +37,7 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="4dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/logo"
+                android:src="@drawable/logo_with_bg"
                 android:contentDescription="@string/buswatch_logo" />
 
             <!-- "Bus" + "Watch" styled to match layout_sidebar.xml -->

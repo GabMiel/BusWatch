@@ -394,12 +394,24 @@ class DriverViewModel : ViewModel() {
         _toastMessage.value = "All students on board have been dropped off"
     }
 
+    private fun getFormattedBusName(busName: String?, defaultIfNull: String): String {
+        if (busName.isNullOrBlank()) return defaultIfNull
+        return if (busName.trim().startsWith("bus", ignoreCase = true)) {
+            busName.trim()
+        } else {
+            "Bus $busName"
+        }
+    }
+
     fun sendStudentBoardingNotification(parentId: String, studentName: String) {
         val route = _assignedRoute.value
         val actualId = parentId.split("_")[0]
         val title = "Child Boarded"
-        val busInfo = if (route?.busNumber != null) "Bus ${route.busNumber}" else "the bus"
-        val message = "$studentName has successfully boarded $busInfo."
+        val busInfo = getFormattedBusName(route?.busNumber, "the bus").let { 
+            if (it == "the bus") it else it.lowercase() 
+        }
+        // Ensuring it looks natural: "Child has boarded Bus 1" or "Child has boarded the bus"
+        val message = "$studentName has successfully boarded ${getFormattedBusName(route?.busNumber, "the bus")}."
         val notifData = hashMapOf(
             "title" to title, "message" to message, "timestamp" to FieldValue.serverTimestamp(),
             "isRead" to false, "type" to "student_boarding"
@@ -413,7 +425,7 @@ class DriverViewModel : ViewModel() {
         val actualId = parentId.split("_")[0]
         val destination = if (status == "At School") "school" else "home"
         val title = "Child Arrived"
-        val busInfo = if (route?.busNumber != null) "Bus ${route.busNumber}" else "the bus"
+        val busInfo = getFormattedBusName(route?.busNumber, "the bus")
         val message = "$studentName has safely arrived at $destination via $busInfo."
         val notifData = hashMapOf(
             "title" to title, "message" to message, "timestamp" to FieldValue.serverTimestamp(),
@@ -444,7 +456,7 @@ class DriverViewModel : ViewModel() {
                 }
 
                 val title = "Bus Trip Started"
-                val busInfo = if (route.busNumber != null) "Bus ${route.busNumber}" else "The bus"
+                val busInfo = getFormattedBusName(route.busNumber, "The bus")
                 val message = "$busInfo for ${route.name} has started its trip. Be ready at your stop!"
                 parentIdsToNotify.forEach { pid ->
                     val notifData = hashMapOf(
@@ -471,7 +483,8 @@ class DriverViewModel : ViewModel() {
                 }.map { it.id }
 
                 val title = "⚠️ EMERGENCY: SOS Alert"
-                val message = "An SOS alert has been triggered for Bus ${route.busNumber ?: route.name}. Open the app for live location."
+                val busInfo = getFormattedBusName(route.busNumber ?: route.name, "the bus")
+                val message = "An SOS alert has been triggered for $busInfo. Open the app for live location."
                 parentIds.forEach { pid ->
                     val notifData = hashMapOf(
                         "title" to title, "message" to message, "timestamp" to FieldValue.serverTimestamp(),
